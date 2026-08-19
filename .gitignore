@@ -1,0 +1,35 @@
+# This root .gitignore covers repo-wide concerns. Flutter build artifacts
+# are additionally covered by app/.gitignore and the per-platform
+# .gitignore files under app/{android,ios,linux,macos,windows}/.
+
+# --- Secrets / credentials -------------------------------------------------
+*.env
+.env
+.env.*
+!.env.example
+env.json
+!env.example.json
+*.key
+*.pem
+*credentials*.json
+service-account*.json
+
+# --- Supabase local/temporary state ----------------------------------------
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+
+# --- OS generated files ------------------------------------------------------
+.DS_Store
+Thumbs.db
+
+# --- IDE ---------------------------------------------------------------------
+.idea/
+.vscode/
+*.iml
+
+# --- Flutter/Dart build artifacts (repo-wide safety net) --------------------
+**/.dart_tool/
+**/build/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies

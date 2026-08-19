@@ -1,0 +1,6 @@
+-- Local development seed data.
+--
+-- Intentionally empty: no business/domain tables exist yet. Seed data for
+-- financial domain entities (members, contributions, payments, etc.) must
+-- not be added until those schemas are implemented per the locked Umoja v2
+-- accounting specification. See docs/accounting/invariants.md.
