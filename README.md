@@ -71,8 +71,7 @@ already contains an initialized Supabase project at `supabase/`
 supabase start
 ```
 
-No business/domain migrations exist yet. Future schema changes must be
-added as versioned migrations:
+Future schema changes must be added as versioned migrations:
 
 ```bash
 supabase migration new <name>
@@ -80,6 +79,44 @@ supabase migration new <name>
 
 See [docs/database/conventions.md](docs/database/conventions.md) for the
 rules migrations must follow.
+
+## Identity, tenancy, and session foundation
+
+The identity + group tenancy + authorization foundation is implemented
+(migrations in `supabase/migrations/`): `profiles`, `groups`,
+`group_memberships`, `roles`/`permissions`/their mappings, RLS
+policies, and RPCs. See
+[docs/product/architecture.md](docs/product/architecture.md) and
+[docs/database/authorization.md](docs/database/authorization.md) for
+how tenant isolation and authorization actually work — in short, a
+user's access to a group always flows through an explicit, RLS- and
+permission-checked `group_memberships` row (`auth.uid()` scoped), never
+through a permanent field on the user, since a user may belong to more
+than one group.
+
+**Login/OTP UI is not implemented yet.** The Flutter app
+(`lib/features/auth/`) understands Supabase auth session state
+(signed-in/signed-out), fetches the current user's application context
+via the `rpc_get_my_context()` RPC once signed in, and resolves which
+group is "selected" (auto-selected if the user has exactly one
+membership, otherwise a minimal selection list). There is no
+sign-up/sign-in form; the foundation screen only reports session state
+and lets you sign out.
+
+To create a group during development (no New Group UI exists yet),
+call the `rpc_create_group` RPC while authenticated — e.g. from the
+Supabase Studio SQL editor's "run as user" mode, or any authenticated
+Supabase client:
+
+```sql
+select rpc_create_group('My Test Group', 'optional description');
+```
+
+This atomically creates the group and makes the calling user its first
+ACTIVE membership with the ADMIN role. To register a member who does
+not (yet) have their own Umoja account, use
+`rpc_create_group_member(group_id, display_name, ...)` while
+authenticated as someone holding `member.create` in that group.
 
 ## Environment configuration
 

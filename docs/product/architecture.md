@@ -47,3 +47,41 @@ mutates posted financial records directly — it always goes through
 controlled backend commands. See
 [docs/database/conventions.md](../database/conventions.md) for the
 concrete rules this implies for schema and query design.
+
+## Identity and group tenancy
+
+Umoja is multi-group: a single authenticated user may belong to more
+than one group (vikundi) over time. Tenancy is therefore never a
+permanent field on the auth user — it is resolved through membership:
+
+```
+auth.users
+    ↓
+profiles
+    ↓
+group_memberships
+    ↓
+groups
+```
+
+- `auth.users` (Supabase Auth) is the authenticated identity;
+  `auth.uid()` is the only identity every backend check trusts.
+- `public.profiles` is 1:1 application-facing metadata for that user.
+- `public.group_memberships` is how a person relates to a group. Its
+  `user_id` is nullable — a group member can exist before they ever
+  have (or without ever having) an app account. See
+  [docs/product/member-identity-model.md](member-identity-model.md).
+- `public.groups` is the tenant.
+
+Role/permission resolution: a membership is assigned one or more
+`public.roles` (via `public.group_membership_roles`); each role grants
+a set of `public.permissions` (via `public.role_permissions`). A user's
+effective permissions in a group are the union of their assigned
+roles' permissions. See
+[docs/database/authorization.md](../database/authorization.md) for how
+this is enforced (RLS, `SECURITY DEFINER` helper functions,
+`rpc_get_my_context()`).
+
+Flutter fetches this whole shape in one call
+(`rpc_get_my_context()`) and never asks the backend to trust a
+client-supplied user id or group id for authorization decisions.
