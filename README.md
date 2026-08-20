@@ -94,29 +94,53 @@ permission-checked `group_memberships` row (`auth.uid()` scoped), never
 through a permanent field on the user, since a user may belong to more
 than one group.
 
-**Login/OTP UI is not implemented yet.** The Flutter app
-(`lib/features/auth/`) understands Supabase auth session state
-(signed-in/signed-out), fetches the current user's application context
-via the `rpc_get_my_context()` RPC once signed in, and resolves which
-group is "selected" (auto-selected if the user has exactly one
-membership, otherwise a minimal selection list). There is no
-sign-up/sign-in form; the foundation screen only reports session state
-and lets you sign out.
+## Authentication and onboarding
 
-To create a group during development (no New Group UI exists yet),
-call the `rpc_create_group` RPC while authenticated — e.g. from the
-Supabase Studio SQL editor's "run as user" mode, or any authenticated
-Supabase client:
+Phone number + OTP (via Supabase Auth) is the only authentication
+method — no email/password, social login, or PIN. See
+[docs/product/authentication.md](docs/product/authentication.md) for
+the full flow: phone normalization, OTP send/verify, session
+restoration, profile completion, first-group onboarding, the
+account-disabled state, and route guards (`app/routing/`).
 
-```sql
-select rpc_create_group('My Test Group', 'optional description');
-```
+In short: `/auth/phone` → `/auth/verify` → (if needed)
+`/onboarding/profile` → (if needed) `/onboarding/group` or
+`/select-group` → `/home`. Group creation always goes through
+`rpc_create_group()` — Flutter never inserts into
+`groups`/`group_memberships`/`group_membership_roles` directly. To
+register a member who does not (yet) have their own Umoja account (no
+Members UI exists yet), call `rpc_create_group_member(group_id,
+display_name, ...)` while authenticated as someone holding
+`member.create` in that group — e.g. from the Supabase Studio SQL
+editor's "run as user" mode.
 
-This atomically creates the group and makes the calling user its first
-ACTIVE membership with the ADMIN role. To register a member who does
-not (yet) have their own Umoja account, use
-`rpc_create_group_member(group_id, display_name, ...)` while
-authenticated as someone holding `member.create` in that group.
+**Local phone-OTP testing note:** local Supabase does not include a
+real SMS provider by default, and this repository does not configure
+one (no Twilio/SMS credentials are committed). The phone-OTP flow could
+not be end-to-end exercised against a live local Supabase instance in
+this environment as a result — see
+[docs/product/authentication.md](docs/product/authentication.md#local-manual-testing-status).
+All Flutter tests for the auth flow use a fake `AuthRepository` and
+require no network/SMS/live Supabase project.
+
+## Running against local Supabase
+
+`supabase start` prints local URLs (`http://127.0.0.1:54321`, etc.).
+Which host address actually works from the Flutter app depends on the
+platform you're running it on — use the right one for
+`SUPABASE_URL` in your `env.json`:
+
+- **Web (Chrome) / Linux desktop**, same host as Supabase:
+  `http://127.0.0.1:54321` (or `http://localhost:54321`) works
+  directly.
+- **Android emulator**: the emulator's own loopback is not the host
+  machine's — use `http://10.0.2.2:54321` instead.
+- **A physical device** (Android/iOS) on the same network: use your
+  host machine's LAN IP instead of `127.0.0.1`, e.g.
+  `http://192.168.x.x:54321`.
+
+Don't hard-code one address in the app — keep it in your local
+(gitignored) `env.json` per platform/run target instead.
 
 ## Environment configuration
 

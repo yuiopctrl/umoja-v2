@@ -119,6 +119,126 @@ membership row:
   body — it is not enough that the caller is authenticated, they must
   hold the permission in the specific target group.
 
+## Inactive-profile enforcement
+
+`profiles.is_active = false` must not retain effective group mutation
+privileges through an existing (still-valid) Supabase session — see
+[docs/product/authentication.md](../product/authentication.md) for the
+Flutter-side "account disabled" UX this backs. Enforced by migration
+`20260819085905_enforce_active_profile_on_mutations.sql`:
+
+- `is_group_member()` and `has_group_permission()` now also require
+  `caller_profile_is_active()` (a small internal helper: a missing
+  profile is treated as inactive, failing closed). Because these two
+  functions are the permission gate inside every member/role RPC
+  (`rpc_create_group_member`, `rpc_update_group_member`,
+  `rpc_change_group_member_status`, `rpc_assign_group_role`,
+  `rpc_remove_group_role`) *and* the predicate behind the
+  `groups`/`group_memberships`/`group_membership_roles` RLS `SELECT`
+  policies, an inactive profile loses both effective permission and
+  read visibility everywhere these are used — one change, one place.
+- `rpc_create_group()` has no other permission gate (any authenticated
+  user may create a group), so it — and every other mutation RPC —
+  additionally calls `assert_active_profile()` immediately after its
+  "not authenticated" check, raising `ACCOUNT_DISABLED` (`P0001`)
+  explicitly. This is a deliberate second layer: `has_group_permission`
+  cascading covers the permission-gated RPCs already, but
+  `assert_active_profile()` gives every mutation RPC (including
+  `rpc_create_group`, which nothing else gates) the same explicit,
+  stable error, and keeps the rule from depending on remembering to
+  wire each new RPC through `has_group_permission`.
+- `rpc_get_my_context()` deliberately does **not** call
+  `assert_active_profile()` — it must always succeed for an
+  authenticated user so Flutter can *discover* `profile.is_active =
+  false` and route to `/access/account-disabled` in the first place.
+- `caller_profile_is_active()` and `assert_active_profile()` are
+  internal-only: `EXECUTE` is revoked from `public`, `anon`, **and**
+  `authenticated` — they are reachable only as nested calls from other
+  `SECURITY DEFINER` functions (which run as the function owner
+  regardless of the original caller's grants), never directly by a
+  client. See "Internal helper functions should expose the minimum
+  required surface" below.
+- Group-level status (`groups.status` SUSPENDED/CLOSED) was **not**
+  wired into `has_group_permission()` as of this migration — that was a
+  real gap, closed by Prompt 03A below.
+
+## Operational group-status enforcement (Prompt 03A)
+
+Prompt 03 added Flutter-side eligibility filtering (only an ACTIVE
+membership in an ACTIVE group is a normal operational context), but
+left the backend gap noted above: `has_group_permission()` did not
+check `groups.status`, so a modified/malicious client could still call
+protected mutation RPCs directly against a SUSPENDED or CLOSED group.
+Fixed in migration
+`20260819094605_enforce_group_operational_status_on_permissions.sql`:
+
+- `has_group_permission(group_id, permission_code)` now additionally
+  requires `groups.status = 'ACTIVE'` for the target group, alongside
+  the existing `caller_profile_is_active()` and `membership.status =
+  'ACTIVE'` conditions. The full operational invariant it now expresses
+  in one place: `authenticated AND profile.is_active AND
+  membership.status = 'ACTIVE' AND group.status = 'ACTIVE' AND
+  permission granted`. Because every mutation RPC already gates on this
+  one function, the fix cascades to all of them (including the
+  `group.manage`-gated group-metadata update path) without touching
+  each RPC body individually.
+- **Deliberate semantic split**: `is_group_member()` is unchanged and
+  remains a *relationship/read* predicate — "does this profile have an
+  ACTIVE membership row?", independent of the group's own status. It
+  backs the `groups` RLS `SELECT` policy, and a SUSPENDED/CLOSED group
+  must stay readable so `rpc_get_my_context()` keeps working and
+  Flutter can render the correct restricted screen.
+  `has_group_permission()` is the *operational* gate, and is the one
+  that was tightened. Do not read this asymmetry as an oversight — it
+  is what keeps historical/restricted context inspectable while still
+  blocking operational mutations, per the "don't erase historical rows
+  just because they're not operational" principle.
+- `has_group_role()`, `get_my_membership()`, and
+  `assert_last_active_admin_remains()` were deliberately left
+  unchanged: the first two are only ever consulted after a
+  `has_group_permission()` check has already gated the caller as
+  operational in every current RPC, and the last-active-ADMIN
+  continuity invariant is a structural property of the group's admin
+  roster, not itself conditioned on the group's current operational
+  status — changing it would have weakened Prompt 02A/02B.
+- No separate `has_operational_group_access()` function was
+  introduced; folding the rule into the existing single choke-point
+  (`has_group_permission()`) was judged simpler and less
+  duplication-prone than adding a second helper every RPC would also
+  need to remember to call.
+- `groups.status` (and `accounting_cutover_date`, which is
+  accounting-relevant and has no designed behavior yet) were removed
+  from the authenticated-role column-level `UPDATE` grant on
+  `public.groups` — an ADMIN could otherwise flip a group's own
+  lifecycle status with no controlled reactivation workflow to reverse
+  it, especially now that group.status gates operational access. Group
+  lifecycle (suspend/close/reactivate) remains an explicit future
+  workflow, not a plain column edit.
+- Error contract: mutation RPCs keep their existing generic
+  `42501`/"Not authorized..." message regardless of *why*
+  `has_group_permission()` returned false (missing permission, inactive
+  profile, non-ACTIVE membership, or non-ACTIVE group) — this was a
+  deliberate choice (permitted explicitly by the Prompt 03A brief:
+  "simply PERMISSION_DENIED if centralized permission checking
+  naturally produces that result") rather than inventing distinct
+  `GROUP_NOT_OPERATIONAL`/`MEMBERSHIP_NOT_ACTIVE` codes, so the error
+  itself does not leak *which* condition failed to an unauthorized
+  caller.
+
+## A note on `EXECUTE` grants and `anon`
+
+`REVOKE ALL ... FROM PUBLIC` does **not** revoke `anon`'s `EXECUTE`
+privilege — Supabase's own bootstrap sets `ALTER DEFAULT PRIVILEGES ...
+GRANT EXECUTE ON FUNCTIONS TO anon, authenticated, service_role`, which
+grants `anon` `EXECUTE` on every newly created function independently of
+`PUBLIC`. This was a real gap found during a Prompt 02A review (every
+function was reachable by an unauthenticated `anon`-key client, though
+still safely rejected internally by the `auth.uid() IS NULL` check) and
+fixed by explicit `REVOKE EXECUTE ... FROM anon` statements — see
+migration `20260819083819_revoke_anon_execute_on_functions.sql`. Every
+function added since explicitly revokes from `anon` as well as `public`,
+not just `public`.
+
 ## Flutter never decides authorization alone
 
 Flutter reads roles/permissions returned by `rpc_get_my_context()` to

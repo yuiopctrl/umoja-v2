@@ -29,6 +29,20 @@ final currentSupabaseUserProvider = Provider<User?>((ref) {
   );
 });
 
+/// The current user's id, or `null` when signed out. Unlike
+/// [currentSupabaseUserProvider] (which re-emits a new [User] instance
+/// on every auth event, including token refresh), this only changes
+/// when the *identity* actually changes — plain [String]/`null`
+/// equality means a token refresh for the same user does not trigger
+/// dependents (like [appContextProvider]) to rebuild. Providers that
+/// hold user-scoped state should key their re-fetch on this, not on
+/// [currentSupabaseUserProvider] directly, so a real identity change
+/// (User A signs out, User B signs in) reliably triggers a refetch
+/// without noisy refetches on every token refresh.
+final authUserIdProvider = Provider<String?>((ref) {
+  return ref.watch(currentSupabaseUserProvider)?.id;
+});
+
 /// High-level session states the foundation UI needs to distinguish.
 enum AuthSessionStatus { configMissing, signedOut, signedIn }
 

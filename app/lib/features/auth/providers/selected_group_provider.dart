@@ -7,10 +7,13 @@ import 'app_context_provider.dart';
 ///
 /// No tenant-scoped query may run without a resolved
 /// [SelectedGroupResolved] state. This is session-only (not persisted)
-/// and derives automatically from [appContextProvider]:
-/// - 0 memberships -> [SelectedGroupNone]
-/// - 1 membership -> auto-selected [SelectedGroupResolved]
-/// - >1 memberships -> [SelectedGroupPending] until [selectGroup] is called
+/// and derives automatically from [appContextProvider], considering
+/// only *eligible* memberships — [MembershipContext.isEligibleOperational]
+/// (ACTIVE membership in an ACTIVE group). SUSPENDED/EXITED memberships
+/// and memberships in a SUSPENDED/CLOSED group are never auto-selected:
+/// - 0 eligible memberships -> [SelectedGroupNone]
+/// - 1 eligible membership -> auto-selected [SelectedGroupResolved]
+/// - >1 eligible memberships -> [SelectedGroupPending] until [selectGroup]
 sealed class SelectedGroupState {
   const SelectedGroupState();
 }
@@ -42,12 +45,14 @@ class SelectedGroupNotifier extends Notifier<SelectedGroupState> {
 
     return contextAsync.when(
       data: (context) {
-        final memberships = context?.memberships ?? const [];
-        if (memberships.isEmpty) return const SelectedGroupNone();
-        if (memberships.length == 1) {
-          return SelectedGroupResolved(memberships.first);
+        final eligible = (context?.memberships ?? const [])
+            .where((m) => m.isEligibleOperational)
+            .toList(growable: false);
+        if (eligible.isEmpty) return const SelectedGroupNone();
+        if (eligible.length == 1) {
+          return SelectedGroupResolved(eligible.first);
         }
-        return SelectedGroupPending(memberships);
+        return SelectedGroupPending(eligible);
       },
       loading: () => const SelectedGroupLoading(),
       error: (_, _) => const SelectedGroupNone(),
@@ -65,6 +70,15 @@ class SelectedGroupNotifier extends Notifier<SelectedGroupState> {
         state = SelectedGroupResolved(candidate);
         return;
       }
+    }
+  }
+
+  /// "Change Group": explicitly returns to a pending multi-selection
+  /// state so the router sends the user back to `/select-group`. A
+  /// no-op if fewer than two eligible groups are available.
+  void requireReselection(List<MembershipContext> eligibleCandidates) {
+    if (eligibleCandidates.length > 1) {
+      state = SelectedGroupPending(eligibleCandidates);
     }
   }
 }

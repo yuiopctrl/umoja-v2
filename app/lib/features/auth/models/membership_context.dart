@@ -39,4 +39,14 @@ class MembershipContext {
   final List<String> permissionCodes;
 
   bool hasPermission(String code) => permissionCodes.contains(code);
+
+  bool get isActiveMembership => membershipStatus == 'ACTIVE';
+  bool get isSuspendedMembership => membershipStatus == 'SUSPENDED';
+  bool get isExitedMembership => membershipStatus == 'EXITED';
+
+  /// Only an ACTIVE membership in an ACTIVE group is a normal
+  /// operational selected-group context — see
+  /// docs/product/authentication.md. SUSPENDED/EXITED memberships and
+  /// SUSPENDED/CLOSED groups must never be auto-selected.
+  bool get isEligibleOperational => isActiveMembership && group.isActive;
 }

@@ -37,6 +37,26 @@ calculations and state transitions. See
 - Bypass migrations for schema changes.
 - Bypass RLS in normal client flows.
 - Implement unrelated features during a scoped task.
+- Treat an authenticated user and a domain group member as the same
+  thing — `group_memberships.user_id` is nullable by design; a member
+  may exist before (or without ever having) an app account.
+- Automatically link a `group_memberships` row to an authenticated user
+  by phone-number match or any other automatic mechanism. Account
+  linking/claiming requires a controlled, explicit verification
+  workflow that does not exist yet.
+- Expose the Supabase service-role key to Flutter, or use it to create
+  `auth.users` rows via SQL/scripts.
+- Treat Flutter route guards as authorization. They are UX/navigation
+  guidance only — RLS and the backend's `SECURITY DEFINER` RPCs are
+  the actual security boundary.
+- Let an inactive profile (`profiles.is_active = false`) retain
+  effective group permissions through a still-valid session — this
+  must be enforced in the backend (see
+  `docs/database/authorization.md`), not only hidden in the UI.
+- Auto-select or treat as normal operational context a membership that
+  is not ACTIVE, or a membership whose group is not ACTIVE. Only an
+  ACTIVE membership in an ACTIVE group is a normal selected-group
+  context.
 
 ## ALWAYS
 

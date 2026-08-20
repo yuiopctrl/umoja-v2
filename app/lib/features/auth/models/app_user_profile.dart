@@ -34,4 +34,8 @@ class AppUserProfile {
   String get displayName => fullName?.trim().isNotEmpty == true
       ? fullName!.trim()
       : (email ?? 'Umoja user');
+
+  /// Whether initial profile onboarding is complete. Only full_name is
+  /// required for first onboarding — see docs/product/authentication.md.
+  bool get isProfileComplete => fullName != null && fullName!.trim().isNotEmpty;
 }

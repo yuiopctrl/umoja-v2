@@ -85,3 +85,20 @@ this is enforced (RLS, `SECURITY DEFINER` helper functions,
 Flutter fetches this whole shape in one call
 (`rpc_get_my_context()`) and never asks the backend to trust a
 client-supplied user id or group id for authorization decisions.
+
+## Authentication and app-access routing
+
+Authentication is phone + OTP via Supabase Auth (see
+[docs/product/authentication.md](authentication.md) for the full flow).
+Flutter's `app/routing/route_guard.dart` derives a single application
+route from session status + application context + selected-group state
+as a pure, unit-tested function — this is UX/navigation guidance only,
+never the authorization boundary. RLS and the `SECURITY DEFINER` RPCs
+documented in [docs/database/authorization.md](../database/authorization.md)
+remain authoritative regardless of which route the client is on.
+
+Only a membership that is ACTIVE in an ACTIVE group is a normal
+operational selected-group context; an inactive profile
+(`profiles.is_active = false`) is enforced on the backend, not just
+hidden in the UI — see
+[docs/database/authorization.md](../database/authorization.md).

@@ -23,4 +23,8 @@ class GroupContext {
   /// rather than a Dart enum so new statuses don't require a client
   /// release to display.
   final String groupStatus;
+
+  bool get isActive => groupStatus == 'ACTIVE';
+  bool get isSuspended => groupStatus == 'SUSPENDED';
+  bool get isClosed => groupStatus == 'CLOSED';
 }
