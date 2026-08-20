@@ -318,6 +318,15 @@ deno_version = 2
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
+[functions.send-sms-hook]
+# Supabase Auth's Send SMS Hook invokes this function directly, before
+# any user JWT exists — there is nothing to verify a JWT against. The
+# Standard Webhooks signature (SEND_SMS_HOOK_SECRETS) is what actually
+# authenticates the caller instead; see
+# supabase/functions/send-sms-hook/index.ts and
+# docs/product/authentication.md.
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327

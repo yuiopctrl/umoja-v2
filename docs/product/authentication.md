@@ -41,6 +41,83 @@ deferred — see [PIN is not implemented](#pin-is-not-implemented) below.
   owned by `OtpVerifyScreen`'s state and cancelled in `dispose()`, so it
   never outlives the screen.
 
+## Send SMS Hook (NextSMS)
+
+OTP delivery is: **Supabase Auth → Send SMS Hook → `send-sms-hook` Edge
+Function → NextSMS**. Supabase Auth calls this hook synchronously
+whenever it needs to deliver an OTP SMS, and the hook calls NextSMS's
+single-SMS API synchronously in turn — no queueing, since Supabase's
+HTTP Auth Hooks must complete quickly and Supabase itself is what
+ultimately reports OTP delivery to the client.
+
+- **Code**: `supabase/functions/send-sms-hook/`. `index.ts` is the
+  HTTP entry point; provider-call logic (`nextsms.ts`), phone
+  formatting (`phone.ts`), config loading (`config.ts`), the message
+  body (`message.ts`), and safe logging (`logger.ts`) are separated
+  into individually testable modules. `handleRequest()` is exported
+  and takes an injectable `sendOtp` dependency specifically so tests
+  never make a real network call to NextSMS.
+- **Authentication of the caller**: this hook has no user JWT to check
+  — Supabase Auth invokes it before any session exists — so
+  `verify_jwt = false` is set for it in `supabase/config.toml`. The
+  actual authentication mechanism is a
+  [Standard Webhooks](https://www.standardwebhooks.com/) signature,
+  verified via `https://esm.sh/standardwebhooks@1.0.0`'s `Webhook`
+  class against the `webhook-id`/`webhook-timestamp`/`webhook-signature`
+  headers and the *raw* request body (read via `req.text()` before any
+  JSON parsing — Standard Webhooks signs exact bytes). An unverifiable
+  signature is rejected with `401` and NextSMS is never called.
+- **Phone format**: Supabase supplies `user.phone` in E.164
+  (`+255713676401`); NextSMS expects the recipient without the leading
+  `+` (`255713676401`). `phone.ts` converts this and rejects anything
+  that is not well-formed E.164 before ever calling NextSMS.
+- **Message**: a fixed, minimal Swahili OTP message
+  (`"Umoja: Namba yako ya uthibitisho ni <OTP>. Usimpe mtu mwingine
+  namba hii."`) — no user name or other identifying detail beyond the
+  code itself.
+- **Sender ID**: `NEXTSMS_DEFAULT_SENDER_ID` (`MICHANGO` for
+  authentication OTP), validated at startup against the
+  comma-separated `NEXTSMS_ALLOWED_SENDER_IDS` allowlist.
+- **NextSMS request**: `POST {NEXTSMS_BASE_URL}{NEXTSMS_SINGLE_SMS_PATH}`
+  with `{"from", "to", "text", "reference"}` and the `Authorization`
+  header set to `NEXTSMS_AUTHORIZATION` **exactly as configured** — no
+  `Basic `/`Bearer ` prefix is ever added, since NextSMS's own value
+  already is the complete header. A ~4s request timeout keeps the hook
+  fast; `reference` is a fresh `UMOJA-OTP-<uuid>` per attempt.
+- **Response contract** (Supabase Auth Hook shape): NextSMS 2xx → hook
+  returns `200 {}` (Supabase treats this as successful handoff).
+  NextSMS non-2xx → hook returns `502
+  {"error":{"http_code":502,"message":"Unable to send verification
+  SMS"}}` — the provider's status/response body is logged server-side,
+  never returned to the caller. Invalid signature/payload → `400`/`401`
+  with the same safe-message shape. Any unexpected error → `500` with
+  the same generic message; raw stack traces are never sent to the
+  client.
+- **Logging**: masked phone (last 4 digits only), NextSMS HTTP status,
+  request duration, and the generated reference are safe to log. The
+  OTP itself, `NEXTSMS_AUTHORIZATION`, and `SEND_SMS_HOOK_SECRETS` are
+  never logged.
+- **Scope**: this hook is authentication-OTP-only. It is not, and must
+  not become, the general Umoja notification/messaging engine — a
+  future notifications feature is a separate, explicit design.
+
+### Required secrets (Edge Function environment variables)
+
+Set via `supabase secrets set` (production) or a local `.env` for
+`supabase functions serve` — **never committed**:
+
+- `NEXTSMS_BASE_URL`, `NEXTSMS_SINGLE_SMS_PATH` — NextSMS API location.
+- `NEXTSMS_AUTHORIZATION` — NextSMS's provider authorization value, used
+  verbatim.
+- `NEXTSMS_DEFAULT_SENDER_ID`, `NEXTSMS_ALLOWED_SENDER_IDS` — sender ID
+  and its allowlist.
+- `SEND_SMS_HOOK_SECRETS` — the Standard Webhooks secret Supabase
+  Authentication → Hooks generates for this hook, in the form
+  `v1,whsec_<base64>`. Only that literal `v1,whsec_` prefix is stripped
+  before constructing `Webhook()` — the rest is the actual secret.
+
+No actual secret values are recorded anywhere in this repository.
+
 ## Session lifecycle
 
 - `authStateChangesProvider` (`auth_session_provider.dart`) is the single
@@ -200,14 +277,17 @@ it.
 ## Local manual testing status
 
 Supabase's local dev stack (`supabase start`) does not include a real
-SMS provider by default, and no Twilio/SMS credentials were added to
-this repository (per instructions — no real SMS secrets, no invented
-provider credentials, no hard-coded master OTP in production code).
-This means the phone-OTP flow **could not be end-to-end exercised
-against a live/local Supabase instance** in this environment — sending
-a real OTP requires configuring an SMS provider in `supabase/config.toml`
-under `[auth.sms]`, which is a deployment-time decision outside this
-prompt's scope.
+SMS provider by default, and no Twilio/NextSMS credentials were added
+to this repository (per instructions — no real SMS secrets, no
+invented provider credentials, no hard-coded master OTP in production
+code). The `send-sms-hook` Edge Function now exists and its logic is
+covered by `deno test` (see below), but it has not been **deployed**
+or wired up as the active Send SMS Hook (that requires `supabase
+functions deploy send-sms-hook`, setting the real secrets, and
+enabling the hook in Supabase Authentication → Hooks — deliberately
+not done automatically). This means the phone-OTP flow still **could
+not be end-to-end exercised against a live/local Supabase instance** in
+this environment.
 
 What *was* verified:
 
@@ -218,6 +298,14 @@ What *was* verified:
 - The backend authorization changes (inactive-profile enforcement,
   operational-status representation) were verified against local
   Supabase via `supabase test db`.
+- `send-sms-hook`'s Standard Webhooks signature verification and
+  NextSMS request-building were verified with `deno check` and `deno
+  test` (a locally installed Deno toolchain, not otherwise part of
+  this repo's stack) — including a self-signed test webhook payload
+  exercising the real `standardwebhooks` verification library, so the
+  signature logic itself is confirmed correct without depending on
+  live Supabase Auth to generate one. No real NextSMS call is made in
+  these tests (`sendOtp` is dependency-injected).
 
 If you do configure a real (or Supabase-supported test) SMS provider
 locally, the manual flow is: run the app with `--dart-define-from-file`
