@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/routing/app_routes.dart';
 import '../../../shared/widgets/responsive_center.dart';
 import '../../auth/presentation/sign_out_button.dart';
 import '../../auth/providers/app_context_provider.dart';
@@ -61,6 +63,18 @@ class HomeScreen extends ConsumerWidget {
                   Text('Application foundation ready'),
                 ],
               ),
+              const SizedBox(height: 24),
+              if (membership.hasPermission('member.view'))
+                Card(
+                  margin: EdgeInsets.zero,
+                  child: ListTile(
+                    leading: const Icon(Icons.people_outline),
+                    title: const Text('Members / Wanachama'),
+                    subtitle: const Text('View and manage group members'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push(AppRoutes.membersList),
+                  ),
+                ),
               const SizedBox(height: 24),
               Wrap(
                 spacing: 12,

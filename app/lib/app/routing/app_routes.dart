@@ -27,4 +27,18 @@ class AppRoutes {
   static const contextError = '/access/context-error';
 
   static const home = '/home';
+
+  static const membersList = '/members';
+  static const memberNew = '/members/new';
+
+  /// Path template; use [memberDetailPath] to build a concrete URL.
+  static const memberDetail = '/members/:membershipId';
+
+  /// Path template; use [memberEditPath] to build a concrete URL.
+  static const memberEdit = '/members/:membershipId/edit';
+
+  static String memberDetailPath(String membershipId) =>
+      '/members/$membershipId';
+  static String memberEditPath(String membershipId) =>
+      '/members/$membershipId/edit';
 }

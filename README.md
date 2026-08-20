@@ -107,12 +107,16 @@ In short: `/auth/phone` → `/auth/verify` → (if needed)
 `/onboarding/profile` → (if needed) `/onboarding/group` or
 `/select-group` → `/home`. Group creation always goes through
 `rpc_create_group()` — Flutter never inserts into
-`groups`/`group_memberships`/`group_membership_roles` directly. To
-register a member who does not (yet) have their own Umoja account (no
-Members UI exists yet), call `rpc_create_group_member(group_id,
-display_name, ...)` while authenticated as someone holding
-`member.create` in that group — e.g. from the Supabase Studio SQL
-editor's "run as user" mode.
+`groups`/`group_memberships`/`group_membership_roles` directly. From
+`/home`, a signed-in member with `member.view` can open Members
+(`/members`) to view, search, create, and edit group members and
+manage their status/roles — see
+[docs/product/members.md](docs/product/members.md). Member creation
+always goes through `rpc_create_group_member(group_id, display_name,
+...)`, callable by anyone holding `member.create` in that group; a
+registered member does not need an Umoja account of their own
+(`user_id` is nullable — see
+[docs/product/member-identity-model.md](docs/product/member-identity-model.md)).
 
 **Local phone-OTP testing note:** local Supabase does not include a
 real SMS provider by default, and this repository does not configure

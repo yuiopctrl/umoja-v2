@@ -97,14 +97,31 @@ String? computeRedirect({
         : AppRoutes.onboardingProfile;
   }
 
+  if (selectedGroup is SelectedGroupResolved) {
+    // Once resolved, the user is free to navigate within the
+    // operational area (home, members, ...) — only redirect them here
+    // from a pre-operational route (splash, auth, onboarding, access,
+    // select-group), never pin them back to exactly /home on every
+    // navigation.
+    return _isOperationalRoute(currentLocation) ? null : AppRoutes.home;
+  }
+
   final target = switch (selectedGroup) {
     SelectedGroupLoading() => AppRoutes.splash,
     SelectedGroupNone() => noEligibleGroupTarget(
       context?.memberships ?? const [],
     ),
     SelectedGroupPending() => AppRoutes.selectGroup,
-    SelectedGroupResolved() => AppRoutes.home,
+    SelectedGroupResolved() => AppRoutes.home, // unreachable, handled above
   };
 
   return currentLocation == target ? null : target;
+}
+
+/// Routes reachable once a group is resolved — the operational
+/// (non-onboarding, non-auth) part of the app.
+bool _isOperationalRoute(String location) {
+  return location == AppRoutes.home ||
+      location == AppRoutes.membersList ||
+      location.startsWith('${AppRoutes.membersList}/');
 }

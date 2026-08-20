@@ -13,6 +13,9 @@ import '../../features/auth/providers/auth_session_provider.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
 import '../../features/groups/presentation/select_group_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/members/presentation/member_detail_screen.dart';
+import '../../features/members/presentation/member_form_screen.dart';
+import '../../features/members/presentation/members_list_screen.dart';
 import '../../features/onboarding/presentation/group_onboarding_screen.dart';
 import '../../features/onboarding/presentation/profile_onboarding_screen.dart';
 import '../../features/splash/splash_screen.dart';
@@ -93,6 +96,26 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.membersList,
+        builder: (context, state) => const MembersListScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.memberNew,
+        builder: (context, state) => const MemberFormScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.memberDetail,
+        builder: (context, state) => MemberDetailScreen(
+          membershipId: state.pathParameters['membershipId']!,
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.memberEdit,
+        builder: (context, state) => MemberFormScreen(
+          membershipId: state.pathParameters['membershipId']!,
+        ),
       ),
     ],
   );
