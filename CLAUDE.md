@@ -66,6 +66,8 @@ calculations and state transitions. See
 - Use transactional backend/database commands for financial writes.
 - Maintain `effective_at` and `created_at` separately.
 - Maintain group/tenant isolation.
+- Use the Supabase publishable client key (`SUPABASE_PUBLISHABLE_KEY`)
+  for Flutter configuration — never a secret/service-role key.
 - Make retryable financial mutations idempotent.
 - Add tests for financial invariants when implementing financial logic.
 - Run formatting/analyze/tests after changes (`dart format`,

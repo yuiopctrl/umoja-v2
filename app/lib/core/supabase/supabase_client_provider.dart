@@ -24,7 +24,7 @@ Future<bool> initSupabase() async {
 
   await Supabase.initialize(
     url: EnvConfig.supabaseUrl,
-    publishableKey: EnvConfig.supabaseAnonKey,
+    publishableKey: EnvConfig.supabasePublishableKey,
   );
   return true;
 }

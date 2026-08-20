@@ -35,7 +35,7 @@ class SplashScreen extends ConsumerWidget {
                     const Expanded(
                       child: Text(
                         'Supabase configuration missing '
-                        '(SUPABASE_URL / SUPABASE_ANON_KEY not set).',
+                        '(SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY not set).',
                       ),
                     ),
                   ],

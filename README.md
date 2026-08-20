@@ -144,10 +144,11 @@ Don't hard-code one address in the app — keep it in your local
 
 ## Environment configuration
 
-The app needs `SUPABASE_URL` and `SUPABASE_ANON_KEY` at build/run time,
-supplied via `--dart-define-from-file` — never bundled as a runtime
-`.env` file. `app/.env.example` documents the two values in plain
-`KEY=value` form; `app/env.example.json` is the actual template to copy:
+The app needs `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` at build/run
+time, supplied via `--dart-define-from-file` — never bundled as a
+runtime `.env` file. `app/.env.example` documents the two values in
+plain `KEY=value` form; `app/env.example.json` is the actual template to
+copy:
 
 ```bash
 cd app
@@ -159,9 +160,10 @@ If configuration is missing, the app still starts and the foundation
 screen reports "Supabase configuration missing" instead of crashing —
 see `app/lib/core/config/env_config.dart`.
 
-The Supabase anon/publishable key is a public client key by design and is
-safe to embed this way. The service-role key must never be used in
-Flutter — see `CLAUDE.md`.
+The Supabase publishable key (`sb_publishable_...`) is a public client
+key by design and is safe to embed this way. The Supabase secret key
+and the legacy service-role key must never be used in Flutter — see
+`CLAUDE.md`.
 
 ## Running the app
 
