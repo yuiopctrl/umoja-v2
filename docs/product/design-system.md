@@ -176,6 +176,75 @@ These feed a `ColorScheme` (`UmojaTheme`) via `ColorScheme.fromSeed(...).copyWit
 outline) to Umoja's exact palette rather than algorithmically-derived
 ones.
 
+### Dark mode
+
+Prompt 05E-C: dark mode is built from its own explicit, hand-picked
+`UmojaColors` companions (`backgroundDark`, `surfaceDark`,
+`textPrimaryDark`, ...) via the same `.copyWith(...)` pattern as light
+mode — never a bare `ColorScheme.fromSeed(brightness: dark)`, which
+derives washed-out/pale tones from a saturated seed like `primary` and
+was the root cause of the original faint, low-contrast dark auth
+screen this prompt fixed.
+
+| Token | Value | Used for |
+|---|---|---|
+| `backgroundDark` | `#121317` | Scaffold background |
+| `surfaceDark` | `#1B1D22` | Cards, sheets, inputs |
+| `surfaceSubtleDark` | `#24272E` | Subtle elevated surface |
+| `textPrimaryDark` | `#F5F3F2` | Primary text (warm near-white, not pure white) |
+| `textSecondaryDark` | `#B8BCC6` | Secondary text, labels |
+| `borderDark` / `borderStrongDark` | `#34373F` / `#474B55` | Card/input borders |
+| `primarySoftDark` | `#3A1620` | Container/indicator *fills* (language selector active segment, nav indicator) — paired with white, not a second red |
+| `successDark` / `warningDark` / `dangerDark` / `infoDark` | `#4ADE80` / `#FBBF6B` / `#FF6B6B` / `#7DB3F5` | Status semantics, dark |
+
+#### LOCKED RULE (prompt 05E-D)
+
+> Umoja uses one primary brand red for interactive and active branded
+> states across light and dark themes. Random pink/red variants are
+> not allowed. Neutral borders remain neutral until focused. Semantic
+> success/error/warning colors remain separate.
+
+Concretely: `colorScheme.primary` is the literal `UmojaColors.primary`
+(`#A51C30`) in **both** `UmojaTheme.light` and `UmojaTheme.dark` — the
+same value feeds the Log In/primary button background and the focused
+input/active-PIN-box border in both themes, via
+`Theme.of(context).colorScheme.primary` throughout `umoja_theme.dart`'s
+component themes. An earlier pass (05E-C) introduced a separate,
+brighter "accessible" red (`primaryAccessibleDark`, `#EF6B84`)
+specifically for dark-mode text/border contexts, reasoning that
+`#A51C30`'s luminance is too low to read well as text against
+near-black. That produced a visible two-reds inconsistency — a pink
+accent sitting next to the deep-red button — and has been removed
+entirely; do not re-introduce it or any similarly-scoped
+`pinkAccent`/`authPink`/`focusPink`/`linkPink` token.
+
+**Prompt 05E-E, refining the above**: "Umesahau PIN?"/"Mara ya
+kwanza? Thibitisha namba kwa OTP" (and their English equivalents) are
+now a deliberate, narrowly-scoped *exception* — neutral (`onSurface`,
+the same color as "Karibu Umoja"), via an inline `TextButton.styleFrom`
+on just those two widgets in `phone_entry_screen.dart`, not a
+`textButtonTheme` change. The app-wide `textButtonTheme` default
+*stays* `primary` — OTP screens' "Ghairi"/"Tuma Tena" (Cancel/Resend)
+and any other branded text action are unaffected. Likewise, the
+language selector no longer uses a container/soft fill at all for its
+selected segment — every segment's `Material` is always
+`Colors.transparent`, so the control's background is always whatever
+page it sits on (matching the screen background exactly, per your
+explicit direction), and the selected language is shown by text weight
++ color alone (bold `primary` vs. regular `onSurfaceVariant`) — not by
+`primarySoftDark`/`primaryContainer` any more. That token still exists
+for other soft-container needs (e.g. the nav bar's selected
+indicator), unaffected by this screen-specific change.
+
+`UmojaCodeInput`'s PIN boxes, `UmojaStatusBadge`'s status pills, and
+`UmojaLanguageSelector`'s active-segment fill are all theme-aware via
+`Theme.of(context).colorScheme` (a screen-specific hard-coded
+`UmojaColors.*` reference — always resolving to the light palette
+regardless of the active theme — was a concrete bug prompt 05E-C found
+and fixed, beyond `AuthScreenLayout`'s forced-light override).
+`UmojaInitialsAvatar` and `UmojaDangerButton` were the same class of
+bug, fixed the same way.
+
 ## Typography
 
 Ubuntu is Umoja's UI typeface — bundled as static font assets
@@ -292,10 +361,11 @@ gaps above and below are sized as a fraction of the available viewport
 keyboard opening on a PIN/OTP field never overflows and a short
 viewport still reserves room for the top-left back-arrow overlay.
 Screen content stays constrained to ~440px max width on every platform
-(mobile and desktop alike). Auth screens are also forced to the light
-Umoja theme regardless of system brightness — dark mode has not
-received the same manual polish yet (see
-`docs/product/authentication.md`, "Server-side PIN authentication").
+(mobile and desktop alike). Since prompt 05E-C, auth screens follow the
+app's active theme like every other screen — the earlier forced-light
+override (prompt 05E-A) is gone now that dark mode is built from
+explicit tokens rather than a washed-out `ColorScheme.fromSeed` (see
+"Dark mode" below).
 "Umoja v2" is never shown to users — "v2" is an implementation/project
 concept, not the consumer-facing brand; `AppConstants.appName` and
 every user-facing surface just say "Umoja". The same brand mark also
@@ -400,9 +470,19 @@ widgets:
   unlike the PIN, which must never live there; see
   `docs/product/authentication.md`). `UmojaLanguageSelector`
   (`core/widgets/umoja_language_selector.dart`) is a plain SW|EN
-  `SegmentedButton` — **text, never flags** (a flag denotes a country,
-  not a language) — shown on the phone-entry screen (reachable before
-  login) and in More's own "Lugha" section.
+  toggle — **text, never flags** (a flag denotes a country, not a
+  language) — shown on the phone-entry screen (reachable before login)
+  and in More's own "Lugha" section, both via this exact same widget,
+  never a second styled-differently implementation. Since prompt
+  05E-C, it is a small hand-built two-segment control (a bordered
+  `Container` + `Row`), not Material's `SegmentedButton` — that
+  widget's default shape is a full stadium/pill (`StadiumBorder`),
+  which this design explicitly rejects in favor of
+  `UmojaRadius.small` (8px), matching the "no pill surfaces" rule
+  every other control in this system already follows. The selected
+  segment fills with `colorScheme.primaryContainer` (a soft red tint)
+  and text in `onPrimaryContainer`; both resolve theme-appropriately in
+  light and dark.
 - **Errors are localized by type, not by a baked-in string**:
   `AuthFailure`/`MemberFailure` carry a `type` enum (already existed
   for classification) plus their original English `message` for logs
