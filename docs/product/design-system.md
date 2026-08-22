@@ -280,21 +280,22 @@ artwork.
 
 ## Auth branding
 
-`/auth/phone`, `/auth/verify`, and both PIN screens
-(`/auth/pin-setup`, `/auth/pin-unlock` — see
+`/auth/phone` (now the combined phone + PIN login screen), `/auth/verify`,
+`/auth/pin-setup`, and the PIN recovery screens (see
 `docs/product/authentication.md`) share `AuthScreenLayout`
 (`features/auth/presentation/widgets/auth_screen_layout.dart`): a
-`UmojaBrandMark.symbol` (84px — up from 56px in Prompt 05A, per §2:
-"branded, not a tiny icon above a form") above a
-`UmojaBrandMark.wordmark` (46px tall), separated by a 4px gap (Prompt
-05D §17 — previously `UmojaSpacing.lg`/16px stacked on top of both
-assets' own large baked-in transparent margins, which read as the
-symbol and wordmark being oddly far apart; both are now trimmed
-artwork, so the explicit gap is close to the true visual gap), then
-screen content, constrained to ~440px max width on every platform
-(mobile and desktop alike) and top-aligned with generous fixed spacing
-— deliberately not `Center`-ed in the full viewport, which looks
-awkward on a very tall phone screen.
+`UmojaBrandMark.combined` (a single vertical symbol-above-wordmark
+lockup, `wordmarkHeight: 100`). Since prompt 05E-A, content sits in a
+balanced upper-middle column rather than pinned to the very top —
+gaps above and below are sized as a fraction of the available viewport
+(roughly 2:3, clamped to sane bounds) inside a scrollable, so the
+keyboard opening on a PIN/OTP field never overflows and a short
+viewport still reserves room for the top-left back-arrow overlay.
+Screen content stays constrained to ~440px max width on every platform
+(mobile and desktop alike). Auth screens are also forced to the light
+Umoja theme regardless of system brightness — dark mode has not
+received the same manual polish yet (see
+`docs/product/authentication.md`, "Server-side PIN authentication").
 "Umoja v2" is never shown to users — "v2" is an implementation/project
 concept, not the consumer-facing brand; `AppConstants.appName` and
 every user-facing surface just say "Umoja". The same brand mark also
@@ -304,6 +305,27 @@ consistent from first frame to signed-in shell. The phone-entry screen
 also carries the SW|EN language selector (`showLanguageSelector: true`,
 the default) — see "Multi-language support" below; the other auth/PIN
 screens set it to `false` since the choice is already made by then.
+
+**PIN/OTP entry** (Prompt 05E §UX): `UmojaCodeInput`
+(`core/widgets/umoja_code_input.dart`) replaces the earlier generic
+`TextField` + separate `PinDots` indicator with a single boxed,
+digit-style input — one bordered box per digit, filled with an
+obscured dot as it's typed, matching common OTP/PIN UI conventions
+instead of a long plain text field. An invisible `TextField`
+(`Positioned.fill`, `Opacity: 0`) sized exactly to the visible box row
+still captures real keyboard/SMS-autofill input and drives the boxes
+via the same external `TextEditingController` every PIN/OTP screen
+already owned — a drop-in visual replacement, not a rework of the
+existing `AutoSubmitOnLength` auto-submit plumbing. Box width is
+computed adaptively (`LayoutBuilder`, clamped 32–48px) so a 6-digit OTP
+never overflows a narrow phone even though a 4-digit PIN comfortably
+uses the full 48px box size. Used on `/auth/phone` (the PIN field),
+`/auth/verify`, `/auth/pin-setup`, and `/auth/pin-recover/verify`. The
+two OTP screens (`/auth/verify`, `/auth/pin-recover/verify`) also set
+`isOneTimeCode: true` for iOS's native one-time-code autofill hint and
+pair with Android SMS autofill (`OtpAutofill`, see
+`docs/product/authentication.md`, "OTP SMS autofill") — the 4-digit PIN
+screens never do either.
 
 ## Status semantics
 

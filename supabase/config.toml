@@ -327,6 +327,23 @@ deno_version = 2
 # docs/product/authentication.md.
 verify_jwt = false
 
+[functions.setup-pin]
+# Prompt 05E: requires a valid, already-authenticated (OTP-verified)
+# Supabase session — the platform verifies the JWT before this
+# function's code ever runs. `verify_jwt = true` is the CLI default;
+# set explicitly here so the intent is not implicit. See
+# supabase/functions/setup-pin/index.ts.
+verify_jwt = true
+
+[functions.pin-login]
+# Prompt 05E: the normal returning-login mechanism — called with NO
+# Supabase session yet (that is the whole point: it creates one). There
+# is no JWT to verify at call time; the caller instead proves identity
+# via phone + PIN, verified through genuine Supabase Auth
+# (signInWithPassword) inside the function itself. See
+# supabase/functions/pin-login/index.ts.
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327
