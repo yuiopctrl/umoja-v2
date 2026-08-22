@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/localization/app_localizations_x.dart';
 import '../../../shared/widgets/simple_message_screen.dart';
 import '../../auth/presentation/sign_out_button.dart';
 
@@ -11,13 +12,12 @@ class GroupSuspendedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SimpleMessageScreen(
+    final l10n = context.l10n;
+    return SimpleMessageScreen(
       icon: Icons.pause_circle_outlined,
-      title: 'Group access is suspended',
-      message:
-          'This group is currently suspended. Contact the group '
-          'administrator for more information.',
-      actions: [SignOutButton()],
+      title: l10n.groupSuspendedTitle,
+      message: l10n.groupSuspendedMessage,
+      actions: const [SignOutButton()],
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/localization/app_localizations_x.dart';
 import '../../../shared/widgets/simple_message_screen.dart';
 import '../../auth/presentation/sign_out_button.dart';
 
@@ -11,13 +12,12 @@ class AccountDisabledScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SimpleMessageScreen(
+    final l10n = context.l10n;
+    return SimpleMessageScreen(
       icon: Icons.block,
-      title: 'Account access disabled',
-      message:
-          'Your account access has been disabled. Contact your group '
-          'administrator if you believe this is a mistake.',
-      actions: [SignOutButton()],
+      title: l10n.accountDisabledTitle,
+      message: l10n.accountDisabledMessage,
+      actions: const [SignOutButton()],
     );
   }
 }

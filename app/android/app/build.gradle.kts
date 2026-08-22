@@ -6,7 +6,13 @@ plugins {
 
 android {
     namespace = "org.umoja.umoja"
-    compileSdk = flutter.compileSdkVersion
+    // flutter_secure_storage (added for the device PIN lock, prompt 05B)
+    // requires compileSdk 37; the Flutter tool's own default is 36 as of
+    // this SDK version, so it is pinned explicitly here rather than left
+    // at flutter.compileSdkVersion. Backward compatible with the app's
+    // existing minSdk/targetSdk (compileSdk only affects which APIs are
+    // available to compile against, not the runtime OS version).
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

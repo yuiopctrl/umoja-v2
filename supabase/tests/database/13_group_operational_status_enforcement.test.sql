@@ -11,25 +11,25 @@ insert into auth.users (id, email) values
   ('c0000000-0000-0000-0000-000000000002', 'suspended-caller@example.com'),
   ('c0000000-0000-0000-0000-000000000003', 'exited-caller@example.com');
 
-insert into public.groups (id, name, status, created_by) values
-  ('c1000000-0000-0000-0000-000000000001', 'Group Active', 'ACTIVE', 'c0000000-0000-0000-0000-000000000001'),
-  ('c1000000-0000-0000-0000-000000000002', 'Group Suspended', 'SUSPENDED', 'c0000000-0000-0000-0000-000000000001'),
-  ('c1000000-0000-0000-0000-000000000003', 'Group Closed', 'CLOSED', 'c0000000-0000-0000-0000-000000000001'),
-  ('c1000000-0000-0000-0000-000000000004', 'Group Active 2', 'ACTIVE', 'c0000000-0000-0000-0000-000000000002'),
-  ('c1000000-0000-0000-0000-000000000005', 'Group Active 3', 'ACTIVE', 'c0000000-0000-0000-0000-000000000003');
+insert into public.groups (id, name, status, created_by, code) values
+  ('c1000000-0000-0000-0000-000000000001', 'Group Active', 'ACTIVE', 'c0000000-0000-0000-0000-000000000001', 'GOE1'),
+  ('c1000000-0000-0000-0000-000000000002', 'Group Suspended', 'SUSPENDED', 'c0000000-0000-0000-0000-000000000001', 'GOE2'),
+  ('c1000000-0000-0000-0000-000000000003', 'Group Closed', 'CLOSED', 'c0000000-0000-0000-0000-000000000001', 'GOE3'),
+  ('c1000000-0000-0000-0000-000000000004', 'Group Active 2', 'ACTIVE', 'c0000000-0000-0000-0000-000000000002', 'GOE4'),
+  ('c1000000-0000-0000-0000-000000000005', 'Group Active 3', 'ACTIVE', 'c0000000-0000-0000-0000-000000000003', 'GOE5');
 
 -- Admin (A) holds an ACTIVE ADMIN membership in all three status
 -- variants of "their own" group.
-insert into public.group_memberships (id, group_id, user_id, display_name, status) values
-  ('c2000000-0000-0000-0000-000000000001', 'c1000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000001', 'Admin', 'ACTIVE'),
-  ('c2000000-0000-0000-0000-000000000002', 'c1000000-0000-0000-0000-000000000002', 'c0000000-0000-0000-0000-000000000001', 'Admin', 'ACTIVE'),
-  ('c2000000-0000-0000-0000-000000000003', 'c1000000-0000-0000-0000-000000000003', 'c0000000-0000-0000-0000-000000000001', 'Admin', 'ACTIVE');
+insert into public.group_memberships (id, group_id, user_id, display_name, status, member_number) values
+  ('c2000000-0000-0000-0000-000000000001', 'c1000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000001', 'Admin', 'ACTIVE', 'GOE1-2026-0001'),
+  ('c2000000-0000-0000-0000-000000000002', 'c1000000-0000-0000-0000-000000000002', 'c0000000-0000-0000-0000-000000000001', 'Admin', 'ACTIVE', 'GOE2-2026-0001'),
+  ('c2000000-0000-0000-0000-000000000003', 'c1000000-0000-0000-0000-000000000003', 'c0000000-0000-0000-0000-000000000001', 'Admin', 'ACTIVE', 'GOE3-2026-0001');
 
 -- Pre-existing target members inside the SUSPENDED/CLOSED groups, to
 -- exercise update/status-change/role RPCs against them.
-insert into public.group_memberships (id, group_id, user_id, display_name, status) values
-  ('c2000000-0000-0000-0000-000000000004', 'c1000000-0000-0000-0000-000000000002', null, 'Target In Suspended Group', 'ACTIVE'),
-  ('c2000000-0000-0000-0000-000000000005', 'c1000000-0000-0000-0000-000000000003', null, 'Target In Closed Group', 'ACTIVE');
+insert into public.group_memberships (id, group_id, user_id, display_name, status, member_number) values
+  ('c2000000-0000-0000-0000-000000000004', 'c1000000-0000-0000-0000-000000000002', null, 'Target In Suspended Group', 'ACTIVE', 'GOE2-2026-0002'),
+  ('c2000000-0000-0000-0000-000000000005', 'c1000000-0000-0000-0000-000000000003', null, 'Target In Closed Group', 'ACTIVE', 'GOE3-2026-0002');
 
 insert into public.group_membership_roles (group_membership_id, role_id)
 select 'c2000000-0000-0000-0000-000000000001', id from public.roles where code = 'ADMIN';
@@ -44,15 +44,15 @@ select 'c2000000-0000-0000-0000-000000000005', id from public.roles where code =
 
 -- B: SUSPENDED membership (with ADMIN role rows intact) in an
 -- otherwise ACTIVE group.
-insert into public.group_memberships (id, group_id, user_id, display_name, status) values
-  ('c2000000-0000-0000-0000-000000000006', 'c1000000-0000-0000-0000-000000000004', 'c0000000-0000-0000-0000-000000000002', 'Suspended Caller', 'SUSPENDED');
+insert into public.group_memberships (id, group_id, user_id, display_name, status, member_number) values
+  ('c2000000-0000-0000-0000-000000000006', 'c1000000-0000-0000-0000-000000000004', 'c0000000-0000-0000-0000-000000000002', 'Suspended Caller', 'SUSPENDED', 'GOE4-2026-0001');
 insert into public.group_membership_roles (group_membership_id, role_id)
 select 'c2000000-0000-0000-0000-000000000006', id from public.roles where code = 'ADMIN';
 
 -- C: EXITED membership (with ADMIN role rows intact) in an otherwise
 -- ACTIVE group.
-insert into public.group_memberships (id, group_id, user_id, display_name, status, exited_at) values
-  ('c2000000-0000-0000-0000-000000000007', 'c1000000-0000-0000-0000-000000000005', 'c0000000-0000-0000-0000-000000000003', 'Exited Caller', 'EXITED', current_date);
+insert into public.group_memberships (id, group_id, user_id, display_name, status, exited_at, member_number) values
+  ('c2000000-0000-0000-0000-000000000007', 'c1000000-0000-0000-0000-000000000005', 'c0000000-0000-0000-0000-000000000003', 'Exited Caller', 'EXITED', current_date, 'GOE5-2026-0001');
 insert into public.group_membership_roles (group_membership_id, role_id)
 select 'c2000000-0000-0000-0000-000000000007', id from public.roles where code = 'ADMIN';
 

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../auth/providers/auth_session_provider.dart';
+import '../../core/branding/umoja_brand_mark.dart';
+import '../../core/localization/app_localizations_x.dart';
+import '../../core/theme/umoja_spacing.dart';
 import '../../shared/widgets/responsive_center.dart';
+import '../auth/providers/auth_session_provider.dart';
 
 /// Rendered at `/` while application state is still resolving, and as
 /// the terminal state when Supabase configuration is missing (there is
@@ -23,21 +26,13 @@ class SplashScreen extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Umoja',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                const SizedBox(height: 16),
+                const UmojaBrandMark.wordmark(wordmarkHeight: 28),
+                const SizedBox(height: UmojaSpacing.lg),
                 Row(
                   children: [
                     const Icon(Icons.warning_amber_outlined, size: 18),
                     const SizedBox(width: 8),
-                    const Expanded(
-                      child: Text(
-                        'Supabase configuration missing '
-                        '(SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY not set).',
-                      ),
-                    ),
+                    Expanded(child: Text(context.l10n.supabaseConfigMissing)),
                   ],
                 ),
               ],
@@ -47,6 +42,17 @@ class SplashScreen extends ConsumerWidget {
       );
     }
 
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    return const Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            UmojaBrandMark.symbol(size: 48),
+            SizedBox(height: UmojaSpacing.xxl),
+            CircularProgressIndicator(),
+          ],
+        ),
+      ),
+    );
   }
 }

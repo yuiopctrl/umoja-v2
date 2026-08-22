@@ -3,13 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/routing/app_routes.dart';
-import '../../../shared/widgets/responsive_center.dart';
-import '../../auth/presentation/sign_out_button.dart';
+import '../../../core/localization/app_localizations_x.dart';
+import '../../../core/theme/umoja_spacing.dart';
+import '../../../core/utils/title_case.dart';
+import '../../../core/widgets/umoja_card.dart';
+import '../../../core/widgets/umoja_list_tile.dart';
+import '../../../core/widgets/umoja_page.dart';
+import '../../../core/widgets/umoja_status_badge.dart';
 import '../../auth/providers/app_context_provider.dart';
 import '../../auth/providers/selected_group_provider.dart';
+import '../../members/presentation/widgets/member_role_label.dart';
+import '../../members/presentation/widgets/member_status_badge.dart';
 
-/// `/home`: the minimal authenticated foundation home screen. Not the
-/// real dashboard — no business modules yet.
+/// `/home`: greeting, current group, and real operational shortcuts —
+/// no fabricated financial data (see prompt 05 §40), and no exposed
+/// foundation/RBAC internals (see `MoreScreen` for account details).
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -17,6 +25,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedState = ref.watch(selectedGroupProvider);
     final appContextAsync = ref.watch(appContextProvider);
+    final l10n = context.l10n;
 
     final membership = selectedState is SelectedGroupResolved
         ? selectedState.membership
@@ -29,70 +38,70 @@ class HomeScreen extends ConsumerWidget {
     }
 
     final profileName = appContextAsync.value?.profile?.displayName;
-    final eligibleMemberships = (appContextAsync.value?.memberships ?? const [])
-        .where((m) => m.isEligibleOperational)
-        .toList(growable: false);
-    final hasMultipleEligibleGroups = eligibleMemberships.length > 1;
+    final firstName = profileName?.split(' ').first;
 
-    return Scaffold(
-      body: SafeArea(
-        child: ResponsiveCenter(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Umoja', style: Theme.of(context).textTheme.headlineMedium),
-              const SizedBox(height: 8),
-              Text('Umoja v2', style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 16),
-              if (profileName != null) Text('Signed in as $profileName'),
-              const SizedBox(height: 16),
-              Text('Group: ${membership.group.groupName}'),
-              Text('Membership status: ${membership.membershipStatus}'),
-              Text(
-                membership.roleCodes.isEmpty
-                    ? 'Roles: none'
-                    : 'Roles: ${membership.roleCodes.join(', ')}',
-              ),
-              Text('Permissions: ${membership.permissionCodes.length}'),
-              const SizedBox(height: 16),
-              const Row(
-                children: [
-                  Icon(Icons.check_circle_outline, size: 18),
-                  SizedBox(width: 8),
-                  Text('Application foundation ready'),
-                ],
-              ),
-              const SizedBox(height: 24),
-              if (membership.hasPermission('member.view'))
-                Card(
-                  margin: EdgeInsets.zero,
-                  child: ListTile(
-                    leading: const Icon(Icons.people_outline),
-                    title: const Text('Members / Wanachama'),
-                    subtitle: const Text('View and manage group members'),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.push(AppRoutes.membersList),
-                  ),
-                ),
-              const SizedBox(height: 24),
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: [
-                  if (hasMultipleEligibleGroups)
-                    OutlinedButton(
-                      onPressed: () => ref
-                          .read(selectedGroupProvider.notifier)
-                          .requireReselection(eligibleMemberships),
-                      child: const Text('Change Group'),
-                    ),
-                  const SignOutButton(),
-                ],
-              ),
-            ],
+    return UmojaPage(
+      title: l10n.homeTitle,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            firstName == null
+                ? l10n.homeGreetingPlain
+                : l10n.homeGreetingNamed(toTitleCase(firstName)),
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
-        ),
+          const SizedBox(height: UmojaSpacing.xxl),
+          UmojaCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        membership.group.groupName,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ),
+                    UmojaStatusBadge(
+                      label: memberStatusLabel(
+                        l10n,
+                        membership.membershipStatus,
+                      ),
+                      semantic: memberStatusSemantic(
+                        membership.membershipStatus,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: UmojaSpacing.sm),
+                Text(
+                  membership.roleCodes.isEmpty
+                      ? l10n.rolesNone
+                      : l10n.rolesList(
+                          membership.roleCodes
+                              .map((code) => memberRoleLabel(l10n, code))
+                              .join(', '),
+                        ),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: UmojaSpacing.xxl),
+          if (membership.hasPermission('member.view'))
+            UmojaCard(
+              key: const Key('homeMembersShortcut'),
+              padding: EdgeInsets.zero,
+              child: UmojaListTile(
+                leading: const Icon(Icons.people_outline),
+                title: l10n.membersTitle,
+                subtitle: Text(l10n.homeMembersShortcutSubtitle),
+                onTap: () => context.push(AppRoutes.membersList),
+              ),
+            ),
+        ],
       ),
     );
   }

@@ -1,6 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const _defaultLimit = 25;
+// The backend RPC's own default is 25 (clamped to a max of 100
+// regardless of what's requested) — the Flutter UI explicitly sends
+// its own smaller default so a first-time group with many members
+// doesn't load an oversized page on mobile.
+const _defaultLimit = 10;
 
 /// The Members list's current search/filter/pagination state. Held
 /// separately from the actual data fetch ([membersListProvider]) so

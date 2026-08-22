@@ -42,6 +42,7 @@ class FakeMemberRepository implements MemberRepository {
   updateMemberCalls = [];
   final List<({String groupId, String membershipId, String status})>
   changeStatusCalls = [];
+  final List<({String groupId, String membershipId})> rejoinMemberCalls = [];
   final List<({String groupId, String membershipId, String roleCode})>
   assignRoleCalls = [];
   final List<({String groupId, String membershipId, String roleCode})>
@@ -100,7 +101,7 @@ class FakeMemberRepository implements MemberRepository {
   }
 
   @override
-  Future<GroupMember> updateMember({
+  Future<void> updateMember({
     required String groupId,
     required String membershipId,
     String? displayName,
@@ -113,11 +114,10 @@ class FakeMemberRepository implements MemberRepository {
       displayName: displayName,
     ));
     _maybeThrow();
-    return nextMemberResult;
   }
 
   @override
-  Future<GroupMember> changeStatus({
+  Future<void> changeStatus({
     required String groupId,
     required String membershipId,
     required String status,
@@ -129,7 +129,15 @@ class FakeMemberRepository implements MemberRepository {
       status: status,
     ));
     _maybeThrow();
-    return nextMemberResult;
+  }
+
+  @override
+  Future<void> rejoinMember({
+    required String groupId,
+    required String membershipId,
+  }) async {
+    rejoinMemberCalls.add((groupId: groupId, membershipId: membershipId));
+    _maybeThrow();
   }
 
   @override

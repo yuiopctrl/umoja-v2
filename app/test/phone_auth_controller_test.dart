@@ -31,7 +31,7 @@ void main() {
       final state = container.read(phoneAuthControllerProvider);
       expect(state.step, PhoneAuthStep.awaitingCode);
       expect(state.phone?.e164, '+255712345678');
-      expect(state.errorMessage, isNull);
+      expect(state.errorType, isNull);
     },
   );
 
@@ -47,7 +47,7 @@ void main() {
 
       final state = container.read(phoneAuthControllerProvider);
       expect(state.step, PhoneAuthStep.enteringPhone);
-      expect(state.errorMessage, isNotNull);
+      expect(state.errorType, AuthFailureType.invalidPhone);
     },
   );
 
@@ -66,10 +66,7 @@ void main() {
       expect(ok, isFalse);
       final state = container.read(phoneAuthControllerProvider);
       expect(state.step, PhoneAuthStep.enteringPhone);
-      expect(
-        state.errorMessage,
-        'Too many attempts. Please wait a moment and try again.',
-      );
+      expect(state.errorType, AuthFailureType.tooManyRequests);
     },
   );
 
@@ -88,10 +85,7 @@ void main() {
 
     expect(ok, isFalse);
     final state = container.read(phoneAuthControllerProvider);
-    expect(
-      state.errorMessage,
-      'That code is not correct. Please check and try again.',
-    );
+    expect(state.errorType, AuthFailureType.invalidOtp);
     expect(state.isSubmitting, isFalse);
   });
 
@@ -107,7 +101,7 @@ void main() {
     expect(ok, isTrue);
     expect(fakeAuth.verifiedOtps, [('+255712345678', '123456')]);
     final state = container.read(phoneAuthControllerProvider);
-    expect(state.errorMessage, isNull);
+    expect(state.errorType, isNull);
   });
 
   test('changeNumber resets back to the phone-entry step', () async {

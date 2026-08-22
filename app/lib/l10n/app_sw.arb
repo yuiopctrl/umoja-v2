@@ -1,0 +1,210 @@
+{
+  "@@locale": "sw",
+
+  "appTitle": "Umoja",
+
+  "continueButton": "Endelea",
+  "cancelButton": "Ghairi",
+  "closeButton": "Funga",
+  "saveButton": "Hifadhi",
+  "editAction": "Hariri",
+  "signOutButtonLabel": "Toka",
+
+  "languageSelectorLabel": "Lugha",
+  "languageSwahili": "Kiswahili",
+  "languageEnglish": "English",
+
+  "authWelcomeTitle": "Karibu Umoja",
+  "authPhoneSubtitle": "Ingiza namba yako ya simu kuendelea.",
+  "authPhoneLabel": "Namba ya simu",
+  "authPhoneHint": "0712345678",
+
+  "otpTitle": "Thibitisha Namba",
+  "otpSubtitle": "Weka msimbo uliotumwa kwa {phone}",
+  "@otpSubtitle": {
+    "placeholders": { "phone": { "type": "String" } }
+  },
+  "otpCodeLabel": "Namba ya uthibitisho",
+  "otpVerifyButton": "Thibitisha",
+  "otpChangeNumber": "Badilisha Namba",
+  "otpResend": "Tuma Tena",
+  "otpResendCountdown": "Baada ya {seconds}s",
+  "@otpResendCountdown": {
+    "placeholders": { "seconds": { "type": "int" } }
+  },
+
+  "pinSetupTitle": "Tengeneza PIN",
+  "pinSetupSubtitle": "Tengeneza namba nne za siri kufungua programu haraka.",
+  "pinConfirmTitle": "Thibitisha PIN",
+  "pinConfirmSubtitle": "Weka tena PIN yako kuthibitisha.",
+  "pinMismatch": "PIN hazifanani. Jaribu tena.",
+  "pinSetupSaveError": "Imeshindikana kuhifadhi PIN. Jaribu tena.",
+
+  "pinUnlockTitle": "Ingiza PIN",
+  "pinUnlockSubtitle": "Fungua programu kuendelea.",
+  "pinUnlockButton": "Fungua",
+  "pinForgot": "Umesahau PIN?",
+  "pinInvalid": "PIN si sahihi.",
+  "pinTooManyAttempts": "Umejaribu mara nyingi. Subiri kidogo kabla ya kujaribu tena.",
+  "pinRecoveryVerifyTitle": "Thibitisha Namba Yako",
+  "pinRecoveryVerifySubtitle": "Weka msimbo uliotumwa kuthibitisha namba yako.",
+  "pinRecoveryVerifySubtitleWithPhone": "Weka msimbo uliotumwa kwa {phone}",
+  "@pinRecoveryVerifySubtitleWithPhone": {
+    "placeholders": { "phone": { "type": "String" } }
+  },
+
+  "lockToPinAction": "Toka",
+  "switchAccountAction": "Tumia namba nyingine",
+  "switchAccountConfirmTitle": "Tumia namba nyingine ya simu?",
+  "switchAccountConfirmMessage": "Utatoka kwenye akaunti hii kwenye kifaa hiki. Utahitaji kuthibitisha namba mpya kwa OTP.",
+  "switchAccountConfirmButton": "Tumia Namba Nyingine",
+
+  "profileOnboardingTitle": "Kamilisha Wasifu Wako",
+  "fullNameLabel": "Jina kamili",
+  "fullNameRequiredError": "Weka jina lako kamili.",
+  "phoneReadOnlyLabel": "Simu",
+  "profileSaveError": "Imeshindikana kuhifadhi wasifu wako. Jaribu tena.",
+
+  "groupOnboardingTitle": "Tengeneza Kikundi Chako",
+  "groupOnboardingSubtitle": "Huna kikundi kinachofanya kazi kwa sasa. Tengeneza kimoja kuendelea.",
+  "groupNameLabel": "Jina la kikundi",
+  "groupDescriptionLabel": "Maelezo (si lazima)",
+  "createGroupButton": "Tengeneza Kikundi",
+  "groupNameRequiredError": "Jina la kikundi linahitajika.",
+  "groupSaveError": "Imeshindikana kutengeneza kikundi. Jaribu tena.",
+
+  "homeTitle": "Nyumbani",
+
+  "roleAdmin": "Msimamizi",
+  "roleTreasurer": "Mweka Hazina",
+  "roleSecretary": "Katibu",
+  "roleChairperson": "Mwenyekiti",
+  "roleMember": "Mwanachama",
+
+  "statusActive": "Hai",
+  "statusSuspended": "Amesitishwa",
+  "statusExited": "Ametoka",
+
+  "retryButton": "Jaribu Tena",
+
+  "accountDisabledTitle": "Ufikiaji wa akaunti umezimwa",
+  "accountDisabledMessage": "Ufikiaji wa akaunti yako umezimwa. Wasiliana na msimamizi wa kikundi kama unadhani hii ni kosa.",
+
+  "contextErrorTitle": "Imeshindikana kupakia akaunti",
+  "contextErrorMessage": "Hatukuweza kupakia akaunti yako. Angalia mtandao wako kisha ujaribu tena.",
+
+  "groupClosedTitle": "Kikundi kimefungwa",
+  "groupClosedMessage": "Kikundi hiki kimefungwa na hakifanyi kazi tena.",
+
+  "groupSuspendedTitle": "Ufikiaji wa kikundi umesitishwa",
+  "groupSuspendedMessage": "Kikundi hiki kimesitishwa kwa sasa. Wasiliana na msimamizi wa kikundi kwa maelezo zaidi.",
+
+  "membershipRestrictedTitle": "Uanachama umezuiwa",
+  "membershipRestrictedMessage": "Uanachama wako kwenye kikundi hiki kwa sasa umesitishwa, kwa hiyo hakipatikani. Bado unaweza kutengeneza kikundi kipya.",
+  "createNewGroupAction": "Tengeneza Kikundi Kipya",
+
+  "selectGroupTitle": "Chagua Kikundi",
+  "noRolesShort": "Hakuna majukumu",
+
+  "homeGreetingPlain": "Habari",
+  "homeGreetingNamed": "Habari, {name}",
+  "@homeGreetingNamed": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "homeMembersShortcutSubtitle": "Angalia na simamia wanachama wa kikundi",
+  "rolesNone": "Majukumu: hakuna",
+  "rolesList": "Majukumu: {roles}",
+  "@rolesList": {
+    "placeholders": { "roles": { "type": "String" } }
+  },
+
+  "membersTitle": "Wanachama",
+  "membersSearchHint": "Tafuta mwanachama",
+  "clearSearchTooltip": "Futa utafutaji",
+  "filterAll": "Wote",
+  "filterActive": "Hai",
+  "filterSuspended": "Waliositishwa",
+  "filterExited": "Waliotoka",
+  "addMemberAction": "Ongeza Mwanachama",
+  "membersEmptyFilteredTitle": "Hakuna mwanachama aliyepatikana",
+  "membersEmptyFilteredMessage": "Jaribu kubadilisha maneno ya utafutaji au kichujio.",
+  "membersEmptyTitle": "Jaza Orodha ya Wanachama",
+  "membersEmptyMessage": "Ongeza mwanachama wa kwanza wa kikundi.",
+  "loadMoreAction": "Onyesha Zaidi",
+  "paginationPrevious": "Iliyotangulia",
+  "paginationNext": "Ifuatayo",
+  "paginationPageIndicator": "Ukurasa {page} / {total}",
+  "@paginationPageIndicator": {
+    "placeholders": {
+      "page": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "memberDetailTitle": "Mwanachama",
+  "sectionIdentity": "Taarifa za Mwanachama",
+  "sectionMembership": "Uanachama",
+  "sectionRoles": "Majukumu",
+  "sectionActions": "Vitendo",
+  "manageRolesAction": "Simamia Majukumu",
+  "memberNumberLabel": "Namba ya mwanachama",
+  "phoneLabel": "Simu",
+  "accountLinkedLabel": "Akaunti ya kuingia: Imeunganishwa",
+  "accountNotLinkedLabel": "Akaunti ya kuingia: Haijaunganishwa",
+  "joinedLabel": "Alijiunga",
+  "exitedLabel": "Alitoka",
+  "noRolesAssigned": "Hakuna jukumu lililopangwa.",
+  "suspendButton": "Sitisha",
+  "reactivateButton": "Rudisha",
+  "markExitedButton": "Weka Ametoka",
+  "rejoinButton": "Rudisha kwenye Kikundi",
+  "suspendConfirmTitle": "Sitisha mwanachama?",
+  "suspendConfirmMessage": "Mwanachama huyu hataweza kushiriki shughuli za kikundi hadi atakaporudishwa.",
+  "exitConfirmTitle": "Weka mwanachama kama ametoka?",
+  "exitConfirmMessage": "Hatua hii haiwezi kutenduliwa hapa.",
+  "reactivateConfirmTitle": "Rudisha mwanachama?",
+  "reactivateConfirmMessage": "Mwanachama huyu ataweza kushiriki shughuli za kikundi tena.",
+  "rejoinConfirmTitle": "Mrudishe mwanachama kwenye kikundi?",
+  "rejoinConfirmMessage": "Mwanachama ataweza kushiriki shughuli za kikundi tena kuanzia leo. Historia ya awali ya kuondoka kwake inabaki kwenye kumbukumbu.",
+  "statusChangeSuccessActive": "Mwanachama amerudishwa.",
+  "statusChangeSuccessSuspended": "Mwanachama amesitishwa.",
+  "statusChangeSuccessExited": "Mwanachama ameondolewa kwenye kikundi.",
+  "rejoinSuccessMessage": "Mwanachama amerudishwa kwenye kikundi.",
+  "refreshFailedMessage": "Imeshindikana kupakia upya taarifa mpya. Bado inaweza kuonyesha taarifa za zamani.",
+
+  "editMemberTitle": "Hariri Mwanachama",
+  "formSectionContact": "Mawasiliano",
+  "formFullNameLabel": "Jina kamili *",
+  "phoneOptionalLabel": "Namba ya simu (si lazima)",
+  "memberNumberAutoNote": "Namba ya mwanachama itatengenezwa kiotomatiki.",
+  "memberNameRequiredError": "Jina kamili linahitajika.",
+  "memberSaveError": "Imeshindikana kuhifadhi mwanachama. Jaribu tena.",
+
+  "rolesSheetSubtitle": "Chagua majukumu ya mwanachama huyu.",
+
+  "moreTitle": "Zaidi",
+  "accountSectionTitle": "Akaunti",
+  "currentGroupSectionTitle": "Kikundi cha Sasa",
+  "actionsSectionTitle": "Vitendo",
+  "securitySectionTitle": "Usalama",
+  "switchGroupAction": "Badili Kikundi",
+
+  "authErrorInvalidPhone": "Namba hiyo ya simu haikubaliki. Tafadhali ikague na ujaribu tena.",
+  "authErrorInvalidOtp": "Namba ya uthibitisho si sahihi.",
+  "authErrorOtpExpired": "Muda wa msimbo huu umeisha. Omba mpya.",
+  "authErrorTooManyRequests": "Umejaribu mara nyingi. Tafadhali subiri kidogo kisha ujaribu tena.",
+  "authErrorNetwork": "Imeshindikana kuunganisha. Jaribu tena.",
+  "authErrorUnexpected": "Hitilafu imetokea. Jaribu tena.",
+
+  "memberErrorAccountDisabled": "Ufikiaji wa akaunti yako umezimwa. Wasiliana na msimamizi wa kikundi.",
+  "memberErrorLastAdminRequired": "Kikundi lazima kibaki na angalau msimamizi mmoja aliye active.",
+  "memberErrorInvalidStatusTransition": "Mwanachama huyu tayari ametoka na hawezi kurudishwa kwa njia hii.",
+  "memberErrorDuplicateMemberNumber": "Namba hiyo ya mwanachama tayari inatumika kwenye kikundi hiki.",
+  "memberErrorPermissionDenied": "Huna ruhusa ya kufanya hivyo.",
+  "memberErrorNotFound": "Mwanachama hakupatikana.",
+  "memberErrorNetwork": "Imeshindikana kuunganisha. Jaribu tena.",
+  "memberErrorUnexpected": "Hitilafu imetokea. Jaribu tena.",
+  "memberErrorRejoinConflict": "Mwanachama huyu tayari ana uanachama mwingine amilifu kwenye kikundi hiki.",
+
+  "supabaseConfigMissing": "Mipangilio ya Supabase haipo (SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY haijawekwa)."
+}

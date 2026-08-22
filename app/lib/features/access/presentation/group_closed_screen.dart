@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/localization/app_localizations_x.dart';
 import '../../../shared/widgets/simple_message_screen.dart';
 import '../../auth/presentation/sign_out_button.dart';
 
@@ -12,11 +13,12 @@ class GroupClosedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SimpleMessageScreen(
+    final l10n = context.l10n;
+    return SimpleMessageScreen(
       icon: Icons.lock_outline,
-      title: 'Group is closed',
-      message: 'This group has been closed and is no longer active.',
-      actions: [SignOutButton()],
+      title: l10n.groupClosedTitle,
+      message: l10n.groupClosedMessage,
+      actions: const [SignOutButton()],
     );
   }
 }

@@ -8,6 +8,7 @@ import 'package:umoja/features/auth/models/group_context.dart';
 import 'package:umoja/features/auth/models/membership_context.dart';
 import 'package:umoja/features/auth/providers/auth_session_provider.dart';
 import 'package:umoja/features/auth/providers/selected_group_provider.dart';
+import 'package:umoja/features/security/providers/lock_state_provider.dart';
 
 MembershipContext _membership({
   required String id,
@@ -32,11 +33,34 @@ const _complete = AppUserProfile(id: 'u1', fullName: 'Amina');
 const _incomplete = AppUserProfile(id: 'u1');
 const _inactive = AppUserProfile(id: 'u1', fullName: 'Amina', isActive: false);
 
+/// Wraps [computeRedirect] with PIN-gating defaults ("already configured
+/// and unlocked") so every pre-existing test below continues to
+/// exercise exactly the profile/group routing it did before the PIN
+/// gate was introduced — only the dedicated 'PIN gating' group overrides
+/// [hasPinConfigured]/[lockState].
+String? _redirect({
+  required AuthSessionStatus sessionStatus,
+  required AsyncValue<AppContext?> appContext,
+  required SelectedGroupState selectedGroup,
+  required String currentLocation,
+  AsyncValue<bool> hasPinConfigured = const AsyncValue.data(true),
+  LockState lockState = LockState.unlocked,
+}) {
+  return computeRedirect(
+    sessionStatus: sessionStatus,
+    appContext: appContext,
+    selectedGroup: selectedGroup,
+    currentLocation: currentLocation,
+    hasPinConfigured: hasPinConfigured,
+    lockState: lockState,
+  );
+}
+
 void main() {
   group('signed out / config states', () {
     test('config missing never redirects', () {
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.configMissing,
           appContext: const AsyncValue.loading(),
           selectedGroup: const SelectedGroupLoading(),
@@ -48,7 +72,7 @@ void main() {
 
     test('a signed-out user is sent to /auth/phone', () {
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedOut,
           appContext: const AsyncValue.loading(),
           selectedGroup: const SelectedGroupLoading(),
@@ -60,7 +84,7 @@ void main() {
 
     test('a signed-out user already on /auth/verify is left alone', () {
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedOut,
           appContext: const AsyncValue.loading(),
           selectedGroup: const SelectedGroupLoading(),
@@ -71,10 +95,139 @@ void main() {
     });
   });
 
+  group('PIN gating', () {
+    test('signed in, PIN not yet configured, routes to PIN setup', () {
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: const AsyncValue.loading(),
+          selectedGroup: const SelectedGroupLoading(),
+          currentLocation: AppRoutes.splash,
+          hasPinConfigured: const AsyncValue.data(false),
+          lockState: LockState.locked,
+        ),
+        AppRoutes.pinSetup,
+      );
+    });
+
+    test('signed in, PIN configured but locked, routes to PIN unlock', () {
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: const AsyncValue.loading(),
+          selectedGroup: const SelectedGroupLoading(),
+          currentLocation: AppRoutes.splash,
+          hasPinConfigured: const AsyncValue.data(true),
+          lockState: LockState.locked,
+        ),
+        AppRoutes.pinUnlock,
+      );
+    });
+
+    test('signed in, on the PIN unlock route, PIN configured and unlocked, '
+        'leaves the PIN flow (mirrors leaving /auth/* once signed in)', () {
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: const [],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: const SelectedGroupNone(),
+          currentLocation: AppRoutes.pinUnlock,
+          hasPinConfigured: const AsyncValue.data(true),
+          lockState: LockState.unlocked,
+        ),
+        AppRoutes.splash,
+      );
+    });
+
+    test('signed in, PIN configured and unlocked, falls through to normal '
+        'profile/group routing', () {
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: const [],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: const SelectedGroupNone(),
+          currentLocation: AppRoutes.splash,
+          hasPinConfigured: const AsyncValue.data(true),
+          lockState: LockState.unlocked,
+        ),
+        AppRoutes.onboardingGroup,
+      );
+    });
+
+    test('while locked, the recovery verify/new-PIN routes are left alone '
+        '(prompt 05C §18-21 — "Umesahau PIN?" must stay reachable without '
+        'being bounced back to /auth/pin-unlock)', () {
+      for (final recoveryRoute in [
+        AppRoutes.pinForgotVerify,
+        AppRoutes.pinForgotNewPin,
+      ]) {
+        expect(
+          _redirect(
+            sessionStatus: AuthSessionStatus.signedIn,
+            appContext: const AsyncValue.loading(),
+            selectedGroup: const SelectedGroupLoading(),
+            currentLocation: recoveryRoute,
+            hasPinConfigured: const AsyncValue.data(true),
+            lockState: LockState.locked,
+          ),
+          isNull,
+          reason: '$recoveryRoute should not redirect while locked',
+        );
+      }
+    });
+
+    test('a recovery route cannot expose operational screens without PIN — '
+        'once unlocked, it falls through to normal routing rather than '
+        'being treated as a resolved destination', () {
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: const [],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: const SelectedGroupNone(),
+          currentLocation: AppRoutes.pinForgotNewPin,
+          hasPinConfigured: const AsyncValue.data(true),
+          lockState: LockState.unlocked,
+        ),
+        AppRoutes.onboardingGroup,
+      );
+    });
+
+    test('the PIN gate resolves before the appContext fetch', () {
+      // appContext is still loading, but PIN setup is required first —
+      // this must not wait on the network fetch to decide that.
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: const AsyncValue.loading(),
+          selectedGroup: const SelectedGroupLoading(),
+          currentLocation: AppRoutes.home,
+          hasPinConfigured: const AsyncValue.data(false),
+          lockState: LockState.locked,
+        ),
+        AppRoutes.pinSetup,
+      );
+    });
+  });
+
   group('signed in, context loading/error', () {
     test('leaves the auth flow once signed in', () {
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: const AsyncValue.loading(),
           selectedGroup: const SelectedGroupLoading(),
@@ -88,7 +241,7 @@ void main() {
       'a context load failure routes to the context-error screen, not sign-out',
       () {
         expect(
-          computeRedirect(
+          _redirect(
             sessionStatus: AuthSessionStatus.signedIn,
             appContext: AsyncValue<AppContext?>.error(
               Exception('network'),
@@ -111,7 +264,7 @@ void main() {
         memberships: const [],
       );
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: AsyncValue.data(context),
           selectedGroup: const SelectedGroupNone(),
@@ -124,7 +277,7 @@ void main() {
     test('a missing profile fails closed to account-disabled', () {
       const context = AppContext(userId: 'u1', profile: null, memberships: []);
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: AsyncValue.data(context),
           selectedGroup: const SelectedGroupNone(),
@@ -141,7 +294,7 @@ void main() {
         memberships: const [],
       );
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: AsyncValue.data(context),
           selectedGroup: const SelectedGroupNone(),
@@ -160,7 +313,7 @@ void main() {
         memberships: const [],
       );
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: AsyncValue.data(context),
           selectedGroup: const SelectedGroupNone(),
@@ -178,7 +331,7 @@ void main() {
         memberships: [membership],
       );
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: AsyncValue.data(context),
           selectedGroup: SelectedGroupResolved(membership),
@@ -196,7 +349,7 @@ void main() {
         memberships: memberships,
       );
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: AsyncValue.data(context),
           selectedGroup: SelectedGroupPending(memberships),
@@ -214,7 +367,7 @@ void main() {
         memberships: [membership],
       );
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: AsyncValue.data(context),
           selectedGroup: const SelectedGroupNone(),
@@ -232,7 +385,7 @@ void main() {
         memberships: [membership],
       );
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: AsyncValue.data(context),
           selectedGroup: const SelectedGroupNone(),
@@ -252,7 +405,7 @@ void main() {
           memberships: [membership],
         );
         expect(
-          computeRedirect(
+          _redirect(
             sessionStatus: AuthSessionStatus.signedIn,
             appContext: AsyncValue.data(context),
             selectedGroup: const SelectedGroupNone(),
@@ -271,7 +424,7 @@ void main() {
         memberships: [membership],
       );
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: AsyncValue.data(context),
           selectedGroup: const SelectedGroupNone(),
@@ -291,7 +444,7 @@ void main() {
         memberships: [membership],
       );
       expect(
-        computeRedirect(
+        _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: AsyncValue.data(context),
           selectedGroup: SelectedGroupResolved(membership),

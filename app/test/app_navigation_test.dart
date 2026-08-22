@@ -11,6 +11,7 @@ import 'package:umoja/features/auth/providers/app_context_provider.dart';
 import 'package:umoja/features/auth/providers/auth_repository_provider.dart';
 import 'package:umoja/features/auth/providers/auth_session_provider.dart';
 
+import 'fakes/pin_bypass_overrides.dart';
 import 'fakes/fake_auth_repository.dart';
 
 MembershipContext _membership(
@@ -39,6 +40,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...pinBypassOverrides(),
           authSessionStatusProvider.overrideWithValue(
             AuthSessionStatus.signedOut,
           ),
@@ -48,8 +50,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Umoja v2'), findsOneWidget);
-    expect(find.text('Continue'), findsOneWidget);
+    // "v2" is an implementation/project concept, never shown to users
+    // (prompt 05A §10) — the brand wordmark artwork is shown instead.
+    expect(find.text('Umoja v2'), findsNothing);
+    expect(find.text('Karibu Umoja'), findsOneWidget);
+    expect(find.text('Endelea'), findsOneWidget);
     expect(find.byType(TextField), findsOneWidget);
   });
 
@@ -59,6 +64,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...pinBypassOverrides(),
           authSessionStatusProvider.overrideWithValue(
             AuthSessionStatus.signedIn,
           ),
@@ -75,7 +81,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Complete your profile'), findsOneWidget);
+    expect(find.text('Kamilisha Wasifu Wako'), findsOneWidget);
   });
 
   testWidgets('a complete profile with no group routes to group onboarding', (
@@ -84,6 +90,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...pinBypassOverrides(),
           authSessionStatusProvider.overrideWithValue(
             AuthSessionStatus.signedIn,
           ),
@@ -100,13 +107,14 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Create your group'), findsOneWidget);
+    expect(find.text('Tengeneza Kikundi Chako'), findsOneWidget);
   });
 
   testWidgets('one eligible group routes straight to home', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...pinBypassOverrides(),
           authSessionStatusProvider.overrideWithValue(
             AuthSessionStatus.signedIn,
           ),
@@ -123,8 +131,14 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Group: Umoja Wamama'), findsOneWidget);
-    expect(find.text('Application foundation ready'), findsOneWidget);
+    expect(find.text('Umoja Wamama'), findsOneWidget);
+    expect(find.text('Application foundation ready'), findsNothing);
+    expect(find.textContaining('Permissions:'), findsNothing);
+    // No fabricated financial data — those modules do not exist yet.
+    expect(find.textContaining('Balance'), findsNothing);
+    expect(find.textContaining('TZS'), findsNothing);
+    expect(find.textContaining('Outstanding'), findsNothing);
+    expect(find.textContaining('Collections'), findsNothing);
   });
 
   testWidgets('an inactive profile routes to the account-disabled screen', (
@@ -133,6 +147,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...pinBypassOverrides(),
           authSessionStatusProvider.overrideWithValue(
             AuthSessionStatus.signedIn,
           ),
@@ -153,8 +168,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Account access disabled'), findsOneWidget);
-    expect(find.text('Sign Out'), findsOneWidget);
+    expect(find.text('Ufikiaji wa akaunti umezimwa'), findsOneWidget);
+    expect(find.text('Toka'), findsOneWidget);
   });
 
   testWidgets('a context load failure shows Retry, not a forced sign-out', (
@@ -163,6 +178,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...pinBypassOverrides(),
           authSessionStatusProvider.overrideWithValue(
             AuthSessionStatus.signedIn,
           ),
@@ -175,9 +191,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Unable to load account'), findsOneWidget);
-    expect(find.text('Retry'), findsOneWidget);
-    expect(find.text('Sign Out'), findsOneWidget);
+    expect(find.text('Imeshindikana kupakia akaunti'), findsOneWidget);
+    expect(find.text('Jaribu Tena'), findsOneWidget);
+    expect(find.text('Toka'), findsOneWidget);
   });
 
   testWidgets(
@@ -186,6 +202,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...pinBypassOverrides(),
             authSessionStatusProvider.overrideWithValue(
               AuthSessionStatus.signedIn,
             ),
@@ -204,8 +221,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Membership restricted'), findsOneWidget);
-      expect(find.text('Create New Group'), findsOneWidget);
+      expect(find.text('Uanachama umezuiwa'), findsOneWidget);
+      expect(find.text('Tengeneza Kikundi Kipya'), findsOneWidget);
     },
   );
 
@@ -216,6 +233,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...pinBypassOverrides(),
             authSessionStatusProvider.overrideWithValue(
               AuthSessionStatus.signedOut,
             ),
@@ -227,12 +245,12 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(find.byType(TextField), '0712345678');
-      await tester.tap(find.text('Continue'));
+      await tester.tap(find.text('Endelea'));
       await tester.pumpAndSettle();
 
       expect(fakeAuth.sentOtpTo, ['+255712345678']);
       expect(find.textContaining('+255 712 345 678'), findsOneWidget);
-      expect(find.text('Verify'), findsOneWidget);
+      expect(find.text('Thibitisha'), findsOneWidget);
     },
   );
 
@@ -243,6 +261,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...pinBypassOverrides(),
             authSessionStatusProvider.overrideWithValue(
               AuthSessionStatus.signedOut,
             ),
@@ -254,7 +273,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(find.byType(TextField), '0712345678');
-      await tester.tap(find.text('Continue'));
+      await tester.tap(find.text('Endelea'));
       await tester.pumpAndSettle();
 
       fakeAuth.verifyOtpFailure = const AuthFailure(
@@ -262,11 +281,13 @@ void main() {
         'That code is not correct. Please check and try again.',
       );
       await tester.enterText(find.byType(TextField), '000000');
-      await tester.tap(find.text('Verify'));
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(); // auto-verifies at 6 digits
 
-      expect(find.text('Verify'), findsOneWidget); // still on the verify screen
-      expect(find.textContaining('not correct'), findsOneWidget);
+      expect(
+        find.text('Thibitisha'),
+        findsOneWidget,
+      ); // still on the verify screen
+      expect(find.text('Namba ya uthibitisho si sahihi.'), findsOneWidget);
     },
   );
 }

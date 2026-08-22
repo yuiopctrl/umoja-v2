@@ -11,29 +11,29 @@ select plan(8);
 insert into auth.users (id, email) values
   ('b0000000-0000-0000-0000-000000000001', 'user@example.com');
 
-insert into public.groups (id, name, status, created_by) values
-  ('b1000000-0000-0000-0000-000000000001', 'Active Group', 'ACTIVE', 'b0000000-0000-0000-0000-000000000001'),
-  ('b1000000-0000-0000-0000-000000000002', 'Suspended Group', 'SUSPENDED', 'b0000000-0000-0000-0000-000000000001'),
-  ('b1000000-0000-0000-0000-000000000003', 'Closed Group', 'CLOSED', 'b0000000-0000-0000-0000-000000000001');
+insert into public.groups (id, name, status, created_by, code) values
+  ('b1000000-0000-0000-0000-000000000001', 'Active Group', 'ACTIVE', 'b0000000-0000-0000-0000-000000000001', 'OPC1'),
+  ('b1000000-0000-0000-0000-000000000002', 'Suspended Group', 'SUSPENDED', 'b0000000-0000-0000-0000-000000000001', 'OPC2'),
+  ('b1000000-0000-0000-0000-000000000003', 'Closed Group', 'CLOSED', 'b0000000-0000-0000-0000-000000000001', 'OPC3');
 
 -- SUSPENDED membership in an otherwise ACTIVE group.
-insert into public.group_memberships (id, group_id, user_id, display_name, status) values
-  ('b2000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'User', 'SUSPENDED');
+insert into public.group_memberships (id, group_id, user_id, display_name, status, member_number) values
+  ('b2000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'User', 'SUSPENDED', 'OPC1-2026-0001');
 
 -- EXITED membership in an otherwise ACTIVE group (a second, separate
 -- group so it does not collide with the SUSPENDED membership above).
-insert into public.groups (id, name, status, created_by) values
-  ('b1000000-0000-0000-0000-000000000004', 'Another Active Group', 'ACTIVE', 'b0000000-0000-0000-0000-000000000001');
-insert into public.group_memberships (id, group_id, user_id, display_name, status, exited_at) values
-  ('b2000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000001', 'User', 'EXITED', current_date);
+insert into public.groups (id, name, status, created_by, code) values
+  ('b1000000-0000-0000-0000-000000000004', 'Another Active Group', 'ACTIVE', 'b0000000-0000-0000-0000-000000000001', 'OPC4');
+insert into public.group_memberships (id, group_id, user_id, display_name, status, exited_at, member_number) values
+  ('b2000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000001', 'User', 'EXITED', current_date, 'OPC4-2026-0001');
 
 -- ACTIVE membership in a SUSPENDED group.
-insert into public.group_memberships (id, group_id, user_id, display_name, status) values
-  ('b2000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000001', 'User', 'ACTIVE');
+insert into public.group_memberships (id, group_id, user_id, display_name, status, member_number) values
+  ('b2000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000001', 'User', 'ACTIVE', 'OPC2-2026-0001');
 
 -- ACTIVE membership in a CLOSED group.
-insert into public.group_memberships (id, group_id, user_id, display_name, status) values
-  ('b2000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000001', 'User', 'ACTIVE');
+insert into public.group_memberships (id, group_id, user_id, display_name, status, member_number) values
+  ('b2000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000001', 'User', 'ACTIVE', 'OPC3-2026-0001');
 
 insert into public.group_membership_roles (group_membership_id, role_id)
 select id, (select id from public.roles where code = 'MEMBER')

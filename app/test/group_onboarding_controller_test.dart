@@ -38,8 +38,8 @@ void main() {
       expect(ok, isFalse);
       expect(fakeGroups.createGroupCalls, isEmpty);
       expect(
-        container.read(groupOnboardingControllerProvider).errorMessage,
-        isNotNull,
+        container.read(groupOnboardingControllerProvider).error,
+        GroupOnboardingError.nameRequired,
       );
     },
   );
@@ -64,10 +64,7 @@ void main() {
       expect(ok, isFalse);
       final state = container.read(groupOnboardingControllerProvider);
       expect(state.isSubmitting, isFalse);
-      expect(
-        state.errorMessage,
-        'Could not create the group. Please try again.',
-      );
+      expect(state.error, GroupOnboardingError.saveFailed);
     },
   );
 }

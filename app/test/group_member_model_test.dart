@@ -163,4 +163,31 @@ void main() {
       expect(GroupMemberPage.empty.hasMore, isFalse);
     });
   });
+
+  group('GroupMember.fromJson — partial RPC result hazard (regression)', () {
+    // rpc_change_group_member_status's actual jsonb result only contains
+    // membership_id/group_id/status/exited_at/updated_at — it omits
+    // display_name and created_at (both required, non-nullable fields
+    // here). MemberRepository.changeStatus previously parsed that
+    // result as a full GroupMember, which threw on every *successful*
+    // status change and was reported to the user as "Something went
+    // wrong". The fix was to stop parsing it at all (changeStatus now
+    // returns void) — this test documents exactly why that was
+    // necessary, so nobody re-adds `GroupMember.fromJson(result)` on
+    // that call path without noticing the shape mismatch.
+    test('throws on the exact partial shape rpc_change_group_member_status '
+        'returns, confirming why that RPC result is never parsed as a '
+        'GroupMember', () {
+      expect(
+        () => GroupMember.fromJson({
+          'membership_id': 'm1',
+          'group_id': 'g1',
+          'status': 'SUSPENDED',
+          'exited_at': null,
+          'updated_at': '2026-01-16T10:00:00Z',
+        }),
+        throwsA(anything),
+      );
+    });
+  });
 }

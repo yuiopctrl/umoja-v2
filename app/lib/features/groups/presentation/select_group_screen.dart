@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/localization/app_localizations_x.dart';
 import '../../../shared/widgets/responsive_center.dart';
 import '../../auth/presentation/sign_out_button.dart';
 import '../../auth/providers/selected_group_provider.dart';
+import '../../members/presentation/widgets/member_role_label.dart';
 
 /// `/select-group`: shown when the user has more than one eligible
 /// (ACTIVE membership + ACTIVE group) group. A minimal list — not a
@@ -18,6 +20,7 @@ class SelectGroupScreen extends ConsumerWidget {
     final candidates = state is SelectedGroupPending
         ? state.candidates
         : const [];
+    final l10n = context.l10n;
 
     return Scaffold(
       body: SafeArea(
@@ -27,7 +30,7 @@ class SelectGroupScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Select a group',
+                l10n.selectGroupTitle,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 16),
@@ -38,8 +41,10 @@ class SelectGroupScreen extends ConsumerWidget {
                     title: Text(membership.group.groupName),
                     subtitle: Text(
                       membership.roleCodes.isEmpty
-                          ? 'No roles'
-                          : membership.roleCodes.join(', '),
+                          ? l10n.noRolesShort
+                          : membership.roleCodes
+                                .map((code) => memberRoleLabel(l10n, code))
+                                .join(', '),
                     ),
                     onTap: () => ref
                         .read(selectedGroupProvider.notifier)

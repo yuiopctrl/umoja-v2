@@ -6,11 +6,15 @@ import '../../auth/providers/profile_repository_provider.dart';
 
 final _log = Logger('ProfileOnboardingController');
 
+/// Purely local validation, or a save failure — never a raw backend
+/// message. Localize via `l10n.fullNameRequiredError`/`profileSaveError`.
+enum ProfileOnboardingError { nameRequired, saveFailed }
+
 class ProfileOnboardingState {
-  const ProfileOnboardingState({this.isSubmitting = false, this.errorMessage});
+  const ProfileOnboardingState({this.isSubmitting = false, this.error});
 
   final bool isSubmitting;
-  final String? errorMessage;
+  final ProfileOnboardingError? error;
 }
 
 /// Drives initial profile completion (full_name only — see
@@ -27,7 +31,7 @@ class ProfileOnboardingController extends Notifier<ProfileOnboardingState> {
     final trimmed = fullName.trim();
     if (trimmed.isEmpty) {
       state = const ProfileOnboardingState(
-        errorMessage: 'Enter your full name.',
+        error: ProfileOnboardingError.nameRequired,
       );
       return false;
     }
@@ -41,7 +45,7 @@ class ProfileOnboardingController extends Notifier<ProfileOnboardingState> {
     } catch (error, stackTrace) {
       _log.warning('Failed to save profile', error, stackTrace);
       state = const ProfileOnboardingState(
-        errorMessage: 'Could not save your profile. Please try again.',
+        error: ProfileOnboardingError.saveFailed,
       );
       return false;
     }

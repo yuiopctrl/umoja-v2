@@ -87,7 +87,7 @@ class SupabaseMemberRepository implements MemberRepository {
   }
 
   @override
-  Future<GroupMember> updateMember({
+  Future<void> updateMember({
     required String groupId,
     required String membershipId,
     String? displayName,
@@ -95,7 +95,10 @@ class SupabaseMemberRepository implements MemberRepository {
     String? memberNumber,
   }) async {
     try {
-      final result = await _client.rpc(
+      // The RPC's jsonb result is deliberately not parsed as a
+      // GroupMember — it omits created_at, so GroupMember.fromJson
+      // would throw on this call's own success (see interface doc).
+      await _client.rpc(
         'rpc_update_group_member',
         params: {
           'p_group_id': groupId,
@@ -105,21 +108,24 @@ class SupabaseMemberRepository implements MemberRepository {
           'p_member_number': memberNumber,
         },
       );
-      return GroupMember.fromJson(result as Map<String, dynamic>);
     } catch (error, stackTrace) {
       throw _mapError(error, stackTrace);
     }
   }
 
   @override
-  Future<GroupMember> changeStatus({
+  Future<void> changeStatus({
     required String groupId,
     required String membershipId,
     required String status,
     DateTime? exitedAt,
   }) async {
     try {
-      final result = await _client.rpc(
+      // Same reasoning as updateMember above: this RPC's jsonb result
+      // omits display_name/created_at, so it is never parsed as a
+      // GroupMember — doing so previously caused a successful status
+      // change to be reported to the user as a failure.
+      await _client.rpc(
         'rpc_change_group_member_status',
         params: {
           'p_group_id': groupId,
@@ -128,7 +134,21 @@ class SupabaseMemberRepository implements MemberRepository {
           if (exitedAt != null) 'p_exited_at': _dateOnly(exitedAt),
         },
       );
-      return GroupMember.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<void> rejoinMember({
+    required String groupId,
+    required String membershipId,
+  }) async {
+    try {
+      await _client.rpc(
+        'rpc_rejoin_group_member',
+        params: {'p_group_id': groupId, 'p_membership_id': membershipId},
+      );
     } catch (error, stackTrace) {
       throw _mapError(error, stackTrace);
     }
@@ -210,10 +230,18 @@ MemberFailure _mapError(Object error, StackTrace stackTrace) {
       );
     }
 
-    if (message.contains('EXITED_MEMBERSHIP_IS_TERMINAL')) {
+    if (message.contains('EXITED_MEMBERSHIP_IS_TERMINAL') ||
+        message.contains('MEMBERSHIP_NOT_EXITED')) {
       return const MemberFailure(
         MemberFailureType.invalidStatusTransition,
         'This member has already exited and cannot be reactivated this way.',
+      );
+    }
+
+    if (message.contains('USER_ALREADY_HAS_ACTIVE_MEMBERSHIP')) {
+      return const MemberFailure(
+        MemberFailureType.rejoinConflict,
+        'This member already has another active membership in this group.',
       );
     }
 

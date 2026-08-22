@@ -117,6 +117,12 @@ always goes through `rpc_create_group_member(group_id, display_name,
 registered member does not need an Umoja account of their own
 (`user_id` is nullable — see
 [docs/product/member-identity-model.md](docs/product/member-identity-model.md)).
+The operational UI (Home, Members, More) runs inside a responsive app
+shell — bottom navigation on phone widths, a navigation rail on
+tablet/desktop — built from a shared design system; see
+[docs/product/design-system.md](docs/product/design-system.md), which
+future modules (Contributions, Loans, Wallet, ...) are expected to
+reuse rather than introducing their own visual system.
 
 **Local phone-OTP testing note:** local Supabase does not include a
 real SMS provider by default, and this repository does not configure

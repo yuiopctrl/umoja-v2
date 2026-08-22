@@ -9,13 +9,13 @@ insert into auth.users (id, email) values
   ('33333333-3333-3333-3333-333333333333', 'admin@example.com'),
   ('44444444-4444-4444-4444-444444444444', 'member@example.com');
 
-insert into public.groups (id, name, created_by) values
-  ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'Group D', '33333333-3333-3333-3333-333333333333'),
-  ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'Group E', '33333333-3333-3333-3333-333333333333');
+insert into public.groups (id, name, created_by, code) values
+  ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'Group D', '33333333-3333-3333-3333-333333333333', 'AUTD'),
+  ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'Group E', '33333333-3333-3333-3333-333333333333', 'AUTE');
 
-insert into public.group_memberships (id, group_id, user_id, display_name, status) values
-  ('f1111111-1111-1111-1111-111111111111', 'dddddddd-dddd-dddd-dddd-dddddddddddd', '33333333-3333-3333-3333-333333333333', 'Admin D', 'ACTIVE'),
-  ('f2222222-2222-2222-2222-222222222222', 'dddddddd-dddd-dddd-dddd-dddddddddddd', '44444444-4444-4444-4444-444444444444', 'Member D', 'ACTIVE');
+insert into public.group_memberships (id, group_id, user_id, display_name, status, member_number) values
+  ('f1111111-1111-1111-1111-111111111111', 'dddddddd-dddd-dddd-dddd-dddddddddddd', '33333333-3333-3333-3333-333333333333', 'Admin D', 'ACTIVE', 'AUTD-2026-0001'),
+  ('f2222222-2222-2222-2222-222222222222', 'dddddddd-dddd-dddd-dddd-dddddddddddd', '44444444-4444-4444-4444-444444444444', 'Member D', 'ACTIVE', 'AUTD-2026-0002');
 
 insert into public.group_membership_roles (group_membership_id, role_id)
 select 'f1111111-1111-1111-1111-111111111111', id from public.roles where code = 'ADMIN';

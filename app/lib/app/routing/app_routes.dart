@@ -9,6 +9,21 @@ class AppRoutes {
   static const authPhone = '/auth/phone';
   static const authVerify = '/auth/verify';
 
+  /// Local device PIN — layered over an already-authenticated Supabase
+  /// session, never a replacement for it. See
+  /// `docs/product/authentication.md`.
+  static const pinSetup = '/auth/pin-setup';
+  static const pinUnlock = '/auth/pin-unlock';
+
+  /// "Umesahau PIN?" recovery (prompt 05C §18-21) — deliberately
+  /// separate from [authVerify]/[pinSetup]: it re-verifies the OTP for
+  /// the *already-known, already-authenticated* phone (no session
+  /// change, no PIN clear) before letting the user set a new PIN. Both
+  /// routes provide explicit, session/PIN-preserving Back navigation
+  /// back to [pinUnlock] — see `AuthScreenLayout.onBack`.
+  static const pinForgotVerify = '/auth/pin-recover/verify';
+  static const pinForgotNewPin = '/auth/pin-recover/new-pin';
+
   static const onboardingProfile = '/onboarding/profile';
   static const onboardingGroup = '/onboarding/group';
 
@@ -27,6 +42,7 @@ class AppRoutes {
   static const contextError = '/access/context-error';
 
   static const home = '/home';
+  static const more = '/more';
 
   static const membersList = '/members';
   static const memberNew = '/members/new';

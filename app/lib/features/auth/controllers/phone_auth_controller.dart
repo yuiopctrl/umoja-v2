@@ -14,14 +14,19 @@ class PhoneAuthState {
     this.step = PhoneAuthStep.enteringPhone,
     this.phone,
     this.isSubmitting = false,
-    this.errorMessage,
+    this.errorType,
     this.resendAvailableAt,
   });
 
   final PhoneAuthStep step;
   final TanzaniaPhoneNumber? phone;
   final bool isSubmitting;
-  final String? errorMessage;
+
+  /// `null` means no error. Localize via `authFailureMessage` (see
+  /// `core/localization/failure_messages.dart`) — never a raw string
+  /// baked in at throw time, so the message stays in the user's
+  /// currently-selected language.
+  final AuthFailureType? errorType;
 
   /// When resend becomes available again. `null` means resend is
   /// available now. This is a client-side UX cooldown only — Supabase/
@@ -46,8 +51,8 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
     final TanzaniaPhoneNumber phone;
     try {
       phone = TanzaniaPhoneNumber.parse(rawPhone);
-    } on PhoneNumberException catch (error) {
-      state = PhoneAuthState(errorMessage: error.message);
+    } on PhoneNumberException {
+      state = const PhoneAuthState(errorType: AuthFailureType.invalidPhone);
       return false;
     }
 
@@ -61,7 +66,7 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
       );
       return true;
     } on AuthFailure catch (error) {
-      state = PhoneAuthState(phone: phone, errorMessage: error.message);
+      state = PhoneAuthState(phone: phone, errorType: error.type);
       return false;
     }
   }
@@ -87,7 +92,7 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
       state = PhoneAuthState(
         step: state.step,
         phone: phone,
-        errorMessage: error.message,
+        errorType: error.type,
         resendAvailableAt: state.resendAvailableAt,
       );
     }
@@ -120,7 +125,7 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
       state = PhoneAuthState(
         step: state.step,
         phone: phone,
-        errorMessage: error.message,
+        errorType: error.type,
         resendAvailableAt: state.resendAvailableAt,
       );
       return false;

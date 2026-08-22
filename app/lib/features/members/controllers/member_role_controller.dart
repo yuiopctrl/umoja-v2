@@ -8,10 +8,13 @@ import '../providers/member_repository_provider.dart';
 final _log = Logger('MemberRoleController');
 
 class MemberRoleState {
-  const MemberRoleState({this.isSubmitting = false, this.errorMessage});
+  const MemberRoleState({this.isSubmitting = false, this.errorType});
 
   final bool isSubmitting;
-  final String? errorMessage;
+
+  /// `null` means no error. Localize via `memberFailureMessage` (see
+  /// `core/localization/failure_messages.dart`).
+  final MemberFailureType? errorType;
 }
 
 /// Drives role assignment/removal (`rpc_assign_group_role`/
@@ -43,13 +46,11 @@ class MemberRoleController extends Notifier<MemberRoleState> {
       state = const MemberRoleState();
       return true;
     } on MemberFailure catch (error) {
-      state = MemberRoleState(errorMessage: error.message);
+      state = MemberRoleState(errorType: error.type);
       return false;
     } catch (error, stackTrace) {
       _log.warning('Failed to assign role', error, stackTrace);
-      state = const MemberRoleState(
-        errorMessage: 'Could not assign the role. Please try again.',
-      );
+      state = const MemberRoleState(errorType: MemberFailureType.unexpected);
       return false;
     }
   }
@@ -74,13 +75,11 @@ class MemberRoleController extends Notifier<MemberRoleState> {
       state = const MemberRoleState();
       return true;
     } on MemberFailure catch (error) {
-      state = MemberRoleState(errorMessage: error.message);
+      state = MemberRoleState(errorType: error.type);
       return false;
     } catch (error, stackTrace) {
       _log.warning('Failed to remove role', error, stackTrace);
-      state = const MemberRoleState(
-        errorMessage: 'Could not remove the role. Please try again.',
-      );
+      state = const MemberRoleState(errorType: MemberFailureType.unexpected);
       return false;
     }
   }

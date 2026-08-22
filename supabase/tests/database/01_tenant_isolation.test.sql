@@ -10,13 +10,13 @@ insert into auth.users (id, email) values
   ('11111111-1111-1111-1111-111111111111', 'user-a@example.com'),
   ('22222222-2222-2222-2222-222222222222', 'user-b@example.com');
 
-insert into public.groups (id, name, created_by) values
-  ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Group A', '11111111-1111-1111-1111-111111111111'),
-  ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Group B', '22222222-2222-2222-2222-222222222222');
+insert into public.groups (id, name, created_by, code) values
+  ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Group A', '11111111-1111-1111-1111-111111111111', 'TENA'),
+  ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Group B', '22222222-2222-2222-2222-222222222222', 'TENB');
 
-insert into public.group_memberships (id, group_id, user_id, display_name, status) values
-  ('c1111111-1111-1111-1111-111111111111', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'User A', 'ACTIVE'),
-  ('c2222222-2222-2222-2222-222222222222', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '22222222-2222-2222-2222-222222222222', 'User B', 'ACTIVE');
+insert into public.group_memberships (id, group_id, user_id, display_name, status, member_number) values
+  ('c1111111-1111-1111-1111-111111111111', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'User A', 'ACTIVE', 'TENA-2026-0001'),
+  ('c2222222-2222-2222-2222-222222222222', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '22222222-2222-2222-2222-222222222222', 'User B', 'ACTIVE', 'TENB-2026-0001');
 
 insert into public.group_membership_roles (group_membership_id, role_id)
 select 'c1111111-1111-1111-1111-111111111111', id from public.roles where code = 'MEMBER';

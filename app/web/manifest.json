@@ -1,11 +1,11 @@
 {
-    "name": "umoja",
-    "short_name": "umoja",
+    "name": "Umoja",
+    "short_name": "Umoja",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#FFFFFF",
+    "theme_color": "#E8151D",
+    "description": "Umoja: group finance for vikundi.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

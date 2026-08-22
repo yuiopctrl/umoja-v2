@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/localization/app_localizations_x.dart';
 import '../../../shared/widgets/responsive_center.dart';
 import '../../auth/providers/auth_session_provider.dart';
 import '../controllers/profile_onboarding_controller.dart';
@@ -41,6 +42,7 @@ class _ProfileOnboardingScreenState
   Widget build(BuildContext context) {
     final state = ref.watch(profileOnboardingControllerProvider);
     final authenticatedPhone = ref.watch(currentSupabaseUserProvider)?.phone;
+    final l10n = context.l10n;
 
     return Scaffold(
       body: SafeArea(
@@ -50,7 +52,7 @@ class _ProfileOnboardingScreenState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Complete your profile',
+                l10n.profileOnboardingTitle,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 24),
@@ -59,9 +61,9 @@ class _ProfileOnboardingScreenState
                 autofocus: true,
                 enabled: !state.isSubmitting,
                 textInputAction: TextInputAction.done,
-                decoration: const InputDecoration(
-                  labelText: 'Full name',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.fullNameLabel,
+                  border: const OutlineInputBorder(),
                 ),
                 onSubmitted: (_) => _submit(),
               ),
@@ -70,16 +72,18 @@ class _ProfileOnboardingScreenState
                 TextField(
                   enabled: false,
                   controller: TextEditingController(text: authenticatedPhone),
-                  decoration: const InputDecoration(
-                    labelText: 'Phone',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.phoneReadOnlyLabel,
+                    border: const OutlineInputBorder(),
                   ),
                 ),
               ],
-              if (state.errorMessage != null) ...[
+              if (state.error != null) ...[
                 const SizedBox(height: 12),
                 Text(
-                  state.errorMessage!,
+                  state.error == ProfileOnboardingError.nameRequired
+                      ? l10n.fullNameRequiredError
+                      : l10n.profileSaveError,
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ],
@@ -94,7 +98,7 @@ class _ProfileOnboardingScreenState
                           width: 18,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Text('Continue'),
+                      : Text(l10n.continueButton),
                 ),
               ),
             ],

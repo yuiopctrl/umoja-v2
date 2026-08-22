@@ -11,12 +11,12 @@ insert into auth.users (id, email) values
   ('90000000-0000-0000-0000-000000000001', 'admin1@example.com'),
   ('90000000-0000-0000-0000-000000000002', 'admin2@example.com');
 
-insert into public.groups (id, name, created_by) values
-  ('91000000-0000-0000-0000-000000000001', 'Group P', '90000000-0000-0000-0000-000000000001');
+insert into public.groups (id, name, created_by, code) values
+  ('91000000-0000-0000-0000-000000000001', 'Group P', '90000000-0000-0000-0000-000000000001', 'ADMP');
 
-insert into public.group_memberships (id, group_id, user_id, display_name, status) values
-  ('92000000-0000-0000-0000-000000000001', '91000000-0000-0000-0000-000000000001', '90000000-0000-0000-0000-000000000001', 'Admin1', 'ACTIVE'),
-  ('92000000-0000-0000-0000-000000000002', '91000000-0000-0000-0000-000000000001', '90000000-0000-0000-0000-000000000002', 'Admin2', 'ACTIVE');
+insert into public.group_memberships (id, group_id, user_id, display_name, status, member_number) values
+  ('92000000-0000-0000-0000-000000000001', '91000000-0000-0000-0000-000000000001', '90000000-0000-0000-0000-000000000001', 'Admin1', 'ACTIVE', 'ADMP-2026-0001'),
+  ('92000000-0000-0000-0000-000000000002', '91000000-0000-0000-0000-000000000001', '90000000-0000-0000-0000-000000000002', 'Admin2', 'ACTIVE', 'ADMP-2026-0002');
 
 insert into public.group_membership_roles (group_membership_id, role_id)
 select '92000000-0000-0000-0000-000000000001', id from public.roles where code = 'ADMIN';

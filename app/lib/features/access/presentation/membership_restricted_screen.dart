@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/routing/app_routes.dart';
+import '../../../core/localization/app_localizations_x.dart';
 import '../../../shared/widgets/simple_message_screen.dart';
 import '../../auth/presentation/sign_out_button.dart';
 
@@ -15,16 +16,15 @@ class MembershipRestrictedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return SimpleMessageScreen(
       icon: Icons.pause_circle_outlined,
-      title: 'Membership restricted',
-      message:
-          'Your membership in this group is currently suspended, so it '
-          'is not available. You can still create a new group.',
+      title: l10n.membershipRestrictedTitle,
+      message: l10n.membershipRestrictedMessage,
       actions: [
         FilledButton(
           onPressed: () => context.go(AppRoutes.onboardingGroup),
-          child: const Text('Create New Group'),
+          child: Text(l10n.createNewGroupAction),
         ),
         const SignOutButton(),
       ],

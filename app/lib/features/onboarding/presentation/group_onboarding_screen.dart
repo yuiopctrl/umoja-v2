@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/localization/app_localizations_x.dart';
 import '../../../shared/widgets/responsive_center.dart';
 import '../../auth/presentation/sign_out_button.dart';
 import '../controllers/group_onboarding_controller.dart';
@@ -44,6 +45,7 @@ class _GroupOnboardingScreenState extends ConsumerState<GroupOnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(groupOnboardingControllerProvider);
+    final l10n = context.l10n;
 
     return Scaffold(
       body: SafeArea(
@@ -53,22 +55,20 @@ class _GroupOnboardingScreenState extends ConsumerState<GroupOnboardingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Create your group',
+                l10n.groupOnboardingTitle,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 8),
-              const Text(
-                'You currently have no active group. Create one to continue.',
-              ),
+              Text(l10n.groupOnboardingSubtitle),
               const SizedBox(height: 24),
               TextField(
                 controller: _nameController,
                 autofocus: true,
                 enabled: !state.isSubmitting,
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  labelText: 'Group name',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.groupNameLabel,
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 16),
@@ -78,16 +78,18 @@ class _GroupOnboardingScreenState extends ConsumerState<GroupOnboardingScreen> {
                 minLines: 2,
                 maxLines: 4,
                 textInputAction: TextInputAction.done,
-                decoration: const InputDecoration(
-                  labelText: 'Description (optional)',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.groupDescriptionLabel,
+                  border: const OutlineInputBorder(),
                 ),
                 onSubmitted: (_) => _submit(),
               ),
-              if (state.errorMessage != null) ...[
+              if (state.error != null) ...[
                 const SizedBox(height: 12),
                 Text(
-                  state.errorMessage!,
+                  state.error == GroupOnboardingError.nameRequired
+                      ? l10n.groupNameRequiredError
+                      : l10n.groupSaveError,
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ],
@@ -102,7 +104,7 @@ class _GroupOnboardingScreenState extends ConsumerState<GroupOnboardingScreen> {
                           width: 18,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Text('Create Group'),
+                      : Text(l10n.createGroupButton),
                 ),
               ),
               const SizedBox(height: 16),

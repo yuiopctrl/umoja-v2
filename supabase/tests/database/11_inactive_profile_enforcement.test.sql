@@ -10,12 +10,12 @@ insert into auth.users (id, email) values
   ('a0000000-0000-0000-0000-000000000001', 'active-admin@example.com'),
   ('a0000000-0000-0000-0000-000000000002', 'inactive-admin@example.com');
 
-insert into public.groups (id, name, created_by) values
-  ('a1000000-0000-0000-0000-000000000001', 'Group Q', 'a0000000-0000-0000-0000-000000000001');
+insert into public.groups (id, name, created_by, code) values
+  ('a1000000-0000-0000-0000-000000000001', 'Group Q', 'a0000000-0000-0000-0000-000000000001', 'INAQ');
 
-insert into public.group_memberships (id, group_id, user_id, display_name, status) values
-  ('a2000000-0000-0000-0000-000000000001', 'a1000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'ActiveAdmin', 'ACTIVE'),
-  ('a2000000-0000-0000-0000-000000000002', 'a1000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000002', 'InactiveAdmin', 'ACTIVE');
+insert into public.group_memberships (id, group_id, user_id, display_name, status, member_number) values
+  ('a2000000-0000-0000-0000-000000000001', 'a1000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'ActiveAdmin', 'ACTIVE', 'INAQ-2026-0001'),
+  ('a2000000-0000-0000-0000-000000000002', 'a1000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000002', 'InactiveAdmin', 'ACTIVE', 'INAQ-2026-0002');
 
 insert into public.group_membership_roles (group_membership_id, role_id)
 select 'a2000000-0000-0000-0000-000000000001', id from public.roles where code = 'ADMIN';

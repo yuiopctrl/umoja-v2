@@ -51,8 +51,8 @@ void main() {
 
       expect(ok, isFalse);
       expect(
-        container.read(memberRoleControllerProvider).errorMessage,
-        'You do not have permission to do that.',
+        container.read(memberRoleControllerProvider).errorType,
+        MemberFailureType.permissionDenied,
       );
     },
   );
@@ -69,8 +69,8 @@ void main() {
 
     expect(ok, isFalse);
     expect(
-      container.read(memberRoleControllerProvider).errorMessage,
-      'Kikundi lazima kibaki na angalau msimamizi mmoja aliye active.',
+      container.read(memberRoleControllerProvider).errorType,
+      MemberFailureType.lastAdminRequired,
     );
   });
 }

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../members/providers/members_query_provider.dart';
 import '../models/membership_context.dart';
 import 'app_context_provider.dart';
 
@@ -61,6 +62,11 @@ class SelectedGroupNotifier extends Notifier<SelectedGroupState> {
 
   /// Resolves a pending multi-group selection. No-op if the state is not
   /// currently [SelectedGroupPending] or the membership id is unknown.
+  ///
+  /// Invalidates [membersQueryProvider] so a previously-loaded page
+  /// count/search/filter from the old group is never carried into the
+  /// newly-selected one (prompt 05C §11 — "changing group clears
+  /// previous group's loaded pages").
   void selectGroup(String membershipId) {
     final current = state;
     if (current is! SelectedGroupPending) return;
@@ -68,6 +74,7 @@ class SelectedGroupNotifier extends Notifier<SelectedGroupState> {
     for (final candidate in current.candidates) {
       if (candidate.membershipId == membershipId) {
         state = SelectedGroupResolved(candidate);
+        ref.invalidate(membersQueryProvider);
         return;
       }
     }

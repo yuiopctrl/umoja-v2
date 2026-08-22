@@ -28,6 +28,12 @@ abstract class MemberRepository {
 
   /// Creates a member with `user_id = null` — this never creates an
   /// auth account, sends an OTP, or invites anyone.
+  ///
+  /// [memberNumber] is an override for a future controlled admin/import
+  /// workflow only — `MemberFormController`/the normal create-member
+  /// screen never supply it, since `rpc_create_group_member` now
+  /// auto-generates a server-side, concurrency-safe number
+  /// (`<group code>-<year>-<sequence>`) whenever it is omitted.
   Future<GroupMember> createMember({
     required String groupId,
     required String displayName,
@@ -37,7 +43,11 @@ abstract class MemberRepository {
   });
 
   /// Updates editable identity/contact fields only — never status.
-  Future<GroupMember> updateMember({
+  /// Returns `void`: `rpc_update_group_member` returns a partial row
+  /// shape (no `created_at`), and no caller needs the updated member
+  /// back — screens re-read via [memberDetailProvider] after
+  /// invalidating it, rather than trusting this call's return value.
+  Future<void> updateMember({
     required String groupId,
     required String membershipId,
     String? displayName,
@@ -46,11 +56,24 @@ abstract class MemberRepository {
   });
 
   /// Changes lifecycle status only — never identity/contact fields.
-  Future<GroupMember> changeStatus({
+  /// Returns `void` — see [updateMember] doc for why (same partial
+  /// return-shape reasoning; `rpc_change_group_member_status`'s jsonb
+  /// result also omits `display_name`/`created_at`, which would fail
+  /// [GroupMember.fromJson] even though the mutation itself succeeded).
+  Future<void> changeStatus({
     required String groupId,
     required String membershipId,
     required String status,
     DateTime? exitedAt,
+  });
+
+  /// The explicit, separate rejoin workflow for an EXITED member —
+  /// never `changeStatus(status: 'ACTIVE')`, which the backend rejects
+  /// for a terminal EXITED membership by design. Returns `void` for the
+  /// same reason as [changeStatus].
+  Future<void> rejoinMember({
+    required String groupId,
+    required String membershipId,
   });
 
   Future<void> assignRole({

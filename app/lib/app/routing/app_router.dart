@@ -16,9 +16,16 @@ import '../../features/home/presentation/home_screen.dart';
 import '../../features/members/presentation/member_detail_screen.dart';
 import '../../features/members/presentation/member_form_screen.dart';
 import '../../features/members/presentation/members_list_screen.dart';
+import '../../features/more/presentation/more_screen.dart';
 import '../../features/onboarding/presentation/group_onboarding_screen.dart';
 import '../../features/onboarding/presentation/profile_onboarding_screen.dart';
+import '../../features/security/presentation/pin_recovery_verify_screen.dart';
+import '../../features/security/presentation/pin_setup_screen.dart';
+import '../../features/security/presentation/pin_unlock_screen.dart';
+import '../../features/security/providers/has_pin_configured_provider.dart';
+import '../../features/security/providers/lock_state_provider.dart';
 import '../../features/splash/splash_screen.dart';
+import '../shell/app_shell.dart';
 import 'app_routes.dart';
 import 'route_guard.dart';
 import 'router_refresh_notifier.dart';
@@ -46,6 +53,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         appContext: ref.read(appContextProvider),
         selectedGroup: ref.read(selectedGroupProvider),
         currentLocation: state.uri.path,
+        hasPinConfigured: ref.read(hasPinConfiguredProvider),
+        lockState: ref.read(lockStateProvider),
       );
     },
     routes: [
@@ -60,6 +69,23 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.authVerify,
         builder: (context, state) => const OtpVerifyScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.pinSetup,
+        builder: (context, state) => const PinSetupScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.pinUnlock,
+        builder: (context, state) => const PinUnlockScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.pinForgotVerify,
+        builder: (context, state) => const PinRecoveryVerifyScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.pinForgotNewPin,
+        builder: (context, state) =>
+            const PinSetupScreen(cancelRoute: AppRoutes.pinUnlock),
       ),
       GoRoute(
         path: AppRoutes.onboardingProfile,
@@ -93,29 +119,39 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.contextError,
         builder: (context, state) => const ContextErrorScreen(),
       ),
-      GoRoute(
-        path: AppRoutes.home,
-        builder: (context, state) => const HomeScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.membersList,
-        builder: (context, state) => const MembersListScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.memberNew,
-        builder: (context, state) => const MemberFormScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.memberDetail,
-        builder: (context, state) => MemberDetailScreen(
-          membershipId: state.pathParameters['membershipId']!,
-        ),
-      ),
-      GoRoute(
-        path: AppRoutes.memberEdit,
-        builder: (context, state) => MemberFormScreen(
-          membershipId: state.pathParameters['membershipId']!,
-        ),
+      ShellRoute(
+        builder: (context, state, child) =>
+            AppShell(location: state.uri.path, child: child),
+        routes: [
+          GoRoute(
+            path: AppRoutes.home,
+            builder: (context, state) => const HomeScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.membersList,
+            builder: (context, state) => const MembersListScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.memberNew,
+            builder: (context, state) => const MemberFormScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.memberDetail,
+            builder: (context, state) => MemberDetailScreen(
+              membershipId: state.pathParameters['membershipId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.memberEdit,
+            builder: (context, state) => MemberFormScreen(
+              membershipId: state.pathParameters['membershipId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.more,
+            builder: (context, state) => const MoreScreen(),
+          ),
+        ],
       ),
     ],
   );

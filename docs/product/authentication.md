@@ -1,9 +1,14 @@
 # Authentication
 
-Umoja v2's initial (and, for this prompt, only) authentication method is
-**phone number + OTP**, via Supabase Auth's SMS OTP flow. There is no
-email/password, Google/Apple, or PIN login. PIN is intentionally
-deferred — see [PIN is not implemented](#pin-is-not-implemented) below.
+Umoja v2's authentication method is **phone number + OTP**, via
+Supabase Auth's SMS OTP flow — there is no email/password or
+Google/Apple login. Since Prompt 05B, a local device **PIN** sits in
+front of the app's operational content as daily-use convenience —
+see [Device PIN lock](#device-pin-lock) below. The PIN is never a
+replacement for Supabase authentication: it is checked entirely
+client-side, against a locally-stored salted hash, and the backend
+(RLS/RPCs) continues to trust only the Supabase JWT, exactly as
+before.
 
 ## Phone OTP
 
@@ -148,9 +153,15 @@ of User A's state.
   from a previous computation, so a rebuild triggered by an identity
   change produces entirely fresh state.
 - `AuthController.signOut()` (`auth_controller_provider.dart`) is the
-  single place sign-out happens. Beyond calling Supabase Auth's
-  `signOut()`, it explicitly invalidates `appContextProvider`,
-  `selectedGroupProvider`, and `phoneAuthControllerProvider` — this makes
+  single place full sign-out happens — see
+  [Device PIN lock](#device-pin-lock) for when it is (and, since prompt
+  05C, is deliberately not) reached. Beyond calling Supabase Auth's
+  `signOut()`, it clears this device's PIN for the signed-out user id
+  and explicitly invalidates `appContextProvider`,
+  `selectedGroupProvider`, `phoneAuthControllerProvider`,
+  `hasPinConfiguredProvider`, and `membersQueryProvider` (so a new
+  sign-in never inherits a stale page count/search/filter from the
+  previous identity), resetting `LockNotifier` to locked — this makes
   the clear immediate and deterministic rather than depending purely on
   auth-stream event propagation timing.
 - The router's redirect logic (`route_guard.dart`) never makes a routing
@@ -266,13 +277,220 @@ verification workflow is designed. A phone number matching an existing
 unlinked membership does **not** cause any automatic claiming, joining,
 or linking.
 
-## PIN is not implemented
+## Device PIN lock
 
-No PIN authentication, PIN storage, or PIN-related columns exist in this
-prompt (nor should they — see `CLAUDE.md`). If a device-friendly PIN
-unlock is added later, it will be a separate, explicit design decision
-layered on top of the Supabase phone-OTP session, not a replacement for
-it.
+A 4-digit PIN (`lib/features/security/`) is local, device-scoped
+application-unlock UX layered over an already-authenticated Supabase
+session — never a parallel auth system, and never sent to Supabase.
+No PIN-related database column/table exists; the PIN lives entirely in
+this device's secure storage.
+
+### One normal action, one deliberate escape hatch (prompt 05C)
+
+Prompt 05B originally exposed two separate, similarly-prominent More
+screen actions ("Funga programu" / "Toka kabisa"), which live UX review
+found confusing. Prompt 05C replaced that with a single normal action
+plus a relocated, deliberately less-discoverable full-sign-out path —
+matching the established "PIN gates an already-authenticated session"
+pattern used elsewhere (e.g. Ahadi):
+
+- **"Toka" (More screen, "Usalama" section)** — the only normal,
+  frequent, low-friction daily exit action. Calls `LockNotifier.lock()`
+  only. **Does not call Supabase `signOut()`, does not touch the
+  session, does not require OTP to undo, and needs no confirmation**
+  (it isn't destructive) — the next entry is just the PIN, at
+  `/auth/pin-unlock`.
+- **"Tumia namba nyingine" (PIN unlock screen only)** — the deliberate
+  account-switch/session-removal action. Deliberately *not* placed in
+  normal operational navigation (More) so it can never be the easiest
+  accidental tap — it only exists as a secondary link on
+  `/auth/pin-unlock`, behind its own confirmation sheet. Confirming
+  calls `AuthController.signOut()` — Supabase `signOut()`, invalidating
+  the usual user-scoped providers — and returns to `/auth/phone`. **The
+  next sign-in requires phone OTP again. Since prompt 05D §12,
+  `signOut()` deliberately does *not* clear this device's stored PIN
+  for the outgoing user id** — `PinRepository` storage is already keyed
+  per `auth.user.id`, so switching to another number and later
+  switching back recognizes the original account's existing PIN
+  instead of forcing setup again every time (earlier prompt 05B/05C
+  behavior cleared it on every sign-out, which made repeated account
+  switching cycle through PIN setup on every return — see
+  `lock_state_provider.dart` and `auth_controller_provider.dart`). See
+  `security_actions_test.dart`.
+- **"Umesahau PIN?" (PIN unlock screen only)** — see
+  [PIN recovery](#pin-recovery-forgot-pin) below. Unlike "Tumia namba
+  nyingine", this is deliberately **not** destructive at all: it never
+  signs out, never clears the PIN, and needs no confirmation dialog —
+  the recovery screens themselves are the safe, cancellable path.
+
+### Storage (`lib/features/security/data/`)
+
+- `PinRepository` is the abstraction; `SecurePinRepository` is the
+  production implementation, backed by `flutter_secure_storage`
+  (Keychain on iOS/macOS, Keystore-backed EncryptedSharedPreferences on
+  Android, libsecret on Linux, Credential Manager on Windows) —
+  **never `SharedPreferences`**, which is plaintext on most platforms.
+- Only a salted SHA-256 hash is ever written (`pin_hash.dart`'s
+  `hashPin`/`generateSalt`, unit-tested in `pin_hash_test.dart` to
+  confirm the hash is never the plaintext PIN, is deterministic per
+  salt, and differs across salts/PINs) — never the PIN itself, never
+  sent anywhere, never logged.
+- Storage keys are namespaced by the authenticated Supabase user id
+  (`umoja.pin.hash.<uid>` / `umoja.pin.salt.<uid>`), so one user's PIN
+  can never unlock a different user's session on a shared device —
+  `verifyPin`/`hasPin`/`setPin`/`clearPin` all take `userId` explicitly
+  (see `pin_unlock_controller_test.dart`'s cross-user test).
+
+### Lock state (`lock_state_provider.dart`)
+
+`LockState` (`locked`/`unlocked`) is deliberately **in-memory only**,
+never persisted. `LockNotifier` re-runs `build()` whenever the
+authenticated identity changes (`authUserIdProvider`) — so one user's
+"unlocked" state can never carry over to a different user signing in
+afterward on the same device — but it does *not* reset on a token
+refresh for the same user, so normal background use never spuriously
+re-locks the app.
+
+Since prompt 05D §10-11, the outcome of that rebuild depends on *why*
+the identity changed, read via `authStateChangesProvider`'s latest
+`AuthChangeEvent`:
+
+- `AuthChangeEvent.signedIn` — a phone OTP just verified successfully
+  in this running process, whether a first-time sign-in or an account
+  switch — has already strongly authenticated the session, so it
+  unlocks **immediately**. The PIN is never asked for again right after
+  OTP, regardless of whether one is already configured for this
+  identity on this device.
+- Anything else — most importantly a cold app-process start restoring
+  an already-valid session (`AuthChangeEvent.initialSession`, not
+  `signedIn`) — starts `locked` (prompt 05B §12: "if app process
+  restarts while session remains valid, PIN should be required").
+
+Earlier (prompt 05B/05C) `build()` unconditionally reset to `locked` on
+every identity change, including one caused by a fresh OTP verify. For
+a returning identity with a PIN already configured, that sent the user
+to `/auth/pin-unlock` immediately after they had just typed an OTP —
+redundant, and combined with `AuthController.signOut()` clearing the
+PIN on every switch (also fixed, see above), presented as a repeating
+OTP → PIN-setup cycle when switching between two known accounts. Both
+are now fixed together.
+
+### Startup/routing decision order (`route_guard.dart`)
+
+Resolved in this exact order, before any profile/group decision, and
+entirely from local state (never waits on a network fetch):
+
+1. No valid Supabase session → `/auth/phone` (existing OTP flow).
+2. Valid session, no PIN configured for this user on this device →
+   `/auth/pin-setup` (unlocks immediately regardless — see above — but
+   a PIN must still be created before this device can be used again
+   after a future restart/lock).
+3. Valid session, PIN configured, but currently locked → this can only
+   happen on a cold app-process restart of an already-valid session, or
+   after an explicit "Toka"/PIN-recovery-in-progress — never
+   immediately after a fresh OTP verify (see above) →
+   `/auth/pin-unlock`.
+4. Valid session, unlocked → falls through to the existing
+   profile/group/operational routing described elsewhere in this
+   document.
+
+### PIN setup (`pin_setup_screen.dart` / `pin_setup_controller.dart`)
+
+Shown once, immediately after a fresh OTP sign-in with no PIN yet
+configured. Two steps — enter, then confirm — each auto-submitting at
+4 digits (see [Auto-submit](#auto-submit-otp--pin) below). A mismatch
+on confirm restarts from the first step (never a partial retry) and
+never saves anything. On a successful match, the hash is stored and
+`LockNotifier.unlock()` fires immediately — proving possession by
+having just typed it twice is enough; the user is not asked to unlock
+again right after creating the PIN.
+
+### PIN unlock (`pin_unlock_screen.dart` / `pin_unlock_controller.dart`)
+
+Shows a restrained, masked form of the authenticated phone number
+(e.g. `+255 •••• 678`, derived from `currentSupabaseUserProvider` —
+never a DB fetch, so it's available even before `appContextProvider`
+resolves) so the user can confirm which account they're unlocking.
+Auto-submits at 4 digits; the "Fungua" button is the manual fallback,
+sharing the same `isSubmitting` guard so the two paths can never both
+be in flight. A wrong PIN clears the field and shows "PIN si sahihi."
+without any hard/permanent lockout; after 5 consecutive wrong
+attempts, a 30-second local cooldown applies (soft, in-memory,
+resettable by simply waiting — this is UX friction, not a security
+boundary, since the actual boundary is the Supabase session/RLS).
+"Umesahau PIN?" and "Tumia namba nyingine" are the only escape hatches
+(see [above](#one-normal-action-one-deliberate-escape-hatch-prompt-05c)).
+Neither **bypasses Supabase authentication**, but they differ in
+mechanism: "Tumia namba nyingine" signs out immediately; "Umesahau
+PIN?" does not touch the session or PIN at all until recovery actually
+succeeds — see below.
+
+### PIN recovery ("Forgot PIN") — prompt 05C §18-21
+
+Originally, "Umesahau PIN?" called the same full sign-out as "Tumia
+namba nyingine" behind a confirmation dialog. Live review found this
+unsafe: an accidental tap immediately destroyed the session and PIN
+with no way back, and the resulting `/auth/phone` → OTP → PIN-setup
+path had no cancel route at all. The corrected design:
+
+- Tapping "Umesahau PIN?" is a **plain navigation to
+  `/auth/pin-recover/verify`, with zero side effects** — no
+  confirmation dialog (there is nothing destructive to confirm), no
+  `signOut()`, no `PinRepository.clearPin`.
+- `/auth/pin-recover/verify` (`pin_recovery_verify_screen.dart` /
+  `pin_recovery_controller.dart`) re-verifies an OTP for the phone
+  **already on the authenticated session** (`currentSupabaseUserProvider
+  ?.phone`) — there is no "enter a phone number" step, and it is never a
+  different number (that's "Tumia namba nyingine"). Calling
+  `AuthRepository.sendOtp`/`verifyOtp` again for an already-signed-in
+  user's own phone re-confirms possession without ending the existing
+  session — `authUserIdProvider` doesn't change (same user id), so
+  nothing user-scoped refetches or resets.
+- On successful verify, it navigates to `/auth/pin-recover/new-pin` —
+  the existing `PinSetupScreen` reused as-is: its
+  `PinSetupController.submitConfirm` only ever calls
+  `PinRepository.setPin` (never `clearPin` first), so **the old PIN
+  hash stays valid and unchanged until the very moment a new one is
+  successfully confirmed** — recovery can be abandoned at any point
+  without any effect on the existing PIN or session.
+- **Safe Back everywhere**: both recovery routes render `PinSetupScreen
+  (cancelRoute: AppRoutes.pinUnlock)` /
+  `PinRecoveryVerifyScreen`'s `onBack`, which `AuthScreenLayout` turns
+  into both a visible top-left back arrow AND a `PopScope` interception
+  of the Android system Back gesture/button — both call the exact same
+  callback (`context.go(AppRoutes.pinUnlock)`), so hardware/gesture Back
+  can never diverge from the visible affordance, expose an operational
+  screen, or produce a blank route. Backing out of the New-PIN step
+  before confirming is treated identically to backing out of OTP
+  verify: routes to the still-locked `/auth/pin-unlock`, never unlocks
+  the app, and never touches the old PIN.
+- `route_guard.dart`'s `_pinRecoveryRoutes` set keeps both routes
+  reachable while `LockState.locked` (they would otherwise be bounced
+  back to `/auth/pin-unlock` by the normal PIN gate) without ever being
+  treated as a "resolved" destination once unlocked — see
+  `route_guard_test.dart`'s "PIN gating" group and the full flow in
+  `pin_recovery_navigation_test.dart` (10 tests: visible Back, Cancel,
+  system Back, no signOut, old PIN preserved through cancellation,
+  successful recovery reaching New PIN, and the old PIN only being
+  replaced once a new one is confirmed).
+
+### Auto-submit (OTP + PIN)
+
+`AutoSubmitOnLength` (`lib/core/utils/auto_submit_on_length.dart`) is
+shared by the OTP screen (6 digits — Supabase phone/SMS OTP is fixed
+at 6, unlike email OTP, which is independently configurable in
+`supabase/config.toml`) and both PIN screens (4 digits). It fires
+`onComplete` once per *distinct* value reached, so a failed attempt
+followed by re-entering the identical value doesn't loop — except
+`reset()` re-arms it for the exact same value on request, which PIN
+setup calls when moving from "enter" to "confirm": confirming
+correctly means retyping the *identical* PIN, and without this reset
+that legitimate case would silently never auto-submit (a real bug,
+caught by `pin_flow_test.dart` and now covered by a dedicated
+regression case in `auto_submit_on_length_test.dart`). Every screen
+using it keeps its manual button as a fallback, and the controller's
+own `isSubmitting` guard is what actually prevents the auto path and
+the manual button from ever issuing two concurrent requests.
 
 ## Local manual testing status
 

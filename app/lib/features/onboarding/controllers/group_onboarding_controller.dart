@@ -6,11 +6,15 @@ import '../../auth/providers/group_repository_provider.dart';
 
 final _log = Logger('GroupOnboardingController');
 
+/// Purely local validation, or a save failure — never a raw backend
+/// message. Localize via `l10n.groupNameRequiredError`/`groupSaveError`.
+enum GroupOnboardingError { nameRequired, saveFailed }
+
 class GroupOnboardingState {
-  const GroupOnboardingState({this.isSubmitting = false, this.errorMessage});
+  const GroupOnboardingState({this.isSubmitting = false, this.error});
 
   final bool isSubmitting;
-  final String? errorMessage;
+  final GroupOnboardingError? error;
 }
 
 /// Drives first-group creation. Always goes through
@@ -21,7 +25,7 @@ class GroupOnboardingController extends Notifier<GroupOnboardingState> {
   @override
   GroupOnboardingState build() => const GroupOnboardingState();
 
-  /// Returns `true` on success. On failure, [state.errorMessage] is set
+  /// Returns `true` on success. On failure, [state.error] is set
   /// and the caller should stay on the onboarding screen — text fields
   /// are owned by the screen, so entered values are naturally preserved.
   Future<bool> createGroup({required String name, String? description}) async {
@@ -30,7 +34,7 @@ class GroupOnboardingController extends Notifier<GroupOnboardingState> {
     final trimmedName = name.trim();
     if (trimmedName.isEmpty) {
       state = const GroupOnboardingState(
-        errorMessage: 'Group name is required.',
+        error: GroupOnboardingError.nameRequired,
       );
       return false;
     }
@@ -56,7 +60,7 @@ class GroupOnboardingController extends Notifier<GroupOnboardingState> {
     } catch (error, stackTrace) {
       _log.warning('Failed to create group', error, stackTrace);
       state = const GroupOnboardingState(
-        errorMessage: 'Could not create the group. Please try again.',
+        error: GroupOnboardingError.saveFailed,
       );
       return false;
     }

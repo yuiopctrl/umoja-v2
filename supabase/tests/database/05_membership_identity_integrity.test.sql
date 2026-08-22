@@ -17,11 +17,11 @@ insert into auth.users (id, email) values
   ('66666666-6666-6666-6666-666666666666', 'admin-f@example.com'),
   ('77777777-7777-7777-7777-777777777777', 'bystander@example.com');
 
-insert into public.groups (id, name, created_by) values
-  ('ffffffff-ffff-ffff-ffff-ffffffffffff', 'Group F', '66666666-6666-6666-6666-666666666666');
+insert into public.groups (id, name, created_by, code) values
+  ('ffffffff-ffff-ffff-ffff-ffffffffffff', 'Group F', '66666666-6666-6666-6666-666666666666', 'MIIF');
 
-insert into public.group_memberships (id, group_id, user_id, display_name, status) values
-  ('a9999999-9999-9999-9999-999999999999', 'ffffffff-ffff-ffff-ffff-ffffffffffff', '66666666-6666-6666-6666-666666666666', 'Admin F', 'ACTIVE');
+insert into public.group_memberships (id, group_id, user_id, display_name, status, member_number) values
+  ('a9999999-9999-9999-9999-999999999999', 'ffffffff-ffff-ffff-ffff-ffffffffffff', '66666666-6666-6666-6666-666666666666', 'Admin F', 'ACTIVE', 'MIIF-2026-0001');
 
 insert into public.group_membership_roles (group_membership_id, role_id)
 select 'a9999999-9999-9999-9999-999999999999', id from public.roles where code = 'ADMIN';
