@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:umoja/app/app.dart';
+import 'package:umoja/core/supabase/supabase_client_provider.dart';
 import 'package:umoja/features/auth/models/app_context.dart';
 import 'package:umoja/features/auth/models/app_user_profile.dart';
 import 'package:umoja/features/auth/models/group_context.dart';
@@ -30,7 +32,26 @@ MembershipContext _membership() {
   );
 }
 
-Future<FakeAuthRepository> _pumpMoreScreen(WidgetTester tester) async {
+final _fakeUser = User(
+  id: 'u1',
+  appMetadata: const {},
+  userMetadata: const {},
+  aud: 'authenticated',
+  createdAt: '2026-01-01T00:00:00Z',
+);
+
+class _FakeUserNotifier extends Notifier<User?> {
+  @override
+  User? build() => _fakeUser;
+  void set(User? user) => state = user;
+}
+
+final _fakeUserProvider = NotifierProvider<_FakeUserNotifier, User?>(
+  _FakeUserNotifier.new,
+);
+
+Future<({FakeAuthRepository auth, ProviderContainer container})>
+_pumpMoreScreen(WidgetTester tester) async {
   tester.view.physicalSize = const Size(390, 844);
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
@@ -41,7 +62,10 @@ Future<FakeAuthRepository> _pumpMoreScreen(WidgetTester tester) async {
     ProviderScope(
       overrides: [
         ...pinBypassOverrides(),
-        authSessionStatusProvider.overrideWithValue(AuthSessionStatus.signedIn),
+        isSupabaseConfiguredProvider.overrideWithValue(true),
+        currentSupabaseUserProvider.overrideWith(
+          (ref) => ref.watch(_fakeUserProvider),
+        ),
         authRepositoryProvider.overrideWithValue(fakeAuth),
         appContextProvider.overrideWith(
           (ref) async => AppContext(
@@ -57,6 +81,10 @@ Future<FakeAuthRepository> _pumpMoreScreen(WidgetTester tester) async {
   );
   await tester.pumpAndSettle();
 
+  final container = ProviderScope.containerOf(
+    tester.element(find.byType(UmojaApp)),
+  );
+
   await tester.tap(
     find.descendant(
       of: find.byType(NavigationBar),
@@ -65,80 +93,32 @@ Future<FakeAuthRepository> _pumpMoreScreen(WidgetTester tester) async {
   );
   await tester.pumpAndSettle();
 
-  return fakeAuth;
+  return (auth: fakeAuth, container: container);
 }
 
-/// Pumps More, taps "Toka" to lock, and lands on the PIN unlock screen
-/// — the entry point for the "Umesahau PIN?"/"Tumia namba nyingine"
-/// tests below, since both actions only exist on that screen (prompt
-/// 05C §3 — deliberately not in normal operational navigation).
-Future<FakeAuthRepository> _pumpLockedOnPinUnlock(WidgetTester tester) async {
-  final fakeAuth = await _pumpMoreScreen(tester);
-
-  await tester.tap(find.text('Toka'));
-  await tester.pumpAndSettle();
-
-  expect(find.text('Ingiza PIN'), findsOneWidget);
-  return fakeAuth;
-}
-
+/// Prompt 05E §13/§14: "Toka" is the only exit action in More/Usalama,
+/// and it is always a real Supabase sign-out — there is no more
+/// separate local-only "lock" concept, no "switch account" confirmation
+/// dialog, and no PIN-unlock screen to land on. The next screen is
+/// always the phone + PIN login screen.
 void main() {
-  testWidgets('normal Toka locks the app without calling Supabase signOut, and '
-      'without requiring OTP', (tester) async {
-    final fakeAuth = await _pumpMoreScreen(tester);
+  testWidgets('Toka calls Supabase signOut and lands on the phone + PIN '
+      'login screen', (tester) async {
+    final fakes = await _pumpMoreScreen(tester);
 
     await tester.tap(find.text('Toka'));
     await tester.pumpAndSettle();
 
-    expect(fakeAuth.signOutCallCount, 0);
-    // Routes to the PIN unlock screen, never back to phone/OTP.
-    expect(find.text('Ingiza PIN'), findsOneWidget);
-    expect(find.text('Karibu Umoja'), findsNothing);
-    expect(find.text('Thibitisha Namba'), findsNothing);
-  });
+    expect(fakes.auth.signOutCallCount, 1);
 
-  testWidgets('Umesahau PIN? navigates straight to recovery verify, without '
-      'calling Supabase signOut (prompt 05C §18-19 — see '
-      'pin_recovery_navigation_test.dart for the full recovery flow)', (
-    tester,
-  ) async {
-    final fakeAuth = await _pumpLockedOnPinUnlock(tester);
-
-    await tester.tap(find.text('Umesahau PIN?'));
+    // FakeAuthRepository.signOut() itself never drives auth state
+    // (matching how the real AuthRepository abstraction doesn't either
+    // — Supabase Auth's own state stream does that) — simulate the
+    // resulting signedOut event the same way the rest of the suite
+    // does.
+    fakes.container.read(_fakeUserProvider.notifier).set(null);
     await tester.pumpAndSettle();
 
-    expect(fakeAuth.signOutCallCount, 0);
-    expect(find.text('Thibitisha Namba Yako'), findsOneWidget);
+    expect(find.text('Karibu Umoja'), findsOneWidget);
   });
-
-  testWidgets('Tumia namba nyingine, after confirming, calls Supabase signOut '
-      '(clearing the session so the next sign-in requires phone + OTP)', (
-    tester,
-  ) async {
-    // See the note on the "Umesahau PIN?" test above — same fixture
-    // limitation applies here.
-    final fakeAuth = await _pumpLockedOnPinUnlock(tester);
-
-    await tester.tap(find.text('Tumia namba nyingine'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Tumia Namba Nyingine'));
-    await tester.pumpAndSettle();
-
-    expect(fakeAuth.signOutCallCount, 1);
-  });
-
-  testWidgets(
-    'Tumia namba nyingine requires confirmation — cancelling stays put',
-    (tester) async {
-      final fakeAuth = await _pumpLockedOnPinUnlock(tester);
-
-      await tester.tap(find.text('Tumia namba nyingine'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Ghairi'));
-      await tester.pumpAndSettle();
-
-      expect(fakeAuth.signOutCallCount, 0);
-      expect(find.text('Ingiza PIN'), findsOneWidget);
-    },
-  );
 }

@@ -10,10 +10,10 @@ import '../../../core/widgets/umoja_page.dart';
 import '../../../core/widgets/umoja_section.dart';
 import '../../../core/widgets/umoja_status_badge.dart';
 import '../../auth/providers/app_context_provider.dart';
+import '../../auth/providers/auth_controller_provider.dart';
 import '../../auth/providers/selected_group_provider.dart';
 import '../../members/presentation/widgets/member_role_label.dart';
 import '../../members/presentation/widgets/member_status_badge.dart';
-import '../../security/providers/lock_state_provider.dart';
 
 /// `/more`: account information, current group, security, and
 /// account-level actions (switch group) — moved off Home so the
@@ -21,14 +21,10 @@ import '../../security/providers/lock_state_provider.dart';
 /// chrome. Never shows auth internals (UUID, JWT, a raw permission
 /// count) — those belong to debugging/tests, not production UI.
 ///
-/// Prompt 05C: only ONE normal exit action is exposed here — "Toka" —
-/// which locks the app behind the PIN screen without touching the
-/// Supabase session at all (never "Lock App"/"Funga programu"
-/// terminology, and never a confirmation dialog, since it is not
-/// destructive). The deliberate, session-ending "Tumia namba nyingine"
-/// action deliberately does NOT live here — see
-/// `PinUnlockScreen`/docs/product/authentication.md — so it can never
-/// be the easiest accidental tap from normal day-to-day navigation.
+/// Prompt 05E §14: only ONE exit action is exposed here — "Toka" — and
+/// it is now always a real Supabase sign-out (there is no more local-
+/// only "lock" concept to distinguish it from). The next entry is
+/// always the phone + PIN login screen, never an automatic OTP.
 class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
 
@@ -140,9 +136,9 @@ class MoreScreen extends ConsumerWidget {
           UmojaSection(
             title: l10n.securitySectionTitle,
             child: OutlinedButton.icon(
-              onPressed: () => ref.read(lockStateProvider.notifier).lock(),
+              onPressed: () => ref.read(authControllerProvider).signOut(),
               icon: const Icon(Icons.logout),
-              label: Text(l10n.lockToPinAction),
+              label: Text(l10n.signOutButtonLabel),
             ),
           ),
         ],

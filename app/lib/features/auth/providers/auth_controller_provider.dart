@@ -1,8 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../members/providers/members_query_provider.dart';
-import '../../security/providers/has_pin_configured_provider.dart';
-import '../../security/providers/lock_state_provider.dart';
+import '../../security/providers/has_pin_credential_provider.dart';
 import '../controllers/phone_auth_controller.dart';
 import 'app_context_provider.dart';
 import 'auth_repository_provider.dart';
@@ -15,19 +14,11 @@ import 'selected_group_provider.dart';
 /// selected group, in-flight phone/OTP entry) — see
 /// docs/product/authentication.md ("no user-state leakage").
 ///
-/// This is "Toka kabisa" (full sign out, currently only reachable via
-/// "Tumia namba nyingine") — distinct from "Funga programu" (lock),
-/// which never reaches this class at all (see [LockNotifier.lock]).
-///
-/// Prompt 05D §12: this deliberately does **not** clear the outgoing
-/// identity's stored PIN. PIN storage is already keyed per
-/// `auth.user.id` (`PinRepository`/`SecurePinRepository`), so leaving
-/// it in place costs nothing and lets a device switch away from an
-/// account and later return to it without recreating a PIN every
-/// time — clearing it here was the earlier (prompt 05B/05C) behavior
-/// and was the root cause of an OTP/PIN-setup cycle on repeated
-/// account switching (see `lock_state_provider.dart` for the matching
-/// fix on the unlock side).
+/// Prompt 05E §13/§14: this is now a **real** Supabase sign-out, full
+/// stop — there is no more separate local-only "lock" concept to
+/// distinguish it from. "Toka" (More screen) calls this directly; the
+/// next entry is always the phone + PIN login screen
+/// (`/auth/phone`), never an automatic OTP.
 ///
 /// Reactive invalidation (via [appContextProvider] watching
 /// `authUserIdProvider`) already handles this on the next auth-state
@@ -44,9 +35,8 @@ class AuthController {
       ..invalidate(appContextProvider)
       ..invalidate(selectedGroupProvider)
       ..invalidate(phoneAuthControllerProvider)
-      ..invalidate(hasPinConfiguredProvider)
+      ..invalidate(hasPinCredentialProvider)
       ..invalidate(membersQueryProvider);
-    _ref.read(lockStateProvider.notifier).lock();
   }
 }
 

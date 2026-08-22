@@ -19,6 +19,11 @@
   "authPhoneLabel": "Phone number",
   "authPhoneHint": "0712345678",
 
+  "authLoginSubtitle": "Enter your phone number and PIN.",
+  "authPinLabel": "PIN",
+  "loginButton": "Log In",
+  "authFirstTimeLink": "First time? Verify by OTP",
+
   "otpTitle": "Verify Number",
   "otpSubtitle": "Enter the code sent to {phone}",
   "otpCodeLabel": "Verification code",
@@ -28,27 +33,16 @@
   "otpResendCountdown": "In {seconds}s",
 
   "pinSetupTitle": "Create PIN",
-  "pinSetupSubtitle": "Create a 4-digit PIN to unlock the app quickly.",
+  "pinSetupSubtitle": "This PIN will be used to sign in to Umoja next time.",
   "pinConfirmTitle": "Confirm PIN",
   "pinConfirmSubtitle": "Enter your PIN again to confirm.",
   "pinMismatch": "PINs don't match. Try again.",
   "pinSetupSaveError": "Could not save your PIN. Please try again.",
 
-  "pinUnlockTitle": "Enter PIN",
-  "pinUnlockSubtitle": "Unlock the app to continue.",
-  "pinUnlockButton": "Unlock",
   "pinForgot": "Forgot PIN?",
-  "pinInvalid": "Incorrect PIN.",
-  "pinTooManyAttempts": "Too many attempts. Wait a moment before trying again.",
   "pinRecoveryVerifyTitle": "Verify Your Number",
   "pinRecoveryVerifySubtitle": "Enter the code sent to verify your number.",
   "pinRecoveryVerifySubtitleWithPhone": "Enter the code sent to {phone}",
-
-  "lockToPinAction": "Log Out",
-  "switchAccountAction": "Use another number",
-  "switchAccountConfirmTitle": "Use a different phone number?",
-  "switchAccountConfirmMessage": "You'll be signed out of this account on this device. You'll need to verify the new number by OTP.",
-  "switchAccountConfirmButton": "Use Another Number",
 
   "profileOnboardingTitle": "Complete Your Profile",
   "fullNameLabel": "Full name",
@@ -174,6 +168,8 @@
   "authErrorTooManyRequests": "Too many attempts. Please wait a moment and try again.",
   "authErrorNetwork": "Network error. Check your connection and try again.",
   "authErrorUnexpected": "Something went wrong. Please try again.",
+  "authErrorInvalidCredentials": "Phone number or PIN is incorrect.",
+  "authErrorPinLocked": "Try again in a few minutes.",
 
   "memberErrorAccountDisabled": "Your account access has been disabled. Contact your group administrator.",
   "memberErrorLastAdminRequired": "The group must keep at least one active administrator.",

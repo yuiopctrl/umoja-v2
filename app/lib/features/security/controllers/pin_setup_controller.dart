@@ -1,10 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 
-import '../../auth/providers/auth_session_provider.dart';
-import '../providers/has_pin_configured_provider.dart';
-import '../providers/lock_state_provider.dart';
-import '../providers/pin_repository_provider.dart';
+import '../../auth/data/auth_failure.dart';
+import '../../auth/providers/auth_repository_provider.dart';
+import '../providers/has_pin_credential_provider.dart';
 
 final _log = Logger('PinSetupController');
 
@@ -26,12 +25,14 @@ class PinSetupState {
   final bool saveError;
 }
 
-/// Drives first-time PIN creation: enter 4 digits, confirm them, store
-/// a salted hash for the current authenticated user (never plaintext,
-/// never in `SharedPreferences` — see [PinRepository]). Unlocks
-/// immediately on success (see [LockNotifier.unlock] doc) so the user
-/// continues straight into onboarding/home without re-entering the PIN
-/// they just created.
+/// Drives first-time PIN creation: enter 4 digits, confirm them, then
+/// hand the raw PIN to [AuthRepository.setupPin] — which sends it to
+/// the `setup-pin` Edge Function over TLS and never stores or derives
+/// anything client-side (prompt 05E). Nothing here unlocks a local
+/// device lock — there is no such concept any more; the PIN credential
+/// this creates is itself immediately authoritative server-side, so the
+/// user continues straight into onboarding/home once
+/// [hasPinCredentialProvider] is invalidated and refetches `true`.
 class PinSetupController extends Notifier<PinSetupState> {
   @override
   PinSetupState build() => const PinSetupState();
@@ -52,21 +53,17 @@ class PinSetupController extends Notifier<PinSetupState> {
       return false;
     }
 
-    final userId = ref.read(authUserIdProvider);
-    if (userId == null) return false;
-
     state = PinSetupState(
       step: state.step,
       firstPin: state.firstPin,
       isSubmitting: true,
     );
     try {
-      await ref.read(pinRepositoryProvider).setPin(userId: userId, pin: pin);
-      ref.invalidate(hasPinConfiguredProvider);
-      ref.read(lockStateProvider.notifier).unlock();
+      await ref.read(authRepositoryProvider).setupPin(pin);
+      ref.invalidate(hasPinCredentialProvider);
       state = const PinSetupState();
       return true;
-    } catch (error, stackTrace) {
+    } on AuthFailure catch (error, stackTrace) {
       _log.warning('Failed to save PIN', error, stackTrace);
       state = PinSetupState(
         step: state.step,

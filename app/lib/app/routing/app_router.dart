@@ -21,9 +21,7 @@ import '../../features/onboarding/presentation/group_onboarding_screen.dart';
 import '../../features/onboarding/presentation/profile_onboarding_screen.dart';
 import '../../features/security/presentation/pin_recovery_verify_screen.dart';
 import '../../features/security/presentation/pin_setup_screen.dart';
-import '../../features/security/presentation/pin_unlock_screen.dart';
-import '../../features/security/providers/has_pin_configured_provider.dart';
-import '../../features/security/providers/lock_state_provider.dart';
+import '../../features/security/providers/has_pin_credential_provider.dart';
 import '../../features/splash/splash_screen.dart';
 import '../shell/app_shell.dart';
 import 'app_routes.dart';
@@ -53,8 +51,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         appContext: ref.read(appContextProvider),
         selectedGroup: ref.read(selectedGroupProvider),
         currentLocation: state.uri.path,
-        hasPinConfigured: ref.read(hasPinConfiguredProvider),
-        lockState: ref.read(lockStateProvider),
+        hasPinCredential: ref.read(hasPinCredentialProvider),
       );
     },
     routes: [
@@ -75,17 +72,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const PinSetupScreen(),
       ),
       GoRoute(
-        path: AppRoutes.pinUnlock,
-        builder: (context, state) => const PinUnlockScreen(),
-      ),
-      GoRoute(
         path: AppRoutes.pinForgotVerify,
         builder: (context, state) => const PinRecoveryVerifyScreen(),
       ),
       GoRoute(
         path: AppRoutes.pinForgotNewPin,
         builder: (context, state) =>
-            const PinSetupScreen(cancelRoute: AppRoutes.pinUnlock),
+            const PinSetupScreen(cancelRoute: AppRoutes.authPhone),
       ),
       GoRoute(
         path: AppRoutes.onboardingProfile,

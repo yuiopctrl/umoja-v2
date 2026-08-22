@@ -8,32 +8,30 @@ import 'package:umoja/features/auth/models/app_context.dart';
 import 'package:umoja/features/auth/models/app_user_profile.dart';
 import 'package:umoja/features/auth/models/group_context.dart';
 import 'package:umoja/features/auth/models/membership_context.dart';
+import 'package:umoja/features/auth/data/auth_failure.dart';
 import 'package:umoja/features/auth/providers/app_context_provider.dart';
 import 'package:umoja/features/auth/providers/auth_repository_provider.dart';
 import 'package:umoja/features/auth/providers/auth_session_provider.dart';
 import 'package:umoja/features/members/providers/member_repository_provider.dart';
-import 'package:umoja/features/security/providers/pin_repository_provider.dart';
+import 'package:umoja/features/security/providers/has_pin_credential_provider.dart';
 
 import 'fakes/fake_auth_repository.dart';
 import 'fakes/fake_member_repository.dart';
-import 'fakes/fake_pin_repository.dart';
 
-/// Prompt 05D §9-15: end-to-end regression for the live OTP/PIN-setup
-/// cycle bug — reproduced by switching between two accounts ("Tumia
-/// namba nyingine") and verifying neither account is ever asked to
-/// create a PIN a second time, and neither is ever bounced back through
-/// OTP after already having one.
+/// Prompt 05E: end-to-end regression for the full server-side phone +
+/// PIN login cycle — returning login never shows OTP, a wrong PIN never
+/// signs anyone in, and "Toka" always returns to the same phone + PIN
+/// login screen (never a cached/local unlock, never an automatic OTP).
 ///
-/// Unlike the rest of the widget suite (which bypasses PIN gating via
-/// `pinBypassOverrides()`), this test drives the *real*
-/// [currentSupabaseUserProvider]/[latestAuthChangeEventProvider]/
-/// `authUserIdProvider`/`LockNotifier`/`hasPinConfiguredProvider` chain
-/// — only the two raw signal providers are overridden with fakes this
-/// test controls directly, standing in for what the real Supabase
-/// auth-state stream would emit at each step (`FakeAuthRepository`
-/// itself never touches them, matching how the real `AuthRepository`
-/// abstraction never drives auth state directly either — see
-/// docs/product/authentication.md).
+/// Like the rest of this suite that exercises real auth-state
+/// transitions (see pin_recovery_navigation_test.dart), this drives the
+/// real [currentSupabaseUserProvider]/`authUserIdProvider`/
+/// `hasPinCredentialProvider` chain — [FakeAuthRepository] itself never
+/// touches auth state (matching how the real `AuthRepository`
+/// abstraction doesn't either; only Supabase Auth's own state stream
+/// does), so a successful `pinLogin`/`signOut` call is followed by the
+/// test manually flipping the fake user provider, standing in for what
+/// that stream would emit.
 User _fakeUser(String id) => User(
   id: id,
   appMetadata: const {},
@@ -48,19 +46,9 @@ class _FakeUserNotifier extends Notifier<User?> {
   void set(User? user) => state = user;
 }
 
-class _FakeEventNotifier extends Notifier<AuthChangeEvent?> {
-  @override
-  AuthChangeEvent? build() => null;
-  void set(AuthChangeEvent? event) => state = event;
-}
-
 final _fakeUserProvider = NotifierProvider<_FakeUserNotifier, User?>(
   _FakeUserNotifier.new,
 );
-final _fakeEventProvider =
-    NotifierProvider<_FakeEventNotifier, AuthChangeEvent?>(
-      _FakeEventNotifier.new,
-    );
 
 MembershipContext _membership(String uid) => MembershipContext(
   membershipId: 'm-$uid',
@@ -77,15 +65,14 @@ MembershipContext _membership(String uid) => MembershipContext(
 
 void main() {
   testWidgets(
-    'switching between two accounts never re-triggers PIN setup for an '
-    'account that already has one, and never leaves the app cycling '
-    'between OTP and PIN setup',
+    'returning login is always phone + PIN, never OTP; a wrong PIN never '
+    'signs in; a correct PIN signs in; and "Toka" always returns to the '
+    'same phone + PIN login screen',
     (tester) async {
       tester.view.physicalSize = const Size(390, 844);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);
 
-      final fakePins = FakePinRepository();
       final fakeAuth = FakeAuthRepository();
 
       await tester.pumpWidget(
@@ -95,11 +82,8 @@ void main() {
             currentSupabaseUserProvider.overrideWith(
               (ref) => ref.watch(_fakeUserProvider),
             ),
-            latestAuthChangeEventProvider.overrideWith(
-              (ref) => ref.watch(_fakeEventProvider),
-            ),
             authRepositoryProvider.overrideWithValue(fakeAuth),
-            pinRepositoryProvider.overrideWithValue(fakePins),
+            hasPinCredentialProvider.overrideWith((ref) async => true),
             appContextProvider.overrideWith((ref) async {
               final user = ref.watch(_fakeUserProvider);
               if (user == null) {
@@ -122,29 +106,51 @@ void main() {
         tester.element(find.byType(UmojaApp)),
       );
 
-      // Starts signed out.
+      // ---------------------------------------------------------------
+      // 1. Signed out: the phone + PIN login screen, never OTP, never
+      // an auto-sent code.
+      // ---------------------------------------------------------------
       expect(find.text('Karibu Umoja'), findsOneWidget);
+      expect(find.text('Thibitisha Namba'), findsNothing);
+      expect(fakeAuth.sentOtpTo, isEmpty);
 
       // ---------------------------------------------------------------
-      // 1-2. Account A's OTP verifies -> unlocks immediately -> no PIN
-      // yet for A -> PIN setup -> completing it lands in the app.
+      // 2. A wrong PIN never signs in — the login screen shows a
+      // generic error and stays put.
       // ---------------------------------------------------------------
+      fakeAuth.pinLoginFailure = const AuthFailure(
+        AuthFailureType.invalidCredentials,
+        'Phone number or PIN is incorrect.',
+      );
+      await tester.enterText(find.byType(TextField).at(0), '0712345678');
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField).at(1), '0000');
+      await tester.pumpAndSettle();
+
+      expect(fakeAuth.pinLoginCalls, [('+255712345678', '0000')]);
+      expect(find.text('Namba ya simu au PIN si sahihi.'), findsOneWidget);
+      expect(find.text('Karibu Umoja'), findsOneWidget);
+      expect(find.byType(NavigationBar), findsNothing);
+
+      // ---------------------------------------------------------------
+      // 3. The correct PIN signs in — never a fake/service-role
+      // shortcut; this only happens because pin-login itself succeeded
+      // and the resulting session was installed for real.
+      // ---------------------------------------------------------------
+      fakeAuth.pinLoginFailure = null;
+      await tester.enterText(find.byType(TextField).at(1), '1234');
+      await tester.pumpAndSettle();
+
+      expect(fakeAuth.pinLoginCalls.last, ('+255712345678', '1234'));
       container.read(_fakeUserProvider.notifier).set(_fakeUser('userA'));
-      container.read(_fakeEventProvider.notifier).set(AuthChangeEvent.signedIn);
-      await tester.pumpAndSettle();
-
-      expect(find.text('Tengeneza PIN'), findsOneWidget);
-      await tester.enterText(find.byType(TextField), '1234');
-      await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextField), '1234');
       await tester.pumpAndSettle();
 
       expect(find.byType(NavigationBar), findsOneWidget);
-      expect(await fakePins.hasPin('userA'), isTrue);
 
       // ---------------------------------------------------------------
-      // 3. Normal "Toka" locks without touching Supabase; the correct
-      // PIN unlocks straight back into the app.
+      // 4. "Toka" always calls the real Supabase sign-out and returns
+      // to the same phone + PIN login screen — never an automatic OTP,
+      // never a local unlock screen.
       // ---------------------------------------------------------------
       await tester.tap(
         find.descendant(
@@ -154,110 +160,15 @@ void main() {
       );
       await tester.pumpAndSettle();
       await tester.tap(find.text('Toka'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Ingiza PIN'), findsOneWidget);
-      expect(fakeAuth.signOutCallCount, 0);
-
-      await tester.enterText(find.byType(TextField), '1234');
-      await tester.pumpAndSettle();
-      expect(find.byType(NavigationBar), findsOneWidget);
-
-      // ---------------------------------------------------------------
-      // 4. "Tumia namba nyingine": deliberate account switch. Signs out
-      // (simulated the same way a real Supabase signedOut event would
-      // arrive) and must NOT clear A's stored PIN.
-      // ---------------------------------------------------------------
-      await tester.tap(
-        find.descendant(
-          of: find.byType(NavigationBar),
-          matching: find.text('Zaidi'),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Toka'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Tumia namba nyingine'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Tumia Namba Nyingine'));
-      await tester.pump();
-
-      container.read(_fakeUserProvider.notifier).set(null);
-      container
-          .read(_fakeEventProvider.notifier)
-          .set(AuthChangeEvent.signedOut);
       await tester.pumpAndSettle();
 
       expect(fakeAuth.signOutCallCount, 1);
-      expect(find.text('Karibu Umoja'), findsOneWidget);
-      expect(
-        await fakePins.hasPin('userA'),
-        isTrue,
-        reason:
-            'account switch must not clear the outgoing user\'s PIN '
-            '(prompt 05D §12)',
-      );
-
-      // ---------------------------------------------------------------
-      // 5-6. Phone B's OTP verifies -> unlocks immediately -> no PIN
-      // yet for B -> PIN setup exactly once -> lands in the app
-      // directly, never bounced back to OTP.
-      // ---------------------------------------------------------------
-      container.read(_fakeUserProvider.notifier).set(_fakeUser('userB'));
-      container.read(_fakeEventProvider.notifier).set(AuthChangeEvent.signedIn);
-      await tester.pumpAndSettle();
-
-      expect(find.text('Tengeneza PIN'), findsOneWidget);
-      await tester.enterText(find.byType(TextField), '5678');
-      await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextField), '5678');
-      await tester.pumpAndSettle();
-
-      expect(find.byType(NavigationBar), findsOneWidget);
-      expect(find.text('Thibitisha'), findsNothing);
-      expect(await fakePins.hasPin('userB'), isTrue);
-
-      // ---------------------------------------------------------------
-      // 7-11. Switch back to A. A's OTP verifies again — since A's PIN
-      // was never cleared and the fresh signedIn event unlocks
-      // immediately, this must land directly in the app: no PIN setup,
-      // no PIN unlock, no bounce back to OTP.
-      // ---------------------------------------------------------------
-      await tester.tap(
-        find.descendant(
-          of: find.byType(NavigationBar),
-          matching: find.text('Zaidi'),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Toka'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Tumia namba nyingine'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Tumia Namba Nyingine'));
-      await tester.pump();
-
       container.read(_fakeUserProvider.notifier).set(null);
-      container
-          .read(_fakeEventProvider.notifier)
-          .set(AuthChangeEvent.signedOut);
       await tester.pumpAndSettle();
 
-      container.read(_fakeUserProvider.notifier).set(_fakeUser('userA'));
-      container.read(_fakeEventProvider.notifier).set(AuthChangeEvent.signedIn);
-      await tester.pumpAndSettle();
-
-      expect(
-        find.byType(NavigationBar),
-        findsOneWidget,
-        reason:
-            'A\'s existing PIN must be recognized and the session '
-            'unlocked immediately on its fresh OTP verify',
-      );
-      expect(find.text('Tengeneza PIN'), findsNothing);
-      expect(find.text('Ingiza PIN'), findsNothing);
-      expect(find.text('Karibu Umoja'), findsNothing);
-      expect(find.text('Thibitisha'), findsNothing);
+      expect(find.text('Karibu Umoja'), findsOneWidget);
+      expect(find.text('Thibitisha Namba'), findsNothing);
+      expect(fakeAuth.sentOtpTo, isEmpty);
     },
   );
 }

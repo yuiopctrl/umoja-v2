@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:umoja/app/app.dart';
+import 'package:umoja/core/supabase/supabase_client_provider.dart';
 import 'package:umoja/features/auth/models/app_context.dart';
 import 'package:umoja/features/auth/models/app_user_profile.dart';
 import 'package:umoja/features/auth/models/group_context.dart';
@@ -11,12 +12,10 @@ import 'package:umoja/features/auth/providers/app_context_provider.dart';
 import 'package:umoja/features/auth/providers/auth_repository_provider.dart';
 import 'package:umoja/features/auth/providers/auth_session_provider.dart';
 import 'package:umoja/features/members/providers/member_repository_provider.dart';
-import 'package:umoja/features/security/providers/pin_repository_provider.dart';
+import 'package:umoja/features/security/providers/has_pin_credential_provider.dart';
 
 import 'fakes/fake_auth_repository.dart';
 import 'fakes/fake_member_repository.dart';
-import 'fakes/fake_pin_repository.dart';
-import 'fakes/pin_bypass_overrides.dart';
 
 MembershipContext _membership() {
   return const MembershipContext(
@@ -42,39 +41,50 @@ final _fakeUser = User(
   phone: '255712345678',
 );
 
-/// Pumps the app locked on `/auth/pin-unlock`, then taps "Umesahau
-/// PIN?" to land on the recovery verify screen — the shared entry point
-/// for every test below. [pinRepository] pre-seeds an existing PIN
-/// (`'1234'`) so tests can assert it survives cancellation.
-Future<({FakeAuthRepository auth, FakePinRepository pin})>
+class _FakeUserNotifier extends Notifier<User?> {
+  @override
+  User? build() => null;
+  void set(User? user) => state = user;
+}
+
+final _fakeUserProvider = NotifierProvider<_FakeUserNotifier, User?>(
+  _FakeUserNotifier.new,
+);
+
+/// Pumps the app signed out on `/auth/phone` (the combined phone+PIN
+/// login screen), types a phone number, then taps "Umesahau PIN?" to
+/// land on the recovery verify screen — the shared entry point for
+/// every test below (prompt 05E §17: recovery starts signed-out, before
+/// its own OTP verify, reusing whatever phone number is already typed
+/// on the login screen).
+Future<({FakeAuthRepository auth, ProviderContainer container})>
 _pumpOnRecoveryVerify(WidgetTester tester) async {
   tester.view.physicalSize = const Size(390, 844);
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
 
   final fakeAuth = FakeAuthRepository();
-  final fakePin = FakePinRepository();
-  await fakePin.setPin(userId: 'u1', pin: '1234');
-  // The seed call above is not a "the app saved a new PIN" event —
-  // clear it so `setPinCalls` in the tests below only reflects PIN
-  // saves that happen *during* the test itself.
-  fakePin.setPinCalls.clear();
 
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        ...pinBypassOverrides(),
-        authSessionStatusProvider.overrideWithValue(AuthSessionStatus.signedIn),
+        isSupabaseConfiguredProvider.overrideWithValue(true),
+        currentSupabaseUserProvider.overrideWith(
+          (ref) => ref.watch(_fakeUserProvider),
+        ),
         authRepositoryProvider.overrideWithValue(fakeAuth),
-        pinRepositoryProvider.overrideWithValue(fakePin),
-        currentSupabaseUserProvider.overrideWithValue(_fakeUser),
-        appContextProvider.overrideWith(
-          (ref) async => AppContext(
-            userId: 'u1',
+        hasPinCredentialProvider.overrideWith((ref) async => true),
+        appContextProvider.overrideWith((ref) async {
+          final user = ref.watch(_fakeUserProvider);
+          if (user == null) {
+            throw StateError('appContextProvider read while signed out');
+          }
+          return AppContext(
+            userId: user.id,
             profile: const AppUserProfile(id: 'u1', fullName: 'Admin Caller'),
             memberships: [_membership()],
-          ),
-        ),
+          );
+        }),
         memberRepositoryProvider.overrideWithValue(FakeMemberRepository()),
       ],
       child: const UmojaApp(),
@@ -82,32 +92,28 @@ _pumpOnRecoveryVerify(WidgetTester tester) async {
   );
   await tester.pumpAndSettle();
 
-  await tester.tap(
-    find.descendant(
-      of: find.byType(NavigationBar),
-      matching: find.text('Zaidi'),
-    ),
+  final container = ProviderScope.containerOf(
+    tester.element(find.byType(UmojaApp)),
   );
-  await tester.pumpAndSettle();
-  await tester.tap(find.text('Toka'));
-  await tester.pumpAndSettle();
-  expect(find.text('Ingiza PIN'), findsOneWidget);
 
+  expect(find.text('Karibu Umoja'), findsOneWidget);
+  await tester.enterText(find.byType(TextField).first, '0712345678');
+  await tester.pumpAndSettle();
   await tester.tap(find.text('Umesahau PIN?'));
   await tester.pumpAndSettle();
   expect(find.text('Thibitisha Namba Yako'), findsOneWidget);
 
-  return (auth: fakeAuth, pin: fakePin);
+  return (auth: fakeAuth, container: container);
 }
 
 void main() {
-  testWidgets('PIN screen -> Forgot PIN works', (tester) async {
+  testWidgets('login screen -> Umesahau PIN works', (tester) async {
     await _pumpOnRecoveryVerify(tester);
     // _pumpOnRecoveryVerify's own assertion already proves this; kept
     // as an explicit, separately-named test per prompt 05C §23 item 1.
   });
 
-  testWidgets('the Forgot PIN screen has a visible Back/Cancel', (
+  testWidgets('the recovery verify screen has a visible Back/Cancel', (
     tester,
   ) async {
     await _pumpOnRecoveryVerify(tester);
@@ -116,7 +122,7 @@ void main() {
     expect(find.text('Ghairi'), findsOneWidget);
   });
 
-  testWidgets('tapping Back from Forgot PIN returns to PIN login', (
+  testWidgets('tapping Back from recovery verify returns to the login screen', (
     tester,
   ) async {
     await _pumpOnRecoveryVerify(tester);
@@ -124,24 +130,24 @@ void main() {
     await tester.tap(find.byKey(const Key('authScreenBackButton')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Ingiza PIN'), findsOneWidget);
+    expect(find.text('Karibu Umoja'), findsOneWidget);
     expect(find.text('Thibitisha Namba Yako'), findsNothing);
   });
 
   testWidgets(
-    'tapping the Cancel text button from Forgot PIN also returns to PIN '
-    'login (same destination as the visible Back arrow)',
+    'tapping the Cancel text button from recovery verify also returns to '
+    'the login screen (same destination as the visible Back arrow)',
     (tester) async {
       await _pumpOnRecoveryVerify(tester);
 
       await tester.tap(find.text('Ghairi'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Ingiza PIN'), findsOneWidget);
+      expect(find.text('Karibu Umoja'), findsOneWidget);
     },
   );
 
-  testWidgets('cancelling Forgot PIN does not call Supabase signOut', (
+  testWidgets('cancelling recovery does not call Supabase signOut', (
     tester,
   ) async {
     final fakes = await _pumpOnRecoveryVerify(tester);
@@ -152,29 +158,22 @@ void main() {
     expect(fakes.auth.signOutCallCount, 0);
   });
 
-  testWidgets('cancelling Forgot PIN does not clear the existing PIN — the old '
-      'PIN still unlocks the app afterward', (tester) async {
+  testWidgets('cancelling recovery never calls setup-pin — the existing PIN '
+      'credential is only ever replaced by a *successful* recovery', (
+    tester,
+  ) async {
     final fakes = await _pumpOnRecoveryVerify(tester);
 
     await tester.tap(find.byKey(const Key('authScreenBackButton')));
     await tester.pumpAndSettle();
 
-    expect(fakes.pin.clearPinCalls, isEmpty);
-    expect(await fakes.pin.hasPin('u1'), isTrue);
-    expect(
-      await fakes.pin.verifyPin(userId: 'u1', pin: '1234'),
-      isTrue,
-      reason: 'the pre-existing PIN must still be valid',
-    );
-
-    // And it actually still unlocks the app from PIN login.
-    await tester.enterText(find.byType(TextField), '1234');
-    await tester.pumpAndSettle();
-    expect(find.textContaining('Habari'), findsWidgets);
+    expect(fakes.auth.setupPinCalls, isEmpty);
   });
 
   testWidgets('the Android system Back button/gesture behaves exactly like the '
-      'visible Back arrow (returns to PIN login, no signOut)', (tester) async {
+      'visible Back arrow (returns to the login screen, no signOut)', (
+    tester,
+  ) async {
     final fakes = await _pumpOnRecoveryVerify(tester);
 
     // `PopScope` is generic (`PopScope<T>`) in this Flutter version,
@@ -189,74 +188,79 @@ void main() {
     popScope.onPopInvokedWithResult!(false, null);
     await tester.pumpAndSettle();
 
-    expect(find.text('Ingiza PIN'), findsOneWidget);
+    expect(find.text('Karibu Umoja'), findsOneWidget);
     expect(fakes.auth.signOutCallCount, 0);
   });
 
   testWidgets('a successful OTP verify proceeds to the New PIN screen', (
     tester,
   ) async {
-    await _pumpOnRecoveryVerify(tester);
-
-    // Auto-sent on entry; auto-submits at 6 digits.
-    await tester.enterText(find.byType(TextField), '000000');
-    await tester.pumpAndSettle();
-
-    expect(find.text('Tengeneza PIN'), findsOneWidget);
-  });
-
-  testWidgets('a successful new PIN replaces the old PIN only after both entry '
-      'steps complete — not merely after OTP verification', (tester) async {
     final fakes = await _pumpOnRecoveryVerify(tester);
 
-    await tester.enterText(find.byType(TextField), '000000');
+    await tester.enterText(find.byType(TextField).first, '000000');
     await tester.pumpAndSettle();
+    // Verifying the OTP establishes a real Supabase session — simulate
+    // that side effect the same way the rest of the suite does (the
+    // fake repository itself never drives auth state, matching how the
+    // real `AuthRepository` abstraction doesn't either).
+    fakes.container.read(_fakeUserProvider.notifier).set(_fakeUser);
+    await tester.pumpAndSettle();
+
     expect(find.text('Tengeneza PIN'), findsOneWidget);
-
-    // Reaching the New PIN screen alone must not have touched the
-    // stored PIN yet.
-    expect(fakes.pin.setPinCalls, isEmpty);
-    expect(
-      await fakes.pin.verifyPin(userId: 'u1', pin: '1234'),
-      isTrue,
-      reason: 'old PIN must still be intact mid-recovery',
-    );
-
-    await tester.enterText(find.byType(TextField), '5678');
-    await tester.pumpAndSettle();
-    expect(find.text('Thibitisha PIN'), findsOneWidget);
-    // Old PIN still untouched between "enter" and "confirm".
-    expect(fakes.pin.setPinCalls, isEmpty);
-
-    await tester.enterText(find.byType(TextField), '5678');
-    await tester.pumpAndSettle();
-
-    expect(fakes.pin.setPinCalls, ['u1']);
-    expect(await fakes.pin.verifyPin(userId: 'u1', pin: '5678'), isTrue);
-    expect(
-      await fakes.pin.verifyPin(userId: 'u1', pin: '1234'),
-      isFalse,
-      reason: 'the old PIN is replaced once the new one is confirmed',
-    );
   });
 
   testWidgets(
-    'backing out of the New PIN screen before completing it routes to a '
-    'safe, still-locked PIN entry state rather than unlocking the app',
+    'a new PIN is only sent to setup-pin once both entry steps complete — '
+    'not merely after OTP verification — and then lands in the app',
     (tester) async {
       final fakes = await _pumpOnRecoveryVerify(tester);
 
-      await tester.enterText(find.byType(TextField), '000000');
+      await tester.enterText(find.byType(TextField).first, '000000');
+      await tester.pumpAndSettle();
+      fakes.container.read(_fakeUserProvider.notifier).set(_fakeUser);
+      await tester.pumpAndSettle();
+      expect(find.text('Tengeneza PIN'), findsOneWidget);
+
+      // Reaching the New PIN screen alone must not have called
+      // setup-pin yet.
+      expect(fakes.auth.setupPinCalls, isEmpty);
+
+      await tester.enterText(find.byType(TextField).first, '5678');
+      await tester.pumpAndSettle();
+      expect(find.text('Thibitisha PIN'), findsOneWidget);
+      expect(fakes.auth.setupPinCalls, isEmpty);
+
+      await tester.enterText(find.byType(TextField).first, '5678');
+      await tester.pumpAndSettle();
+
+      expect(fakes.auth.setupPinCalls, ['5678']);
+      // A successful recovery lands in the operational app, not stuck
+      // on the New PIN screen (see PinSetupScreen's explicit navigate-
+      // on-success for the recovery reuse).
+      expect(find.textContaining('Habari'), findsWidgets);
+    },
+  );
+
+  testWidgets(
+    'backing out of the New PIN screen before completing it never calls '
+    'setup-pin or signs the user out — the fresh OTP session and the '
+    'still-intact old PIN credential land the user in the app rather than '
+    'being force-walked through a redundant login',
+    (tester) async {
+      final fakes = await _pumpOnRecoveryVerify(tester);
+
+      await tester.enterText(find.byType(TextField).first, '000000');
+      await tester.pumpAndSettle();
+      fakes.container.read(_fakeUserProvider.notifier).set(_fakeUser);
       await tester.pumpAndSettle();
       expect(find.text('Tengeneza PIN'), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('authScreenBackButton')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Ingiza PIN'), findsOneWidget);
-      expect(fakes.pin.setPinCalls, isEmpty);
-      expect(fakes.pin.clearPinCalls, isEmpty);
+      expect(fakes.auth.setupPinCalls, isEmpty);
       expect(fakes.auth.signOutCallCount, 0);
+      expect(find.textContaining('Habari'), findsWidgets);
     },
   );
 }

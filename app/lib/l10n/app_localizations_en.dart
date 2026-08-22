@@ -52,6 +52,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authPhoneHint => '0712345678';
 
   @override
+  String get authLoginSubtitle => 'Enter your phone number and PIN.';
+
+  @override
+  String get authPinLabel => 'PIN';
+
+  @override
+  String get loginButton => 'Log In';
+
+  @override
+  String get authFirstTimeLink => 'First time? Verify by OTP';
+
+  @override
   String get otpTitle => 'Verify Number';
 
   @override
@@ -81,7 +93,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pinSetupSubtitle =>
-      'Create a 4-digit PIN to unlock the app quickly.';
+      'This PIN will be used to sign in to Umoja next time.';
 
   @override
   String get pinConfirmTitle => 'Confirm PIN';
@@ -96,23 +108,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pinSetupSaveError => 'Could not save your PIN. Please try again.';
 
   @override
-  String get pinUnlockTitle => 'Enter PIN';
-
-  @override
-  String get pinUnlockSubtitle => 'Unlock the app to continue.';
-
-  @override
-  String get pinUnlockButton => 'Unlock';
-
-  @override
   String get pinForgot => 'Forgot PIN?';
-
-  @override
-  String get pinInvalid => 'Incorrect PIN.';
-
-  @override
-  String get pinTooManyAttempts =>
-      'Too many attempts. Wait a moment before trying again.';
 
   @override
   String get pinRecoveryVerifyTitle => 'Verify Your Number';
@@ -125,22 +121,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String pinRecoveryVerifySubtitleWithPhone(String phone) {
     return 'Enter the code sent to $phone';
   }
-
-  @override
-  String get lockToPinAction => 'Log Out';
-
-  @override
-  String get switchAccountAction => 'Use another number';
-
-  @override
-  String get switchAccountConfirmTitle => 'Use a different phone number?';
-
-  @override
-  String get switchAccountConfirmMessage =>
-      'You\'ll be signed out of this account on this device. You\'ll need to verify the new number by OTP.';
-
-  @override
-  String get switchAccountConfirmButton => 'Use Another Number';
 
   @override
   String get profileOnboardingTitle => 'Complete Your Profile';
@@ -482,6 +462,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authErrorUnexpected => 'Something went wrong. Please try again.';
+
+  @override
+  String get authErrorInvalidCredentials => 'Phone number or PIN is incorrect.';
+
+  @override
+  String get authErrorPinLocked => 'Try again in a few minutes.';
 
   @override
   String get memberErrorAccountDisabled =>

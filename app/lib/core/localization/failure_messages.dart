@@ -13,6 +13,8 @@ String authFailureMessage(AppLocalizations l10n, AuthFailureType type) {
     AuthFailureType.tooManyRequests => l10n.authErrorTooManyRequests,
     AuthFailureType.network => l10n.authErrorNetwork,
     AuthFailureType.unexpected => l10n.authErrorUnexpected,
+    AuthFailureType.invalidCredentials => l10n.authErrorInvalidCredentials,
+    AuthFailureType.pinLocked => l10n.authErrorPinLocked,
   };
 }
 

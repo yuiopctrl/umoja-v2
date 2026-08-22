@@ -10,20 +10,23 @@ import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/utils/auto_submit_on_length.dart';
 import '../../../core/utils/masked_phone.dart';
+import '../../../core/utils/otp_autofill.dart';
+import '../../../core/widgets/umoja_code_input.dart';
 import '../../auth/presentation/widgets/auth_screen_layout.dart';
-import '../../auth/providers/auth_session_provider.dart';
 import '../controllers/pin_recovery_controller.dart';
 
 const _otpLength = 6;
 
 /// `/auth/pin-recover/verify` — the "Umesahau PIN?" recovery step
-/// (prompt 05C §18-20). Re-verifies an OTP for the phone already on the
-/// authenticated account (never re-entered, never a different number —
-/// that's "Tumia namba nyingine" instead) so the existing Supabase
-/// session is never touched here. A visible back arrow AND the Android
-/// system Back both return to `/auth/pin-unlock` with no side effects
-/// at all — the current PIN and session are completely untouched by
-/// simply visiting or cancelling out of this screen.
+/// (prompt 05E §17). The OTP for [PinRecoveryController.state.phone]
+/// was already sent by the login screen's "Umesahau PIN?" tap (via
+/// `PinRecoveryController.start`) before navigating here — this screen
+/// never sends it itself, so arriving here never double-sends. A
+/// visible back arrow AND the Android system Back both return to
+/// `/auth/phone` and reset recovery state — no side effects on any
+/// existing PIN credential or session, since nothing here mutates
+/// either until a replacement PIN is actually confirmed on the next
+/// screen.
 class PinRecoveryVerifyScreen extends ConsumerStatefulWidget {
   const PinRecoveryVerifyScreen({super.key});
 
@@ -36,8 +39,8 @@ class _PinRecoveryVerifyScreenState
     extends ConsumerState<PinRecoveryVerifyScreen> {
   final _codeController = TextEditingController();
   AutoSubmitOnLength? _autoSubmit;
+  late final OtpAutofill _otpAutofill;
   Timer? _cooldownTicker;
-  bool _requested = false;
 
   @override
   void initState() {
@@ -50,25 +53,34 @@ class _PinRecoveryVerifyScreenState
     _cooldownTicker = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) setState(() {});
     });
-    // Auto-send once per screen visit — the phone is already known, so
-    // there is no "enter phone number" step to trigger this from.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_requested) {
-        _requested = true;
-        ref.read(pinRecoveryControllerProvider.notifier).sendOtp();
-      }
-    });
+    _otpAutofill = ref.read(otpAutofillProvider);
+    _listenForSmsAutofill();
+  }
+
+  Future<void> _listenForSmsAutofill() async {
+    final code = await _otpAutofill.listenForCode();
+    // See OtpVerifyScreen._listenForSmsAutofill — same reasoning: this
+    // just drives the existing manual-entry path, so auto-submit and
+    // the controller's own isSubmitting guard already prevent a
+    // duplicate/late verifyOtp call.
+    if (!mounted || code == null || _codeController.text.isNotEmpty) return;
+    _codeController.text = code;
   }
 
   @override
   void dispose() {
     _cooldownTicker?.cancel();
     _autoSubmit?.dispose();
+    _otpAutofill.cancel();
     _codeController.dispose();
     super.dispose();
   }
 
-  void _back() => context.go(AppRoutes.pinUnlock);
+  void _back() {
+    _otpAutofill.cancel();
+    ref.read(pinRecoveryControllerProvider.notifier).reset();
+    context.go(AppRoutes.authPhone);
+  }
 
   Future<void> _verify() async {
     FocusScope.of(context).unfocus();
@@ -76,6 +88,7 @@ class _PinRecoveryVerifyScreenState
         .read(pinRecoveryControllerProvider.notifier)
         .verifyOtp(_codeController.text);
     if (ok && mounted) {
+      _otpAutofill.cancel();
       context.go(AppRoutes.pinForgotNewPin);
     } else if (mounted) {
       _codeController.clear();
@@ -89,7 +102,7 @@ class _PinRecoveryVerifyScreenState
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(pinRecoveryControllerProvider);
-    final phone = maskedPhone(ref.watch(currentSupabaseUserProvider)?.phone);
+    final phone = maskedPhone(state.phone?.e164);
     final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
 
@@ -110,19 +123,17 @@ class _PinRecoveryVerifyScreenState
               : l10n.pinRecoveryVerifySubtitleWithPhone(phone),
           style: textTheme.bodyLarge,
         ),
-        const SizedBox(height: UmojaSpacing.xxl),
-        TextField(
-          controller: _codeController,
-          autofocus: true,
-          enabled: !state.isSubmitting,
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.done,
-          maxLength: _otpLength,
-          decoration: InputDecoration(
-            labelText: l10n.otpCodeLabel,
-            counterText: '',
+        const SizedBox(height: UmojaSpacing.xl),
+        Center(
+          child: UmojaCodeInput(
+            controller: _codeController,
+            length: _otpLength,
+            autofocus: true,
+            enabled: !state.isSubmitting,
+            hasError: state.errorType != null,
+            isOneTimeCode: true,
+            onSubmitted: (_) => _verify(),
           ),
-          onSubmitted: (_) => _verify(),
         ),
         if (state.errorType != null) ...[
           const SizedBox(height: UmojaSpacing.xs),

@@ -29,24 +29,6 @@ final currentSupabaseUserProvider = Provider<User?>((ref) {
   );
 });
 
-/// The most recent Supabase [AuthChangeEvent], or `null` when Supabase
-/// is unconfigured or no event has arrived yet. Exists specifically so
-/// [LockNotifier] can tell *why* [authUserIdProvider] just changed —
-/// a live [AuthChangeEvent.signedIn] (a phone OTP just verified in
-/// this running process) vs. anything else, most importantly a
-/// cold-start [AuthChangeEvent.initialSession] restoring an
-/// already-valid session — without depending on the raw stream
-/// directly. Guarded the same way [currentSupabaseUserProvider] is: a
-/// provider container with Supabase never configured/initialized
-/// (every isolated controller/unit test that doesn't override this)
-/// safely resolves to `null` here rather than throwing.
-final latestAuthChangeEventProvider = Provider<AuthChangeEvent?>((ref) {
-  if (!ref.watch(isSupabaseConfiguredProvider)) return null;
-
-  final authState = ref.watch(authStateChangesProvider);
-  return authState.maybeWhen(data: (state) => state.event, orElse: () => null);
-});
-
 /// The current user's id, or `null` when signed out. Unlike
 /// [currentSupabaseUserProvider] (which re-emits a new [User] instance
 /// on every auth event, including token refresh), this only changes

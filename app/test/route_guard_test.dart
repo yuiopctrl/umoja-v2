@@ -8,7 +8,6 @@ import 'package:umoja/features/auth/models/group_context.dart';
 import 'package:umoja/features/auth/models/membership_context.dart';
 import 'package:umoja/features/auth/providers/auth_session_provider.dart';
 import 'package:umoja/features/auth/providers/selected_group_provider.dart';
-import 'package:umoja/features/security/providers/lock_state_provider.dart';
 
 MembershipContext _membership({
   required String id,
@@ -33,26 +32,23 @@ const _complete = AppUserProfile(id: 'u1', fullName: 'Amina');
 const _incomplete = AppUserProfile(id: 'u1');
 const _inactive = AppUserProfile(id: 'u1', fullName: 'Amina', isActive: false);
 
-/// Wraps [computeRedirect] with PIN-gating defaults ("already configured
-/// and unlocked") so every pre-existing test below continues to
-/// exercise exactly the profile/group routing it did before the PIN
-/// gate was introduced — only the dedicated 'PIN gating' group overrides
-/// [hasPinConfigured]/[lockState].
+/// Wraps [computeRedirect] with a PIN-gating default ("already
+/// configured") so every pre-existing test below continues to exercise
+/// exactly the profile/group routing it did before — only the dedicated
+/// 'PIN gating' group overrides [hasPinCredential].
 String? _redirect({
   required AuthSessionStatus sessionStatus,
   required AsyncValue<AppContext?> appContext,
   required SelectedGroupState selectedGroup,
   required String currentLocation,
-  AsyncValue<bool> hasPinConfigured = const AsyncValue.data(true),
-  LockState lockState = LockState.unlocked,
+  AsyncValue<bool> hasPinCredential = const AsyncValue.data(true),
 }) {
   return computeRedirect(
     sessionStatus: sessionStatus,
     appContext: appContext,
     selectedGroup: selectedGroup,
     currentLocation: currentLocation,
-    hasPinConfigured: hasPinConfigured,
-    lockState: lockState,
+    hasPinCredential: hasPinCredential,
   );
 }
 
@@ -93,58 +89,58 @@ void main() {
         isNull,
       );
     });
+
+    test('a signed-out user already on the recovery verify/new-PIN routes is '
+        'left alone — "Umesahau PIN?" can start before its own OTP verify, '
+        'signed out (prompt 05E §17)', () {
+      for (final recoveryRoute in [
+        AppRoutes.pinForgotVerify,
+        AppRoutes.pinForgotNewPin,
+      ]) {
+        expect(
+          _redirect(
+            sessionStatus: AuthSessionStatus.signedOut,
+            appContext: const AsyncValue.loading(),
+            selectedGroup: const SelectedGroupLoading(),
+            currentLocation: recoveryRoute,
+          ),
+          isNull,
+          reason: '$recoveryRoute should not redirect while signed out',
+        );
+      }
+    });
   });
 
   group('PIN gating', () {
-    test('signed in, PIN not yet configured, routes to PIN setup', () {
+    test('signed in, no PIN credential yet, routes to PIN setup', () {
       expect(
         _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: const AsyncValue.loading(),
           selectedGroup: const SelectedGroupLoading(),
           currentLocation: AppRoutes.splash,
-          hasPinConfigured: const AsyncValue.data(false),
-          lockState: LockState.locked,
+          hasPinCredential: const AsyncValue.data(false),
         ),
         AppRoutes.pinSetup,
       );
     });
 
-    test('signed in, PIN configured but locked, routes to PIN unlock', () {
+    test('signed in, on the PIN setup route, PIN credential already '
+        'configured, leaves the PIN flow (mirrors leaving /auth/* once '
+        'signed in)', () {
       expect(
         _redirect(
           sessionStatus: AuthSessionStatus.signedIn,
           appContext: const AsyncValue.loading(),
           selectedGroup: const SelectedGroupLoading(),
-          currentLocation: AppRoutes.splash,
-          hasPinConfigured: const AsyncValue.data(true),
-          lockState: LockState.locked,
-        ),
-        AppRoutes.pinUnlock,
-      );
-    });
-
-    test('signed in, on the PIN unlock route, PIN configured and unlocked, '
-        'leaves the PIN flow (mirrors leaving /auth/* once signed in)', () {
-      final context = AppContext(
-        userId: 'u1',
-        profile: _complete,
-        memberships: const [],
-      );
-      expect(
-        _redirect(
-          sessionStatus: AuthSessionStatus.signedIn,
-          appContext: AsyncValue.data(context),
-          selectedGroup: const SelectedGroupNone(),
-          currentLocation: AppRoutes.pinUnlock,
-          hasPinConfigured: const AsyncValue.data(true),
-          lockState: LockState.unlocked,
+          currentLocation: AppRoutes.pinSetup,
+          hasPinCredential: const AsyncValue.data(true),
         ),
         AppRoutes.splash,
       );
     });
 
-    test('signed in, PIN configured and unlocked, falls through to normal '
+    test('signed in, PIN credential configured, falls through to normal '
         'profile/group routing', () {
       final context = AppContext(
         userId: 'u1',
@@ -157,54 +153,37 @@ void main() {
           appContext: AsyncValue.data(context),
           selectedGroup: const SelectedGroupNone(),
           currentLocation: AppRoutes.splash,
-          hasPinConfigured: const AsyncValue.data(true),
-          lockState: LockState.unlocked,
+          hasPinCredential: const AsyncValue.data(true),
         ),
         AppRoutes.onboardingGroup,
       );
     });
 
-    test('while locked, the recovery verify/new-PIN routes are left alone '
-        '(prompt 05C §18-21 — "Umesahau PIN?" must stay reachable without '
-        'being bounced back to /auth/pin-unlock)', () {
+    test('signed in, on the recovery verify/new-PIN routes, is left alone '
+        'regardless of PIN-credential state (prompt 05E §17 — recovery must '
+        'not be bounced away by the PIN gate, since the *old* credential '
+        'still exists server-side until a replacement is confirmed)', () {
       for (final recoveryRoute in [
         AppRoutes.pinForgotVerify,
         AppRoutes.pinForgotNewPin,
       ]) {
-        expect(
-          _redirect(
-            sessionStatus: AuthSessionStatus.signedIn,
-            appContext: const AsyncValue.loading(),
-            selectedGroup: const SelectedGroupLoading(),
-            currentLocation: recoveryRoute,
-            hasPinConfigured: const AsyncValue.data(true),
-            lockState: LockState.locked,
-          ),
-          isNull,
-          reason: '$recoveryRoute should not redirect while locked',
-        );
+        for (final hasPinCredential in [
+          const AsyncValue<bool>.data(true),
+          const AsyncValue<bool>.data(false),
+        ]) {
+          expect(
+            _redirect(
+              sessionStatus: AuthSessionStatus.signedIn,
+              appContext: const AsyncValue.loading(),
+              selectedGroup: const SelectedGroupLoading(),
+              currentLocation: recoveryRoute,
+              hasPinCredential: hasPinCredential,
+            ),
+            isNull,
+            reason: '$recoveryRoute should not redirect ($hasPinCredential)',
+          );
+        }
       }
-    });
-
-    test('a recovery route cannot expose operational screens without PIN — '
-        'once unlocked, it falls through to normal routing rather than '
-        'being treated as a resolved destination', () {
-      final context = AppContext(
-        userId: 'u1',
-        profile: _complete,
-        memberships: const [],
-      );
-      expect(
-        _redirect(
-          sessionStatus: AuthSessionStatus.signedIn,
-          appContext: AsyncValue.data(context),
-          selectedGroup: const SelectedGroupNone(),
-          currentLocation: AppRoutes.pinForgotNewPin,
-          hasPinConfigured: const AsyncValue.data(true),
-          lockState: LockState.unlocked,
-        ),
-        AppRoutes.onboardingGroup,
-      );
     });
 
     test('the PIN gate resolves before the appContext fetch', () {
@@ -216,8 +195,7 @@ void main() {
           appContext: const AsyncValue.loading(),
           selectedGroup: const SelectedGroupLoading(),
           currentLocation: AppRoutes.home,
-          hasPinConfigured: const AsyncValue.data(false),
-          lockState: LockState.locked,
+          hasPinCredential: const AsyncValue.data(false),
         ),
         AppRoutes.pinSetup,
       );

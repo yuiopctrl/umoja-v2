@@ -8,6 +8,18 @@ enum AuthFailureType {
   tooManyRequests,
   network,
   unexpected,
+
+  /// Prompt 05E: phone-or-PIN login failed — deliberately the single,
+  /// generic outcome for an unknown phone, a wrong PIN, or a phone
+  /// with no PIN configured yet, so `pin-login` never reveals which
+  /// (see `docs/product/authentication.md`, "no account enumeration").
+  invalidCredentials,
+
+  /// Prompt 05E: the account is temporarily locked after repeated
+  /// failed PIN attempts — deliberately distinct from
+  /// [invalidCredentials] (the user is told to wait, not to recheck
+  /// their PIN).
+  pinLocked,
 }
 
 /// A safe-to-display authentication failure. Never wraps a raw

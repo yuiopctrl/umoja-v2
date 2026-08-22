@@ -19,6 +19,11 @@
   "authPhoneLabel": "Namba ya simu",
   "authPhoneHint": "0712345678",
 
+  "authLoginSubtitle": "Ingiza namba yako ya simu na PIN.",
+  "authPinLabel": "PIN",
+  "loginButton": "Ingia",
+  "authFirstTimeLink": "Mara ya kwanza? Thibitisha namba kwa OTP",
+
   "otpTitle": "Thibitisha Namba",
   "otpSubtitle": "Weka msimbo uliotumwa kwa {phone}",
   "@otpSubtitle": {
@@ -34,30 +39,19 @@
   },
 
   "pinSetupTitle": "Tengeneza PIN",
-  "pinSetupSubtitle": "Tengeneza namba nne za siri kufungua programu haraka.",
+  "pinSetupSubtitle": "PIN hii itatumika kuingia Umoja siku zijazo.",
   "pinConfirmTitle": "Thibitisha PIN",
-  "pinConfirmSubtitle": "Weka tena PIN yako kuthibitisha.",
+  "pinConfirmSubtitle": "Weka PIN yako tena kuthibitisha.",
   "pinMismatch": "PIN hazifanani. Jaribu tena.",
   "pinSetupSaveError": "Imeshindikana kuhifadhi PIN. Jaribu tena.",
 
-  "pinUnlockTitle": "Ingiza PIN",
-  "pinUnlockSubtitle": "Fungua programu kuendelea.",
-  "pinUnlockButton": "Fungua",
   "pinForgot": "Umesahau PIN?",
-  "pinInvalid": "PIN si sahihi.",
-  "pinTooManyAttempts": "Umejaribu mara nyingi. Subiri kidogo kabla ya kujaribu tena.",
   "pinRecoveryVerifyTitle": "Thibitisha Namba Yako",
   "pinRecoveryVerifySubtitle": "Weka msimbo uliotumwa kuthibitisha namba yako.",
   "pinRecoveryVerifySubtitleWithPhone": "Weka msimbo uliotumwa kwa {phone}",
   "@pinRecoveryVerifySubtitleWithPhone": {
     "placeholders": { "phone": { "type": "String" } }
   },
-
-  "lockToPinAction": "Toka",
-  "switchAccountAction": "Tumia namba nyingine",
-  "switchAccountConfirmTitle": "Tumia namba nyingine ya simu?",
-  "switchAccountConfirmMessage": "Utatoka kwenye akaunti hii kwenye kifaa hiki. Utahitaji kuthibitisha namba mpya kwa OTP.",
-  "switchAccountConfirmButton": "Tumia Namba Nyingine",
 
   "profileOnboardingTitle": "Kamilisha Wasifu Wako",
   "fullNameLabel": "Jina kamili",
@@ -195,6 +189,8 @@
   "authErrorTooManyRequests": "Umejaribu mara nyingi. Tafadhali subiri kidogo kisha ujaribu tena.",
   "authErrorNetwork": "Imeshindikana kuunganisha. Jaribu tena.",
   "authErrorUnexpected": "Hitilafu imetokea. Jaribu tena.",
+  "authErrorInvalidCredentials": "Namba ya simu au PIN si sahihi.",
+  "authErrorPinLocked": "Jaribu tena baada ya dakika chache.",
 
   "memberErrorAccountDisabled": "Ufikiaji wa akaunti yako umezimwa. Wasiliana na msimamizi wa kikundi.",
   "memberErrorLastAdminRequired": "Kikundi lazima kibaki na angalau msimamizi mmoja aliye active.",

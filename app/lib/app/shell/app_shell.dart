@@ -85,7 +85,7 @@ class AppShell extends StatelessWidget {
                 horizontal: extended ? UmojaSpacing.lg : 0,
               ),
               child: extended
-                  ? const UmojaBrandMark.lockup(size: 52, wordmarkHeight: 44)
+                  ? const UmojaBrandMark.sidebarLockup(wordmarkHeight: 44)
                   : const UmojaBrandMark.symbol(size: 36),
             ),
             destinations: [

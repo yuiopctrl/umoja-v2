@@ -123,8 +123,8 @@ void main() {
 
       expect(
         find.byType(UmojaBrandMark),
-        findsNWidgets(2),
-      ); // symbol + wordmark
+        findsOneWidget,
+      ); // the unified symbol+wordmark lockup (prompt 05E)
       expect(find.text('Umoja v2'), findsNothing);
       expect(find.text('Karibu Umoja'), findsOneWidget);
     },

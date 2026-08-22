@@ -12,6 +12,7 @@ import 'package:umoja/features/auth/providers/auth_session_provider.dart';
 import 'package:umoja/features/members/domain/group_member.dart';
 import 'package:umoja/features/members/domain/group_member_page.dart';
 import 'package:umoja/features/members/providers/member_repository_provider.dart';
+import 'package:umoja/core/widgets/umoja_language_selector.dart';
 
 import 'fakes/fake_member_repository.dart';
 import 'fakes/pin_bypass_overrides.dart';
@@ -154,5 +155,39 @@ void main() {
 
     expect(find.text('More'), findsNothing);
     expect(find.textContaining('Msimamizi'), findsOneWidget);
+  });
+
+  testWidgets('the compact SW|EN switcher is present and functional on the '
+      'signed-out phone-entry (login) screen — by design it is not shown '
+      'on OTP/PIN screens, where the language is already chosen', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          ...pinBypassOverrides(),
+          authSessionStatusProvider.overrideWithValue(
+            AuthSessionStatus.signedOut,
+          ),
+        ],
+        child: const UmojaApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Karibu Umoja'), findsOneWidget);
+    expect(find.byType(UmojaLanguageSelector), findsOneWidget);
+    expect(find.text('SW'), findsOneWidget);
+    expect(find.text('EN'), findsOneWidget);
+
+    await tester.tap(find.text('EN'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Karibu Umoja'), findsNothing);
+    expect(find.textContaining('Umoja'), findsWidgets);
   });
 }

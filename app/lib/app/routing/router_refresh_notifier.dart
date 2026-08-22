@@ -4,8 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/auth/providers/app_context_provider.dart';
 import '../../features/auth/providers/auth_session_provider.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
-import '../../features/security/providers/has_pin_configured_provider.dart';
-import '../../features/security/providers/lock_state_provider.dart';
+import '../../features/security/providers/has_pin_credential_provider.dart';
 
 /// Bridges Riverpod state changes into go_router's `refreshListenable`,
 /// so the router re-evaluates its redirect on every relevant state
@@ -17,8 +16,7 @@ class RouterRefreshNotifier extends ChangeNotifier {
       ..listen(authSessionStatusProvider, (_, _) => notifyListeners())
       ..listen(appContextProvider, (_, _) => notifyListeners())
       ..listen(selectedGroupProvider, (_, _) => notifyListeners())
-      ..listen(hasPinConfiguredProvider, (_, _) => notifyListeners())
-      ..listen(lockStateProvider, (_, _) => notifyListeners());
+      ..listen(hasPinCredentialProvider, (_, _) => notifyListeners());
   }
 
   final Ref _ref;

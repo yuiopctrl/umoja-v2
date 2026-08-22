@@ -44,6 +44,7 @@ dependencies:
   shared_preferences: ^2.5.5
   crypto: ^3.0.7
   intl: ^0.20.3
+  smart_auth: ^3.2.0
 
 dev_dependencies:
   flutter_test:
@@ -98,24 +99,27 @@ flutter:
   # Kiswahili (default) and English. See docs/product/design-system.md.
   generate: true
 
-  # Official Umoja brand assets (see docs/product/design-system.md) —
-  # the umbrella/people symbol and the custom UMOJA wordmark artwork.
-  # Both ship as pre-cleaned, genuinely-transparent PNGs; neither is
-  # regenerated at build time. `umoja_mark.png`/`umoja_wordmark.png`
-  # remain the authoritative source artwork (also what
-  # flutter_launcher_icons reads, above) and are never edited in
-  # place. `_trim` variants are a runtime-only derivative — the same
-  # artwork, cropped to its opaque bounding box (plus a few native
-  # pixels of safety margin) to remove the large baked-in transparent
-  # canvas margin that made the symbol/wordmark lockup read as
-  # overspaced (prompt 05D §16-17) — never distorted/stretched, never
-  # cropping actual glyph pixels. `UmojaBrandMark` renders these; the
-  # originals stay for app-icon generation and provenance.
+  # Official Umoja brand assets (see docs/product/design-system.md).
+  # `umoja_mark.png` remains the authoritative source `flutter_launcher_icons`
+  # reads (above) for native app-icon generation and is never edited in
+  # place. `umoja_icon.png`/`umoja_wordmark.png`/`umoja_combined.png`/
+  # `umoja_sidebar.png` are the current official on-screen artwork
+  # (prompt 05F — supplied directly, replacing the earlier
+  # manually-composed lockup). `_trim` variants are a runtime-only
+  # derivative of each — cropped to its own opaque bounding box (plus a
+  # few native pixels of safety margin) to remove baked-in transparent
+  # canvas margin, never distorted/stretched, never cropping actual
+  # glyph pixels. `UmojaBrandMark` renders only the `_trim` files.
   assets:
     - assets/branding/umoja_mark.png
-    - assets/branding/umoja_mark_trim.png
+    - assets/branding/umoja_icon.png
+    - assets/branding/umoja_icon_trim.png
     - assets/branding/umoja_wordmark.png
     - assets/branding/umoja_wordmark_trim.png
+    - assets/branding/umoja_combined.png
+    - assets/branding/umoja_combined_trim.png
+    - assets/branding/umoja_sidebar.png
+    - assets/branding/umoja_sidebar_trim.png
 
   # Ubuntu is Umoja's application UI typeface (distinct from the brand
   # wordmark artwork above, which is never recreated with it). Bundled

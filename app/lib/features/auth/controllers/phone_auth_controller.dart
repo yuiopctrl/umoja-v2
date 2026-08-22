@@ -6,9 +6,11 @@ import '../providers/auth_repository_provider.dart';
 
 enum PhoneAuthStep { enteringPhone, awaitingCode }
 
-/// State for the two-screen phone-OTP flow (`/auth/phone` ->
-/// `/auth/verify`). One controller backs both screens since they are a
-/// single sequential flow, not two independent features.
+/// State for the phone-OTP flow: "Thibitisha kwa OTP" on the login
+/// screen (`/auth/phone`) -> `/auth/verify`. Prompt 05E: OTP is no
+/// longer the normal returning-login path (see [PinLoginController]
+/// for that) — this controller now backs only first-time verification
+/// and PIN recovery.
 class PhoneAuthState {
   const PhoneAuthState({
     this.step = PhoneAuthStep.enteringPhone,
@@ -44,7 +46,8 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
   @override
   PhoneAuthState build() => const PhoneAuthState();
 
-  /// Returns `true` if the OTP was sent successfully.
+  /// Returns `true` if the OTP was sent successfully and the caller
+  /// should navigate to the verify screen.
   Future<bool> submitPhone(String rawPhone) async {
     if (state.isSubmitting) return false;
 

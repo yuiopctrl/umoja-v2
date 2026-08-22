@@ -52,6 +52,18 @@ class AppLocalizationsSw extends AppLocalizations {
   String get authPhoneHint => '0712345678';
 
   @override
+  String get authLoginSubtitle => 'Ingiza namba yako ya simu na PIN.';
+
+  @override
+  String get authPinLabel => 'PIN';
+
+  @override
+  String get loginButton => 'Ingia';
+
+  @override
+  String get authFirstTimeLink => 'Mara ya kwanza? Thibitisha namba kwa OTP';
+
+  @override
   String get otpTitle => 'Thibitisha Namba';
 
   @override
@@ -80,14 +92,13 @@ class AppLocalizationsSw extends AppLocalizations {
   String get pinSetupTitle => 'Tengeneza PIN';
 
   @override
-  String get pinSetupSubtitle =>
-      'Tengeneza namba nne za siri kufungua programu haraka.';
+  String get pinSetupSubtitle => 'PIN hii itatumika kuingia Umoja siku zijazo.';
 
   @override
   String get pinConfirmTitle => 'Thibitisha PIN';
 
   @override
-  String get pinConfirmSubtitle => 'Weka tena PIN yako kuthibitisha.';
+  String get pinConfirmSubtitle => 'Weka PIN yako tena kuthibitisha.';
 
   @override
   String get pinMismatch => 'PIN hazifanani. Jaribu tena.';
@@ -96,23 +107,7 @@ class AppLocalizationsSw extends AppLocalizations {
   String get pinSetupSaveError => 'Imeshindikana kuhifadhi PIN. Jaribu tena.';
 
   @override
-  String get pinUnlockTitle => 'Ingiza PIN';
-
-  @override
-  String get pinUnlockSubtitle => 'Fungua programu kuendelea.';
-
-  @override
-  String get pinUnlockButton => 'Fungua';
-
-  @override
   String get pinForgot => 'Umesahau PIN?';
-
-  @override
-  String get pinInvalid => 'PIN si sahihi.';
-
-  @override
-  String get pinTooManyAttempts =>
-      'Umejaribu mara nyingi. Subiri kidogo kabla ya kujaribu tena.';
 
   @override
   String get pinRecoveryVerifyTitle => 'Thibitisha Namba Yako';
@@ -125,22 +120,6 @@ class AppLocalizationsSw extends AppLocalizations {
   String pinRecoveryVerifySubtitleWithPhone(String phone) {
     return 'Weka msimbo uliotumwa kwa $phone';
   }
-
-  @override
-  String get lockToPinAction => 'Toka';
-
-  @override
-  String get switchAccountAction => 'Tumia namba nyingine';
-
-  @override
-  String get switchAccountConfirmTitle => 'Tumia namba nyingine ya simu?';
-
-  @override
-  String get switchAccountConfirmMessage =>
-      'Utatoka kwenye akaunti hii kwenye kifaa hiki. Utahitaji kuthibitisha namba mpya kwa OTP.';
-
-  @override
-  String get switchAccountConfirmButton => 'Tumia Namba Nyingine';
 
   @override
   String get profileOnboardingTitle => 'Kamilisha Wasifu Wako';
@@ -484,6 +463,12 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get authErrorUnexpected => 'Hitilafu imetokea. Jaribu tena.';
+
+  @override
+  String get authErrorInvalidCredentials => 'Namba ya simu au PIN si sahihi.';
+
+  @override
+  String get authErrorPinLocked => 'Jaribu tena baada ya dakika chache.';
 
   @override
   String get memberErrorAccountDisabled =>

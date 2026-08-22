@@ -9,6 +9,8 @@ import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/utils/auto_submit_on_length.dart';
+import '../../../core/utils/otp_autofill.dart';
+import '../../../core/widgets/umoja_code_input.dart';
 import '../controllers/phone_auth_controller.dart';
 import 'widgets/auth_screen_layout.dart';
 
@@ -34,6 +36,7 @@ class OtpVerifyScreen extends ConsumerStatefulWidget {
 class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
   final _codeController = TextEditingController();
   AutoSubmitOnLength? _autoSubmit;
+  late final OtpAutofill _otpAutofill;
 
   // Only drives the "Resend in Ns" countdown label; owned and disposed
   // by this widget so it never leaks past screen disposal. The actual
@@ -52,18 +55,34 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
       length: _otpLength,
       onComplete: _verify,
     );
+    _otpAutofill = ref.read(otpAutofillProvider);
+    _listenForSmsAutofill();
+  }
+
+  Future<void> _listenForSmsAutofill() async {
+    final code = await _otpAutofill.listenForCode();
+    // Setting the text (if still on this screen, and nothing has
+    // already filled it — e.g. the user typed/pasted meanwhile) drives
+    // the exact same path as manual entry: `_autoSubmit`'s listener
+    // fires once at 6 digits, and `PhoneAuthController.verifyOtp`'s own
+    // `isSubmitting` guard makes a stray late/duplicate call a no-op —
+    // no separate duplicate-prevention plumbing is needed here.
+    if (!mounted || code == null || _codeController.text.isNotEmpty) return;
+    _codeController.text = code;
   }
 
   @override
   void dispose() {
     _cooldownTicker?.cancel();
     _autoSubmit?.dispose();
+    _otpAutofill.cancel();
     _codeController.dispose();
     super.dispose();
   }
 
   Future<void> _verify() async {
     FocusScope.of(context).unfocus();
+    _otpAutofill.cancel();
     await ref
         .read(phoneAuthControllerProvider.notifier)
         .verifyOtp(_codeController.text);
@@ -107,19 +126,17 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
         Text(l10n.otpTitle, style: textTheme.headlineMedium),
         const SizedBox(height: UmojaSpacing.sm),
         Text(l10n.otpSubtitle(phone.display), style: textTheme.bodyLarge),
-        const SizedBox(height: UmojaSpacing.xxl),
-        TextField(
-          controller: _codeController,
-          autofocus: true,
-          enabled: !state.isSubmitting,
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.done,
-          maxLength: _otpLength,
-          decoration: InputDecoration(
-            labelText: l10n.otpCodeLabel,
-            counterText: '',
+        const SizedBox(height: UmojaSpacing.xl),
+        Center(
+          child: UmojaCodeInput(
+            controller: _codeController,
+            length: _otpLength,
+            autofocus: true,
+            enabled: !state.isSubmitting,
+            hasError: state.errorType != null,
+            isOneTimeCode: true,
+            onSubmitted: (_) => _verify(),
           ),
-          onSubmitted: (_) => _verify(),
         ),
         if (state.errorType != null) ...[
           const SizedBox(height: UmojaSpacing.xs),

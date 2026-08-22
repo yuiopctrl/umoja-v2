@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/utils/auto_submit_on_length.dart';
+import '../../../core/widgets/umoja_code_input.dart';
 import '../../auth/presentation/widgets/auth_screen_layout.dart';
 import '../controllers/pin_setup_controller.dart';
-import 'widgets/pin_dots.dart';
 
 const _pinLength = 4;
 
@@ -53,10 +54,21 @@ class _PinSetupScreenState extends ConsumerState<PinSetupScreen> {
       length: _pinLength,
       onComplete: _submit,
     );
+    // Drives the button's enabled/disabled state as digits are typed
+    // (prompt 05E-A §9) — auto-submit alone only reacts at exactly 4
+    // digits, so without this listener the button would stay in
+    // whatever enabled state it had at the last full rebuild while the
+    // user is still mid-entry.
+    _controller.addListener(_onTextChanged);
+  }
+
+  void _onTextChanged() {
+    if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_onTextChanged);
     _autoSubmit?.dispose();
     _controller.dispose();
     super.dispose();
@@ -67,8 +79,23 @@ class _PinSetupScreenState extends ConsumerState<PinSetupScreen> {
     final step = ref.read(pinSetupControllerProvider).step;
     if (step == PinSetupStep.enterPin) {
       notifier.submitFirst(_controller.text);
-    } else {
-      await notifier.submitConfirm(_controller.text);
+      return;
+    }
+
+    final ok = await notifier.submitConfirm(_controller.text);
+    // Plain first-time setup (`cancelRoute == null`) relies on the
+    // router's redirect to leave `/auth/pin-setup` once
+    // `hasPinCredentialProvider` refetches `true` — same pattern as
+    // every other auth screen. The recovery reuse of this screen
+    // (`cancelRoute` set) cannot rely on that: `route_guard.dart`
+    // deliberately exempts `/auth/pin-recover/new-pin` from the
+    // redirect unconditionally, in either direction, so a user mid
+    // recovery is never bounced away before finishing it (see
+    // `_pinRecoveryRoutes` doc). That same exemption would otherwise
+    // strand a *successful* recovery here forever, so this reuse alone
+    // navigates explicitly on success.
+    if (ok && widget.cancelRoute != null && mounted) {
+      context.go(AppRoutes.splash);
     }
   }
 
@@ -94,6 +121,15 @@ class _PinSetupScreenState extends ConsumerState<PinSetupScreen> {
     }
 
     final isConfirm = state.step == PinSetupStep.confirmPin;
+    final isComplete = _controller.text.length == _pinLength;
+    // Deliberately does NOT also require `!state.isSubmitting` — a
+    // request in flight must keep the button's *enabled* (deep
+    // Umoja-red) visual with a loading indicator swapped in for the
+    // label (prompt 05E-A §9), never fall back to the pale disabled
+    // style. Double-submission is already prevented one layer down:
+    // both `PinSetupController.submitFirst`/`submitConfirm` no-op while
+    // `state.isSubmitting` is true, so a stray extra tap here is safe.
+    final canSubmit = isComplete;
 
     return AuthScreenLayout(
       showLanguageSelector: false,
@@ -111,34 +147,26 @@ class _PinSetupScreenState extends ConsumerState<PinSetupScreen> {
           style: textTheme.bodyLarge,
         ),
         const SizedBox(height: UmojaSpacing.xxl),
-        ValueListenableBuilder(
-          valueListenable: _controller,
-          builder: (context, value, _) =>
-              PinDots(filled: value.text.length, length: _pinLength),
-        ),
-        const SizedBox(height: UmojaSpacing.lg),
-        TextField(
-          key: ValueKey(state.step),
-          controller: _controller,
-          autofocus: true,
-          enabled: !state.isSubmitting,
-          obscureText: true,
-          textAlign: TextAlign.center,
-          keyboardType: TextInputType.number,
-          maxLength: _pinLength,
-          style: textTheme.headlineSmall,
-          decoration: const InputDecoration(counterText: ''),
-          onSubmitted: (_) => _submit(),
+        Center(
+          child: UmojaCodeInput(
+            key: ValueKey(state.step),
+            controller: _controller,
+            length: _pinLength,
+            autofocus: true,
+            enabled: !state.isSubmitting,
+            hasError: state.mismatch || state.saveError,
+            onSubmitted: (_) => _submit(),
+          ),
         ),
         if (state.mismatch) ...[
-          const SizedBox(height: UmojaSpacing.xs),
+          const SizedBox(height: UmojaSpacing.md),
           Text(
             l10n.pinMismatch,
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
         ],
         if (state.saveError) ...[
-          const SizedBox(height: UmojaSpacing.xs),
+          const SizedBox(height: UmojaSpacing.md),
           Text(
             l10n.pinSetupSaveError,
             style: TextStyle(color: Theme.of(context).colorScheme.error),
@@ -148,7 +176,7 @@ class _PinSetupScreenState extends ConsumerState<PinSetupScreen> {
         SizedBox(
           width: double.infinity,
           child: FilledButton(
-            onPressed: state.isSubmitting ? null : _submit,
+            onPressed: canSubmit ? _submit : null,
             child: state.isSubmitting
                 ? const SizedBox(
                     height: 18,

@@ -182,6 +182,30 @@ abstract class AppLocalizations {
   /// **'0712345678'**
   String get authPhoneHint;
 
+  /// No description provided for @authLoginSubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ingiza namba yako ya simu na PIN.'**
+  String get authLoginSubtitle;
+
+  /// No description provided for @authPinLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'PIN'**
+  String get authPinLabel;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ingia'**
+  String get loginButton;
+
+  /// No description provided for @authFirstTimeLink.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mara ya kwanza? Thibitisha namba kwa OTP'**
+  String get authFirstTimeLink;
+
   /// No description provided for @otpTitle.
   ///
   /// In sw, this message translates to:
@@ -233,7 +257,7 @@ abstract class AppLocalizations {
   /// No description provided for @pinSetupSubtitle.
   ///
   /// In sw, this message translates to:
-  /// **'Tengeneza namba nne za siri kufungua programu haraka.'**
+  /// **'PIN hii itatumika kuingia Umoja siku zijazo.'**
   String get pinSetupSubtitle;
 
   /// No description provided for @pinConfirmTitle.
@@ -245,7 +269,7 @@ abstract class AppLocalizations {
   /// No description provided for @pinConfirmSubtitle.
   ///
   /// In sw, this message translates to:
-  /// **'Weka tena PIN yako kuthibitisha.'**
+  /// **'Weka PIN yako tena kuthibitisha.'**
   String get pinConfirmSubtitle;
 
   /// No description provided for @pinMismatch.
@@ -260,41 +284,11 @@ abstract class AppLocalizations {
   /// **'Imeshindikana kuhifadhi PIN. Jaribu tena.'**
   String get pinSetupSaveError;
 
-  /// No description provided for @pinUnlockTitle.
-  ///
-  /// In sw, this message translates to:
-  /// **'Ingiza PIN'**
-  String get pinUnlockTitle;
-
-  /// No description provided for @pinUnlockSubtitle.
-  ///
-  /// In sw, this message translates to:
-  /// **'Fungua programu kuendelea.'**
-  String get pinUnlockSubtitle;
-
-  /// No description provided for @pinUnlockButton.
-  ///
-  /// In sw, this message translates to:
-  /// **'Fungua'**
-  String get pinUnlockButton;
-
   /// No description provided for @pinForgot.
   ///
   /// In sw, this message translates to:
   /// **'Umesahau PIN?'**
   String get pinForgot;
-
-  /// No description provided for @pinInvalid.
-  ///
-  /// In sw, this message translates to:
-  /// **'PIN si sahihi.'**
-  String get pinInvalid;
-
-  /// No description provided for @pinTooManyAttempts.
-  ///
-  /// In sw, this message translates to:
-  /// **'Umejaribu mara nyingi. Subiri kidogo kabla ya kujaribu tena.'**
-  String get pinTooManyAttempts;
 
   /// No description provided for @pinRecoveryVerifyTitle.
   ///
@@ -313,36 +307,6 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Weka msimbo uliotumwa kwa {phone}'**
   String pinRecoveryVerifySubtitleWithPhone(String phone);
-
-  /// No description provided for @lockToPinAction.
-  ///
-  /// In sw, this message translates to:
-  /// **'Toka'**
-  String get lockToPinAction;
-
-  /// No description provided for @switchAccountAction.
-  ///
-  /// In sw, this message translates to:
-  /// **'Tumia namba nyingine'**
-  String get switchAccountAction;
-
-  /// No description provided for @switchAccountConfirmTitle.
-  ///
-  /// In sw, this message translates to:
-  /// **'Tumia namba nyingine ya simu?'**
-  String get switchAccountConfirmTitle;
-
-  /// No description provided for @switchAccountConfirmMessage.
-  ///
-  /// In sw, this message translates to:
-  /// **'Utatoka kwenye akaunti hii kwenye kifaa hiki. Utahitaji kuthibitisha namba mpya kwa OTP.'**
-  String get switchAccountConfirmMessage;
-
-  /// No description provided for @switchAccountConfirmButton.
-  ///
-  /// In sw, this message translates to:
-  /// **'Tumia Namba Nyingine'**
-  String get switchAccountConfirmButton;
 
   /// No description provided for @profileOnboardingTitle.
   ///
@@ -979,6 +943,18 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Hitilafu imetokea. Jaribu tena.'**
   String get authErrorUnexpected;
+
+  /// No description provided for @authErrorInvalidCredentials.
+  ///
+  /// In sw, this message translates to:
+  /// **'Namba ya simu au PIN si sahihi.'**
+  String get authErrorInvalidCredentials;
+
+  /// No description provided for @authErrorPinLocked.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jaribu tena baada ya dakika chache.'**
+  String get authErrorPinLocked;
 
   /// No description provided for @memberErrorAccountDisabled.
   ///

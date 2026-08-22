@@ -54,8 +54,9 @@ void main() {
     // (prompt 05A §10) — the brand wordmark artwork is shown instead.
     expect(find.text('Umoja v2'), findsNothing);
     expect(find.text('Karibu Umoja'), findsOneWidget);
-    expect(find.text('Endelea'), findsOneWidget);
-    expect(find.byType(TextField), findsOneWidget);
+    expect(find.text('Ingia'), findsOneWidget);
+    // The phone field and the PIN code input's underlying hidden field.
+    expect(find.byType(TextField), findsNWidgets(2));
   });
 
   testWidgets('an incomplete profile routes to profile onboarding', (
@@ -244,8 +245,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextField), '0712345678');
-      await tester.tap(find.text('Endelea'));
+      await tester.enterText(find.byType(TextField).first, '0712345678');
+      await tester.tap(find.text('Mara ya kwanza? Thibitisha namba kwa OTP'));
       await tester.pumpAndSettle();
 
       expect(fakeAuth.sentOtpTo, ['+255712345678']);
@@ -272,8 +273,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextField), '0712345678');
-      await tester.tap(find.text('Endelea'));
+      await tester.enterText(find.byType(TextField).first, '0712345678');
+      await tester.tap(find.text('Mara ya kwanza? Thibitisha namba kwa OTP'));
       await tester.pumpAndSettle();
 
       fakeAuth.verifyOtpFailure = const AuthFailure(

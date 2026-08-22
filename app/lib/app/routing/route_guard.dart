@@ -4,7 +4,6 @@ import '../../features/auth/models/app_context.dart';
 import '../../features/auth/models/membership_context.dart';
 import '../../features/auth/providers/auth_session_provider.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
-import '../../features/security/providers/lock_state_provider.dart';
 import 'app_routes.dart';
 
 /// Classifies why a signed-in, profile-complete user has zero eligible
@@ -36,16 +35,16 @@ String noEligibleGroupTarget(List<MembershipContext> memberships) {
 }
 
 const _authRoutes = {AppRoutes.authPhone, AppRoutes.authVerify};
-const _pinRoutes = {AppRoutes.pinSetup, AppRoutes.pinUnlock};
 
-/// "Umesahau PIN?" recovery sub-flow (prompt 05C §18-21) — reachable
-/// only while [LockState.locked] (see below), alongside [pinUnlock]
-/// itself. Deliberately NOT included in [_pinRoutes]: that set also
-/// means "PIN flow resolved, leave it" once unlocked, and recovery
-/// routes should never be treated as a resolved destination — once
-/// `PinSetupController.submitConfirm` unlocks, the normal
-/// profile/group/operational fallback below takes over and routes
-/// onward (typically to Home) on its own.
+/// "Umesahau PIN?" recovery sub-flow (prompt 05E §17) — reachable both
+/// signed-out (before its own OTP verify) and signed-in (right after,
+/// until a new PIN is confirmed). Deliberately exempt from the
+/// PIN-credential gate below in both directions: the recovery flow
+/// must not be redirected to `/auth/pin-setup` (it has its own
+/// dedicated new-PIN step, `pinForgotNewPin`) nor away to the app
+/// (the user has not replaced their PIN credential yet — the *old*
+/// one still exists server-side, which would otherwise read as
+/// "already configured" and skip straight past recovery).
 const _pinRecoveryRoutes = {
   AppRoutes.pinForgotVerify,
   AppRoutes.pinForgotNewPin,
@@ -62,20 +61,20 @@ const _pinRecoveryRoutes = {
 /// back/forward, stale bookmark) still cannot read or mutate data the
 /// backend would not otherwise allow. See docs/product/authentication.md.
 ///
-/// PIN gating (`hasPinConfigured`/`lockState`) is resolved before any
-/// profile/group/operational decision — it is purely local
-/// (secure-storage + in-memory) state layered in front of the existing
-/// Supabase-session-driven routing below it, never a parallel auth
-/// system: a signed-out session always overrides it (handled above),
-/// and the PIN never gates anything the backend itself doesn't also
-/// enforce via RLS/RPC permission checks.
+/// Prompt 05E §31 deliberately simplified this: there is no local
+/// device-lock concept any more. The only local/session state this
+/// checks, in order, is: does a valid Supabase session exist, does the
+/// signed-in user have a PIN credential configured server-side
+/// (`hasPinCredential`, via `rpc_has_pin_credential()`), is a
+/// recovery/setup route explicitly in progress, and — only once all of
+/// that is resolved — the existing profile/group/operational routing
+/// below.
 String? computeRedirect({
   required AuthSessionStatus sessionStatus,
   required AsyncValue<AppContext?> appContext,
   required SelectedGroupState selectedGroup,
   required String currentLocation,
-  required AsyncValue<bool> hasPinConfigured,
-  required LockState lockState,
+  required AsyncValue<bool> hasPinCredential,
 }) {
   if (sessionStatus == AuthSessionStatus.configMissing) {
     // Rendered directly at '/' — nothing else is reachable without
@@ -84,33 +83,38 @@ String? computeRedirect({
   }
 
   if (sessionStatus == AuthSessionStatus.signedOut) {
+    // Prompt 05E §17: the recovery flow can start signed-out (before
+    // its own OTP verify) — never bounced to the login screen while
+    // it's already mid-flow.
+    if (_pinRecoveryRoutes.contains(currentLocation)) return null;
     return _authRoutes.contains(currentLocation) ? null : AppRoutes.authPhone;
   }
 
   // From here on, sessionStatus == signedIn.
+  if (_pinRecoveryRoutes.contains(currentLocation)) {
+    // Recovery in progress — never redirected away by the
+    // PIN-credential check below in either direction (see doc above).
+    return null;
+  }
+
   if (_authRoutes.contains(currentLocation)) {
     // Already authenticated; leave the login flow.
     return AppRoutes.splash;
   }
 
-  // PIN gate: no PIN yet -> set one up; PIN configured but locked ->
-  // unlock. Resolved before appContext (a network fetch) since this is
-  // purely local and should never wait on it.
-  if (hasPinConfigured.isLoading) {
+  // PIN-credential gate: no credential yet -> set one up. Resolved
+  // before appContext (a network fetch) since this is what a fresh OTP
+  // verify needs immediately, and should never wait on it.
+  if (hasPinCredential.isLoading) {
     return currentLocation == AppRoutes.splash ? null : AppRoutes.splash;
   }
-  final pinConfigured = hasPinConfigured.value ?? false;
+  final pinConfigured = hasPinCredential.value ?? false;
   if (!pinConfigured) {
     return currentLocation == AppRoutes.pinSetup ? null : AppRoutes.pinSetup;
   }
-  if (lockState == LockState.locked) {
-    final onPinUnlockOrRecovery =
-        currentLocation == AppRoutes.pinUnlock ||
-        _pinRecoveryRoutes.contains(currentLocation);
-    return onPinUnlockOrRecovery ? null : AppRoutes.pinUnlock;
-  }
-  if (_pinRoutes.contains(currentLocation)) {
-    // PIN already resolved (configured + unlocked); leave the PIN flow.
+  if (currentLocation == AppRoutes.pinSetup) {
+    // PIN already configured — nothing left to set up if somehow still
+    // on this route (e.g. a stale deep link).
     return AppRoutes.splash;
   }
 
