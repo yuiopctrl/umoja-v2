@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../theme/umoja_colors.dart';
-
 /// A deterministic initials avatar (e.g. "Fredrick Mrema" -> "FM",
 /// "Anna" -> "A") — no stored/uploaded avatar images, and no random
 /// per-rebuild color, since the same name should always render the
@@ -26,18 +24,19 @@ class UmojaInitialsAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       width: size,
       height: size,
       alignment: Alignment.center,
-      decoration: const BoxDecoration(
-        color: UmojaColors.primarySoft,
+      decoration: BoxDecoration(
+        color: scheme.primaryContainer,
         shape: BoxShape.circle,
       ),
       child: Text(
         initialsFor(name),
         style: TextStyle(
-          color: UmojaColors.primaryDark,
+          color: scheme.onPrimaryContainer,
           fontWeight: FontWeight.w700,
           fontSize: size * 0.4,
         ),

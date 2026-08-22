@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../theme/umoja_colors.dart';
 import '../theme/umoja_radius.dart';
 
 /// Primary (filled) action. Disabled and shows an inline spinner while
@@ -90,16 +89,17 @@ class UmojaDangerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final error = Theme.of(context).colorScheme.error;
     final child = _ButtonContent(
       label: label,
       isLoading: isLoading,
-      spinnerColor: filled ? Colors.white : UmojaColors.danger,
+      spinnerColor: filled ? Colors.white : error,
     );
 
     final button = filled
         ? FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: UmojaColors.danger,
+              backgroundColor: error,
               foregroundColor: Colors.white,
               minimumSize: const Size(64, 48),
               shape: RoundedRectangleBorder(
@@ -111,8 +111,8 @@ class UmojaDangerButton extends StatelessWidget {
           )
         : OutlinedButton(
             style: OutlinedButton.styleFrom(
-              foregroundColor: UmojaColors.danger,
-              side: const BorderSide(color: UmojaColors.danger),
+              foregroundColor: error,
+              side: BorderSide(color: error),
               minimumSize: const Size(64, 48),
               shape: RoundedRectangleBorder(
                 borderRadius: UmojaRadius.controlAll,

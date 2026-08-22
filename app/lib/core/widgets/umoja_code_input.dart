@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../theme/umoja_colors.dart';
 import '../theme/umoja_radius.dart';
 import '../theme/umoja_spacing.dart';
 
@@ -159,11 +158,12 @@ class _CodeBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final borderColor = hasError
-        ? UmojaColors.danger
+        ? scheme.error
         : active
-        ? UmojaColors.primary
-        : UmojaColors.border;
+        ? scheme.primary
+        : scheme.outlineVariant;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 120),
@@ -171,7 +171,7 @@ class _CodeBox extends StatelessWidget {
       height: 56,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: filled ? UmojaColors.primarySoft : UmojaColors.surface,
+        color: filled ? scheme.primaryContainer : scheme.surface,
         borderRadius: UmojaRadius.controlAll,
         border: Border.all(
           color: borderColor,
@@ -182,9 +182,9 @@ class _CodeBox extends StatelessWidget {
           ? Container(
               width: 10,
               height: 10,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: UmojaColors.primary,
+                color: scheme.primary,
               ),
             )
           : null,

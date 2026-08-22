@@ -175,12 +175,24 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
         Center(
           child: TextButton(
             onPressed: isBusy ? null : _forgotPin,
+            // Prompt 05E-E: neutral, matching "Karibu Umoja"'s color
+            // (`onSurface`) rather than the global text-button theme's
+            // primary red — deliberately scoped to just these two
+            // secondary auth links, not a `textButtonTheme` change, so
+            // OTP screens' Cancel/Resend (which should stay branded)
+            // are unaffected.
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.onSurface,
+            ),
             child: Text(l10n.pinForgot),
           ),
         ),
         Center(
           child: TextButton(
             onPressed: isBusy ? null : _submitFirstTime,
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.onSurface,
+            ),
             child: Text(l10n.authFirstTimeLink),
           ),
         ),

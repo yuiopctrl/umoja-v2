@@ -131,21 +131,29 @@ void main() {
       expect(find.text('Namba ya simu au PIN si sahihi.'), findsOneWidget);
       expect(find.text('Karibu Umoja'), findsOneWidget);
       expect(find.byType(NavigationBar), findsNothing);
+      // A wrong PIN never falls back to OTP — the user stays on the
+      // exact same Phone + PIN form, and no OTP was ever requested.
+      expect(fakeAuth.sentOtpTo, isEmpty);
 
       // ---------------------------------------------------------------
       // 3. The correct PIN signs in — never a fake/service-role
       // shortcut; this only happens because pin-login itself succeeded
-      // and the resulting session was installed for real.
+      // and the resulting session was installed for real. Reaching
+      // exactly 4 digits auto-submits exactly once (not twice).
       // ---------------------------------------------------------------
       fakeAuth.pinLoginFailure = null;
       await tester.enterText(find.byType(TextField).at(1), '1234');
       await tester.pumpAndSettle();
 
-      expect(fakeAuth.pinLoginCalls.last, ('+255712345678', '1234'));
+      expect(fakeAuth.pinLoginCalls, [
+        ('+255712345678', '0000'),
+        ('+255712345678', '1234'),
+      ]);
       container.read(_fakeUserProvider.notifier).set(_fakeUser('userA'));
       await tester.pumpAndSettle();
 
       expect(find.byType(NavigationBar), findsOneWidget);
+      expect(fakeAuth.sentOtpTo, isEmpty);
 
       // ---------------------------------------------------------------
       // 4. "Toka" always calls the real Supabase sign-out and returns
@@ -168,6 +176,26 @@ void main() {
 
       expect(find.text('Karibu Umoja'), findsOneWidget);
       expect(find.text('Thibitisha Namba'), findsNothing);
+      expect(fakeAuth.sentOtpTo, isEmpty);
+
+      // ---------------------------------------------------------------
+      // 5-6. A completely different, second registered phone number
+      // (never previously typed on this screen) also logs in with just
+      // phone + PIN, no OTP — the login screen was never hardcoded to
+      // "remember" or special-case the first account, and there is no
+      // separate "change account"/"use another number" destination any
+      // more: this same form is it.
+      // ---------------------------------------------------------------
+      await tester.enterText(find.byType(TextField).at(0), '0765432109');
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField).at(1), '9876');
+      await tester.pumpAndSettle();
+
+      expect(fakeAuth.pinLoginCalls.last, ('+255765432109', '9876'));
+      container.read(_fakeUserProvider.notifier).set(_fakeUser('userB'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(NavigationBar), findsOneWidget);
       expect(fakeAuth.sentOtpTo, isEmpty);
     },
   );

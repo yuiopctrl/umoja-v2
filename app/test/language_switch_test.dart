@@ -102,8 +102,11 @@ void main() {
     expect(find.text('Zaidi'), findsWidgets);
 
     // The full-text Kiswahili|English selector lives on the More
-    // ("Zaidi") screen.
+    // ("Zaidi") screen — prompt 05E-C §7/§8: the exact same
+    // UmojaLanguageSelector widget as the login screen, never a
+    // second, separately-styled implementation.
     await _tapNavDestination(tester, 'Zaidi');
+    expect(find.byType(UmojaLanguageSelector), findsOneWidget);
     await _switchLanguage(tester, 'English');
 
     expect(find.text('Members'), findsWidgets);
@@ -179,7 +182,17 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    // Swahili is the default (prompt 05E-B §19) — every returning-login
+    // string is present and in Swahili before any language change.
     expect(find.text('Karibu Umoja'), findsOneWidget);
+    expect(find.text('Namba ya simu'), findsOneWidget);
+    expect(find.text('PIN'), findsOneWidget);
+    expect(find.text('Ingia'), findsOneWidget);
+    expect(find.text('Umesahau PIN?'), findsOneWidget);
+    expect(
+      find.text('Mara ya kwanza? Thibitisha namba kwa OTP'),
+      findsOneWidget,
+    );
     expect(find.byType(UmojaLanguageSelector), findsOneWidget);
     expect(find.text('SW'), findsOneWidget);
     expect(find.text('EN'), findsOneWidget);
@@ -188,6 +201,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Karibu Umoja'), findsNothing);
-    expect(find.textContaining('Umoja'), findsWidgets);
+    expect(find.text('Welcome to Umoja'), findsOneWidget);
+    expect(find.text('Phone number'), findsOneWidget);
+    expect(find.text('Log In'), findsOneWidget);
+    expect(find.text('Forgot PIN?'), findsOneWidget);
+    expect(find.text('First time? Verify by OTP'), findsOneWidget);
   });
 }

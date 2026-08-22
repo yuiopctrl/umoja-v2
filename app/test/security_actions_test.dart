@@ -120,5 +120,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Karibu Umoja'), findsOneWidget);
+    // Prompt 05E-B §8: logout never automatically sends OTP, never
+    // navigates to the OTP screen, and never touches the server-side
+    // PIN credential.
+    expect(fakes.auth.sentOtpTo, isEmpty);
+    expect(find.text('Thibitisha Namba'), findsNothing);
+    expect(fakes.auth.setupPinCalls, isEmpty);
   });
 }

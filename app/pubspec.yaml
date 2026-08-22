@@ -40,9 +40,7 @@ dependencies:
   logging: ^1.3.0
   flutter_localizations:
     sdk: flutter
-  flutter_secure_storage: ^11.0.0
   shared_preferences: ^2.5.5
-  crypto: ^3.0.7
   intl: ^0.20.3
   smart_auth: ^3.2.0
 
@@ -58,14 +56,36 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
 
-# Prompt 05C §15-16: native launcher icons, generated once from the
-# official Umoja symbol (never the wordmark, never a typed "U") via
-# `dart run flutter_launcher_icons`. Only Android (the confirmed-broken,
-# mandatory platform) and Web/PWA (low-risk, verifiable with
-# `flutter build web` in this environment) are enabled — iOS/Windows/
-# macOS are deliberately left untouched since their toolchains can't be
-# built/verified here, and this tool's job is replacing icon assets, not
-# something to run blind against platforms we can't check afterward.
+# Prompt 05C §15-16 / 05E-C §11-13: native launcher icons, generated
+# from the official flat Umoja symbol (umbrella + community mark only —
+# never the wordmark, never a stacked/horizontal lockup, never a typed
+# "U") via `dart run flutter_launcher_icons`. Only Android (the
+# confirmed-broken, mandatory platform) and Web/PWA (low-risk,
+# verifiable with `flutter build web` in this environment) are enabled
+# — iOS/Windows/macOS are deliberately left untouched since their
+# toolchains can't be built/verified here, and this tool's job is
+# replacing icon assets, not something to run blind against platforms
+# we can't check afterward.
+#
+# `assets/branding/icon/umoja_app_icon.png` is the one clear source of
+# truth for the launcher icon — a plain copy of the approved flat
+# `umoja_icon.png` mark (already in the exact Umoja brand red,
+# `UmojaColors.primary` / #A51C30, transparent background, no
+# gradient), kept as its own file specifically so this config always
+# points somewhere unambiguous even if the runtime `umoja_icon.png`
+# asset is ever re-cropped/re-exported. `app_icon_legacy.png` in the
+# same directory is the *old*, wrong-red (~#F72F35) icon this replaces
+# — kept only as an archival file, no longer referenced by this config
+# or anywhere else, so it can't be picked up again by accident.
+#
+# `adaptive_icon_foreground_inset: 25` (up from Android's stock 20%)
+# gives extra safe-area margin: this specific source image's opaque
+# content already nearly fills its own canvas (~90-97%), so a larger
+# inset is what actually keeps the umbrella/base clear of a circular or
+# squircle launcher mask's crop, matching Android's ~66/108dp
+# recommended safe-zone ratio more closely than the default would for
+# this particular asset.
+#
 # Source images live in assets/branding/icon/ (not bundled into the app
 # itself — these are launcher-icon-generation inputs, not runtime
 # assets, so they are intentionally absent from `flutter: assets:`
@@ -73,16 +93,16 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "ic_launcher"
   ios: false
-  image_path_android: "assets/branding/icon/app_icon_legacy.png"
+  image_path_android: "assets/branding/icon/umoja_app_icon.png"
   min_sdk_android: 21
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/branding/umoja_mark.png"
-  adaptive_icon_foreground_inset: 20
+  adaptive_icon_foreground: "assets/branding/icon/umoja_app_icon.png"
+  adaptive_icon_foreground_inset: 25
   web:
     generate: true
-    image_path: "assets/branding/icon/app_icon_legacy.png"
+    image_path: "assets/branding/icon/umoja_app_icon.png"
     background_color: "#FFFFFF"
-    theme_color: "#E8151D"
+    theme_color: "#A51C30"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -78,6 +78,29 @@ void main() {
       );
     });
 
+    test('prompt 05E-B §3/§13: the no-session default is never /auth/verify '
+        '(OTP) — /auth/phone (Phone + PIN) is the only default, from every '
+        'pre-auth starting location, and OTP is reachable only as an '
+        'explicit route the user is already on', () {
+      for (final startingLocation in [
+        AppRoutes.splash,
+        AppRoutes.home,
+        AppRoutes.pinSetup,
+        AppRoutes.more,
+      ]) {
+        expect(
+          _redirect(
+            sessionStatus: AuthSessionStatus.signedOut,
+            appContext: const AsyncValue.loading(),
+            selectedGroup: const SelectedGroupLoading(),
+            currentLocation: startingLocation,
+          ),
+          isNot(AppRoutes.authVerify),
+          reason: 'from $startingLocation',
+        );
+      }
+    });
+
     test('a signed-out user already on /auth/verify is left alone', () {
       expect(
         _redirect(

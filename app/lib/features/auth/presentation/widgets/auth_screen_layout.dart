@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/branding/umoja_brand_mark.dart';
 import '../../../../core/theme/umoja_spacing.dart';
-import '../../../../core/theme/umoja_theme.dart';
 import '../../../../core/widgets/umoja_language_selector.dart';
 
 /// Shared layout for the phone-entry, OTP-verify, and PIN screens: a
@@ -37,10 +36,11 @@ import '../../../../core/widgets/umoja_language_selector.dart';
 /// open it simply grows past the computed gaps and the
 /// `SingleChildScrollView` scrolls, exactly as before.
 ///
-/// Prompt 05E-A §8: forced to the light Umoja theme regardless of
-/// system brightness — dark mode exists as a token-derived fallback
-/// (see `UmojaTheme.dark`) but has not received the same manual
-/// polish, so auth screens must never silently inherit it.
+/// Prompt 05E-C §2: follows the app's active theme (light or dark)
+/// like every other screen — it no longer force-overrides to light.
+/// Both `UmojaTheme.light` and `UmojaTheme.dark` are built from
+/// explicit, hand-picked Umoja tokens (see `umoja_theme.dart`), so
+/// neither is a washed-out fallback any more.
 class AuthScreenLayout extends StatelessWidget {
   const AuthScreenLayout({
     super.key,
@@ -141,16 +141,14 @@ class AuthScreenLayout extends StatelessWidget {
       ),
     );
 
-    final themed = Theme(data: UmojaTheme.light, child: scaffold);
-
-    if (onBack == null) return themed;
+    if (onBack == null) return scaffold;
 
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop) onBack();
       },
-      child: themed,
+      child: scaffold,
     );
   }
 }

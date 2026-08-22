@@ -11,23 +11,35 @@ import 'umoja_typography.dart';
 /// [UmojaColors]/[UmojaTypography] directly — that keeps this file the
 /// single place a visual adjustment has to be made.
 ///
-/// Light mode is the polished target for this design system. Dark mode
-/// is derived from the same tokens (via [ColorScheme.fromSeed] plus the
-/// same component themes) so it stays usable and won't need a
-/// structural rewrite later, but it has not received the same manual
-/// scrutiny — see docs/product/design-system.md.
+/// Prompt 05E-C: dark mode is now built from the same explicit,
+/// hand-picked tokens as light mode (see [UmojaColors]'s dark-mode
+/// companions), not [ColorScheme.fromSeed] — a seeded dark scheme
+/// derives washed-out/pale tones from a saturated seed like
+/// [UmojaColors.primary], which is exactly what produced the faint,
+/// low-contrast dark auth screen this prompt fixes. Every screen
+/// (auth included — `AuthScreenLayout` no longer force-overrides the
+/// theme) now follows whichever of these two the app is actually in.
+///
+/// **Prompt 05E-D — locked rule**: `scheme.primary` is
+/// [UmojaColors.primary] (the one deep Umoja red, `#A51C30`) in *both*
+/// themes, full stop. An earlier pass used a separate, brighter
+/// "accessible" red for dark-mode text/border contexts (focused
+/// inputs, PIN-box focus, "Umesahau PIN?"/OTP links) — that produced a
+/// visible two-reds inconsistency (a pink accent next to the deep-red
+/// button) and is deliberately not done any more. Where a dark
+/// surface needs a *soft/container* fill (the language selector's
+/// active segment, the nav bar's selected indicator), that fill is
+/// [UmojaColors.primarySoftDark] — still unambiguously in the primary
+/// family, just as `primarySoft` is for light — paired with
+/// [UmojaColors.onPrimary] (white) for the text/icon on top of it,
+/// which is what actually earns "strong contrast" there rather than a
+/// second red tone.
 class UmojaTheme {
   const UmojaTheme._();
 
   static ThemeData get light => _build(_lightScheme, UmojaColors.background);
 
-  static ThemeData get dark => _build(
-    ColorScheme.fromSeed(
-      seedColor: UmojaColors.primary,
-      brightness: Brightness.dark,
-    ),
-    null,
-  );
+  static ThemeData get dark => _build(_darkScheme, UmojaColors.backgroundDark);
 
   static ColorScheme get _lightScheme =>
       ColorScheme.fromSeed(
@@ -54,6 +66,39 @@ class UmojaTheme {
         surfaceContainerLowest: UmojaColors.surface,
         outline: UmojaColors.borderStrong,
         outlineVariant: UmojaColors.border,
+      );
+
+  /// `primary`/`onPrimary` are the exact same [UmojaColors.primary] /
+  /// [UmojaColors.onPrimary] as light mode — one Umoja brand identity
+  /// across both themes (prompt 05E-D). `primaryContainer` is the
+  /// dark *soft* fill for container/indicator treatments (still
+  /// clearly primary-family, just muted), paired with white
+  /// (`onPrimary`) rather than a second red tone for its foreground.
+  static ColorScheme get _darkScheme =>
+      ColorScheme.fromSeed(
+        seedColor: UmojaColors.primary,
+        brightness: Brightness.dark,
+      ).copyWith(
+        primary: UmojaColors.primary,
+        onPrimary: UmojaColors.onPrimary,
+        primaryContainer: UmojaColors.primarySoftDark,
+        onPrimaryContainer: UmojaColors.onPrimary,
+        secondary: UmojaColors.primary,
+        onSecondary: UmojaColors.onPrimary,
+        error: UmojaColors.dangerDark,
+        onError: UmojaColors.backgroundDark,
+        errorContainer: UmojaColors.dangerSoftDark,
+        onErrorContainer: UmojaColors.dangerDark,
+        surface: UmojaColors.surfaceDark,
+        onSurface: UmojaColors.textPrimaryDark,
+        onSurfaceVariant: UmojaColors.textSecondaryDark,
+        surfaceContainerHighest: UmojaColors.surfaceSubtleDark,
+        surfaceContainerHigh: UmojaColors.surfaceSubtleDark,
+        surfaceContainer: UmojaColors.surfaceSubtleDark,
+        surfaceContainerLow: UmojaColors.surfaceDark,
+        surfaceContainerLowest: UmojaColors.backgroundDark,
+        outline: UmojaColors.borderStrongDark,
+        outlineVariant: UmojaColors.borderDark,
       );
 
   static ThemeData _build(ColorScheme scheme, Color? scaffoldBackground) {
@@ -128,8 +173,12 @@ class UmojaTheme {
           ),
         ),
         labelStyle: textTheme.bodyMedium,
+        // Deliberately full-opacity: `onSurfaceVariant` is already the
+        // dedicated "muted" token (prompt 05E-C — stacking an alpha
+        // reduction on top of it is exactly what produced illegibly
+        // faint hint/placeholder text).
         hintStyle: textTheme.bodyMedium?.copyWith(
-          color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
+          color: scheme.onSurfaceVariant,
         ),
         errorStyle: textTheme.bodySmall?.copyWith(color: scheme.error),
       ),

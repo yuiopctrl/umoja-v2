@@ -4,7 +4,7 @@
     "start_url": ".",
     "display": "standalone",
     "background_color": "#FFFFFF",
-    "theme_color": "#E8151D",
+    "theme_color": "#A51C30",
     "description": "Umoja: group finance for vikundi.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,

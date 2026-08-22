@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:umoja/app/app.dart';
-import 'package:umoja/core/theme/umoja_colors.dart';
 import 'package:umoja/features/auth/data/auth_failure.dart';
 import 'package:umoja/features/auth/models/app_context.dart';
 import 'package:umoja/features/auth/models/app_user_profile.dart';
@@ -173,8 +172,9 @@ void main() {
   });
 
   testWidgets(
-    'auth screens use the light Umoja theme even when the platform is in '
-    'dark mode (prompt 05E-A §8 — dark mode has no polished target yet)',
+    'auth screens follow the platform theme (prompt 05E-C §2 — no more '
+    'forced light override; see auth_theme_test.dart for the full '
+    'light/dark behavior matrix)',
     (tester) async {
       tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
       addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
@@ -183,8 +183,7 @@ void main() {
 
       final scheme = Theme.of(tester.element(find.byType(Scaffold).first))
           .colorScheme;
-      expect(scheme.brightness, Brightness.light);
-      expect(scheme.primary, UmojaColors.primary);
+      expect(scheme.brightness, Brightness.dark);
     },
   );
 }
