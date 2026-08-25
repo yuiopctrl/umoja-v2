@@ -1010,6 +1010,1242 @@ abstract class AppLocalizations {
   /// **'Mwanachama huyu tayari ana uanachama mwingine amilifu kwenye kikundi hiki.'**
   String get memberErrorRejoinConflict;
 
+  /// No description provided for @contributionsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Michango'**
+  String get contributionsTitle;
+
+  /// No description provided for @homeContributionsShortcutSubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia na simamia michango ya kikundi'**
+  String get homeContributionsShortcutSubtitle;
+
+  /// No description provided for @contributionTypesEntryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina za Michango'**
+  String get contributionTypesEntryTitle;
+
+  /// No description provided for @contributionTypesEntrySubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Simamia aina za michango za kikundi'**
+  String get contributionTypesEntrySubtitle;
+
+  /// No description provided for @contributionSetupsEntryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mipangilio ya Michango'**
+  String get contributionSetupsEntryTitle;
+
+  /// No description provided for @contributionSetupsEntrySubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Simamia jinsi michango inavyotozwa'**
+  String get contributionSetupsEntrySubtitle;
+
+  /// No description provided for @contributionPeriodsEntryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Vipindi vya Michango'**
+  String get contributionPeriodsEntryTitle;
+
+  /// No description provided for @contributionPeriodsEntrySubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Simamia vipindi na malipo ya michango'**
+  String get contributionPeriodsEntrySubtitle;
+
+  /// No description provided for @contributionTypesTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina za Michango'**
+  String get contributionTypesTitle;
+
+  /// No description provided for @contributionTypesSearchHint.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tafuta aina ya mchango'**
+  String get contributionTypesSearchHint;
+
+  /// No description provided for @addContributionTypeAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ongeza Aina ya Mchango'**
+  String get addContributionTypeAction;
+
+  /// No description provided for @contributionTypesEmptyTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jaza Orodha ya Aina za Michango'**
+  String get contributionTypesEmptyTitle;
+
+  /// No description provided for @contributionTypesEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ongeza aina ya kwanza ya mchango.'**
+  String get contributionTypesEmptyMessage;
+
+  /// No description provided for @contributionTypesEmptyFilteredTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna aina ya mchango iliyopatikana'**
+  String get contributionTypesEmptyFilteredTitle;
+
+  /// No description provided for @contributionTypesEmptyFilteredMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jaribu kubadilisha maneno ya utafutaji au kichujio.'**
+  String get contributionTypesEmptyFilteredMessage;
+
+  /// No description provided for @editContributionTypeTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hariri Aina ya Mchango'**
+  String get editContributionTypeTitle;
+
+  /// No description provided for @sectionContributionTypeDetails.
+  ///
+  /// In sw, this message translates to:
+  /// **'Taarifa za Aina ya Mchango'**
+  String get sectionContributionTypeDetails;
+
+  /// No description provided for @sectionContributionClassification.
+  ///
+  /// In sw, this message translates to:
+  /// **'Uainishaji na Utaratibu wa Uhasibu'**
+  String get sectionContributionClassification;
+
+  /// No description provided for @contributionTypeNameLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jina la aina ya mchango *'**
+  String get contributionTypeNameLabel;
+
+  /// No description provided for @contributionTypeDescriptionLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo (si lazima)'**
+  String get contributionTypeDescriptionLabel;
+
+  /// No description provided for @contributionCategoryLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina'**
+  String get contributionCategoryLabel;
+
+  /// No description provided for @contributionAccountingTreatmentLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Utaratibu wa Uhasibu'**
+  String get contributionAccountingTreatmentLabel;
+
+  /// No description provided for @contributionTypeActiveLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Inatumika'**
+  String get contributionTypeActiveLabel;
+
+  /// No description provided for @contributionInactiveBadgeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haitumiki'**
+  String get contributionInactiveBadgeLabel;
+
+  /// No description provided for @contributionDisplayOrderLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mpangilio wa Kuonyesha (si lazima)'**
+  String get contributionDisplayOrderLabel;
+
+  /// No description provided for @contributionFilterActiveOnly.
+  ///
+  /// In sw, this message translates to:
+  /// **'Zinazotumika'**
+  String get contributionFilterActiveOnly;
+
+  /// No description provided for @contributionFilterInactiveOnly.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hazitumiki'**
+  String get contributionFilterInactiveOnly;
+
+  /// No description provided for @contributionCategoryGeneral.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla'**
+  String get contributionCategoryGeneral;
+
+  /// No description provided for @contributionCategorySocial.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kijamii'**
+  String get contributionCategorySocial;
+
+  /// No description provided for @contributionCategoryShare.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hisa'**
+  String get contributionCategoryShare;
+
+  /// No description provided for @contributionTreatmentGroupIncome.
+  ///
+  /// In sw, this message translates to:
+  /// **'Pato la Kikundi'**
+  String get contributionTreatmentGroupIncome;
+
+  /// No description provided for @contributionTreatmentPassThrough.
+  ///
+  /// In sw, this message translates to:
+  /// **'Si Pato la Kikundi'**
+  String get contributionTreatmentPassThrough;
+
+  /// No description provided for @contributionTreatmentPassThroughHelp.
+  ///
+  /// In sw, this message translates to:
+  /// **'Fedha hukusanywa kwa kusudi maalum na hazitambuliki kama pato la kawaida la kikundi.'**
+  String get contributionTreatmentPassThroughHelp;
+
+  /// No description provided for @contributionTreatmentShareCapital.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji wa Hisa'**
+  String get contributionTreatmentShareCapital;
+
+  /// No description provided for @contributionTreatmentMemberSavingsUnavailable.
+  ///
+  /// In sw, this message translates to:
+  /// **'Akiba ya Mwanachama (Haipatikani bado)'**
+  String get contributionTreatmentMemberSavingsUnavailable;
+
+  /// No description provided for @contributionSetupsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mipangilio ya Michango'**
+  String get contributionSetupsTitle;
+
+  /// No description provided for @addContributionSetupAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ongeza Mpangilio'**
+  String get addContributionSetupAction;
+
+  /// No description provided for @contributionSetupsEmptyTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jaza Orodha ya Mipangilio'**
+  String get contributionSetupsEmptyTitle;
+
+  /// No description provided for @contributionSetupsEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ongeza mpangilio wa kwanza wa mchango.'**
+  String get contributionSetupsEmptyMessage;
+
+  /// No description provided for @contributionSetupsEmptyFilteredTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna mpangilio uliopatikana'**
+  String get contributionSetupsEmptyFilteredTitle;
+
+  /// No description provided for @contributionSetupsEmptyFilteredMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jaribu kubadilisha kichujio.'**
+  String get contributionSetupsEmptyFilteredMessage;
+
+  /// No description provided for @editContributionSetupTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hariri Mpangilio'**
+  String get editContributionSetupTitle;
+
+  /// No description provided for @sectionContributionSetupDetails.
+  ///
+  /// In sw, this message translates to:
+  /// **'Taarifa za Mpangilio'**
+  String get sectionContributionSetupDetails;
+
+  /// No description provided for @sectionContributionChargingRules.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kanuni za Utozaji'**
+  String get sectionContributionChargingRules;
+
+  /// No description provided for @sectionContributionDueDateRules.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kanuni za Tarehe ya Malipo'**
+  String get sectionContributionDueDateRules;
+
+  /// No description provided for @sectionContributionPenaltyRules.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kanuni za Adhabu'**
+  String get sectionContributionPenaltyRules;
+
+  /// No description provided for @contributionSetupNameLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jina la mpangilio *'**
+  String get contributionSetupNameLabel;
+
+  /// No description provided for @contributionSetupDescriptionLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo (si lazima)'**
+  String get contributionSetupDescriptionLabel;
+
+  /// No description provided for @contributionSetupTypeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina ya Mchango'**
+  String get contributionSetupTypeLabel;
+
+  /// No description provided for @contributionScheduleModeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Utaratibu wa Muda'**
+  String get contributionScheduleModeLabel;
+
+  /// No description provided for @contributionAmountModeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Utaratibu wa Kiasi'**
+  String get contributionAmountModeLabel;
+
+  /// No description provided for @contributionFixedAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi *'**
+  String get contributionFixedAmountLabel;
+
+  /// No description provided for @contributionDefaultDueDayLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Siku ya Mwisho ya Malipo (1–31)'**
+  String get contributionDefaultDueDayLabel;
+
+  /// No description provided for @contributionDefaultDueMonthOffsetLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nyongeza ya Mwezi kwa Tarehe ya Mwisho'**
+  String get contributionDefaultDueMonthOffsetLabel;
+
+  /// No description provided for @contributionPenaltyModeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Utaratibu wa Adhabu'**
+  String get contributionPenaltyModeLabel;
+
+  /// No description provided for @contributionPenaltyGraceDaysLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Siku za Neema'**
+  String get contributionPenaltyGraceDaysLabel;
+
+  /// No description provided for @contributionPenaltyValueLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiwango cha Adhabu *'**
+  String get contributionPenaltyValueLabel;
+
+  /// No description provided for @contributionPenaltyCapAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiwango cha Juu cha Adhabu (si lazima)'**
+  String get contributionPenaltyCapAmountLabel;
+
+  /// No description provided for @contributionSetupActiveLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Inatumika'**
+  String get contributionSetupActiveLabel;
+
+  /// No description provided for @contributionScheduleMonthly.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kila Mwezi'**
+  String get contributionScheduleMonthly;
+
+  /// No description provided for @contributionScheduleOnDemand.
+  ///
+  /// In sw, this message translates to:
+  /// **'Inapohitajika'**
+  String get contributionScheduleOnDemand;
+
+  /// No description provided for @contributionScheduleOneTime.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mara Moja'**
+  String get contributionScheduleOneTime;
+
+  /// No description provided for @contributionAmountFixed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Kimoja'**
+  String get contributionAmountFixed;
+
+  /// No description provided for @contributionAmountCustomPerMember.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Tofauti kwa Kila Mwanachama'**
+  String get contributionAmountCustomPerMember;
+
+  /// No description provided for @contributionPenaltyNone.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna'**
+  String get contributionPenaltyNone;
+
+  /// No description provided for @contributionPenaltyFixedOnce.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Maalum (Mara Moja)'**
+  String get contributionPenaltyFixedOnce;
+
+  /// No description provided for @contributionPenaltyFixedRecurring.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Maalum (Kinachorudia)'**
+  String get contributionPenaltyFixedRecurring;
+
+  /// No description provided for @contributionPenaltyPercentageOnce.
+  ///
+  /// In sw, this message translates to:
+  /// **'Asilimia (Mara Moja)'**
+  String get contributionPenaltyPercentageOnce;
+
+  /// No description provided for @contributionPenaltyPercentageRecurring.
+  ///
+  /// In sw, this message translates to:
+  /// **'Asilimia (Inayorudia)'**
+  String get contributionPenaltyPercentageRecurring;
+
+  /// No description provided for @contributionPeriodsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Vipindi vya Michango'**
+  String get contributionPeriodsTitle;
+
+  /// No description provided for @addContributionPeriodAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ongeza Kipindi'**
+  String get addContributionPeriodAction;
+
+  /// No description provided for @contributionPeriodsEmptyTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jaza Orodha ya Vipindi'**
+  String get contributionPeriodsEmptyTitle;
+
+  /// No description provided for @contributionPeriodsEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ongeza kipindi cha kwanza cha mchango.'**
+  String get contributionPeriodsEmptyMessage;
+
+  /// No description provided for @contributionPeriodsEmptyFilteredTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna kipindi kilichopatikana'**
+  String get contributionPeriodsEmptyFilteredTitle;
+
+  /// No description provided for @contributionPeriodsEmptyFilteredMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jaribu kubadilisha kichujio.'**
+  String get contributionPeriodsEmptyFilteredMessage;
+
+  /// No description provided for @contributionPeriodStatusDraft.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rasimu'**
+  String get contributionPeriodStatusDraft;
+
+  /// No description provided for @contributionPeriodStatusScheduled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imepangwa'**
+  String get contributionPeriodStatusScheduled;
+
+  /// No description provided for @contributionPeriodStatusOpen.
+  ///
+  /// In sw, this message translates to:
+  /// **'Iko Wazi'**
+  String get contributionPeriodStatusOpen;
+
+  /// No description provided for @contributionPeriodStatusClosed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imefungwa'**
+  String get contributionPeriodStatusClosed;
+
+  /// No description provided for @contributionPeriodStatusCancelled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imesitishwa'**
+  String get contributionPeriodStatusCancelled;
+
+  /// No description provided for @newContributionPeriodTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi Kipya cha Mchango'**
+  String get newContributionPeriodTitle;
+
+  /// No description provided for @contributionPeriodSetupLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mpangilio wa Mchango *'**
+  String get contributionPeriodSetupLabel;
+
+  /// No description provided for @contributionPeriodLabelLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jina la Kipindi *'**
+  String get contributionPeriodLabelLabel;
+
+  /// No description provided for @contributionPeriodMonthLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwezi'**
+  String get contributionPeriodMonthLabel;
+
+  /// No description provided for @contributionPeriodYearLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwaka'**
+  String get contributionPeriodYearLabel;
+
+  /// No description provided for @contributionMonthJanuary.
+  ///
+  /// In sw, this message translates to:
+  /// **'Januari'**
+  String get contributionMonthJanuary;
+
+  /// No description provided for @contributionMonthFebruary.
+  ///
+  /// In sw, this message translates to:
+  /// **'Februari'**
+  String get contributionMonthFebruary;
+
+  /// No description provided for @contributionMonthMarch.
+  ///
+  /// In sw, this message translates to:
+  /// **'Machi'**
+  String get contributionMonthMarch;
+
+  /// No description provided for @contributionMonthApril.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aprili'**
+  String get contributionMonthApril;
+
+  /// No description provided for @contributionMonthMay.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mei'**
+  String get contributionMonthMay;
+
+  /// No description provided for @contributionMonthJune.
+  ///
+  /// In sw, this message translates to:
+  /// **'Juni'**
+  String get contributionMonthJune;
+
+  /// No description provided for @contributionMonthJuly.
+  ///
+  /// In sw, this message translates to:
+  /// **'Julai'**
+  String get contributionMonthJuly;
+
+  /// No description provided for @contributionMonthAugust.
+  ///
+  /// In sw, this message translates to:
+  /// **'Agosti'**
+  String get contributionMonthAugust;
+
+  /// No description provided for @contributionMonthSeptember.
+  ///
+  /// In sw, this message translates to:
+  /// **'Septemba'**
+  String get contributionMonthSeptember;
+
+  /// No description provided for @contributionMonthOctober.
+  ///
+  /// In sw, this message translates to:
+  /// **'Oktoba'**
+  String get contributionMonthOctober;
+
+  /// No description provided for @contributionMonthNovember.
+  ///
+  /// In sw, this message translates to:
+  /// **'Novemba'**
+  String get contributionMonthNovember;
+
+  /// No description provided for @contributionMonthDecember.
+  ///
+  /// In sw, this message translates to:
+  /// **'Desemba'**
+  String get contributionMonthDecember;
+
+  /// No description provided for @contributionPeriodStartLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Kuanza'**
+  String get contributionPeriodStartLabel;
+
+  /// No description provided for @contributionPeriodEndLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Mwisho'**
+  String get contributionPeriodEndLabel;
+
+  /// No description provided for @contributionPeriodCreatedTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi Kimetengenezwa'**
+  String get contributionPeriodCreatedTitle;
+
+  /// No description provided for @contributionPeriodCreatedDueDateMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya mwisho ya malipo: {date}'**
+  String contributionPeriodCreatedDueDateMessage(String date);
+
+  /// No description provided for @contributionPeriodDetailTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi cha Mchango'**
+  String get contributionPeriodDetailTitle;
+
+  /// No description provided for @editContributionPeriodTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hariri Kipindi'**
+  String get editContributionPeriodTitle;
+
+  /// No description provided for @sectionContributionPeriodDates.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe Muhimu'**
+  String get sectionContributionPeriodDates;
+
+  /// No description provided for @contributionObligationDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Wajibu'**
+  String get contributionObligationDateLabel;
+
+  /// No description provided for @contributionEligibilityDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Ustahiki'**
+  String get contributionEligibilityDateLabel;
+
+  /// No description provided for @contributionDueDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Mwisho ya Malipo'**
+  String get contributionDueDateLabel;
+
+  /// No description provided for @contributionScheduledOpenDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Kufungua Iliyopangwa'**
+  String get contributionScheduledOpenDateLabel;
+
+  /// No description provided for @sectionContributionSnapshot.
+  ///
+  /// In sw, this message translates to:
+  /// **'Taarifa Zilizohifadhiwa'**
+  String get sectionContributionSnapshot;
+
+  /// No description provided for @sectionContributionSummary.
+  ///
+  /// In sw, this message translates to:
+  /// **'Muhtasari'**
+  String get sectionContributionSummary;
+
+  /// No description provided for @contributionExcludedCountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Waliotolewa'**
+  String get contributionExcludedCountLabel;
+
+  /// No description provided for @contributionCustomAmountCountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Waliowekewa Kiasi Maalum'**
+  String get contributionCustomAmountCountLabel;
+
+  /// No description provided for @contributionTotalMembersChargedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Waliotozwa'**
+  String get contributionTotalMembersChargedLabel;
+
+  /// No description provided for @contributionTotalBaseAssessedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla Iliyotozwa'**
+  String get contributionTotalBaseAssessedLabel;
+
+  /// No description provided for @contributionTotalPenaltyAssessedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Adhabu Zilizotozwa'**
+  String get contributionTotalPenaltyAssessedLabel;
+
+  /// No description provided for @contributionPenaltyChargeCountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo Yenye Adhabu'**
+  String get contributionPenaltyChargeCountLabel;
+
+  /// No description provided for @contributionNoPenaltyPolicyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna kanuni ya adhabu iliyowekwa kwa kipindi hiki.'**
+  String get contributionNoPenaltyPolicyMessage;
+
+  /// No description provided for @editExclusionsAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Simamia Walioondolewa'**
+  String get editExclusionsAction;
+
+  /// No description provided for @configureCustomAmountsAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Weka Kiasi kwa Kila Mwanachama'**
+  String get configureCustomAmountsAction;
+
+  /// No description provided for @previewAndOpenAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakiki na Fungua'**
+  String get previewAndOpenAction;
+
+  /// No description provided for @cancelPeriodAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sitisha Kipindi'**
+  String get cancelPeriodAction;
+
+  /// No description provided for @viewChargesAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia Malipo Yaliyotozwa'**
+  String get viewChargesAction;
+
+  /// No description provided for @enrollMemberAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Andikisha Mwanachama'**
+  String get enrollMemberAction;
+
+  /// No description provided for @closePeriodAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Funga Kipindi'**
+  String get closePeriodAction;
+
+  /// No description provided for @cancelPeriodConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sitisha kipindi hiki?'**
+  String get cancelPeriodConfirmTitle;
+
+  /// No description provided for @cancelPeriodConfirmMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatua hii haiwezi kutenduliwa.'**
+  String get cancelPeriodConfirmMessage;
+
+  /// No description provided for @closePeriodConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Funga kipindi hiki?'**
+  String get closePeriodConfirmTitle;
+
+  /// No description provided for @closePeriodConfirmMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Baada ya kufungwa, wanachama wapya wataweza kuongezwa tu kwa kuandikishwa mmoja mmoja.'**
+  String get closePeriodConfirmMessage;
+
+  /// No description provided for @periodCancelledMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi kimesitishwa.'**
+  String get periodCancelledMessage;
+
+  /// No description provided for @periodClosedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi kimefungwa.'**
+  String get periodClosedMessage;
+
+  /// No description provided for @periodOpenedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi kimefunguliwa.'**
+  String get periodOpenedMessage;
+
+  /// No description provided for @assessPenaltiesAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tathmini Adhabu'**
+  String get assessPenaltiesAction;
+
+  /// No description provided for @assessPenaltiesConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tathmini adhabu za kipindi hiki?'**
+  String get assessPenaltiesConfirmTitle;
+
+  /// No description provided for @assessPenaltiesConfirmMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hii itaangalia kila malipo yaliyochelewa na kutoza adhabu yoyote mpya inayostahili. Ni salama kuendesha tena — haitaweka adhabu mara mbili.'**
+  String get assessPenaltiesConfirmMessage;
+
+  /// No description provided for @assessPenaltiesResultTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu Zimetathminiwa'**
+  String get assessPenaltiesResultTitle;
+
+  /// No description provided for @assessPenaltiesResultCreatedCount.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu Mpya Zilizowekwa: {count}'**
+  String assessPenaltiesResultCreatedCount(Object count);
+
+  /// No description provided for @assessPenaltiesResultAlreadyCurrentCount.
+  ///
+  /// In sw, this message translates to:
+  /// **'Zilizokuwa Sahihi Tayari: {count}'**
+  String assessPenaltiesResultAlreadyCurrentCount(Object count);
+
+  /// No description provided for @assessPenaltiesResultTotalThisRun.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Adhabu Mpya'**
+  String get assessPenaltiesResultTotalThisRun;
+
+  /// No description provided for @openPreviewTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakiki Kufungua Kipindi'**
+  String get openPreviewTitle;
+
+  /// No description provided for @openPreviewEligibleCount.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wanachama Wanaostahili: {count}'**
+  String openPreviewEligibleCount(int count);
+
+  /// No description provided for @openPreviewExcludedCount.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wanachama Walioondolewa: {count}'**
+  String openPreviewExcludedCount(int count);
+
+  /// No description provided for @openPreviewMissingAmountCount.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wanaokosa Kiasi: {count}'**
+  String openPreviewMissingAmountCount(int count);
+
+  /// No description provided for @openPreviewExpectedTotal.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla Itakayotozwa'**
+  String get openPreviewExpectedTotal;
+
+  /// No description provided for @openPreviewMissingAmountWarning.
+  ///
+  /// In sw, this message translates to:
+  /// **'Weka kiasi kwa wanachama wote kabla ya kufungua kipindi hiki.'**
+  String get openPreviewMissingAmountWarning;
+
+  /// No description provided for @openPreviewConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Fungua kipindi hiki?'**
+  String get openPreviewConfirmTitle;
+
+  /// No description provided for @openPreviewConfirmMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatua hii itatoza malipo kwa wanachama wote wanaostahili na haiwezi kutenduliwa.'**
+  String get openPreviewConfirmMessage;
+
+  /// No description provided for @openPreviewConfirmButton.
+  ///
+  /// In sw, this message translates to:
+  /// **'Fungua Kipindi'**
+  String get openPreviewConfirmButton;
+
+  /// No description provided for @sectionEligibleMembers.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wanachama Wanaostahili'**
+  String get sectionEligibleMembers;
+
+  /// No description provided for @sectionExcludedMembers.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wanachama Walioondolewa'**
+  String get sectionExcludedMembers;
+
+  /// No description provided for @sectionMissingAmountMembers.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wanaokosa Kiasi'**
+  String get sectionMissingAmountMembers;
+
+  /// No description provided for @customAmountEditorTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Weka Kiasi kwa Kila Mwanachama'**
+  String get customAmountEditorTitle;
+
+  /// No description provided for @customAmountFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi'**
+  String get customAmountFieldLabel;
+
+  /// No description provided for @customAmountMissingBadge.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haijawekwa'**
+  String get customAmountMissingBadge;
+
+  /// No description provided for @customAmountSaveAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hifadhi Kiasi'**
+  String get customAmountSaveAction;
+
+  /// No description provided for @customAmountSavedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi vimehifadhiwa.'**
+  String get customAmountSavedMessage;
+
+  /// No description provided for @customAmountSearchHint.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tafuta mwanachama'**
+  String get customAmountSearchHint;
+
+  /// No description provided for @exclusionsScreenTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Simamia Walioondolewa'**
+  String get exclusionsScreenTitle;
+
+  /// No description provided for @exclusionSheetTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ondoa kwenye Kipindi Hiki'**
+  String get exclusionSheetTitle;
+
+  /// No description provided for @exclusionReasonLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu (si lazima)'**
+  String get exclusionReasonLabel;
+
+  /// No description provided for @excludeMemberAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ondoa kwenye Kipindi Hiki'**
+  String get excludeMemberAction;
+
+  /// No description provided for @removeExclusionAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rudisha kwenye Kipindi'**
+  String get removeExclusionAction;
+
+  /// No description provided for @memberExcludedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwanachama ameondolewa kwenye kipindi hiki.'**
+  String get memberExcludedMessage;
+
+  /// No description provided for @memberExclusionRemovedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwanachama amerudishwa kwenye kipindi hiki.'**
+  String get memberExclusionRemovedMessage;
+
+  /// No description provided for @contributionExclusionReasonSuspended.
+  ///
+  /// In sw, this message translates to:
+  /// **'Amesitishwa'**
+  String get contributionExclusionReasonSuspended;
+
+  /// No description provided for @contributionExclusionReasonExited.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ametoka'**
+  String get contributionExclusionReasonExited;
+
+  /// No description provided for @contributionExclusionReasonJoinedAfterEligibility.
+  ///
+  /// In sw, this message translates to:
+  /// **'Alijiunga baada ya tarehe ya ustahiki'**
+  String get contributionExclusionReasonJoinedAfterEligibility;
+
+  /// No description provided for @contributionExclusionReasonExitedDuringPeriod.
+  ///
+  /// In sw, this message translates to:
+  /// **'Alitoka na kurudi wakati wa kipindi'**
+  String get contributionExclusionReasonExitedDuringPeriod;
+
+  /// No description provided for @contributionExclusionReasonExcludedDefault.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ameondolewa'**
+  String get contributionExclusionReasonExcludedDefault;
+
+  /// No description provided for @chargesListTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo Yaliyotozwa'**
+  String get chargesListTitle;
+
+  /// No description provided for @chargesSearchHint.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tafuta mwanachama'**
+  String get chargesSearchHint;
+
+  /// No description provided for @chargesEmptyTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna Malipo Bado'**
+  String get chargesEmptyTitle;
+
+  /// No description provided for @chargesEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna mwanachama aliyetozwa kwenye kipindi hiki bado.'**
+  String get chargesEmptyMessage;
+
+  /// No description provided for @chargeBaseAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Kilichowekwa'**
+  String get chargeBaseAmountLabel;
+
+  /// No description provided for @chargePenaltyAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu'**
+  String get chargePenaltyAmountLabel;
+
+  /// No description provided for @chargeTotalAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla'**
+  String get chargeTotalAmountLabel;
+
+  /// No description provided for @enrollMemberTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Andikisha Mwanachama'**
+  String get enrollMemberTitle;
+
+  /// No description provided for @enrollMemberSearchHint.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tafuta mwanachama'**
+  String get enrollMemberSearchHint;
+
+  /// No description provided for @enrollMemberAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi *'**
+  String get enrollMemberAmountLabel;
+
+  /// No description provided for @enrollMemberSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwanachama ameandikishwa kwenye kipindi.'**
+  String get enrollMemberSuccessMessage;
+
+  /// No description provided for @enrollMemberEmptyResults.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna mwanachama aliyepatikana'**
+  String get enrollMemberEmptyResults;
+
+  /// No description provided for @contributionErrorNameRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jina linahitajika.'**
+  String get contributionErrorNameRequired;
+
+  /// No description provided for @contributionErrorMemberSavingsNotAvailable.
+  ///
+  /// In sw, this message translates to:
+  /// **'Akiba ya mwanachama haipatikani bado.'**
+  String get contributionErrorMemberSavingsNotAvailable;
+
+  /// No description provided for @contributionErrorAccountingLocked.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina na utaratibu wa uhasibu haviwezi kubadilishwa baada ya kipindi kufunguliwa.'**
+  String get contributionErrorAccountingLocked;
+
+  /// No description provided for @contributionErrorSetupConfigLocked.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mpangilio huu umefungwa baada ya kipindi kufunguliwa.'**
+  String get contributionErrorSetupConfigLocked;
+
+  /// No description provided for @contributionErrorTypeInactive.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina hii ya mchango haitumiki.'**
+  String get contributionErrorTypeInactive;
+
+  /// No description provided for @contributionErrorSetupInactive.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mpangilio huu haitumiki.'**
+  String get contributionErrorSetupInactive;
+
+  /// No description provided for @contributionErrorDuplicateName.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jina hilo tayari linatumika kwenye kikundi hiki.'**
+  String get contributionErrorDuplicateName;
+
+  /// No description provided for @contributionErrorInvalidDates.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe za kipindi si sahihi.'**
+  String get contributionErrorInvalidDates;
+
+  /// No description provided for @contributionErrorDueDateRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya mwisho ya malipo inahitajika.'**
+  String get contributionErrorDueDateRequired;
+
+  /// No description provided for @contributionErrorDuplicateMonthlyPeriod.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi cha mwezi huu tayari kipo.'**
+  String get contributionErrorDuplicateMonthlyPeriod;
+
+  /// No description provided for @contributionErrorPeriodNotEditable.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi hiki hakiwezi kuhaririwa tena.'**
+  String get contributionErrorPeriodNotEditable;
+
+  /// No description provided for @contributionErrorSetupNotCustomAmount.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mpangilio huu hautumii kiasi tofauti kwa kila mwanachama.'**
+  String get contributionErrorSetupNotCustomAmount;
+
+  /// No description provided for @contributionErrorMembershipNotFound.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwanachama hakupatikana.'**
+  String get contributionErrorMembershipNotFound;
+
+  /// No description provided for @contributionErrorInvalidAmount.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi lazima kiwe zaidi ya sifuri.'**
+  String get contributionErrorInvalidAmount;
+
+  /// No description provided for @contributionErrorPeriodNotPreviewable.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi hiki hakiwezi kuhakikiwa kwa sasa.'**
+  String get contributionErrorPeriodNotPreviewable;
+
+  /// No description provided for @contributionErrorPeriodNotOpenable.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi hiki hakiwezi kufunguliwa kwa sasa.'**
+  String get contributionErrorPeriodNotOpenable;
+
+  /// No description provided for @contributionErrorMissingCustomAmounts.
+  ///
+  /// In sw, this message translates to:
+  /// **'Baadhi ya wanachama wanaostahili hawana kiasi kilichowekwa.'**
+  String get contributionErrorMissingCustomAmounts;
+
+  /// No description provided for @contributionErrorPeriodNotOpen.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi hiki halijafunguliwa.'**
+  String get contributionErrorPeriodNotOpen;
+
+  /// No description provided for @contributionErrorMemberAlreadyCharged.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwanachama huyu tayari ametozwa kwenye kipindi hiki.'**
+  String get contributionErrorMemberAlreadyCharged;
+
+  /// No description provided for @contributionErrorAmountRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi kinahitajika.'**
+  String get contributionErrorAmountRequired;
+
+  /// No description provided for @contributionErrorPeriodNotCancellable.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi hiki hakiwezi kusitishwa tena.'**
+  String get contributionErrorPeriodNotCancellable;
+
+  /// No description provided for @contributionErrorNotFound.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haikupatikana.'**
+  String get contributionErrorNotFound;
+
+  /// No description provided for @contributionErrorNoPenaltyPolicy.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi hiki hakina kanuni ya adhabu iliyowekwa.'**
+  String get contributionErrorNoPenaltyPolicy;
+
+  /// No description provided for @contributionErrorPermissionDenied.
+  ///
+  /// In sw, this message translates to:
+  /// **'Huna ruhusa ya kufanya hivyo.'**
+  String get contributionErrorPermissionDenied;
+
+  /// No description provided for @contributionErrorNetwork.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imeshindikana kuunganisha. Jaribu tena.'**
+  String get contributionErrorNetwork;
+
+  /// No description provided for @contributionErrorUnexpected.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hitilafu imetokea. Jaribu tena.'**
+  String get contributionErrorUnexpected;
+
   /// No description provided for @supabaseConfigMissing.
   ///
   /// In sw, this message translates to:

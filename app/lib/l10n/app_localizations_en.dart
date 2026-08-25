@@ -504,6 +504,679 @@ class AppLocalizationsEn extends AppLocalizations {
       'This member already has another active membership in this group.';
 
   @override
+  String get contributionsTitle => 'Contributions';
+
+  @override
+  String get homeContributionsShortcutSubtitle =>
+      'View and manage group contributions';
+
+  @override
+  String get contributionTypesEntryTitle => 'Contribution Types';
+
+  @override
+  String get contributionTypesEntrySubtitle =>
+      'Manage the group\'s contribution types';
+
+  @override
+  String get contributionSetupsEntryTitle => 'Contribution Setups';
+
+  @override
+  String get contributionSetupsEntrySubtitle =>
+      'Manage how contributions are charged';
+
+  @override
+  String get contributionPeriodsEntryTitle => 'Contribution Periods';
+
+  @override
+  String get contributionPeriodsEntrySubtitle =>
+      'Manage contribution periods and charges';
+
+  @override
+  String get contributionTypesTitle => 'Contribution Types';
+
+  @override
+  String get contributionTypesSearchHint => 'Search contribution type';
+
+  @override
+  String get addContributionTypeAction => 'Add Contribution Type';
+
+  @override
+  String get contributionTypesEmptyTitle => 'Build Your Contribution Type List';
+
+  @override
+  String get contributionTypesEmptyMessage =>
+      'Add the group\'s first contribution type.';
+
+  @override
+  String get contributionTypesEmptyFilteredTitle =>
+      'No contribution type found';
+
+  @override
+  String get contributionTypesEmptyFilteredMessage =>
+      'Try changing your search or filter.';
+
+  @override
+  String get editContributionTypeTitle => 'Edit Contribution Type';
+
+  @override
+  String get sectionContributionTypeDetails => 'Contribution Type Details';
+
+  @override
+  String get sectionContributionClassification =>
+      'Classification & Accounting Treatment';
+
+  @override
+  String get contributionTypeNameLabel => 'Contribution type name *';
+
+  @override
+  String get contributionTypeDescriptionLabel => 'Description (optional)';
+
+  @override
+  String get contributionCategoryLabel => 'Category';
+
+  @override
+  String get contributionAccountingTreatmentLabel => 'Accounting Treatment';
+
+  @override
+  String get contributionTypeActiveLabel => 'Active';
+
+  @override
+  String get contributionInactiveBadgeLabel => 'Inactive';
+
+  @override
+  String get contributionDisplayOrderLabel => 'Display Order (optional)';
+
+  @override
+  String get contributionFilterActiveOnly => 'Active';
+
+  @override
+  String get contributionFilterInactiveOnly => 'Inactive';
+
+  @override
+  String get contributionCategoryGeneral => 'General';
+
+  @override
+  String get contributionCategorySocial => 'Social';
+
+  @override
+  String get contributionCategoryShare => 'Share';
+
+  @override
+  String get contributionTreatmentGroupIncome => 'Group Income';
+
+  @override
+  String get contributionTreatmentPassThrough => 'Not Group Income';
+
+  @override
+  String get contributionTreatmentPassThroughHelp =>
+      'Funds are collected for a specific purpose and are not recognized as ordinary group income.';
+
+  @override
+  String get contributionTreatmentShareCapital => 'Share Capital';
+
+  @override
+  String get contributionTreatmentMemberSavingsUnavailable =>
+      'Member Savings (Not yet available)';
+
+  @override
+  String get contributionSetupsTitle => 'Contribution Setups';
+
+  @override
+  String get addContributionSetupAction => 'Add Setup';
+
+  @override
+  String get contributionSetupsEmptyTitle => 'Build Your Setup List';
+
+  @override
+  String get contributionSetupsEmptyMessage =>
+      'Add the first contribution setup.';
+
+  @override
+  String get contributionSetupsEmptyFilteredTitle => 'No setup found';
+
+  @override
+  String get contributionSetupsEmptyFilteredMessage =>
+      'Try changing your filter.';
+
+  @override
+  String get editContributionSetupTitle => 'Edit Setup';
+
+  @override
+  String get sectionContributionSetupDetails => 'Contribution Setup Details';
+
+  @override
+  String get sectionContributionChargingRules => 'Charging Rules';
+
+  @override
+  String get sectionContributionDueDateRules => 'Due-Date Rules';
+
+  @override
+  String get sectionContributionPenaltyRules => 'Penalty Rules';
+
+  @override
+  String get contributionSetupNameLabel => 'Setup name *';
+
+  @override
+  String get contributionSetupDescriptionLabel => 'Description (optional)';
+
+  @override
+  String get contributionSetupTypeLabel => 'Contribution Type';
+
+  @override
+  String get contributionScheduleModeLabel => 'Schedule';
+
+  @override
+  String get contributionAmountModeLabel => 'Amount Mode';
+
+  @override
+  String get contributionFixedAmountLabel => 'Amount *';
+
+  @override
+  String get contributionDefaultDueDayLabel => 'Due Day (1–31)';
+
+  @override
+  String get contributionDefaultDueMonthOffsetLabel =>
+      'Month Offset for Due Date';
+
+  @override
+  String get contributionPenaltyModeLabel => 'Penalty Mode';
+
+  @override
+  String get contributionPenaltyGraceDaysLabel => 'Grace Days';
+
+  @override
+  String get contributionPenaltyValueLabel => 'Penalty Value *';
+
+  @override
+  String get contributionPenaltyCapAmountLabel => 'Penalty Cap (optional)';
+
+  @override
+  String get contributionSetupActiveLabel => 'Active';
+
+  @override
+  String get contributionScheduleMonthly => 'Monthly';
+
+  @override
+  String get contributionScheduleOnDemand => 'On Demand';
+
+  @override
+  String get contributionScheduleOneTime => 'One Time';
+
+  @override
+  String get contributionAmountFixed => 'Single Amount';
+
+  @override
+  String get contributionAmountCustomPerMember => 'Custom Amount Per Member';
+
+  @override
+  String get contributionPenaltyNone => 'None';
+
+  @override
+  String get contributionPenaltyFixedOnce => 'Fixed Amount (Once)';
+
+  @override
+  String get contributionPenaltyFixedRecurring => 'Fixed Amount (Recurring)';
+
+  @override
+  String get contributionPenaltyPercentageOnce => 'Percentage (Once)';
+
+  @override
+  String get contributionPenaltyPercentageRecurring => 'Percentage (Recurring)';
+
+  @override
+  String get contributionPeriodsTitle => 'Contribution Periods';
+
+  @override
+  String get addContributionPeriodAction => 'Add Period';
+
+  @override
+  String get contributionPeriodsEmptyTitle => 'Build Your Period List';
+
+  @override
+  String get contributionPeriodsEmptyMessage =>
+      'Add the first contribution period.';
+
+  @override
+  String get contributionPeriodsEmptyFilteredTitle => 'No period found';
+
+  @override
+  String get contributionPeriodsEmptyFilteredMessage =>
+      'Try changing your filter.';
+
+  @override
+  String get contributionPeriodStatusDraft => 'Draft';
+
+  @override
+  String get contributionPeriodStatusScheduled => 'Scheduled';
+
+  @override
+  String get contributionPeriodStatusOpen => 'Open';
+
+  @override
+  String get contributionPeriodStatusClosed => 'Closed';
+
+  @override
+  String get contributionPeriodStatusCancelled => 'Cancelled';
+
+  @override
+  String get newContributionPeriodTitle => 'New Contribution Period';
+
+  @override
+  String get contributionPeriodSetupLabel => 'Contribution Setup *';
+
+  @override
+  String get contributionPeriodLabelLabel => 'Period Label *';
+
+  @override
+  String get contributionPeriodMonthLabel => 'Month';
+
+  @override
+  String get contributionPeriodYearLabel => 'Year';
+
+  @override
+  String get contributionMonthJanuary => 'January';
+
+  @override
+  String get contributionMonthFebruary => 'February';
+
+  @override
+  String get contributionMonthMarch => 'March';
+
+  @override
+  String get contributionMonthApril => 'April';
+
+  @override
+  String get contributionMonthMay => 'May';
+
+  @override
+  String get contributionMonthJune => 'June';
+
+  @override
+  String get contributionMonthJuly => 'July';
+
+  @override
+  String get contributionMonthAugust => 'August';
+
+  @override
+  String get contributionMonthSeptember => 'September';
+
+  @override
+  String get contributionMonthOctober => 'October';
+
+  @override
+  String get contributionMonthNovember => 'November';
+
+  @override
+  String get contributionMonthDecember => 'December';
+
+  @override
+  String get contributionPeriodStartLabel => 'Start Date';
+
+  @override
+  String get contributionPeriodEndLabel => 'End Date';
+
+  @override
+  String get contributionPeriodCreatedTitle => 'Period Created';
+
+  @override
+  String contributionPeriodCreatedDueDateMessage(String date) {
+    return 'Due date: $date';
+  }
+
+  @override
+  String get contributionPeriodDetailTitle => 'Contribution Period';
+
+  @override
+  String get editContributionPeriodTitle => 'Edit Contribution Period';
+
+  @override
+  String get sectionContributionPeriodDates => 'Key Dates';
+
+  @override
+  String get contributionObligationDateLabel => 'Obligation Date';
+
+  @override
+  String get contributionEligibilityDateLabel => 'Eligibility Date';
+
+  @override
+  String get contributionDueDateLabel => 'Due Date';
+
+  @override
+  String get contributionScheduledOpenDateLabel => 'Scheduled Open Date';
+
+  @override
+  String get sectionContributionSnapshot => 'Recorded Configuration';
+
+  @override
+  String get sectionContributionSummary => 'Summary';
+
+  @override
+  String get contributionExcludedCountLabel => 'Excluded';
+
+  @override
+  String get contributionCustomAmountCountLabel => 'With Custom Amount Set';
+
+  @override
+  String get contributionTotalMembersChargedLabel => 'Members Charged';
+
+  @override
+  String get contributionTotalBaseAssessedLabel => 'Total Assessed';
+
+  @override
+  String get contributionTotalPenaltyAssessedLabel =>
+      'Total Penalties Assessed';
+
+  @override
+  String get contributionPenaltyChargeCountLabel => 'Charges With a Penalty';
+
+  @override
+  String get contributionNoPenaltyPolicyMessage =>
+      'No penalty policy is configured for this period.';
+
+  @override
+  String get editExclusionsAction => 'Manage Exclusions';
+
+  @override
+  String get configureCustomAmountsAction => 'Set Per-Member Amounts';
+
+  @override
+  String get previewAndOpenAction => 'Preview & Open';
+
+  @override
+  String get cancelPeriodAction => 'Cancel Period';
+
+  @override
+  String get viewChargesAction => 'View Charges';
+
+  @override
+  String get enrollMemberAction => 'Enroll Member';
+
+  @override
+  String get closePeriodAction => 'Close Period';
+
+  @override
+  String get cancelPeriodConfirmTitle => 'Cancel this period?';
+
+  @override
+  String get cancelPeriodConfirmMessage => 'This action cannot be undone.';
+
+  @override
+  String get closePeriodConfirmTitle => 'Close this period?';
+
+  @override
+  String get closePeriodConfirmMessage =>
+      'After closing, new members can only be added by enrolling them individually.';
+
+  @override
+  String get periodCancelledMessage => 'Period cancelled.';
+
+  @override
+  String get periodClosedMessage => 'Period closed.';
+
+  @override
+  String get periodOpenedMessage => 'Period opened.';
+
+  @override
+  String get assessPenaltiesAction => 'Assess Penalties';
+
+  @override
+  String get assessPenaltiesConfirmTitle => 'Assess penalties for this period?';
+
+  @override
+  String get assessPenaltiesConfirmMessage =>
+      'This checks every overdue charge and posts any newly-due penalty. Running it again is always safe — it never creates duplicates.';
+
+  @override
+  String get assessPenaltiesResultTitle => 'Penalties Assessed';
+
+  @override
+  String assessPenaltiesResultCreatedCount(Object count) {
+    return 'New Penalties Posted: $count';
+  }
+
+  @override
+  String assessPenaltiesResultAlreadyCurrentCount(Object count) {
+    return 'Already Up To Date: $count';
+  }
+
+  @override
+  String get assessPenaltiesResultTotalThisRun => 'New Penalty Total';
+
+  @override
+  String get openPreviewTitle => 'Preview Opening This Period';
+
+  @override
+  String openPreviewEligibleCount(int count) {
+    return 'Eligible Members: $count';
+  }
+
+  @override
+  String openPreviewExcludedCount(int count) {
+    return 'Excluded Members: $count';
+  }
+
+  @override
+  String openPreviewMissingAmountCount(int count) {
+    return 'Missing Amount: $count';
+  }
+
+  @override
+  String get openPreviewExpectedTotal => 'Expected Total Assessment';
+
+  @override
+  String get openPreviewMissingAmountWarning =>
+      'Set an amount for every member before opening this period.';
+
+  @override
+  String get openPreviewConfirmTitle => 'Open this period?';
+
+  @override
+  String get openPreviewConfirmMessage =>
+      'This will charge every eligible member and cannot be undone.';
+
+  @override
+  String get openPreviewConfirmButton => 'Open Period';
+
+  @override
+  String get sectionEligibleMembers => 'Eligible Members';
+
+  @override
+  String get sectionExcludedMembers => 'Excluded Members';
+
+  @override
+  String get sectionMissingAmountMembers => 'Missing Amount';
+
+  @override
+  String get customAmountEditorTitle => 'Set Per-Member Amounts';
+
+  @override
+  String get customAmountFieldLabel => 'Amount';
+
+  @override
+  String get customAmountMissingBadge => 'Not set';
+
+  @override
+  String get customAmountSaveAction => 'Save Amounts';
+
+  @override
+  String get customAmountSavedMessage => 'Amounts saved.';
+
+  @override
+  String get customAmountSearchHint => 'Search member';
+
+  @override
+  String get exclusionsScreenTitle => 'Manage Exclusions';
+
+  @override
+  String get exclusionSheetTitle => 'Remove From This Period';
+
+  @override
+  String get exclusionReasonLabel => 'Reason (optional)';
+
+  @override
+  String get excludeMemberAction => 'Remove From This Period';
+
+  @override
+  String get removeExclusionAction => 'Restore To Period';
+
+  @override
+  String get memberExcludedMessage => 'Member removed from this period.';
+
+  @override
+  String get memberExclusionRemovedMessage => 'Member restored to this period.';
+
+  @override
+  String get contributionExclusionReasonSuspended => 'Suspended';
+
+  @override
+  String get contributionExclusionReasonExited => 'Exited';
+
+  @override
+  String get contributionExclusionReasonJoinedAfterEligibility =>
+      'Joined after the eligibility date';
+
+  @override
+  String get contributionExclusionReasonExitedDuringPeriod =>
+      'Exited and rejoined during this period';
+
+  @override
+  String get contributionExclusionReasonExcludedDefault => 'Removed';
+
+  @override
+  String get chargesListTitle => 'Posted Charges';
+
+  @override
+  String get chargesSearchHint => 'Search member';
+
+  @override
+  String get chargesEmptyTitle => 'No Charges Yet';
+
+  @override
+  String get chargesEmptyMessage =>
+      'No member has been charged in this period yet.';
+
+  @override
+  String get chargeBaseAmountLabel => 'Assessed Amount';
+
+  @override
+  String get chargePenaltyAmountLabel => 'Penalty';
+
+  @override
+  String get chargeTotalAmountLabel => 'Total';
+
+  @override
+  String get enrollMemberTitle => 'Enroll Member';
+
+  @override
+  String get enrollMemberSearchHint => 'Search member';
+
+  @override
+  String get enrollMemberAmountLabel => 'Amount *';
+
+  @override
+  String get enrollMemberSuccessMessage => 'Member enrolled into the period.';
+
+  @override
+  String get enrollMemberEmptyResults => 'No member found';
+
+  @override
+  String get contributionErrorNameRequired => 'A name is required.';
+
+  @override
+  String get contributionErrorMemberSavingsNotAvailable =>
+      'Member savings is not available yet.';
+
+  @override
+  String get contributionErrorAccountingLocked =>
+      'Category/accounting treatment cannot change once a period has posted charges.';
+
+  @override
+  String get contributionErrorSetupConfigLocked =>
+      'This configuration is locked once a period has posted charges.';
+
+  @override
+  String get contributionErrorTypeInactive =>
+      'This contribution type is inactive.';
+
+  @override
+  String get contributionErrorSetupInactive =>
+      'This contribution setup is inactive.';
+
+  @override
+  String get contributionErrorDuplicateName =>
+      'That name is already used in this group.';
+
+  @override
+  String get contributionErrorInvalidDates => 'Invalid period dates.';
+
+  @override
+  String get contributionErrorDueDateRequired => 'A due date is required.';
+
+  @override
+  String get contributionErrorDuplicateMonthlyPeriod =>
+      'A period already exists for this month.';
+
+  @override
+  String get contributionErrorPeriodNotEditable =>
+      'This period can no longer be edited.';
+
+  @override
+  String get contributionErrorSetupNotCustomAmount =>
+      'This setup does not use per-member amounts.';
+
+  @override
+  String get contributionErrorMembershipNotFound => 'Member not found.';
+
+  @override
+  String get contributionErrorInvalidAmount =>
+      'Amount must be greater than zero.';
+
+  @override
+  String get contributionErrorPeriodNotPreviewable =>
+      'This period can no longer be previewed.';
+
+  @override
+  String get contributionErrorPeriodNotOpenable =>
+      'This period can no longer be opened.';
+
+  @override
+  String get contributionErrorMissingCustomAmounts =>
+      'Some eligible members are missing a configured amount.';
+
+  @override
+  String get contributionErrorPeriodNotOpen => 'This period is not open.';
+
+  @override
+  String get contributionErrorMemberAlreadyCharged =>
+      'This member already has a charge for this period.';
+
+  @override
+  String get contributionErrorAmountRequired => 'An amount is required.';
+
+  @override
+  String get contributionErrorPeriodNotCancellable =>
+      'This period can no longer be cancelled.';
+
+  @override
+  String get contributionErrorNotFound => 'Not found.';
+
+  @override
+  String get contributionErrorNoPenaltyPolicy =>
+      'This period has no penalty policy configured.';
+
+  @override
+  String get contributionErrorPermissionDenied =>
+      'You do not have permission to do that.';
+
+  @override
+  String get contributionErrorNetwork =>
+      'Network error. Check your connection and try again.';
+
+  @override
+  String get contributionErrorUnexpected =>
+      'Something went wrong. Please try again.';
+
+  @override
   String get supabaseConfigMissing =>
       'Supabase configuration missing (SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY not set).';
 }

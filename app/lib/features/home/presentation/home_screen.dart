@@ -101,6 +101,19 @@ class HomeScreen extends ConsumerWidget {
                 onTap: () => context.push(AppRoutes.membersList),
               ),
             ),
+          if (membership.hasPermission('contribution.view')) ...[
+            const SizedBox(height: UmojaSpacing.lg),
+            UmojaCard(
+              key: const Key('homeContributionsShortcut'),
+              padding: EdgeInsets.zero,
+              child: UmojaListTile(
+                leading: const Icon(Icons.savings_outlined),
+                title: l10n.contributionsTitle,
+                subtitle: Text(l10n.homeContributionsShortcutSubtitle),
+                onTap: () => context.push(AppRoutes.contributionsHome),
+              ),
+            ),
+          ],
         ],
       ),
     );

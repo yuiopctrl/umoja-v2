@@ -11,6 +11,19 @@ import '../../features/auth/presentation/phone_entry_screen.dart';
 import '../../features/auth/providers/app_context_provider.dart';
 import '../../features/auth/providers/auth_session_provider.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
+import '../../features/contributions/presentation/contribution_period_amounts_screen.dart';
+import '../../features/contributions/presentation/contribution_period_charges_screen.dart';
+import '../../features/contributions/presentation/contribution_period_detail_screen.dart';
+import '../../features/contributions/presentation/contribution_period_enroll_screen.dart';
+import '../../features/contributions/presentation/contribution_period_exclusions_screen.dart';
+import '../../features/contributions/presentation/contribution_period_form_screen.dart';
+import '../../features/contributions/presentation/contribution_period_open_preview_screen.dart';
+import '../../features/contributions/presentation/contribution_periods_list_screen.dart';
+import '../../features/contributions/presentation/contribution_setup_form_screen.dart';
+import '../../features/contributions/presentation/contribution_setups_list_screen.dart';
+import '../../features/contributions/presentation/contribution_type_form_screen.dart';
+import '../../features/contributions/presentation/contribution_types_list_screen.dart';
+import '../../features/contributions/presentation/contributions_home_screen.dart';
 import '../../features/groups/presentation/select_group_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/members/presentation/member_detail_screen.dart';
@@ -143,6 +156,88 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.more,
             builder: (context, state) => const MoreScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionsHome,
+            builder: (context, state) => const ContributionsHomeScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionTypesList,
+            builder: (context, state) => const ContributionTypesListScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionTypeNew,
+            builder: (context, state) => const ContributionTypeFormScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionTypeEdit,
+            builder: (context, state) => ContributionTypeFormScreen(
+              typeId: state.pathParameters['typeId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionSetupsList,
+            builder: (context, state) => const ContributionSetupsListScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionSetupNew,
+            builder: (context, state) => const ContributionSetupFormScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionSetupEdit,
+            builder: (context, state) => ContributionSetupFormScreen(
+              setupId: state.pathParameters['setupId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionPeriodsList,
+            builder: (context, state) => const ContributionPeriodsListScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionPeriodNew,
+            builder: (context, state) => const ContributionPeriodFormScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionPeriodDetail,
+            builder: (context, state) => ContributionPeriodDetailScreen(
+              periodId: state.pathParameters['periodId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionPeriodEdit,
+            builder: (context, state) => ContributionPeriodFormScreen(
+              periodId: state.pathParameters['periodId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionPeriodOpenPreview,
+            builder: (context, state) => ContributionPeriodOpenPreviewScreen(
+              periodId: state.pathParameters['periodId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionPeriodAmounts,
+            builder: (context, state) => ContributionPeriodAmountsScreen(
+              periodId: state.pathParameters['periodId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionPeriodExclusions,
+            builder: (context, state) => ContributionPeriodExclusionsScreen(
+              periodId: state.pathParameters['periodId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionPeriodCharges,
+            builder: (context, state) => ContributionPeriodChargesScreen(
+              periodId: state.pathParameters['periodId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionPeriodEnroll,
+            builder: (context, state) => ContributionPeriodEnrollScreen(
+              periodId: state.pathParameters['periodId']!,
+            ),
           ),
         ],
       ),

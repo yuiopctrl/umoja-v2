@@ -62,4 +62,78 @@ class AppRoutes {
       '/members/$membershipId';
   static String memberEditPath(String membershipId) =>
       '/members/$membershipId/edit';
+
+  // -- Contributions (Michango) ------------------------------------------
+  //
+  // Obligation-ledger foundation only — no payment/cash/receipt route
+  // exists anywhere under this prefix.
+
+  static const contributionsHome = '/contributions';
+
+  static const contributionTypesList = '/contributions/types';
+  static const contributionTypeNew = '/contributions/types/new';
+
+  /// Path template; use [contributionTypeEditPath] for a concrete URL.
+  static const contributionTypeEdit = '/contributions/types/:typeId/edit';
+  static String contributionTypeEditPath(String typeId) =>
+      '/contributions/types/$typeId/edit';
+
+  static const contributionSetupsList = '/contributions/setups';
+  static const contributionSetupNew = '/contributions/setups/new';
+
+  /// Path template; use [contributionSetupEditPath] for a concrete URL.
+  static const contributionSetupEdit = '/contributions/setups/:setupId/edit';
+  static String contributionSetupEditPath(String setupId) =>
+      '/contributions/setups/$setupId/edit';
+
+  static const contributionPeriodsList = '/contributions/periods';
+  static const contributionPeriodNew = '/contributions/periods/new';
+
+  /// Path template; use [contributionPeriodDetailPath] for a concrete
+  /// URL.
+  static const contributionPeriodDetail = '/contributions/periods/:periodId';
+  static String contributionPeriodDetailPath(String periodId) =>
+      '/contributions/periods/$periodId';
+
+  /// Path template; use [contributionPeriodEditPath] for a concrete
+  /// URL. Only reachable for a DRAFT/SCHEDULED period — see
+  /// `ContributionPeriodDetailScreen`.
+  static const contributionPeriodEdit = '/contributions/periods/:periodId/edit';
+  static String contributionPeriodEditPath(String periodId) =>
+      '/contributions/periods/$periodId/edit';
+
+  /// Path template; use [contributionPeriodOpenPreviewPath] for a
+  /// concrete URL.
+  static const contributionPeriodOpenPreview =
+      '/contributions/periods/:periodId/open-preview';
+  static String contributionPeriodOpenPreviewPath(String periodId) =>
+      '/contributions/periods/$periodId/open-preview';
+
+  /// Path template; use [contributionPeriodAmountsPath] for a concrete
+  /// URL.
+  static const contributionPeriodAmounts =
+      '/contributions/periods/:periodId/amounts';
+  static String contributionPeriodAmountsPath(String periodId) =>
+      '/contributions/periods/$periodId/amounts';
+
+  /// Path template; use [contributionPeriodExclusionsPath] for a
+  /// concrete URL.
+  static const contributionPeriodExclusions =
+      '/contributions/periods/:periodId/exclusions';
+  static String contributionPeriodExclusionsPath(String periodId) =>
+      '/contributions/periods/$periodId/exclusions';
+
+  /// Path template; use [contributionPeriodChargesPath] for a concrete
+  /// URL.
+  static const contributionPeriodCharges =
+      '/contributions/periods/:periodId/charges';
+  static String contributionPeriodChargesPath(String periodId) =>
+      '/contributions/periods/$periodId/charges';
+
+  /// Path template; use [contributionPeriodEnrollPath] for a concrete
+  /// URL.
+  static const contributionPeriodEnroll =
+      '/contributions/periods/:periodId/enroll';
+  static String contributionPeriodEnrollPath(String periodId) =>
+      '/contributions/periods/$periodId/enroll';
 }

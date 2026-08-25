@@ -454,5 +454,35 @@ void main() {
         isNull,
       );
     });
+
+    test('the Contributions module (home + nested period/type/setup routes) '
+        'is a recognized operational route, never bounced back to /home', () {
+      final membership = _membership(id: 'm1');
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: [membership],
+      );
+      for (final location in [
+        AppRoutes.contributionsHome,
+        AppRoutes.contributionTypesList,
+        AppRoutes.contributionSetupsList,
+        AppRoutes.contributionPeriodsList,
+        AppRoutes.contributionPeriodDetailPath('period-1'),
+        AppRoutes.contributionPeriodOpenPreviewPath('period-1'),
+        AppRoutes.contributionPeriodChargesPath('period-1'),
+      ]) {
+        expect(
+          _redirect(
+            sessionStatus: AuthSessionStatus.signedIn,
+            appContext: AsyncValue.data(context),
+            selectedGroup: SelectedGroupResolved(membership),
+            currentLocation: location,
+          ),
+          isNull,
+          reason: '$location should be treated as operational',
+        );
+      }
+    });
   });
 }

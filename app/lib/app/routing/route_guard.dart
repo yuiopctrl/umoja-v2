@@ -174,5 +174,7 @@ bool _isOperationalRoute(String location) {
   return location == AppRoutes.home ||
       location == AppRoutes.more ||
       location == AppRoutes.membersList ||
-      location.startsWith('${AppRoutes.membersList}/');
+      location.startsWith('${AppRoutes.membersList}/') ||
+      location == AppRoutes.contributionsHome ||
+      location.startsWith('${AppRoutes.contributionsHome}/');
 }

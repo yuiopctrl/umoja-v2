@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/branding/umoja_brand_mark.dart';
 import '../../core/localization/app_localizations_x.dart';
 import '../../core/theme/umoja_breakpoints.dart';
 import '../../core/theme/umoja_spacing.dart';
+import '../../features/auth/providers/selected_group_provider.dart';
 import 'shell_destination.dart';
 
 /// The authenticated application shell. Wraps every operational route
@@ -18,7 +20,7 @@ import 'shell_destination.dart';
 /// remains a self-contained [Scaffold] (via `UmojaPage`); this shell
 /// only adds the surrounding navigation, so it never needs to know
 /// anything about an individual screen's content.
-class AppShell extends StatelessWidget {
+class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.location, required this.child});
 
   final String location;
@@ -41,11 +43,18 @@ class AppShell extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final width = MediaQuery.sizeOf(context).width;
+    final selectedGroup = ref.watch(selectedGroupProvider);
+    final membership = selectedGroup is SelectedGroupResolved
+        ? selectedGroup.membership
+        : null;
     // Rebuilt from `context.l10n` (not a top-level const) so nav labels
     // switch immediately with the active language (prompt 05C §10).
-    final destinations = shellDestinations(context.l10n);
+    final destinations = shellDestinations(
+      context.l10n,
+      membership: membership,
+    );
     final selectedIndex = _selectedIndex(destinations);
 
     if (UmojaBreakpoints.isMobile(width)) {
