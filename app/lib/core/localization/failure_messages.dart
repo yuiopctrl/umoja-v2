@@ -1,6 +1,8 @@
 import '../../features/auth/data/auth_failure.dart';
 import '../../features/contributions/data/contribution_failure.dart';
+import '../../features/financial_accounts/data/financial_account_failure.dart';
 import '../../features/members/data/member_failure.dart';
+import '../../features/payments/data/payment_failure.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Localizes an [AuthFailureType] for display — the single place this
@@ -88,9 +90,86 @@ String contributionFailureMessage(
     ContributionFailureType.notFound => l10n.contributionErrorNotFound,
     ContributionFailureType.noPenaltyPolicy =>
       l10n.contributionErrorNoPenaltyPolicy,
+    ContributionFailureType.adjustmentAmountRequired =>
+      l10n.contributionErrorAdjustmentAmountRequired,
+    ContributionFailureType.adjustmentReasonRequired =>
+      l10n.contributionErrorAdjustmentReasonRequired,
+    ContributionFailureType.adjustmentWouldMakeObligationNegative =>
+      l10n.contributionErrorAdjustmentWouldMakeObligationNegative,
+    ContributionFailureType.waiverAmountMustBePositive =>
+      l10n.contributionErrorWaiverAmountMustBePositive,
+    ContributionFailureType.waiverReasonRequired =>
+      l10n.contributionErrorWaiverReasonRequired,
+    ContributionFailureType.waiverExceedsNetAssessed =>
+      l10n.contributionErrorWaiverExceedsNetAssessed,
+    ContributionFailureType.openingBalanceAmountMustBePositive =>
+      l10n.contributionErrorOpeningBalanceAmountMustBePositive,
+    ContributionFailureType.openingBalanceAlreadyImported =>
+      l10n.contributionErrorOpeningBalanceAlreadyImported,
     ContributionFailureType.permissionDenied =>
       l10n.contributionErrorPermissionDenied,
     ContributionFailureType.network => l10n.contributionErrorNetwork,
     ContributionFailureType.unexpected => l10n.contributionErrorUnexpected,
+  };
+}
+
+/// Localizes a [FinancialAccountFailureType] for display — the single
+/// place this mapping happens, so no screen pattern-matches
+/// [FinancialAccountFailure.message].
+String financialAccountFailureMessage(
+  AppLocalizations l10n,
+  FinancialAccountFailureType type,
+) {
+  return switch (type) {
+    FinancialAccountFailureType.nameRequired =>
+      l10n.financialAccountErrorNameRequired,
+    FinancialAccountFailureType.duplicateName =>
+      l10n.financialAccountErrorDuplicateName,
+    FinancialAccountFailureType.openingBalanceMustBePositive =>
+      l10n.financialAccountErrorOpeningBalanceMustBePositive,
+    FinancialAccountFailureType.notFound => l10n.financialAccountErrorNotFound,
+    FinancialAccountFailureType.transferSameAccount =>
+      l10n.financialAccountErrorTransferSameAccount,
+    FinancialAccountFailureType.transferAmountMustBePositive =>
+      l10n.financialAccountErrorTransferAmountMustBePositive,
+    FinancialAccountFailureType.insufficientBalance =>
+      l10n.financialAccountErrorInsufficientBalance,
+    FinancialAccountFailureType.accountInactive =>
+      l10n.financialAccountErrorAccountInactive,
+    FinancialAccountFailureType.effectiveDateRequired =>
+      l10n.financialAccountErrorEffectiveDateRequired,
+    FinancialAccountFailureType.permissionDenied =>
+      l10n.financialAccountErrorPermissionDenied,
+    FinancialAccountFailureType.network => l10n.financialAccountErrorNetwork,
+    FinancialAccountFailureType.unexpected =>
+      l10n.financialAccountErrorUnexpected,
+  };
+}
+
+/// Localizes a [PaymentFailureType] for display — the single place
+/// this mapping happens, so no screen pattern-matches
+/// [PaymentFailure.message].
+String paymentFailureMessage(AppLocalizations l10n, PaymentFailureType type) {
+  return switch (type) {
+    PaymentFailureType.amountMustBePositive =>
+      l10n.paymentErrorAmountMustBePositive,
+    PaymentFailureType.financialAccountInactive =>
+      l10n.paymentErrorFinancialAccountInactive,
+    PaymentFailureType.idempotencyKeyConflict =>
+      l10n.paymentErrorIdempotencyKeyConflict,
+    PaymentFailureType.paymentAlreadyReversed =>
+      l10n.paymentErrorAlreadyReversed,
+    PaymentFailureType.reversalBlockedWalletCreditConsumed =>
+      l10n.paymentErrorReversalBlockedWalletCreditConsumed,
+    PaymentFailureType.reversalReasonRequired =>
+      l10n.paymentErrorReversalReasonRequired,
+    PaymentFailureType.walletInsufficientBalance =>
+      l10n.paymentErrorWalletInsufficientBalance,
+    PaymentFailureType.walletAllocationNothingToAllocate =>
+      l10n.paymentErrorWalletNothingToAllocate,
+    PaymentFailureType.notFound => l10n.paymentErrorNotFound,
+    PaymentFailureType.permissionDenied => l10n.paymentErrorPermissionDenied,
+    PaymentFailureType.network => l10n.paymentErrorNetwork,
+    PaymentFailureType.unexpected => l10n.paymentErrorUnexpected,
   };
 }

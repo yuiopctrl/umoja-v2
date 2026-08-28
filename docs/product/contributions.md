@@ -509,11 +509,117 @@ Existing `PENALTY` components remain fully intact and queryable after
 `CLOSE` — closing a period never touches posted charges/components.
 Further penalty assessment is not available once `CLOSED` (see above).
 
+## Corrections & opening balances (Prompt 06C)
+
+Once a period is OPEN, its BASE/PENALTY components and charge identity
+are locked — never `UPDATE`d or `DELETE`d. Any later correction is an
+explicit new financial event, posted as one more row in
+`contribution_charge_components`:
+
+- **ADJUSTMENT** — a signed correction (`rpc_create_contribution_adjustment`).
+  Positive increases the obligation, negative reduces it; never zero.
+  A negative adjustment is rejected
+  (`ADJUSTMENT_WOULD_MAKE_OBLIGATION_NEGATIVE`) if it would drive the
+  charge's net assessed below zero.
+- **WAIVER** — forgiveness of an already-charged obligation
+  (`rpc_waive_contribution_charge`), distinct from an *exclusion*
+  (which means the member was never charged at all). The caller always
+  supplies a positive magnitude to waive; the backend always stores the
+  component **negative** — Flutter never sends a signed waiver value,
+  and never subtracts a positive waiver from a total itself. Rejected
+  (`WAIVER_EXCEEDS_NET_ASSESSED`) if it would exceed the charge's
+  current net assessed. A waiver never rewrites or deletes the
+  PENALTY component it sits alongside, and is never payable — it only
+  reduces debt, it does not create a payable line for a future
+  payments module.
+- **OPENING_BALANCE** — imported pre-Umoja debt
+  (`rpc_import_contribution_opening_balances`), always positive.
+
+Sign convention is enforced at the database level by the
+`contribution_charge_components_amount_sign` CHECK constraint (added by
+`20260825091000_create_contribution_corrections_and_opening_balances.sql`),
+not merely by RPC logic:
+
+| Component type | Stored sign |
+|---|---|
+| BASE / PENALTY / OPENING_BALANCE | always positive |
+| ADJUSTMENT | either sign, never zero |
+| WAIVER | always negative |
+
+**Locked penalty interaction**: a later adjustment/waiver never
+retroactively changes an already-posted PENALTY — 06B computes a
+percentage penalty from the original BASE only, at assessment time,
+and that is unaffected by any correction posted afterward.
+
+**CLOSED-period corrections**: a CLOSED period stays CLOSED. An
+adjustment or waiver may still post against one of its existing
+charges as an explicit correction — this never reopens the period, and
+never allows new normal enrollment into it.
+
+**Idempotency**: both `rpc_create_contribution_adjustment` and
+`rpc_waive_contribution_charge` accept an optional
+`p_idempotency_key`; a retried call with the same
+`(charge_id, component_type, key)` returns the original result
+(`already_posted: true`) instead of posting again, enforced by the
+partial unique index
+`contribution_charge_components_idempotency_key_unique`.
+
+**Opening balances** reuse 06A's model rather than inventing a
+parallel table or a fake historical period: `rpc_import_contribution_opening_balances`
+auto-provisions one system `contribution_setups` row
+(`is_system = true`) and one system `contribution_periods` row
+(`purpose = 'OPENING_BALANCE'`) per `(group, contribution_type,
+effective_at)`, created directly `OPEN`. Both are excluded from the
+normal `rpc_list_contribution_setups`/`rpc_list_contribution_periods`
+listings, so an opening balance never pollutes a normal period report
+— see `rpc_list_contribution_opening_balances` for the dedicated
+report. Duplicate-import protection reuses 06A's existing
+`unique(period_id, membership_id)` charge constraint rather than a new
+mechanism. Import is atomic (two-pass validate-then-insert): a batch
+containing one already-imported or invalid entry rejects the whole
+batch, not just that row. A blank or zero amount for a member simply
+means "no opening balance for that member" and is silently skipped —
+only a negative amount is a validation error
+(`OPENING_BALANCE_AMOUNT_MUST_BE_POSITIVE`). An opening balance never
+creates a payment/cash/receipt row of any kind — only a
+`member_contribution_charges` row plus one `OPENING_BALANCE` component.
+
+**Read model**: `rpc_get_contribution_charge_detail` (per-charge
+breakdown) and `rpc_get_member_contribution_summary` (the "Member
+Contribution Obligation Summary", aggregated across all of a member's
+charges) both expose `net_assessed` as the server-computed sum of every
+component — Flutter never re-derives it. `rpc_get_contribution_period`
+and `rpc_list_contribution_period_charges` were extended with
+`total_adjustments_assessed`/`total_waivers_assessed`/`net_assessed_total`
+(period-level) and `adjustment_amount`/`waiver_amount`/
+`opening_balance_amount` (per-charge) without ever overwriting
+`total_base_assessed`/`base_amount`, which always stay the original
+BASE figures.
+
+**Flutter**: the charge/member detail screen
+(`ContributionChargeDetailScreen`, `/contributions/charges/:chargeId`)
+shows the full breakdown and gates its Add Adjustment/Waive Obligation
+actions on `contribution.adjustment.create`/`contribution.waiver.create`.
+`ContributionAdjustmentFormScreen` converts an explicit
+increase/reduce selector plus a positive magnitude into the signed
+amount client-side before calling the repository — the user never
+types a raw signed number. `ContributionWaiverFormScreen` shows the
+backend-authoritative current net assessed/maximum waiver and
+pre-fills the amount field for a full waiver, but never computes the
+maximum itself. `ContributionOpeningBalancesScreen`/
+`ContributionOpeningBalanceImportScreen` (`/contributions/opening-balances`,
+gated on `contribution.opening_balance.manage`) provide the dedicated
+report and the choose-type → effective-date → search-members →
+amounts → server preview → confirm batch flow — the preview's member
+count/total/already-imported flags are always the server's own, never
+computed client-side.
+
 ## Permissions
 
 New permission codes (seeded in
 `20260823120000_create_contribution_engine_schema.sql`, `resource.action`
-convention matching existing codes like `member.change_status`):
+convention matching existing codes like `member.change_status`; the
+final three seeded by 06C's migration):
 
 | Code | Purpose |
 |---|---|
@@ -528,12 +634,15 @@ convention matching existing codes like `member.change_status`):
 | `contribution.member_enroll` | Explicit post-open enrollment |
 | `contribution.self_view` | View only the caller's own charges |
 | `contribution.penalty.assess` | Run penalty assessment on an OPEN period (Prompt 06B, seeded in `20260824090000_create_contribution_penalty_engine.sql`) |
+| `contribution.adjustment.create` | Post a contribution adjustment (Prompt 06C) |
+| `contribution.waiver.create` | Waive a contribution obligation (Prompt 06C) |
+| `contribution.opening_balance.manage` | Import contribution opening balances (Prompt 06C) |
 
 Default role mapping:
 
 | Role | Permissions |
 |---|---|
-| ADMIN | all eleven |
+| ADMIN | all fourteen |
 | TREASURER | all except `contribution.self_view` (full `contribution.view` already covers it) |
 | CHAIRPERSON | `contribution.view`, `contribution.period.open`, `contribution.period.close` |
 | SECRETARY | `contribution.view` |
@@ -574,3 +683,16 @@ the same thing as it being *paid*, and none of those exist yet. No
 multi-tier "penalty levels" table (see "Design decisions locked for
 06B" above). No reopening of a CLOSED period to assess further
 penalties.
+
+## What Prompt 06C deliberately does not build
+
+No payments, wallet, receipts, cashbook, financial accounts, loans, or
+payment allocation logic — a WAIVER reduces debt, it does not create a
+payable line for a future payments module to allocate against. No
+fake historical monthly periods to carry opening balances (a single
+system period per group/type/effective-date, explicitly flagged and
+excluded from every normal listing, instead). No reopening of a CLOSED
+period, and no retroactive change to an already-posted PENALTY. No
+hard-delete of an adjustment/waiver/opening-balance row, ever — a
+wrong correction is corrected only by another explicit compensating
+entry.

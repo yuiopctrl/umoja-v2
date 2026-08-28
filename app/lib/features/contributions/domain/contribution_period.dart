@@ -50,6 +50,9 @@ class ContributionPeriod {
     this.totalBaseAssessed,
     this.totalPenaltyAssessed,
     this.penaltyChargeCount,
+    this.totalAdjustmentsAssessed,
+    this.totalWaiversAssessed,
+    this.netAssessedTotal,
   });
 
   factory ContributionPeriod.fromJson(Map<String, dynamic> json) {
@@ -94,6 +97,11 @@ class ContributionPeriod {
       totalPenaltyAssessed: (json['total_penalty_assessed'] as num?)
           ?.toDouble(),
       penaltyChargeCount: json['penalty_charge_count'] as int?,
+      totalAdjustmentsAssessed: (json['total_adjustments_assessed'] as num?)
+          ?.toDouble(),
+      totalWaiversAssessed: (json['total_waivers_assessed'] as num?)
+          ?.toDouble(),
+      netAssessedTotal: (json['net_assessed_total'] as num?)?.toDouble(),
     );
   }
 
@@ -155,6 +163,15 @@ class ContributionPeriod {
   /// charges have at least one. Prompt 06B.
   final double? totalPenaltyAssessed;
   final int? penaltyChargeCount;
+
+  /// Only populated by `rpc_get_contribution_period()` — Prompt 06C:
+  /// sum of every posted ADJUSTMENT/WAIVER component across the period
+  /// (WAIVER already negative), and the full net-assessed total (BASE +
+  /// PENALTY + ADJUSTMENT + WAIVER). [totalBaseAssessed] is never
+  /// overwritten by these — it always stays the original BASE sum.
+  final double? totalAdjustmentsAssessed;
+  final double? totalWaiversAssessed;
+  final double? netAssessedTotal;
 
   bool get isDraft => status == 'DRAFT';
   bool get isScheduled => status == 'SCHEDULED';

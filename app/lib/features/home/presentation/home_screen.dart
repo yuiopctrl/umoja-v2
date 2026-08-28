@@ -114,6 +114,19 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
           ],
+          if (membership.hasPermission('financial_account.view')) ...[
+            const SizedBox(height: UmojaSpacing.lg),
+            UmojaCard(
+              key: const Key('homeFinancialAccountsShortcut'),
+              padding: EdgeInsets.zero,
+              child: UmojaListTile(
+                leading: const Icon(Icons.account_balance_wallet_outlined),
+                title: l10n.financialAccountsTitle,
+                subtitle: Text(l10n.homeFinancialAccountsShortcutSubtitle),
+                onTap: () => context.push(AppRoutes.financialAccountsList),
+              ),
+            ),
+          ],
         ],
       ),
     );

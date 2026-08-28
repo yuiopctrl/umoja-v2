@@ -136,4 +136,82 @@ class AppRoutes {
       '/contributions/periods/:periodId/enroll';
   static String contributionPeriodEnrollPath(String periodId) =>
       '/contributions/periods/$periodId/enroll';
+
+  // -- Contribution corrections & opening balances (Prompt 06C) ----------
+
+  /// Path template; use [contributionChargeDetailPath] for a concrete
+  /// URL.
+  static const contributionChargeDetail = '/contributions/charges/:chargeId';
+  static String contributionChargeDetailPath(String chargeId) =>
+      '/contributions/charges/$chargeId';
+
+  /// Path template; use [contributionChargeAdjustPath] for a concrete
+  /// URL.
+  static const contributionChargeAdjust =
+      '/contributions/charges/:chargeId/adjust';
+  static String contributionChargeAdjustPath(String chargeId) =>
+      '/contributions/charges/$chargeId/adjust';
+
+  /// Path template; use [contributionChargeWaivePath] for a concrete
+  /// URL.
+  static const contributionChargeWaive =
+      '/contributions/charges/:chargeId/waive';
+  static String contributionChargeWaivePath(String chargeId) =>
+      '/contributions/charges/$chargeId/waive';
+
+  static const contributionOpeningBalancesList =
+      '/contributions/opening-balances';
+  static const contributionOpeningBalanceImport =
+      '/contributions/opening-balances/import';
+
+  // -- Financial Accounts (Prompt 08A) -------------------------------------
+  //
+  // Minimal financial-account/cashbook foundation pulled forward ahead
+  // of Prompt 07 payments — no payment/wallet/receipt/allocation route
+  // exists anywhere under this prefix.
+
+  static const financialAccountsList = '/financial-accounts';
+  static const financialAccountNew = '/financial-accounts/new';
+  static const financialAccountTransfer = '/financial-accounts/transfer';
+
+  /// Path template; use [financialAccountDetailPath] for a concrete
+  /// URL.
+  static const financialAccountDetail = '/financial-accounts/:accountId';
+  static String financialAccountDetailPath(String accountId) =>
+      '/financial-accounts/$accountId';
+
+  /// Path template; use [financialAccountEditPath] for a concrete URL.
+  static const financialAccountEdit = '/financial-accounts/:accountId/edit';
+  static String financialAccountEditPath(String accountId) =>
+      '/financial-accounts/$accountId/edit';
+
+  // -- Payments, Wallet, Receipts (Prompt 07) ------------------------------
+  //
+  // Integrates directly with the 08A financial-accounts foundation
+  // above — no second cashbook route/model exists here.
+
+  static const paymentsList = '/payments';
+  static const paymentRecord = '/payments/record';
+
+  /// Path template; use [paymentDetailPath] for a concrete URL.
+  static const paymentDetail = '/payments/:paymentId';
+  static String paymentDetailPath(String paymentId) => '/payments/$paymentId';
+
+  /// Path template; use [paymentReceiptPath] for a concrete URL.
+  static const paymentReceipt = '/payments/:paymentId/receipt';
+  static String paymentReceiptPath(String paymentId) =>
+      '/payments/$paymentId/receipt';
+
+  /// Path template; use [paymentReversePath] for a concrete URL.
+  static const paymentReverse = '/payments/:paymentId/reverse';
+  static String paymentReversePath(String paymentId) =>
+      '/payments/$paymentId/reverse';
+
+  /// Member picker for the wallet flow (Salio la Mwanachama).
+  static const walletMemberPicker = '/wallet';
+
+  /// Path template; use [walletDetailPath] for a concrete URL.
+  static const walletDetail = '/wallet/:membershipId';
+  static String walletDetailPath(String membershipId) =>
+      '/wallet/$membershipId';
 }

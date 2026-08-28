@@ -16,6 +16,9 @@ class MemberContributionCharge {
     required this.baseAmount,
     this.penaltyAmount = 0,
     this.penaltyCount = 0,
+    this.adjustmentAmount = 0,
+    this.waiverAmount = 0,
+    this.openingBalanceAmount = 0,
     double? totalAmount,
   }) : totalAmount = totalAmount ?? baseAmount;
 
@@ -31,6 +34,10 @@ class MemberContributionCharge {
       baseAmount: (json['base_amount'] as num).toDouble(),
       penaltyAmount: (json['penalty_amount'] as num?)?.toDouble() ?? 0,
       penaltyCount: json['penalty_count'] as int? ?? 0,
+      adjustmentAmount: (json['adjustment_amount'] as num?)?.toDouble() ?? 0,
+      waiverAmount: (json['waiver_amount'] as num?)?.toDouble() ?? 0,
+      openingBalanceAmount:
+          (json['opening_balance_amount'] as num?)?.toDouble() ?? 0,
       totalAmount: (json['total_amount'] as num?)?.toDouble(),
     );
   }
@@ -49,9 +56,16 @@ class MemberContributionCharge {
   final double penaltyAmount;
   final int penaltyCount;
 
-  /// Server-computed `base_amount + penaltyAmount` — never re-derived
-  /// client-side from the two, even though it happens to equal their
-  /// sum, per "Flutter must not calculate authoritative financial
-  /// amounts."
+  /// Prompt 06C: sum of this charge's posted ADJUSTMENT components
+  /// (either sign), WAIVER components (always <= 0), and OPENING_BALANCE
+  /// components (always >= 0) — zero when none exist.
+  final double adjustmentAmount;
+  final double waiverAmount;
+  final double openingBalanceAmount;
+
+  /// Server-computed net assessed (sum of every component: BASE +
+  /// PENALTY + ADJUSTMENT + WAIVER + OPENING_BALANCE) — never re-derived
+  /// client-side, per "Flutter must not calculate authoritative
+  /// financial amounts."
   final double totalAmount;
 }

@@ -1,6 +1,11 @@
 import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../domain/contribution_charge_detail.dart';
+import '../domain/contribution_correction_result.dart';
+import '../domain/contribution_opening_balance_import_result.dart';
+import '../domain/contribution_opening_balance_page.dart';
+import '../domain/contribution_opening_balance_preview.dart';
 import '../domain/contribution_penalty_assessment_result.dart';
 import '../domain/contribution_period.dart';
 import '../domain/contribution_period_open_preview.dart';
@@ -10,8 +15,10 @@ import '../domain/contribution_setup_page.dart';
 import '../domain/contribution_type.dart';
 import '../domain/contribution_type_page.dart';
 import '../domain/member_contribution_charge_page.dart';
+import '../domain/member_contribution_summary.dart';
 import 'contribution_failure.dart';
 import 'contribution_member_amount_input.dart';
+import 'contribution_opening_balance_entry_input.dart';
 import 'contribution_repository.dart';
 
 final _log = Logger('SupabaseContributionRepository');
@@ -573,6 +580,185 @@ class SupabaseContributionRepository implements ContributionRepository {
       throw _mapError(error, stackTrace);
     }
   }
+
+  @override
+  Future<ContributionChargeDetail> getContributionChargeDetail({
+    required String groupId,
+    required String chargeId,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_get_contribution_charge_detail',
+        params: {'p_group_id': groupId, 'p_charge_id': chargeId},
+      );
+      return ContributionChargeDetail.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<MemberContributionSummary> getMemberContributionSummary({
+    required String groupId,
+    required String membershipId,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_get_member_contribution_summary',
+        params: {'p_group_id': groupId, 'p_membership_id': membershipId},
+      );
+      return MemberContributionSummary.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  // -- Corrections (Prompt 06C) -------------------------------------------
+
+  @override
+  Future<ContributionCorrectionResult> createContributionAdjustment({
+    required String groupId,
+    required String chargeId,
+    required double amount,
+    required String reason,
+    required DateTime effectiveAt,
+    String? idempotencyKey,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_create_contribution_adjustment',
+        params: {
+          'p_group_id': groupId,
+          'p_charge_id': chargeId,
+          'p_amount': amount,
+          'p_reason': reason,
+          'p_effective_at': _dateOnly(effectiveAt),
+          'p_idempotency_key': idempotencyKey,
+        },
+      );
+      return ContributionCorrectionResult.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<ContributionCorrectionResult> waiveContributionCharge({
+    required String groupId,
+    required String chargeId,
+    required double amount,
+    required String reason,
+    required DateTime effectiveAt,
+    String? idempotencyKey,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_waive_contribution_charge',
+        params: {
+          'p_group_id': groupId,
+          'p_charge_id': chargeId,
+          'p_amount': amount,
+          'p_reason': reason,
+          'p_effective_at': _dateOnly(effectiveAt),
+          'p_idempotency_key': idempotencyKey,
+        },
+      );
+      return ContributionCorrectionResult.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  // -- Opening balances (Prompt 06C) ---------------------------------------
+
+  @override
+  Future<ContributionOpeningBalancePreview>
+  previewContributionOpeningBalanceImport({
+    required String groupId,
+    required String contributionTypeId,
+    required DateTime effectiveAt,
+    required List<ContributionOpeningBalanceEntryInput> entries,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_preview_contribution_opening_balance_import',
+        params: {
+          'p_group_id': groupId,
+          'p_contribution_type_id': contributionTypeId,
+          'p_effective_at': _dateOnly(effectiveAt),
+          'p_entries': _entriesJson(entries),
+        },
+      );
+      return ContributionOpeningBalancePreview.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<ContributionOpeningBalanceImportResult>
+  importContributionOpeningBalances({
+    required String groupId,
+    required String contributionTypeId,
+    required DateTime effectiveAt,
+    required List<ContributionOpeningBalanceEntryInput> entries,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_import_contribution_opening_balances',
+        params: {
+          'p_group_id': groupId,
+          'p_contribution_type_id': contributionTypeId,
+          'p_effective_at': _dateOnly(effectiveAt),
+          'p_entries': _entriesJson(entries),
+        },
+      );
+      return ContributionOpeningBalanceImportResult.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<ContributionOpeningBalancePage> listContributionOpeningBalances({
+    required String groupId,
+    String? contributionTypeId,
+    int limit = 10,
+    int offset = 0,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_list_contribution_opening_balances',
+        params: {
+          'p_group_id': groupId,
+          'p_contribution_type_id': contributionTypeId,
+          'p_limit': limit,
+          'p_offset': offset,
+        },
+      );
+      return ContributionOpeningBalancePage.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+}
+
+List<Map<String, dynamic>> _entriesJson(
+  List<ContributionOpeningBalanceEntryInput> entries,
+) {
+  return entries
+      .map((e) => {'membership_id': e.membershipId, 'amount': e.amount})
+      .toList(growable: false);
 }
 
 String _dateOnly(DateTime date) {
@@ -685,6 +871,54 @@ ContributionFailure _mapError(Object error, StackTrace stackTrace) {
       return const ContributionFailure(
         ContributionFailureType.noPenaltyPolicy,
         'This period has no penalty policy configured.',
+      );
+    }
+    if (message.contains('ADJUSTMENT_AMOUNT_REQUIRED')) {
+      return const ContributionFailure(
+        ContributionFailureType.adjustmentAmountRequired,
+        'An adjustment amount is required and cannot be zero.',
+      );
+    }
+    if (message.contains('ADJUSTMENT_REASON_REQUIRED')) {
+      return const ContributionFailure(
+        ContributionFailureType.adjustmentReasonRequired,
+        'A reason is required for this adjustment.',
+      );
+    }
+    if (message.contains('ADJUSTMENT_WOULD_MAKE_OBLIGATION_NEGATIVE')) {
+      return const ContributionFailure(
+        ContributionFailureType.adjustmentWouldMakeObligationNegative,
+        'This adjustment would make the obligation negative.',
+      );
+    }
+    if (message.contains('WAIVER_AMOUNT_MUST_BE_POSITIVE')) {
+      return const ContributionFailure(
+        ContributionFailureType.waiverAmountMustBePositive,
+        'The waiver amount must be a positive number.',
+      );
+    }
+    if (message.contains('WAIVER_REASON_REQUIRED')) {
+      return const ContributionFailure(
+        ContributionFailureType.waiverReasonRequired,
+        'A reason is required for this waiver.',
+      );
+    }
+    if (message.contains('WAIVER_EXCEEDS_NET_ASSESSED')) {
+      return const ContributionFailure(
+        ContributionFailureType.waiverExceedsNetAssessed,
+        'This waiver exceeds the current net assessed obligation.',
+      );
+    }
+    if (message.contains('OPENING_BALANCE_AMOUNT_MUST_BE_POSITIVE')) {
+      return const ContributionFailure(
+        ContributionFailureType.openingBalanceAmountMustBePositive,
+        'Opening balance amounts must be positive.',
+      );
+    }
+    if (message.contains('OPENING_BALANCE_ALREADY_IMPORTED')) {
+      return const ContributionFailure(
+        ContributionFailureType.openingBalanceAlreadyImported,
+        'An opening balance for this member has already been imported.',
       );
     }
     if (message.contains('MEMBER_ALREADY_CHARGED_FOR_PERIOD')) {

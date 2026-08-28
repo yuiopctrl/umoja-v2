@@ -1184,6 +1184,617 @@ class AppLocalizationsSw extends AppLocalizations {
   String get contributionErrorUnexpected => 'Hitilafu imetokea. Jaribu tena.';
 
   @override
+  String get contributionErrorAdjustmentAmountRequired =>
+      'Kiasi cha marekebisho kinahitajika na hakiwezi kuwa sifuri.';
+
+  @override
+  String get contributionErrorAdjustmentReasonRequired =>
+      'Sababu ya marekebisho inahitajika.';
+
+  @override
+  String get contributionErrorAdjustmentWouldMakeObligationNegative =>
+      'Marekebisho haya yangefanya deni kuwa hasi.';
+
+  @override
+  String get contributionErrorWaiverAmountMustBePositive =>
+      'Kiasi cha msamaha lazima kiwe zaidi ya sifuri.';
+
+  @override
+  String get contributionErrorWaiverReasonRequired =>
+      'Sababu ya msamaha inahitajika.';
+
+  @override
+  String get contributionErrorWaiverExceedsNetAssessed =>
+      'Msamaha huu unazidi jumla ya deni lililowekwa kwa sasa.';
+
+  @override
+  String get contributionErrorOpeningBalanceAmountMustBePositive =>
+      'Kiasi cha deni la mwanzo lazima kiwe zaidi ya sifuri.';
+
+  @override
+  String get contributionErrorOpeningBalanceAlreadyImported =>
+      'Deni la mwanzo la mwanachama huyu tayari limeingizwa.';
+
+  @override
+  String get contributionComponentBase => 'Deni Msingi';
+
+  @override
+  String get contributionComponentPenalty => 'Adhabu';
+
+  @override
+  String get contributionComponentAdjustment => 'Marekebisho';
+
+  @override
+  String get contributionComponentWaiver => 'Msamaha wa Deni';
+
+  @override
+  String get contributionComponentOpeningBalance => 'Deni la Mwanzo';
+
+  @override
+  String get contributionComponentReasonLabel => 'Sababu';
+
+  @override
+  String get contributionComponentDateLabel => 'Tarehe';
+
+  @override
+  String get contributionNetAssessedLabel => 'Jumla ya Deni Lililowekwa';
+
+  @override
+  String get contributionCurrentNetAssessedLabel => 'Deni la Sasa Lililowekwa';
+
+  @override
+  String get contributionEffectiveDateFieldLabel => 'Tarehe Itakayotumika';
+
+  @override
+  String get chargeDetailTitle => 'Maelezo ya Malipo';
+
+  @override
+  String get sectionChargeBreakdown => 'Mchanganuo wa Malipo';
+
+  @override
+  String get addAdjustmentAction => 'Ongeza Marekebisho';
+
+  @override
+  String get waiveObligationAction => 'Samehe Deni';
+
+  @override
+  String get viewMemberSummaryAction => 'Ona Muhtasari wa Mwanachama';
+
+  @override
+  String get memberSummaryTitle => 'Muhtasari wa Deni la Mwanachama';
+
+  @override
+  String get addAdjustmentTitle => 'Ongeza Marekebisho';
+
+  @override
+  String get adjustmentDirectionLabel => 'Aina ya Marekebisho';
+
+  @override
+  String get adjustmentIncreaseOption => 'Ongeza Deni';
+
+  @override
+  String get adjustmentReduceOption => 'Punguza Deni';
+
+  @override
+  String get adjustmentAmountFieldLabel => 'Kiasi *';
+
+  @override
+  String get adjustmentReasonFieldLabel => 'Sababu *';
+
+  @override
+  String get adjustmentSubmitAction => 'Wasilisha Marekebisho';
+
+  @override
+  String get adjustmentSuccessMessage => 'Marekebisho yamewekwa.';
+
+  @override
+  String get waiveObligationTitle => 'Samehe Deni';
+
+  @override
+  String get waiverTypeLabel => 'Aina ya Msamaha';
+
+  @override
+  String get waiverPartialOption => 'Sehemu';
+
+  @override
+  String get waiverFullOption => 'Yote';
+
+  @override
+  String get waiverAmountFieldLabel => 'Kiasi cha Kusamehe *';
+
+  @override
+  String get waiverReasonFieldLabel => 'Sababu *';
+
+  @override
+  String get waiverMaximumLabel => 'Kiwango cha Juu cha Msamaha';
+
+  @override
+  String get waiverRemainingAfterLabel => 'Itakayobaki Baada ya Msamaha';
+
+  @override
+  String get waiverSubmitAction => 'Wasilisha Msamaha';
+
+  @override
+  String get waiverSuccessMessage => 'Deni limesamehewa.';
+
+  @override
+  String get openingBalancesEntryTitle => 'Madeni ya Mwanzo';
+
+  @override
+  String get openingBalancesEntrySubtitle =>
+      'Ingiza madeni ya wanachama kabla ya Umoja';
+
+  @override
+  String get openingBalancesTitle => 'Madeni ya Mwanzo';
+
+  @override
+  String get openingBalancesEmptyTitle => 'Hakuna Deni la Mwanzo';
+
+  @override
+  String get openingBalancesEmptyMessage =>
+      'Bado hakuna deni la mwanzo lililoingizwa.';
+
+  @override
+  String get openingBalanceImportAction => 'Ingiza Madeni ya Mwanzo';
+
+  @override
+  String get openingBalanceImportTitle => 'Ingiza Madeni ya Mwanzo';
+
+  @override
+  String get openingBalanceContributionTypeLabel => 'Aina ya Mchango';
+
+  @override
+  String get openingBalanceEffectiveDateLabel => 'Tarehe ya Mwanzo';
+
+  @override
+  String get openingBalanceSearchHint => 'Tafuta mwanachama';
+
+  @override
+  String get openingBalanceAmountFieldLabel => 'Kiasi';
+
+  @override
+  String get openingBalancePreviewAction => 'Hakiki';
+
+  @override
+  String get openingBalanceMemberCountLabel => 'Idadi ya Wanachama';
+
+  @override
+  String get openingBalanceTotalLabel => 'Jumla ya Deni la Mwanzo';
+
+  @override
+  String get openingBalanceAlreadyImportedBadge => 'Tayari Imeingizwa';
+
+  @override
+  String get openingBalanceConfirmImportAction => 'Thibitisha Kuingiza';
+
+  @override
+  String get openingBalanceImportSuccessMessage =>
+      'Madeni ya mwanzo yameingizwa.';
+
+  @override
+  String get openingBalanceCannotImportMessage =>
+      'Baadhi ya wanachama tayari wana deni la mwanzo. Ondoa au badilisha kiasi chao kabla ya kuendelea.';
+
+  @override
+  String get financialAccountsTitle => 'Akaunti za Fedha';
+
+  @override
+  String get homeFinancialAccountsShortcutSubtitle =>
+      'Fedha taslimu, benki na pesa za simu';
+
+  @override
+  String get financialAccountsEmptyTitle => 'Hakuna Akaunti za Fedha';
+
+  @override
+  String get financialAccountsEmptyMessage =>
+      'Bado hakuna akaunti ya fedha iliyoundwa.';
+
+  @override
+  String get financialAccountsSearchHint => 'Tafuta akaunti';
+
+  @override
+  String get financialAccountNewAction => 'Ongeza Akaunti';
+
+  @override
+  String get financialAccountNewTitle => 'Akaunti Mpya ya Fedha';
+
+  @override
+  String get sectionFinancialAccountDetails => 'Maelezo ya Akaunti';
+
+  @override
+  String get financialAccountEditTitle => 'Hariri Akaunti ya Fedha';
+
+  @override
+  String get financialAccountNameFieldLabel => 'Jina la Akaunti *';
+
+  @override
+  String get financialAccountTypeFieldLabel => 'Aina ya Akaunti';
+
+  @override
+  String get financialAccountTypeCash => 'Taslimu';
+
+  @override
+  String get financialAccountTypeBank => 'Benki';
+
+  @override
+  String get financialAccountTypeMobileMoney => 'Pesa ya Simu';
+
+  @override
+  String get financialAccountOpeningBalanceFieldLabel =>
+      'Salio la Mwanzo (si lazima)';
+
+  @override
+  String get financialAccountOpeningBalanceDateLabel =>
+      'Tarehe ya Salio la Mwanzo';
+
+  @override
+  String get financialAccountSavedMessage => 'Akaunti ya fedha imehifadhiwa.';
+
+  @override
+  String get financialAccountBalanceLabel => 'Salio';
+
+  @override
+  String get financialAccountActiveBadge => 'Inatumika';
+
+  @override
+  String get financialAccountInactiveBadge => 'Haitumiki';
+
+  @override
+  String get financialAccountActivateAction => 'Washa Akaunti';
+
+  @override
+  String get financialAccountDeactivateAction => 'Zima Akaunti';
+
+  @override
+  String get financialAccountEditAction => 'Hariri';
+
+  @override
+  String get financialAccountEntriesTitle => 'Miamala';
+
+  @override
+  String get financialAccountEntriesEmptyMessage =>
+      'Bado hakuna miamala kwenye akaunti hii.';
+
+  @override
+  String get financialAccountEntryTypeInflow => 'Kuingia';
+
+  @override
+  String get financialAccountEntryTypeOutflow => 'Kutoka';
+
+  @override
+  String get financialAccountEntryTypeTransferIn => 'Uhamisho Ulioingia';
+
+  @override
+  String get financialAccountEntryTypeTransferOut => 'Uhamisho Ulioondoka';
+
+  @override
+  String get financialAccountTransferAction => 'Hamisha Fedha';
+
+  @override
+  String financialAccountTransferToLedgerLabel(Object accountName) {
+    return 'Uhamisho kwenda $accountName';
+  }
+
+  @override
+  String financialAccountTransferFromLedgerLabel(Object accountName) {
+    return 'Uhamisho kutoka $accountName';
+  }
+
+  @override
+  String get financialAccountTransferTitle => 'Hamisha Fedha Kati ya Akaunti';
+
+  @override
+  String get financialAccountTransferFromLabel => 'Kutoka Akaunti';
+
+  @override
+  String get financialAccountTransferToLabel => 'Kwenda Akaunti';
+
+  @override
+  String get financialAccountTransferAmountLabel => 'Kiasi *';
+
+  @override
+  String get financialAccountTransferDescriptionFieldLabel =>
+      'Maelezo (si lazima)';
+
+  @override
+  String get financialAccountTransferSuccessMessage => 'Uhamisho umefanikiwa.';
+
+  @override
+  String get financialAccountTransferSubmitAction => 'Hamisha';
+
+  @override
+  String get financialAccountErrorNameRequired =>
+      'Jina la akaunti linahitajika.';
+
+  @override
+  String get financialAccountErrorDuplicateName =>
+      'Jina hilo la akaunti tayari linatumika kwenye kikundi hiki.';
+
+  @override
+  String get financialAccountErrorOpeningBalanceMustBePositive =>
+      'Salio la mwanzo lazima liwe zaidi ya sifuri.';
+
+  @override
+  String get financialAccountErrorNotFound => 'Akaunti ya fedha haikupatikana.';
+
+  @override
+  String get financialAccountErrorTransferSameAccount =>
+      'Haiwezekani kuhamisha fedha kwenye akaunti ile ile.';
+
+  @override
+  String get financialAccountErrorTransferAmountMustBePositive =>
+      'Kiasi cha kuhamisha lazima kiwe zaidi ya sifuri.';
+
+  @override
+  String get financialAccountErrorInsufficientBalance =>
+      'Akaunti ya kutoa haina salio la kutosha kwa uhamisho huu.';
+
+  @override
+  String get financialAccountErrorAccountInactive =>
+      'Akaunti hii ya fedha haitumiki.';
+
+  @override
+  String get financialAccountErrorEffectiveDateRequired =>
+      'Tarehe ya uhamisho inahitajika.';
+
+  @override
+  String get financialAccountErrorPermissionDenied =>
+      'Huna ruhusa ya kufanya hivyo.';
+
+  @override
+  String get financialAccountErrorNetwork =>
+      'Imeshindikana kuunganisha. Jaribu tena.';
+
+  @override
+  String get financialAccountErrorUnexpected =>
+      'Hitilafu imetokea. Jaribu tena.';
+
+  @override
   String get supabaseConfigMissing =>
       'Mipangilio ya Supabase haipo (SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY haijawekwa).';
+
+  @override
+  String get backAction => 'Rudi';
+
+  @override
+  String get doneAction => 'Imekamilika';
+
+  @override
+  String get paymentsEntryTitle => 'Malipo';
+
+  @override
+  String get paymentsEntrySubtitle => 'Tazama historia ya malipo yote';
+
+  @override
+  String get recordPaymentEntryTitle => 'Rekodi Malipo';
+
+  @override
+  String get recordPaymentEntrySubtitle =>
+      'Rekodi malipo ya nje kutoka kwa mwanachama';
+
+  @override
+  String get memberWalletEntryTitle => 'Salio la Mwanachama';
+
+  @override
+  String get memberWalletEntrySubtitle => 'Tazama na tumia salio la mwanachama';
+
+  @override
+  String get paymentsTitle => 'Malipo';
+
+  @override
+  String get paymentsSearchHint => 'Tafuta malipo';
+
+  @override
+  String get paymentsEmptyTitle => 'Hakuna Malipo';
+
+  @override
+  String get paymentsEmptyMessage => 'Bado hakuna malipo yaliyorekodiwa.';
+
+  @override
+  String get recordPaymentAction => 'Rekodi Malipo';
+
+  @override
+  String get paymentMethodCash => 'Taslimu';
+
+  @override
+  String get paymentMethodBankTransfer => 'Uhamisho wa Benki';
+
+  @override
+  String get paymentMethodMobileMoney => 'Pesa za Simu';
+
+  @override
+  String get paymentMethodOther => 'Nyingine';
+
+  @override
+  String get paymentStatusPosted => 'Imerekodiwa';
+
+  @override
+  String get paymentStatusReversed => 'Imebatilishwa';
+
+  @override
+  String get walletEntryTypePaymentCredit => 'Salio Lililoongezwa';
+
+  @override
+  String get walletEntryTypeAllocationDebit => 'Salio Lililotumika';
+
+  @override
+  String get walletEntryTypeReversal => 'Kubatilishwa';
+
+  @override
+  String get memberPickerSearchHint => 'Tafuta mwanachama';
+
+  @override
+  String get memberPickerEmptyTitle => 'Hakuna Mwanachama';
+
+  @override
+  String get memberPickerEmptyMessage =>
+      'Hakuna mwanachama aliyepatikana kwa utafutaji huu.';
+
+  @override
+  String get paymentAmountInvalidError =>
+      'Weka kiasi sahihi, mwanachama, na akaunti ya fedha.';
+
+  @override
+  String get recordPaymentTitle => 'Rekodi Malipo';
+
+  @override
+  String get recordPaymentAmountLabel => 'Kiasi *';
+
+  @override
+  String get recordPaymentDateLabel => 'Tarehe';
+
+  @override
+  String get recordPaymentMethodLabel => 'Njia ya Malipo';
+
+  @override
+  String get recordPaymentAccountLabel => 'Akaunti ya Fedha';
+
+  @override
+  String get recordPaymentReferenceLabel => 'Kumbukumbu ya Nje (si lazima)';
+
+  @override
+  String get recordPaymentNotesLabel => 'Maelezo (si lazima)';
+
+  @override
+  String get recordPaymentPreviewAction => 'Onyesha Mgawanyo';
+
+  @override
+  String get recordPaymentConfirmAction => 'Thibitisha Malipo';
+
+  @override
+  String get recordPaymentSuccessMessage => 'Malipo yamerekodiwa kikamilifu.';
+
+  @override
+  String get paymentPreviewAmountLabel => 'Kiasi cha Malipo';
+
+  @override
+  String get paymentPreviewWillSettleLabel => 'Mgawanyo wa Malipo';
+
+  @override
+  String get paymentPreviewNoOutstandingMessage =>
+      'Hakuna deni lililobaki la kulipa.';
+
+  @override
+  String get paymentPreviewTotalAllocatedLabel => 'Kinalipa Madeni';
+
+  @override
+  String get paymentPreviewWalletRemainingLabel => 'Salio Litakalobaki';
+
+  @override
+  String get paymentPreviewAccountLabel => 'Akaunti ya Fedha Itakayopokea';
+
+  @override
+  String get viewReceiptAction => 'Tazama Risiti';
+
+  @override
+  String get receiptTitle => 'Risiti';
+
+  @override
+  String get receiptMemberLabel => 'Mwanachama';
+
+  @override
+  String get paymentDetailTitle => 'Maelezo ya Malipo';
+
+  @override
+  String get paymentAmountLabel => 'Kiasi';
+
+  @override
+  String get paymentAllocationsTitle => 'Mgawanyo wa Malipo';
+
+  @override
+  String get reversalReasonLabel => 'Sababu ya Kubatilisha *';
+
+  @override
+  String get reversePaymentAction => 'Batili Malipo';
+
+  @override
+  String get reversePaymentTitle => 'Batili Malipo';
+
+  @override
+  String get reversePaymentWarningMessage =>
+      'Kitendo hiki hakiwezi kutenduliwa. Malipo asilia yatabaki kwenye kumbukumbu, lakini deni litarudi kuwa halijalipwa.';
+
+  @override
+  String get reversePaymentConfirmAction => 'Thibitisha Kubatilisha';
+
+  @override
+  String get reversePaymentSuccessMessage => 'Malipo yamebatilishwa.';
+
+  @override
+  String get memberWalletTitle => 'Salio la Mwanachama';
+
+  @override
+  String get walletBalanceLabel => 'Salio la Sasa';
+
+  @override
+  String get walletHistoryTitle => 'Historia ya Salio';
+
+  @override
+  String get walletHistoryEmptyMessage => 'Bado hakuna historia ya salio.';
+
+  @override
+  String get allocateWalletAction => 'Tumia Salio';
+
+  @override
+  String get allocateWalletTitle => 'Tumia Salio la Mwanachama';
+
+  @override
+  String get allocateWalletSuccessMessage => 'Salio limetumika kulipa deni.';
+
+  @override
+  String get paymentErrorAmountMustBePositive =>
+      'Kiasi lazima kiwe zaidi ya sifuri.';
+
+  @override
+  String get paymentErrorFinancialAccountInactive =>
+      'Akaunti hii ya fedha haifanyi kazi.';
+
+  @override
+  String get paymentErrorIdempotencyKeyConflict =>
+      'Ombi hili linagongana na lililotangulia. Tafadhali onyesha upya na ujaribu tena.';
+
+  @override
+  String get paymentErrorAlreadyReversed =>
+      'Malipo haya tayari yamebatilishwa.';
+
+  @override
+  String get paymentErrorReversalBlockedWalletCreditConsumed =>
+      'Malipo haya hayawezi kubatilishwa: salio la mwanachama lililoongezwa tayari limetumika.';
+
+  @override
+  String get paymentErrorReversalReasonRequired =>
+      'Sababu ya kubatilisha inahitajika.';
+
+  @override
+  String get paymentErrorWalletInsufficientBalance =>
+      'Salio la mwanachama halitoshi kwa mgawanyo huu.';
+
+  @override
+  String get paymentErrorWalletNothingToAllocate =>
+      'Hakuna deni lililobaki la kutumia salio hili dhidi yake.';
+
+  @override
+  String get paymentErrorNotFound => 'Haipatikani.';
+
+  @override
+  String get paymentErrorPermissionDenied => 'Huna ruhusa ya kufanya hivyo.';
+
+  @override
+  String get paymentErrorNetwork => 'Imeshindikana kuunganisha. Jaribu tena.';
+
+  @override
+  String get paymentErrorUnexpected => 'Hitilafu imetokea. Jaribu tena.';
+
+  @override
+  String get paymentSummaryOutstandingLabel => 'Deni Lililobaki';
+
+  @override
+  String get outstandingObligationsSectionTitle => 'Madeni Yaliyobaki';
+
+  @override
+  String get outstandingObligationsEmptyMessage =>
+      'Mwanachama hana deni lililobaki.';
+
+  @override
+  String get viewAllObligationsAction => 'Angalia Yote';
 }

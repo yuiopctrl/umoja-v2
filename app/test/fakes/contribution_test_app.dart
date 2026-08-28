@@ -31,6 +31,10 @@ const contributionAdminPermissions = [
   'contribution.member_exclude',
   'contribution.member_enroll',
   'contribution.penalty.assess',
+  'contribution.self_view',
+  'contribution.adjustment.create',
+  'contribution.waiver.create',
+  'contribution.opening_balance.manage',
 ];
 
 MembershipContext contributionMembership({

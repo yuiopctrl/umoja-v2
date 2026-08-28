@@ -99,6 +99,37 @@ enum ContributionFailureType {
   /// (`NONE`) configured.
   noPenaltyPolicy,
 
+  /// `ADJUSTMENT_AMOUNT_REQUIRED`: a zero (or missing) adjustment amount.
+  adjustmentAmountRequired,
+
+  /// `ADJUSTMENT_REASON_REQUIRED`: a blank adjustment reason.
+  adjustmentReasonRequired,
+
+  /// `ADJUSTMENT_WOULD_MAKE_OBLIGATION_NEGATIVE`: the adjustment would
+  /// drive the charge's net assessed below zero.
+  adjustmentWouldMakeObligationNegative,
+
+  /// `WAIVER_AMOUNT_MUST_BE_POSITIVE`: a zero/negative/missing waiver
+  /// amount — the request amount is always a positive magnitude.
+  waiverAmountMustBePositive,
+
+  /// `WAIVER_REASON_REQUIRED`: a blank waiver reason.
+  waiverReasonRequired,
+
+  /// `WAIVER_EXCEEDS_NET_ASSESSED`: the waiver would exceed the
+  /// charge's current net assessed (would drive it below zero).
+  waiverExceedsNetAssessed,
+
+  /// `OPENING_BALANCE_AMOUNT_MUST_BE_POSITIVE`: a negative opening
+  /// balance amount (blank/zero are silently skipped, never an error).
+  openingBalanceAmountMustBePositive,
+
+  /// `OPENING_BALANCE_ALREADY_IMPORTED`: this member already has an
+  /// opening balance for this exact (group, contribution type,
+  /// effective date) — re-importing is rejected, never silently
+  /// duplicated.
+  openingBalanceAlreadyImported,
+
   permissionDenied,
   network,
   unexpected,

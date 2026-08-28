@@ -1177,6 +1177,619 @@ class AppLocalizationsEn extends AppLocalizations {
       'Something went wrong. Please try again.';
 
   @override
+  String get contributionErrorAdjustmentAmountRequired =>
+      'An adjustment amount is required and cannot be zero.';
+
+  @override
+  String get contributionErrorAdjustmentReasonRequired =>
+      'A reason is required for this adjustment.';
+
+  @override
+  String get contributionErrorAdjustmentWouldMakeObligationNegative =>
+      'This adjustment would make the obligation negative.';
+
+  @override
+  String get contributionErrorWaiverAmountMustBePositive =>
+      'The waiver amount must be greater than zero.';
+
+  @override
+  String get contributionErrorWaiverReasonRequired =>
+      'A reason is required for this waiver.';
+
+  @override
+  String get contributionErrorWaiverExceedsNetAssessed =>
+      'This waiver exceeds the current net assessed obligation.';
+
+  @override
+  String get contributionErrorOpeningBalanceAmountMustBePositive =>
+      'Opening balance amounts must be greater than zero.';
+
+  @override
+  String get contributionErrorOpeningBalanceAlreadyImported =>
+      'An opening balance for this member has already been imported.';
+
+  @override
+  String get contributionComponentBase => 'Base';
+
+  @override
+  String get contributionComponentPenalty => 'Penalty';
+
+  @override
+  String get contributionComponentAdjustment => 'Adjustment';
+
+  @override
+  String get contributionComponentWaiver => 'Waiver';
+
+  @override
+  String get contributionComponentOpeningBalance => 'Opening Balance';
+
+  @override
+  String get contributionComponentReasonLabel => 'Reason';
+
+  @override
+  String get contributionComponentDateLabel => 'Date';
+
+  @override
+  String get contributionNetAssessedLabel => 'Net Assessed';
+
+  @override
+  String get contributionCurrentNetAssessedLabel => 'Current Net Assessed';
+
+  @override
+  String get contributionEffectiveDateFieldLabel => 'Effective Date';
+
+  @override
+  String get chargeDetailTitle => 'Charge Details';
+
+  @override
+  String get sectionChargeBreakdown => 'Charge Breakdown';
+
+  @override
+  String get addAdjustmentAction => 'Add Adjustment';
+
+  @override
+  String get waiveObligationAction => 'Waive Obligation';
+
+  @override
+  String get viewMemberSummaryAction => 'View Member Summary';
+
+  @override
+  String get memberSummaryTitle => 'Member Contribution Obligation Summary';
+
+  @override
+  String get addAdjustmentTitle => 'Add Adjustment';
+
+  @override
+  String get adjustmentDirectionLabel => 'Adjustment Type';
+
+  @override
+  String get adjustmentIncreaseOption => 'Increase Obligation';
+
+  @override
+  String get adjustmentReduceOption => 'Reduce Obligation';
+
+  @override
+  String get adjustmentAmountFieldLabel => 'Amount *';
+
+  @override
+  String get adjustmentReasonFieldLabel => 'Reason *';
+
+  @override
+  String get adjustmentSubmitAction => 'Submit Adjustment';
+
+  @override
+  String get adjustmentSuccessMessage => 'Adjustment posted.';
+
+  @override
+  String get waiveObligationTitle => 'Waive Obligation';
+
+  @override
+  String get waiverTypeLabel => 'Waiver Type';
+
+  @override
+  String get waiverPartialOption => 'Partial';
+
+  @override
+  String get waiverFullOption => 'Full';
+
+  @override
+  String get waiverAmountFieldLabel => 'Amount to Waive *';
+
+  @override
+  String get waiverReasonFieldLabel => 'Reason *';
+
+  @override
+  String get waiverMaximumLabel => 'Maximum Waiver';
+
+  @override
+  String get waiverRemainingAfterLabel => 'Remaining After Waiver';
+
+  @override
+  String get waiverSubmitAction => 'Submit Waiver';
+
+  @override
+  String get waiverSuccessMessage => 'Obligation waived.';
+
+  @override
+  String get openingBalancesEntryTitle => 'Opening Balances';
+
+  @override
+  String get openingBalancesEntrySubtitle =>
+      'Import member balances from before Umoja';
+
+  @override
+  String get openingBalancesTitle => 'Opening Balances';
+
+  @override
+  String get openingBalancesEmptyTitle => 'No Opening Balances';
+
+  @override
+  String get openingBalancesEmptyMessage =>
+      'No opening balances have been imported yet.';
+
+  @override
+  String get openingBalanceImportAction => 'Import Opening Balances';
+
+  @override
+  String get openingBalanceImportTitle => 'Import Opening Balances';
+
+  @override
+  String get openingBalanceContributionTypeLabel => 'Contribution Type';
+
+  @override
+  String get openingBalanceEffectiveDateLabel => 'Effective Date';
+
+  @override
+  String get openingBalanceSearchHint => 'Search member';
+
+  @override
+  String get openingBalanceAmountFieldLabel => 'Amount';
+
+  @override
+  String get openingBalancePreviewAction => 'Preview';
+
+  @override
+  String get openingBalanceMemberCountLabel => 'Member Count';
+
+  @override
+  String get openingBalanceTotalLabel => 'Total Opening Obligation';
+
+  @override
+  String get openingBalanceAlreadyImportedBadge => 'Already Imported';
+
+  @override
+  String get openingBalanceConfirmImportAction => 'Confirm Import';
+
+  @override
+  String get openingBalanceImportSuccessMessage => 'Opening balances imported.';
+
+  @override
+  String get openingBalanceCannotImportMessage =>
+      'Some members already have an opening balance. Remove or change their amount before continuing.';
+
+  @override
+  String get financialAccountsTitle => 'Financial Accounts';
+
+  @override
+  String get homeFinancialAccountsShortcutSubtitle =>
+      'Cash, bank, and mobile money';
+
+  @override
+  String get financialAccountsEmptyTitle => 'No Financial Accounts';
+
+  @override
+  String get financialAccountsEmptyMessage =>
+      'No financial account has been created yet.';
+
+  @override
+  String get financialAccountsSearchHint => 'Search accounts';
+
+  @override
+  String get financialAccountNewAction => 'Add Account';
+
+  @override
+  String get financialAccountNewTitle => 'New Financial Account';
+
+  @override
+  String get sectionFinancialAccountDetails => 'Account Details';
+
+  @override
+  String get financialAccountEditTitle => 'Edit Financial Account';
+
+  @override
+  String get financialAccountNameFieldLabel => 'Account Name *';
+
+  @override
+  String get financialAccountTypeFieldLabel => 'Account Type';
+
+  @override
+  String get financialAccountTypeCash => 'Cash';
+
+  @override
+  String get financialAccountTypeBank => 'Bank';
+
+  @override
+  String get financialAccountTypeMobileMoney => 'Mobile Money';
+
+  @override
+  String get financialAccountOpeningBalanceFieldLabel =>
+      'Opening Balance (optional)';
+
+  @override
+  String get financialAccountOpeningBalanceDateLabel => 'Opening Balance Date';
+
+  @override
+  String get financialAccountSavedMessage => 'Financial account saved.';
+
+  @override
+  String get financialAccountBalanceLabel => 'Balance';
+
+  @override
+  String get financialAccountActiveBadge => 'Active';
+
+  @override
+  String get financialAccountInactiveBadge => 'Inactive';
+
+  @override
+  String get financialAccountActivateAction => 'Activate Account';
+
+  @override
+  String get financialAccountDeactivateAction => 'Deactivate Account';
+
+  @override
+  String get financialAccountEditAction => 'Edit';
+
+  @override
+  String get financialAccountEntriesTitle => 'Entries';
+
+  @override
+  String get financialAccountEntriesEmptyMessage =>
+      'No entries have been posted for this account yet.';
+
+  @override
+  String get financialAccountEntryTypeInflow => 'Inflow';
+
+  @override
+  String get financialAccountEntryTypeOutflow => 'Outflow';
+
+  @override
+  String get financialAccountEntryTypeTransferIn => 'Transfer In';
+
+  @override
+  String get financialAccountEntryTypeTransferOut => 'Transfer Out';
+
+  @override
+  String get financialAccountTransferAction => 'Transfer Funds';
+
+  @override
+  String financialAccountTransferToLedgerLabel(Object accountName) {
+    return 'Transfer to $accountName';
+  }
+
+  @override
+  String financialAccountTransferFromLedgerLabel(Object accountName) {
+    return 'Transfer from $accountName';
+  }
+
+  @override
+  String get financialAccountTransferTitle => 'Transfer Between Accounts';
+
+  @override
+  String get financialAccountTransferFromLabel => 'From Account';
+
+  @override
+  String get financialAccountTransferToLabel => 'To Account';
+
+  @override
+  String get financialAccountTransferAmountLabel => 'Amount *';
+
+  @override
+  String get financialAccountTransferDescriptionFieldLabel =>
+      'Description (optional)';
+
+  @override
+  String get financialAccountTransferSuccessMessage => 'Transfer successful.';
+
+  @override
+  String get financialAccountTransferSubmitAction => 'Transfer';
+
+  @override
+  String get financialAccountErrorNameRequired =>
+      'An account name is required.';
+
+  @override
+  String get financialAccountErrorDuplicateName =>
+      'That account name is already used in this group.';
+
+  @override
+  String get financialAccountErrorOpeningBalanceMustBePositive =>
+      'The opening balance must be greater than zero.';
+
+  @override
+  String get financialAccountErrorNotFound => 'Financial account not found.';
+
+  @override
+  String get financialAccountErrorTransferSameAccount =>
+      'Cannot transfer an account to itself.';
+
+  @override
+  String get financialAccountErrorTransferAmountMustBePositive =>
+      'The transfer amount must be greater than zero.';
+
+  @override
+  String get financialAccountErrorInsufficientBalance =>
+      'The source account does not have enough balance for this transfer.';
+
+  @override
+  String get financialAccountErrorAccountInactive =>
+      'This financial account is inactive.';
+
+  @override
+  String get financialAccountErrorEffectiveDateRequired =>
+      'An effective date is required for this transfer.';
+
+  @override
+  String get financialAccountErrorPermissionDenied =>
+      'You do not have permission to do that.';
+
+  @override
+  String get financialAccountErrorNetwork =>
+      'Network error. Check your connection and try again.';
+
+  @override
+  String get financialAccountErrorUnexpected =>
+      'Something went wrong. Please try again.';
+
+  @override
   String get supabaseConfigMissing =>
       'Supabase configuration missing (SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY not set).';
+
+  @override
+  String get backAction => 'Back';
+
+  @override
+  String get doneAction => 'Done';
+
+  @override
+  String get paymentsEntryTitle => 'Payments';
+
+  @override
+  String get paymentsEntrySubtitle => 'View the full payment history';
+
+  @override
+  String get recordPaymentEntryTitle => 'Record Payment';
+
+  @override
+  String get recordPaymentEntrySubtitle =>
+      'Record an external payment from a member';
+
+  @override
+  String get memberWalletEntryTitle => 'Member Wallet Balance';
+
+  @override
+  String get memberWalletEntrySubtitle =>
+      'View and allocate a member\'s wallet balance';
+
+  @override
+  String get paymentsTitle => 'Payments';
+
+  @override
+  String get paymentsSearchHint => 'Search payments';
+
+  @override
+  String get paymentsEmptyTitle => 'No Payments';
+
+  @override
+  String get paymentsEmptyMessage => 'No payments have been recorded yet.';
+
+  @override
+  String get recordPaymentAction => 'Record Payment';
+
+  @override
+  String get paymentMethodCash => 'Cash';
+
+  @override
+  String get paymentMethodBankTransfer => 'Bank Transfer';
+
+  @override
+  String get paymentMethodMobileMoney => 'Mobile Money';
+
+  @override
+  String get paymentMethodOther => 'Other';
+
+  @override
+  String get paymentStatusPosted => 'Posted';
+
+  @override
+  String get paymentStatusReversed => 'Reversed';
+
+  @override
+  String get walletEntryTypePaymentCredit => 'Credited';
+
+  @override
+  String get walletEntryTypeAllocationDebit => 'Allocated';
+
+  @override
+  String get walletEntryTypeReversal => 'Reversed';
+
+  @override
+  String get memberPickerSearchHint => 'Search member';
+
+  @override
+  String get memberPickerEmptyTitle => 'No Member Found';
+
+  @override
+  String get memberPickerEmptyMessage => 'No member matched this search.';
+
+  @override
+  String get paymentAmountInvalidError =>
+      'Enter a valid amount, member, and financial account.';
+
+  @override
+  String get recordPaymentTitle => 'Record Payment';
+
+  @override
+  String get recordPaymentAmountLabel => 'Amount *';
+
+  @override
+  String get recordPaymentDateLabel => 'Date';
+
+  @override
+  String get recordPaymentMethodLabel => 'Payment Method';
+
+  @override
+  String get recordPaymentAccountLabel => 'Financial Account';
+
+  @override
+  String get recordPaymentReferenceLabel => 'External Reference (optional)';
+
+  @override
+  String get recordPaymentNotesLabel => 'Notes (optional)';
+
+  @override
+  String get recordPaymentPreviewAction => 'Preview Allocation';
+
+  @override
+  String get recordPaymentConfirmAction => 'Confirm Payment';
+
+  @override
+  String get recordPaymentSuccessMessage => 'Payment recorded successfully.';
+
+  @override
+  String get paymentPreviewAmountLabel => 'Payment Amount';
+
+  @override
+  String get paymentPreviewWillSettleLabel => 'Will Settle';
+
+  @override
+  String get paymentPreviewNoOutstandingMessage =>
+      'There is no outstanding amount to settle.';
+
+  @override
+  String get paymentPreviewTotalAllocatedLabel => 'Settles Debt';
+
+  @override
+  String get paymentPreviewWalletRemainingLabel => 'Wallet Remaining';
+
+  @override
+  String get paymentPreviewAccountLabel => 'Account Receiving Funds';
+
+  @override
+  String get viewReceiptAction => 'View Receipt';
+
+  @override
+  String get receiptTitle => 'Receipt';
+
+  @override
+  String get receiptMemberLabel => 'Member';
+
+  @override
+  String get paymentDetailTitle => 'Payment Detail';
+
+  @override
+  String get paymentAmountLabel => 'Amount';
+
+  @override
+  String get paymentAllocationsTitle => 'Payment Allocations';
+
+  @override
+  String get reversalReasonLabel => 'Reversal Reason *';
+
+  @override
+  String get reversePaymentAction => 'Reverse Payment';
+
+  @override
+  String get reversePaymentTitle => 'Reverse Payment';
+
+  @override
+  String get reversePaymentWarningMessage =>
+      'This cannot be undone. The original payment stays on record, but the debt it settled becomes outstanding again.';
+
+  @override
+  String get reversePaymentConfirmAction => 'Confirm Reversal';
+
+  @override
+  String get reversePaymentSuccessMessage => 'Payment reversed.';
+
+  @override
+  String get memberWalletTitle => 'Member Wallet Balance';
+
+  @override
+  String get walletBalanceLabel => 'Current Balance';
+
+  @override
+  String get walletHistoryTitle => 'Wallet History';
+
+  @override
+  String get walletHistoryEmptyMessage => 'No wallet history yet.';
+
+  @override
+  String get allocateWalletAction => 'Allocate Balance';
+
+  @override
+  String get allocateWalletTitle => 'Allocate Member Wallet';
+
+  @override
+  String get allocateWalletSuccessMessage =>
+      'Wallet balance allocated against outstanding debt.';
+
+  @override
+  String get paymentErrorAmountMustBePositive =>
+      'The amount must be greater than zero.';
+
+  @override
+  String get paymentErrorFinancialAccountInactive =>
+      'This financial account is inactive.';
+
+  @override
+  String get paymentErrorIdempotencyKeyConflict =>
+      'This submission conflicts with an earlier one. Please refresh and try again.';
+
+  @override
+  String get paymentErrorAlreadyReversed =>
+      'This payment has already been reversed.';
+
+  @override
+  String get paymentErrorReversalBlockedWalletCreditConsumed =>
+      'This payment cannot be reversed: the wallet credit it created has already been used.';
+
+  @override
+  String get paymentErrorReversalReasonRequired =>
+      'A reversal reason is required.';
+
+  @override
+  String get paymentErrorWalletInsufficientBalance =>
+      'The wallet does not have enough balance for this allocation.';
+
+  @override
+  String get paymentErrorWalletNothingToAllocate =>
+      'There is no outstanding amount to allocate against.';
+
+  @override
+  String get paymentErrorNotFound => 'Not found.';
+
+  @override
+  String get paymentErrorPermissionDenied =>
+      'You do not have permission to do that.';
+
+  @override
+  String get paymentErrorNetwork =>
+      'Network error. Check your connection and try again.';
+
+  @override
+  String get paymentErrorUnexpected =>
+      'Something went wrong. Please try again.';
+
+  @override
+  String get paymentSummaryOutstandingLabel => 'Outstanding Balance';
+
+  @override
+  String get outstandingObligationsSectionTitle => 'Outstanding Obligations';
+
+  @override
+  String get outstandingObligationsEmptyMessage =>
+      'This member has no outstanding debt.';
+
+  @override
+  String get viewAllObligationsAction => 'View All';
 }

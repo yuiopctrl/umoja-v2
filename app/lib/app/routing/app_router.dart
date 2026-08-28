@@ -11,6 +11,10 @@ import '../../features/auth/presentation/phone_entry_screen.dart';
 import '../../features/auth/providers/app_context_provider.dart';
 import '../../features/auth/providers/auth_session_provider.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
+import '../../features/contributions/presentation/contribution_adjustment_form_screen.dart';
+import '../../features/contributions/presentation/contribution_charge_detail_screen.dart';
+import '../../features/contributions/presentation/contribution_opening_balance_import_screen.dart';
+import '../../features/contributions/presentation/contribution_opening_balances_screen.dart';
 import '../../features/contributions/presentation/contribution_period_amounts_screen.dart';
 import '../../features/contributions/presentation/contribution_period_charges_screen.dart';
 import '../../features/contributions/presentation/contribution_period_detail_screen.dart';
@@ -20,6 +24,11 @@ import '../../features/contributions/presentation/contribution_period_form_scree
 import '../../features/contributions/presentation/contribution_period_open_preview_screen.dart';
 import '../../features/contributions/presentation/contribution_periods_list_screen.dart';
 import '../../features/contributions/presentation/contribution_setup_form_screen.dart';
+import '../../features/contributions/presentation/contribution_waiver_form_screen.dart';
+import '../../features/financial_accounts/presentation/financial_account_detail_screen.dart';
+import '../../features/financial_accounts/presentation/financial_account_form_screen.dart';
+import '../../features/financial_accounts/presentation/financial_account_transfer_screen.dart';
+import '../../features/financial_accounts/presentation/financial_accounts_list_screen.dart';
 import '../../features/contributions/presentation/contribution_setups_list_screen.dart';
 import '../../features/contributions/presentation/contribution_type_form_screen.dart';
 import '../../features/contributions/presentation/contribution_types_list_screen.dart';
@@ -32,6 +41,13 @@ import '../../features/members/presentation/members_list_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/onboarding/presentation/group_onboarding_screen.dart';
 import '../../features/onboarding/presentation/profile_onboarding_screen.dart';
+import '../../features/payments/presentation/member_wallet_screen.dart';
+import '../../features/payments/presentation/payment_detail_screen.dart';
+import '../../features/payments/presentation/payment_reversal_screen.dart';
+import '../../features/payments/presentation/payments_list_screen.dart';
+import '../../features/payments/presentation/receipt_screen.dart';
+import '../../features/payments/presentation/record_payment_screen.dart';
+import '../../features/payments/presentation/wallet_member_picker_screen.dart';
 import '../../features/security/presentation/pin_recovery_verify_screen.dart';
 import '../../features/security/presentation/pin_setup_screen.dart';
 import '../../features/security/providers/has_pin_credential_provider.dart';
@@ -237,6 +253,93 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: AppRoutes.contributionPeriodEnroll,
             builder: (context, state) => ContributionPeriodEnrollScreen(
               periodId: state.pathParameters['periodId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionChargeDetail,
+            builder: (context, state) => ContributionChargeDetailScreen(
+              chargeId: state.pathParameters['chargeId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionChargeAdjust,
+            builder: (context, state) => ContributionAdjustmentFormScreen(
+              chargeId: state.pathParameters['chargeId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionChargeWaive,
+            builder: (context, state) => ContributionWaiverFormScreen(
+              chargeId: state.pathParameters['chargeId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionOpeningBalancesList,
+            builder: (context, state) =>
+                const ContributionOpeningBalancesScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.contributionOpeningBalanceImport,
+            builder: (context, state) =>
+                const ContributionOpeningBalanceImportScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.financialAccountsList,
+            builder: (context, state) => const FinancialAccountsListScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.financialAccountNew,
+            builder: (context, state) => const FinancialAccountFormScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.financialAccountTransfer,
+            builder: (context, state) => const FinancialAccountTransferScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.financialAccountDetail,
+            builder: (context, state) => FinancialAccountDetailScreen(
+              accountId: state.pathParameters['accountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.financialAccountEdit,
+            builder: (context, state) => FinancialAccountFormScreen(
+              accountId: state.pathParameters['accountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.paymentsList,
+            builder: (context, state) => const PaymentsListScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.paymentRecord,
+            builder: (context, state) => const RecordPaymentScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.paymentDetail,
+            builder: (context, state) => PaymentDetailScreen(
+              paymentId: state.pathParameters['paymentId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.paymentReceipt,
+            builder: (context, state) =>
+                ReceiptScreen(paymentId: state.pathParameters['paymentId']!),
+          ),
+          GoRoute(
+            path: AppRoutes.paymentReverse,
+            builder: (context, state) => PaymentReversalScreen(
+              paymentId: state.pathParameters['paymentId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.walletMemberPicker,
+            builder: (context, state) => const WalletMemberPickerScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.walletDetail,
+            builder: (context, state) => MemberWalletScreen(
+              membershipId: state.pathParameters['membershipId']!,
             ),
           ),
         ],

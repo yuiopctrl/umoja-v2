@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
@@ -141,6 +142,8 @@ class _ChargeRow extends StatelessWidget {
         '${l10n.contributionDueDateLabel}: ${formatKiswahiliDate(charge.dueDate)}',
         style: Theme.of(context).textTheme.bodyMedium,
       ),
+      onTap: () =>
+          context.push(AppRoutes.contributionChargeDetailPath(charge.chargeId)),
       // Prompt 06B: only shown once a penalty has actually been posted
       // for this charge — a charge with no penalty just shows its base
       // amount, exactly like before 06B existed.

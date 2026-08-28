@@ -1,3 +1,8 @@
+import '../domain/contribution_charge_detail.dart';
+import '../domain/contribution_correction_result.dart';
+import '../domain/contribution_opening_balance_import_result.dart';
+import '../domain/contribution_opening_balance_page.dart';
+import '../domain/contribution_opening_balance_preview.dart';
 import '../domain/contribution_penalty_assessment_result.dart';
 import '../domain/contribution_period.dart';
 import '../domain/contribution_period_open_preview.dart';
@@ -7,7 +12,9 @@ import '../domain/contribution_setup_page.dart';
 import '../domain/contribution_type.dart';
 import '../domain/contribution_type_page.dart';
 import '../domain/member_contribution_charge_page.dart';
+import '../domain/member_contribution_summary.dart';
 import 'contribution_member_amount_input.dart';
+import 'contribution_opening_balance_entry_input.dart';
 
 /// Abstraction over the Contribution Engine backend RPCs. UI/controllers
 /// depend on this, never on the Supabase SDK directly — every mutation
@@ -255,6 +262,96 @@ abstract class ContributionRepository {
     required String groupId,
     required String periodId,
     String? search,
+    int limit = 10,
+    int offset = 0,
+  });
+
+  /// Full per-component breakdown for one charge (Base/Penalty/
+  /// Adjustment/Waiver/Opening Balance/Net Assessed) — the charge/member
+  /// detail screen's data source.
+  Future<ContributionChargeDetail> getContributionChargeDetail({
+    required String groupId,
+    required String chargeId,
+  });
+
+  /// The "Member Contribution Obligation Summary" — one member's
+  /// obligation aggregated across every one of their charges in the
+  /// group. No paid/outstanding-after-payment concept; there is no
+  /// payments module yet.
+  Future<MemberContributionSummary> getMemberContributionSummary({
+    required String groupId,
+    required String membershipId,
+  });
+
+  // -- Corrections (Prompt 06C): adjustments & waivers --------------------
+
+  /// Posts a signed ADJUSTMENT component against [chargeId] — [amount]
+  /// increases the obligation when positive, reduces it when negative,
+  /// and must never be zero. Never edits BASE/PENALTY. Rejected
+  /// (`ADJUSTMENT_WOULD_MAKE_OBLIGATION_NEGATIVE`) if it would drive the
+  /// charge's net assessed below zero. Works against a charge whose
+  /// period is OPEN or CLOSED alike — never reopens the period.
+  /// [idempotencyKey], if supplied, makes a retried submission safe to
+  /// resend.
+  Future<ContributionCorrectionResult> createContributionAdjustment({
+    required String groupId,
+    required String chargeId,
+    required double amount,
+    required String reason,
+    required DateTime effectiveAt,
+    String? idempotencyKey,
+  });
+
+  /// Posts a WAIVER component against [chargeId]. [amount] is always a
+  /// positive magnitude to waive — the backend stores the component
+  /// negative (locked sign convention); Flutter never sends a signed
+  /// value here. Rejected (`WAIVER_EXCEEDS_NET_ASSESSED`) if it would
+  /// exceed the charge's current net assessed. Never deletes/rewrites an
+  /// existing PENALTY component. Works against OPEN or CLOSED charges
+  /// alike — never reopens the period.
+  Future<ContributionCorrectionResult> waiveContributionCharge({
+    required String groupId,
+    required String chargeId,
+    required double amount,
+    required String reason,
+    required DateTime effectiveAt,
+    String? idempotencyKey,
+  });
+
+  // -- Opening balances (Prompt 06C) --------------------------------------
+
+  /// Read-only, server-authoritative preview of what
+  /// [importContributionOpeningBalances] would post for [entries] — no
+  /// mutation. A blank/zero amount in [entries] is simply omitted from
+  /// the preview, never rejected.
+  Future<ContributionOpeningBalancePreview>
+  previewContributionOpeningBalanceImport({
+    required String groupId,
+    required String contributionTypeId,
+    required DateTime effectiveAt,
+    required List<ContributionOpeningBalanceEntryInput> entries,
+  });
+
+  /// Atomic, all-or-nothing batch import of [entries] as OPENING_BALANCE
+  /// obligations for (groupId, contributionTypeId, effectiveAt) — never
+  /// creates a fake normal period, and never creates any
+  /// payment/cash/receipt row of any kind. Rejects
+  /// (`OPENING_BALANCE_ALREADY_IMPORTED`) the whole batch if any member
+  /// already has an opening balance for this exact combination.
+  Future<ContributionOpeningBalanceImportResult>
+  importContributionOpeningBalances({
+    required String groupId,
+    required String contributionTypeId,
+    required DateTime effectiveAt,
+    required List<ContributionOpeningBalanceEntryInput> entries,
+  });
+
+  /// Dedicated opening-balance report — deliberately separate from
+  /// [listContributionPeriods]/[listContributionPeriodCharges], which
+  /// always exclude the system opening-balance periods this reads.
+  Future<ContributionOpeningBalancePage> listContributionOpeningBalances({
+    required String groupId,
+    String? contributionTypeId,
     int limit = 10,
     int offset = 0,
   });
