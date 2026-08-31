@@ -28,8 +28,11 @@ void main() {
       expect(find.text('Msamaha wa Deni'), findsOneWidget);
       expect(find.text('Jumla ya Deni Lililowekwa'), findsOneWidget);
 
-      // Net assessed = 100,000 + 10,000 + 20,000 - 5,000 = 125,000.
-      expect(find.textContaining('125,000'), findsOneWidget);
+      // Net assessed = 100,000 + 10,000 + 20,000 - 5,000 = 125,000. The
+      // fake charge has no payment allocated against it, so Outstanding
+      // (Prompt 07 UAT-FIX-03) equals the same 125,000 figure — hence
+      // two matches, not one.
+      expect(find.textContaining('125,000'), findsNWidgets(2));
 
       expect(find.textContaining('BASE'), findsNothing);
       expect(find.textContaining('PENALTY'), findsNothing);

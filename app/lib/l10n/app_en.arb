@@ -549,9 +549,10 @@
   "paymentMethodOther": "Other",
   "paymentStatusPosted": "Posted",
   "paymentStatusReversed": "Reversed",
-  "walletEntryTypePaymentCredit": "Credited",
-  "walletEntryTypeAllocationDebit": "Allocated",
-  "walletEntryTypeReversal": "Reversed",
+  "walletEntryTypePaymentCredit": "Credit from payment",
+  "walletEntryTypeAllocationDebit": "Balance used to settle debt",
+  "walletEntryTypeReversal": "Credit reversed",
+  "walletEntrySourceReceiptLabel": "Receipt {receiptNumber}",
 
   "memberPickerSearchHint": "Search member",
   "memberPickerEmptyTitle": "No Member Found",
@@ -614,5 +615,16 @@
   "paymentSummaryOutstandingLabel": "Outstanding Balance",
   "outstandingObligationsSectionTitle": "Outstanding Obligations",
   "outstandingObligationsEmptyMessage": "This member has no outstanding debt.",
-  "viewAllObligationsAction": "View All"
+  "viewAllObligationsAction": "View All",
+
+  "sectionCharges": "Charges",
+  "viewChargesAction": "View Charges",
+  "memberChargesTitle": "Charges",
+  "memberChargesTotalAllocatedLabel": "Paid / Allocated",
+  "memberChargesEmptyOutstandingMessage": "No outstanding debt.",
+  "memberChargesEmptyMessage": "No charges match this filter.",
+  "filterOutstanding": "Outstanding",
+  "filterSettled": "Settled",
+  "filterOverdue": "Overdue",
+  "chargeOutstandingLabel": "Outstanding"
 }

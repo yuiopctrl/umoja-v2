@@ -32,8 +32,9 @@ const _assignableRoles = [
 ];
 
 /// `/members/:membershipId`: member detail — identity, membership
-/// status, roles, and contextual actions. No financial placeholder
-/// sections — those modules do not exist yet.
+/// status, roles, and contextual actions. A Charges/Madeni entry point
+/// (Prompt 07 UAT-FIX-03) links out to the dedicated member-centric
+/// charges view rather than embedding the full charge list here.
 class MemberDetailScreen extends ConsumerWidget {
   const MemberDetailScreen({super.key, required this.membershipId});
 
@@ -52,6 +53,9 @@ class MemberDetailScreen extends ConsumerWidget {
     final canChangeStatus =
         membership?.hasPermission('member.change_status') ?? false;
     final canAssignRoles = membership?.hasPermission('role.assign') ?? false;
+    final canViewCharges =
+        (membership?.hasPermission('contribution.view') ?? false) &&
+        (membership?.hasPermission('payment.view') ?? false);
 
     return UmojaPage(
       title: l10n.memberDetailTitle,
@@ -102,6 +106,19 @@ class MemberDetailScreen extends ConsumerWidget {
                             )
                           : null,
                       child: _RolesSummary(member: member),
+                    ),
+                  ],
+                  if (canViewCharges) ...[
+                    const _SectionDivider(),
+                    UmojaSection(
+                      title: l10n.sectionCharges,
+                      trailing: TextButton(
+                        onPressed: () => context.push(
+                          AppRoutes.memberChargesPath(member.membershipId),
+                        ),
+                        child: Text(l10n.viewChargesAction),
+                      ),
+                      child: const SizedBox.shrink(),
                     ),
                   ],
                   const _SectionDivider(),

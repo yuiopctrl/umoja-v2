@@ -1,6 +1,7 @@
 import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../domain/member_contribution_charge.dart';
 import '../domain/member_contribution_statement.dart';
 import '../domain/member_wallet.dart';
 import '../domain/payment_allocation_preview.dart';
@@ -103,6 +104,31 @@ class SupabasePaymentRepository implements PaymentRepository {
       return MemberContributionStatement.fromJson(
         result as Map<String, dynamic>,
       );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<MemberChargesPage> listMemberContributionCharges({
+    required String groupId,
+    required String membershipId,
+    String filter = 'OUTSTANDING',
+    int limit = 10,
+    int offset = 0,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_list_member_contribution_charges',
+        params: {
+          'p_group_id': groupId,
+          'p_membership_id': membershipId,
+          'p_filter': filter,
+          'p_limit': limit,
+          'p_offset': offset,
+        },
+      );
+      return MemberChargesPage.fromJson(result as Map<String, dynamic>);
     } catch (error, stackTrace) {
       throw _mapError(error, stackTrace);
     }

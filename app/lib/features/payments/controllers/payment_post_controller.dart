@@ -10,6 +10,7 @@ import '../../financial_accounts/providers/financial_account_entries_provider.da
 import '../../financial_accounts/providers/financial_accounts_list_provider.dart';
 import '../data/payment_failure.dart';
 import '../domain/payment_post_result.dart';
+import '../providers/member_contribution_charges_provider.dart';
 import '../providers/member_contribution_statement_provider.dart';
 import '../providers/member_wallet_provider.dart';
 import '../providers/payment_repository_provider.dart';
@@ -74,6 +75,7 @@ class PaymentPostController extends Notifier<PaymentPostState> {
       ref.invalidate(paymentsListProvider);
       ref.invalidate(memberContributionSummaryProvider);
       ref.invalidate(memberContributionStatementProvider);
+      ref.invalidate(memberContributionChargesProvider);
       ref.invalidate(contributionChargeDetailProvider);
       ref.invalidate(contributionPeriodChargesProvider);
       ref.invalidate(contributionPeriodsListProvider);

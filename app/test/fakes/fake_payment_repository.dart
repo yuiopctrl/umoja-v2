@@ -1,4 +1,5 @@
 import 'package:umoja/features/payments/data/payment_repository.dart';
+import 'package:umoja/features/payments/domain/member_contribution_charge.dart';
 import 'package:umoja/features/payments/domain/member_contribution_statement.dart';
 import 'package:umoja/features/payments/domain/member_wallet.dart';
 import 'package:umoja/features/payments/domain/payment.dart';
@@ -149,6 +150,7 @@ WalletEntry fakeWalletEntry({
   double amount = 5000,
   String? sourceType,
   String? sourceId,
+  String? sourceReceiptNumber,
 }) {
   return WalletEntry(
     entryId: entryId,
@@ -157,6 +159,7 @@ WalletEntry fakeWalletEntry({
     effectiveAt: DateTime.utc(2026, 1, 10),
     sourceType: sourceType,
     sourceId: sourceId,
+    sourceReceiptNumber: sourceReceiptNumber,
     createdAt: DateTime.utc(2026, 1, 10),
   );
 }
@@ -218,6 +221,7 @@ MemberContributionStatement fakeMemberContributionStatement({
   String membershipStatus = 'ACTIVE',
   List<OutstandingCharge>? charges,
   double totalOutstanding = 20000,
+  double totalAllocated = 0,
   double walletBalance = 0,
 }) {
   return MemberContributionStatement(
@@ -227,7 +231,75 @@ MemberContributionStatement fakeMemberContributionStatement({
     membershipStatus: membershipStatus,
     charges: charges ?? [fakeOutstandingCharge()],
     totalOutstanding: totalOutstanding,
+    totalAllocated: totalAllocated,
     walletBalance: walletBalance,
+  );
+}
+
+MemberChargeComponent fakeMemberChargeComponent({
+  String componentType = 'BASE',
+  double amount = 20000,
+  DateTime? effectiveAt,
+}) {
+  return MemberChargeComponent(
+    componentType: componentType,
+    amount: amount,
+    effectiveAt: effectiveAt ?? DateTime.utc(2026, 7, 1),
+  );
+}
+
+MemberCharge fakeMemberCharge({
+  String chargeId = 'charge-1',
+  String periodId = 'period-1',
+  DateTime? dueDate,
+  String contributionTypeName = 'Ada',
+  String periodLabel = 'Julai 2026',
+  String periodPurpose = 'NORMAL',
+  String periodStatus = 'OPEN',
+  bool isOverdue = false,
+  double netAssessed = 20000,
+  double allocated = 0,
+  double outstanding = 20000,
+  List<MemberChargeComponent>? components,
+}) {
+  return MemberCharge(
+    chargeId: chargeId,
+    periodId: periodId,
+    dueDate: dueDate ?? DateTime.utc(2026, 7, 15),
+    contributionTypeName: contributionTypeName,
+    periodLabel: periodLabel,
+    periodPurpose: periodPurpose,
+    periodStatus: periodStatus,
+    isOverdue: isOverdue,
+    netAssessed: netAssessed,
+    allocated: allocated,
+    outstanding: outstanding,
+    components: components ?? [fakeMemberChargeComponent()],
+  );
+}
+
+MemberChargesPage fakeMemberChargesPage({
+  String membershipId = 'm1',
+  String memberDisplayName = 'Test Member',
+  String? memberNumber = 'UMOJA-2026-001',
+  String membershipStatus = 'ACTIVE',
+  String filter = 'OUTSTANDING',
+  List<MemberCharge>? items,
+  int? totalCount,
+  int limit = 10,
+  int offset = 0,
+}) {
+  final resolvedItems = items ?? [fakeMemberCharge()];
+  return MemberChargesPage(
+    membershipId: membershipId,
+    memberDisplayName: memberDisplayName,
+    memberNumber: memberNumber,
+    membershipStatus: membershipStatus,
+    filter: filter,
+    items: resolvedItems,
+    totalCount: totalCount ?? resolvedItems.length,
+    limit: limit,
+    offset: offset,
   );
 }
 
@@ -243,6 +315,7 @@ class FakePaymentRepository implements PaymentRepository {
   PaymentDetail nextPaymentDetail = fakePaymentDetail();
   Receipt nextReceipt = fakeReceipt();
   MemberContributionStatement nextStatement = fakeMemberContributionStatement();
+  MemberChargesPage nextChargesPage = fakeMemberChargesPage();
   PaymentAllocationPreview nextPaymentPreview = fakePaymentAllocationPreview();
   PaymentPostResult nextPostResult = fakePaymentPostResult();
   MemberWallet nextMemberWallet = fakeMemberWallet();
@@ -255,6 +328,8 @@ class FakePaymentRepository implements PaymentRepository {
   final List<({String groupId, String paymentId})> getReceiptCalls = [];
   final List<({String groupId, String membershipId})>
   getMemberContributionStatementCalls = [];
+  final List<({String groupId, String membershipId, String filter, int limit})>
+  listMemberContributionChargesCalls = [];
   final List<
     ({
       String groupId,
@@ -343,6 +418,24 @@ class FakePaymentRepository implements PaymentRepository {
     ));
     _maybeThrow();
     return nextStatement;
+  }
+
+  @override
+  Future<MemberChargesPage> listMemberContributionCharges({
+    required String groupId,
+    required String membershipId,
+    String filter = 'OUTSTANDING',
+    int limit = 10,
+    int offset = 0,
+  }) async {
+    listMemberContributionChargesCalls.add((
+      groupId: groupId,
+      membershipId: membershipId,
+      filter: filter,
+      limit: limit,
+    ));
+    _maybeThrow();
+    return nextChargesPage;
   }
 
   @override

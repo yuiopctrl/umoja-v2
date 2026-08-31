@@ -8,6 +8,7 @@ import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
+import '../../../core/utils/amount_input_formatter.dart';
 import '../../../core/utils/money_format.dart';
 import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_page.dart';
@@ -120,9 +121,7 @@ class _ContributionOpeningBalanceImportScreenState
         .map(
           (membershipId) => ContributionOpeningBalanceEntryInput(
             membershipId: membershipId,
-            amount: double.tryParse(
-              _amountControllerFor(membershipId).text.trim(),
-            ),
+            amount: parseAmountInput(_amountControllerFor(membershipId).text),
           ),
         )
         .toList(growable: false);
@@ -269,6 +268,7 @@ class _ContributionOpeningBalanceImportScreenState
                             keyboardType: const TextInputType.numberWithOptions(
                               decimal: true,
                             ),
+                            inputFormatters: const [ThousandsInputFormatter()],
                             decoration: InputDecoration(
                               labelText: l10n.openingBalanceAmountFieldLabel,
                               isDense: true,

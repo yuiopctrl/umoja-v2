@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 
+import '../../payments/providers/member_contribution_charges_provider.dart';
+import '../../payments/providers/member_contribution_statement_provider.dart';
 import '../data/contribution_failure.dart';
 import '../domain/contribution_penalty_assessment_result.dart';
 import '../providers/contribution_period_charges_provider.dart';
@@ -56,6 +58,11 @@ class ContributionPeriodPenaltyController
       // viewer's own search/limit, which this controller has no reason
       // to know (same lesson as OPEN/ENROLL in Prompt 06A-UAT-FIX).
       ref.invalidate(contributionPeriodChargesProvider);
+      // Whole-family invalidation for the same reason — penalty
+      // assessment affects every member charged in this period at
+      // once, not one known membership.
+      ref.invalidate(memberContributionStatementProvider);
+      ref.invalidate(memberContributionChargesProvider);
       state = ContributionPeriodPenaltyState(lastResult: result);
       return true;
     } on ContributionFailure catch (error) {

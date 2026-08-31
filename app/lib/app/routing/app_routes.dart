@@ -63,6 +63,14 @@ class AppRoutes {
   static String memberEditPath(String membershipId) =>
       '/members/$membershipId/edit';
 
+  /// Path template; use [memberChargesPath] for a concrete URL. The
+  /// member-centric Charges/Madeni view (Prompt 07 UAT-FIX-03) — every
+  /// contribution charge for this member across every period, without
+  /// opening each contribution period individually.
+  static const memberCharges = '/members/:membershipId/charges';
+  static String memberChargesPath(String membershipId) =>
+      '/members/$membershipId/charges';
+
   // -- Contributions (Michango) ------------------------------------------
   //
   // Obligation-ledger foundation only — no payment/cash/receipt route
@@ -192,6 +200,17 @@ class AppRoutes {
 
   static const paymentsList = '/payments';
   static const paymentRecord = '/payments/record';
+
+  /// Path template; use [paymentRecordPath] for a concrete URL. Same
+  /// Record Payment flow as [paymentRecord], but with the member
+  /// already selected (Prompt 07 UAT-FIX-03's "Rekodi Malipo" shortcut
+  /// from the member-centric Charges/Madeni view) — the member picker
+  /// step is skipped entirely. The membership id lives in the route
+  /// path itself, never a transient `extra` (see UAT-FIX-02), so this
+  /// remains a real, refreshable deep link.
+  static const paymentRecordForMember = '/payments/record/:membershipId';
+  static String paymentRecordPath(String membershipId) =>
+      '/payments/record/$membershipId';
 
   /// Path template; use [paymentDetailPath] for a concrete URL.
   static const paymentDetail = '/payments/:paymentId';

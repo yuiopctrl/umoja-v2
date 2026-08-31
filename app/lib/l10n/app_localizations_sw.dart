@@ -892,7 +892,7 @@ class AppLocalizationsSw extends AppLocalizations {
   String get cancelPeriodAction => 'Sitisha Kipindi';
 
   @override
-  String get viewChargesAction => 'Angalia Malipo Yaliyotozwa';
+  String get viewChargesAction => 'Angalia Madeni';
 
   @override
   String get enrollMemberAction => 'Andikisha Mwanachama';
@@ -1612,13 +1612,18 @@ class AppLocalizationsSw extends AppLocalizations {
   String get paymentStatusReversed => 'Imebatilishwa';
 
   @override
-  String get walletEntryTypePaymentCredit => 'Salio Lililoongezwa';
+  String get walletEntryTypePaymentCredit => 'Salio kutoka malipo';
 
   @override
-  String get walletEntryTypeAllocationDebit => 'Salio Lililotumika';
+  String get walletEntryTypeAllocationDebit => 'Salio limetumika kulipa deni';
 
   @override
-  String get walletEntryTypeReversal => 'Kubatilishwa';
+  String get walletEntryTypeReversal => 'Salio limerudishwa';
+
+  @override
+  String walletEntrySourceReceiptLabel(Object receiptNumber) {
+    return 'Risiti $receiptNumber';
+  }
 
   @override
   String get memberPickerSearchHint => 'Tafuta mwanachama';
@@ -1797,4 +1802,32 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get viewAllObligationsAction => 'Angalia Yote';
+
+  @override
+  String get sectionCharges => 'Madeni';
+
+  @override
+  String get memberChargesTitle => 'Madeni';
+
+  @override
+  String get memberChargesTotalAllocatedLabel => 'Malipo Yaliyogawiwa';
+
+  @override
+  String get memberChargesEmptyOutstandingMessage => 'Hakuna deni lililobaki.';
+
+  @override
+  String get memberChargesEmptyMessage =>
+      'Hakuna madeni yanayolingana na kichujio hiki.';
+
+  @override
+  String get filterOutstanding => 'Deni Lililobaki';
+
+  @override
+  String get filterSettled => 'Imelipwa';
+
+  @override
+  String get filterOverdue => 'Imechelewa';
+
+  @override
+  String get chargeOutstandingLabel => 'Deni Lililobaki';
 }

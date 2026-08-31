@@ -17,6 +17,7 @@ class ContributionChargeDetail {
     required this.dueDate,
     required this.components,
     required this.netAssessed,
+    required this.totalOutstanding,
   });
 
   factory ContributionChargeDetail.fromJson(Map<String, dynamic> json) {
@@ -37,6 +38,7 @@ class ContributionChargeDetail {
           )
           .toList(growable: false),
       netAssessed: (json['net_assessed'] as num).toDouble(),
+      totalOutstanding: (json['total_outstanding'] as num).toDouble(),
     );
   }
 
@@ -50,6 +52,11 @@ class ContributionChargeDetail {
   final DateTime dueDate;
   final List<ContributionChargeComponent> components;
   final double netAssessed;
+
+  /// Server-computed remaining unallocated amount across every
+  /// component of this charge (Prompt 07 UAT-FIX-03) — never re-derived
+  /// from [components] client-side.
+  final double totalOutstanding;
 
   double _sumOf(String type) => components
       .where((c) => c.componentType == type)

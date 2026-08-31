@@ -35,6 +35,7 @@ import '../../features/contributions/presentation/contribution_types_list_screen
 import '../../features/contributions/presentation/contributions_home_screen.dart';
 import '../../features/groups/presentation/select_group_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/members/presentation/member_charges_screen.dart';
 import '../../features/members/presentation/member_detail_screen.dart';
 import '../../features/members/presentation/member_form_screen.dart';
 import '../../features/members/presentation/members_list_screen.dart';
@@ -166,6 +167,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.memberEdit,
             builder: (context, state) => MemberFormScreen(
+              membershipId: state.pathParameters['membershipId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.memberCharges,
+            builder: (context, state) => MemberChargesScreen(
               membershipId: state.pathParameters['membershipId']!,
             ),
           ),
@@ -314,6 +321,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.paymentRecord,
             builder: (context, state) => const RecordPaymentScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.paymentRecordForMember,
+            builder: (context, state) => RecordPaymentScreen(
+              membershipId: state.pathParameters['membershipId'],
+            ),
           ),
           GoRoute(
             path: AppRoutes.paymentDetail,

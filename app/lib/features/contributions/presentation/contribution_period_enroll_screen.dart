@@ -7,6 +7,7 @@ import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
+import '../../../core/utils/amount_input_formatter.dart';
 import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_empty_state.dart';
 import '../../../core/widgets/umoja_list_tile.dart';
@@ -146,6 +147,7 @@ class _ContributionPeriodEnrollScreenState
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
+                inputFormatters: const [ThousandsInputFormatter()],
                 decoration: InputDecoration(
                   labelText: l10n.enrollMemberAmountLabel,
                 ),
@@ -156,7 +158,7 @@ class _ContributionPeriodEnrollScreenState
                 expand: true,
                 onPressed: () =>
                     Navigator.of(sheetContext)
-                        .pop(double.tryParse(controller.text.trim())),
+                        .pop(parseAmountInput(controller.text)),
               ),
             ],
           ),

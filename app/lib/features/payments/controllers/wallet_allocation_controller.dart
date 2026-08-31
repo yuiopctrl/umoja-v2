@@ -5,6 +5,7 @@ import '../../contributions/providers/contribution_charge_detail_provider.dart';
 import '../../contributions/providers/contribution_period_charges_provider.dart';
 import '../../contributions/providers/member_contribution_summary_provider.dart';
 import '../data/payment_failure.dart';
+import '../providers/member_contribution_charges_provider.dart';
 import '../providers/member_contribution_statement_provider.dart';
 import '../providers/member_wallet_provider.dart';
 import '../providers/payment_repository_provider.dart';
@@ -47,6 +48,7 @@ class WalletAllocationController extends Notifier<WalletAllocationState> {
       ref.invalidate(memberWalletEntriesProvider);
       ref.invalidate(memberContributionSummaryProvider);
       ref.invalidate(memberContributionStatementProvider);
+      ref.invalidate(memberContributionChargesProvider);
       ref.invalidate(contributionChargeDetailProvider);
       ref.invalidate(contributionPeriodChargesProvider);
 

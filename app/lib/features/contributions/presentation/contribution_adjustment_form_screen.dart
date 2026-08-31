@@ -6,6 +6,7 @@ import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
+import '../../../core/utils/amount_input_formatter.dart';
 import '../../../core/utils/money_format.dart';
 import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_error_state.dart';
@@ -63,7 +64,7 @@ class _ContributionAdjustmentFormScreenState
     String membershipId,
   ) async {
     FocusScope.of(context).unfocus();
-    final magnitude = double.tryParse(_amountController.text.trim());
+    final magnitude = parseAmountInput(_amountController.text);
     if (magnitude == null || magnitude == 0) return;
     final signedAmount = _isIncrease ? magnitude.abs() : -magnitude.abs();
 
@@ -152,6 +153,7 @@ class _ContributionAdjustmentFormScreenState
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
+              inputFormatters: const [ThousandsInputFormatter()],
               decoration: InputDecoration(
                 labelText: l10n.adjustmentAmountFieldLabel,
               ),

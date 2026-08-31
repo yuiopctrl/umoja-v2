@@ -582,9 +582,10 @@
   "paymentMethodOther": "Nyingine",
   "paymentStatusPosted": "Imerekodiwa",
   "paymentStatusReversed": "Imebatilishwa",
-  "walletEntryTypePaymentCredit": "Salio Lililoongezwa",
-  "walletEntryTypeAllocationDebit": "Salio Lililotumika",
-  "walletEntryTypeReversal": "Kubatilishwa",
+  "walletEntryTypePaymentCredit": "Salio kutoka malipo",
+  "walletEntryTypeAllocationDebit": "Salio limetumika kulipa deni",
+  "walletEntryTypeReversal": "Salio limerudishwa",
+  "walletEntrySourceReceiptLabel": "Risiti {receiptNumber}",
 
   "memberPickerSearchHint": "Tafuta mwanachama",
   "memberPickerEmptyTitle": "Hakuna Mwanachama",
@@ -647,5 +648,16 @@
   "paymentSummaryOutstandingLabel": "Deni Lililobaki",
   "outstandingObligationsSectionTitle": "Madeni Yaliyobaki",
   "outstandingObligationsEmptyMessage": "Mwanachama hana deni lililobaki.",
-  "viewAllObligationsAction": "Angalia Yote"
+  "viewAllObligationsAction": "Angalia Yote",
+
+  "sectionCharges": "Madeni",
+  "viewChargesAction": "Angalia Madeni",
+  "memberChargesTitle": "Madeni",
+  "memberChargesTotalAllocatedLabel": "Malipo Yaliyogawiwa",
+  "memberChargesEmptyOutstandingMessage": "Hakuna deni lililobaki.",
+  "memberChargesEmptyMessage": "Hakuna madeni yanayolingana na kichujio hiki.",
+  "filterOutstanding": "Deni Lililobaki",
+  "filterSettled": "Imelipwa",
+  "filterOverdue": "Imechelewa",
+  "chargeOutstandingLabel": "Deni Lililobaki"
 }

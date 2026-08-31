@@ -17,6 +17,18 @@ class WalletMemberPickerScreen extends StatelessWidget {
     return UmojaPage(
       title: l10n.memberWalletTitle,
       maxWidth: 700,
+      // UAT-FIX-02: `MemberSearchPicker` uses `Expanded` internally, which
+      // requires bounded height from its ancestor. `UmojaPage` defaults
+      // `scrollable` to `true`, wrapping `body` in a `SingleChildScrollView`
+      // (unbounded height) — that combination threw
+      // "RenderFlex children have non-zero flex but incoming height
+      // constraints are unbounded" during layout, so this screen never
+      // even reached the point of calling any provider/RPC. The Record
+      // Payment flow's own member-picker step already avoids this
+      // correctly (`scrollable: _step != _RecordPaymentStep.pickMember`);
+      // this screen is nothing but that picker step, so it needs the
+      // same `scrollable: false`.
+      scrollable: false,
       body: MemberSearchPicker(
         hintText: l10n.memberPickerSearchHint,
         onSelected: (member) =>

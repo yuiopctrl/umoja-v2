@@ -36,7 +36,7 @@ void main() {
     final field = tester.widget<TextField>(
       find.byKey(const Key('waiverAmountField')),
     );
-    expect(field.controller!.text, '70000.0');
+    expect(field.controller!.text, '70,000');
   });
 
   testWidgets(

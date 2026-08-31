@@ -6,6 +6,7 @@ import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
+import '../../../core/utils/amount_input_formatter.dart';
 import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_page.dart';
 import '../../auth/providers/selected_group_provider.dart';
@@ -82,7 +83,7 @@ class _FinancialAccountTransferScreenState
     FocusScope.of(context).unfocus();
     final fromId = _fromAccountId;
     final toId = _toAccountId;
-    final amount = double.tryParse(_amountController.text.trim());
+    final amount = parseAmountInput(_amountController.text);
     if (fromId == null || toId == null || amount == null || amount <= 0) {
       return;
     }
@@ -221,6 +222,7 @@ class _FinancialAccountTransferScreenState
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
+                inputFormatters: const [ThousandsInputFormatter()],
                 decoration: InputDecoration(
                   labelText: l10n.financialAccountTransferAmountLabel,
                 ),

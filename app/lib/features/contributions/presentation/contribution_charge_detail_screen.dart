@@ -127,6 +127,22 @@ class _ChargeDetailBody extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: UmojaSpacing.xs),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            l10n.chargeOutstandingLabel,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                        Text(
+                          formatAmount(detail.totalOutstanding),
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),

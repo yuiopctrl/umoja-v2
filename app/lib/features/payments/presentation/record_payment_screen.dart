@@ -6,10 +6,12 @@ import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
+import '../../../core/utils/amount_input_formatter.dart';
 import '../../../core/utils/kiswahili_date.dart';
 import '../../../core/utils/money_format.dart';
 import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_card.dart';
+import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_page.dart';
 import '../../../core/widgets/umoja_status_badge.dart';
 import '../../auth/providers/selected_group_provider.dart';
@@ -18,6 +20,7 @@ import '../../financial_accounts/domain/financial_account.dart';
 import '../../financial_accounts/presentation/widgets/financial_account_labels.dart';
 import '../../financial_accounts/providers/financial_accounts_list_provider.dart';
 import '../../members/domain/group_member.dart';
+import '../../members/providers/member_detail_provider.dart';
 import '../controllers/payment_post_controller.dart';
 import '../controllers/payment_preview_controller.dart';
 import 'widgets/member_financial_summary_card.dart';
@@ -32,8 +35,16 @@ const _paymentMethods = ['CASH', 'BANK_TRANSFER', 'MOBILE_MONEY', 'OTHER'];
 /// 60) as a single stateful screen — select member, enter amount/date
 /// /method/account/reference/notes, preview, confirm, success/receipt.
 /// Never posts before an explicit confirm on the preview step.
+///
+/// `/payments/record/:membershipId` ([membershipId] non-null) reuses
+/// this exact flow with the member already selected — the "Rekodi
+/// Malipo" shortcut from the member-centric Charges/Madeni view
+/// (Prompt 07 UAT-FIX-03) — skipping the member-picker step entirely
+/// rather than duplicating the payment flow.
 class RecordPaymentScreen extends ConsumerStatefulWidget {
-  const RecordPaymentScreen({super.key});
+  const RecordPaymentScreen({super.key, this.membershipId});
+
+  final String? membershipId;
 
   @override
   ConsumerState<RecordPaymentScreen> createState() =>
@@ -55,6 +66,10 @@ class _RecordPaymentScreenState extends ConsumerState<RecordPaymentScreen> {
   void initState() {
     super.initState();
     ref.invalidate(financialAccountsActiveForPickerProvider);
+    final membershipId = widget.membershipId;
+    if (membershipId != null) {
+      ref.invalidate(memberDetailProvider(membershipId));
+    }
   }
 
   @override
@@ -73,7 +88,7 @@ class _RecordPaymentScreenState extends ConsumerState<RecordPaymentScreen> {
   }
 
   Future<void> _onPreview(String groupId) async {
-    final amount = double.tryParse(_amountController.text.trim());
+    final amount = parseAmountInput(_amountController.text);
     final accountId = _financialAccountId;
     final member = _member;
     setState(() => _localAmountError = null);
@@ -101,7 +116,7 @@ class _RecordPaymentScreenState extends ConsumerState<RecordPaymentScreen> {
   Future<void> _onConfirm(String groupId) async {
     final member = _member;
     final accountId = _financialAccountId;
-    final amount = double.tryParse(_amountController.text.trim());
+    final amount = parseAmountInput(_amountController.text);
     if (member == null || accountId == null || amount == null) return;
 
     final success = await ref
@@ -132,6 +147,36 @@ class _RecordPaymentScreenState extends ConsumerState<RecordPaymentScreen> {
     final groupId = selectedGroup is SelectedGroupResolved
         ? selectedGroup.membership.group.groupId
         : null;
+
+    final preselectedMembershipId = widget.membershipId;
+    if (preselectedMembershipId != null && _member == null) {
+      final memberAsync = ref.watch(
+        memberDetailProvider(preselectedMembershipId),
+      );
+      ref.listen<AsyncValue<GroupMember>>(
+        memberDetailProvider(preselectedMembershipId),
+        (previous, next) => next.whenData(_onMemberSelected),
+      );
+      return UmojaPage(
+        title: l10n.recordPaymentTitle,
+        maxWidth: 700,
+        backTo: AppRoutes.paymentsList,
+        backLabel: l10n.paymentsTitle,
+        body: memberAsync.when(
+          loading: () => const Padding(
+            padding: EdgeInsets.symmetric(vertical: 64),
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (error, stackTrace) => UmojaErrorState(
+            message: l10n.refreshFailedMessage,
+            retryLabel: l10n.retryButton,
+            onRetry: () =>
+                ref.invalidate(memberDetailProvider(preselectedMembershipId)),
+          ),
+          data: (_) => const SizedBox.shrink(),
+        ),
+      );
+    }
 
     return UmojaPage(
       title: l10n.recordPaymentTitle,
@@ -249,6 +294,7 @@ class _FormStep extends ConsumerWidget {
           key: const Key('recordPaymentAmountField'),
           controller: amountController,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: const [ThousandsInputFormatter()],
           decoration: InputDecoration(
             labelText: l10n.recordPaymentAmountLabel,
             errorText: localAmountError,

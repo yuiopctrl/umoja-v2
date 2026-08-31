@@ -1604,13 +1604,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentStatusReversed => 'Reversed';
 
   @override
-  String get walletEntryTypePaymentCredit => 'Credited';
+  String get walletEntryTypePaymentCredit => 'Credit from payment';
 
   @override
-  String get walletEntryTypeAllocationDebit => 'Allocated';
+  String get walletEntryTypeAllocationDebit => 'Balance used to settle debt';
 
   @override
-  String get walletEntryTypeReversal => 'Reversed';
+  String get walletEntryTypeReversal => 'Credit reversed';
+
+  @override
+  String walletEntrySourceReceiptLabel(Object receiptNumber) {
+    return 'Receipt $receiptNumber';
+  }
 
   @override
   String get memberPickerSearchHint => 'Search member';
@@ -1792,4 +1797,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewAllObligationsAction => 'View All';
+
+  @override
+  String get sectionCharges => 'Charges';
+
+  @override
+  String get memberChargesTitle => 'Charges';
+
+  @override
+  String get memberChargesTotalAllocatedLabel => 'Paid / Allocated';
+
+  @override
+  String get memberChargesEmptyOutstandingMessage => 'No outstanding debt.';
+
+  @override
+  String get memberChargesEmptyMessage => 'No charges match this filter.';
+
+  @override
+  String get filterOutstanding => 'Outstanding';
+
+  @override
+  String get filterSettled => 'Settled';
+
+  @override
+  String get filterOverdue => 'Overdue';
+
+  @override
+  String get chargeOutstandingLabel => 'Outstanding';
 }

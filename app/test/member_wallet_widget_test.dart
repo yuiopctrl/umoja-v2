@@ -30,8 +30,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('3,000'), findsOneWidget);
-    expect(find.text('Credited'), findsOneWidget);
-    expect(find.text('Allocated'), findsOneWidget);
+    expect(find.text('Credit from payment'), findsOneWidget);
+    expect(find.text('Balance used to settle debt'), findsOneWidget);
   });
 
   testWidgets('the Allocate Balance action is hidden without wallet.allocate', (

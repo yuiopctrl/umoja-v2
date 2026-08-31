@@ -143,6 +143,7 @@ ContributionChargeDetail fakeContributionChargeDetail({
   double adjustmentAmount = 0,
   double waiverAmount = 0,
   double openingBalanceAmount = 0,
+  double? totalOutstanding,
 }) {
   final components = <Map<String, dynamic>>[
     {
@@ -217,6 +218,7 @@ ContributionChargeDetail fakeContributionChargeDetail({
     'due_date': '2026-01-05',
     'components': components,
     'net_assessed': netAssessed,
+    'total_outstanding': totalOutstanding ?? netAssessed,
   });
 }
 

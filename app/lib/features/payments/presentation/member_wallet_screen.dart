@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
+import '../../../core/utils/amount_input_formatter.dart';
 import '../../../core/utils/kiswahili_date.dart';
 import '../../../core/utils/money_format.dart';
 import '../../../core/widgets/umoja_buttons.dart';
@@ -144,6 +145,18 @@ class _MemberWalletScreenState extends ConsumerState<MemberWalletScreen> {
                                   formatKiswahiliDate(entry.effectiveAt),
                                   style: Theme.of(context).textTheme.bodySmall,
                                 ),
+                                // The originating payment's receipt —
+                                // server-supplied (never reconstructed
+                                // client-side), shown only when present.
+                                if (entry.sourceReceiptNumber != null)
+                                  Text(
+                                    l10n.walletEntrySourceReceiptLabel(
+                                      entry.sourceReceiptNumber!,
+                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall,
+                                  ),
                               ],
                             ),
                           ),
@@ -199,7 +212,7 @@ class _AllocateWalletSheetState extends ConsumerState<_AllocateWalletSheet> {
   }
 
   Future<void> _preview() async {
-    final amount = double.tryParse(_amountController.text.trim());
+    final amount = parseAmountInput(_amountController.text);
     if (amount == null || amount <= 0) return;
     await ref
         .read(walletAllocationPreviewControllerProvider.notifier)
@@ -211,7 +224,7 @@ class _AllocateWalletSheetState extends ConsumerState<_AllocateWalletSheet> {
   }
 
   Future<void> _confirm() async {
-    final amount = double.tryParse(_amountController.text.trim());
+    final amount = parseAmountInput(_amountController.text);
     if (amount == null) return;
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
@@ -257,6 +270,7 @@ class _AllocateWalletSheetState extends ConsumerState<_AllocateWalletSheet> {
             key: const Key('walletAllocateAmountField'),
             controller: _amountController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: const [ThousandsInputFormatter()],
             decoration: InputDecoration(
               labelText: l10n.recordPaymentAmountLabel,
             ),

@@ -121,6 +121,14 @@ void main() {
       fakeRepo.reversePaymentCalls.single.reversalReason,
       'accidental duplicate entry',
     );
+    // Prompt 07 UAT-FIX-04 regression: the RPC's `p_group_id` must be
+    // the current group's id ('g1', from `paymentMembership()`), never
+    // the paying member's own membershipId ('m1', from
+    // `fakePaymentDetail()`) — passing the wrong id made
+    // `has_group_permission` check an id that never matches the
+    // caller's real membership row, denying every role (not just
+    // ADMIN) with a misleading "permission denied".
+    expect(fakeRepo.reversePaymentCalls.single.groupId, 'g1');
     expect(find.text('Payment Detail'), findsOneWidget);
   });
 }

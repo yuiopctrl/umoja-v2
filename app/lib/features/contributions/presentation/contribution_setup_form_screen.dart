@@ -6,6 +6,8 @@ import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
+import '../../../core/utils/amount_input_formatter.dart';
+import '../../../core/utils/money_format.dart';
 import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_form_section.dart';
 import '../../../core/widgets/umoja_page.dart';
@@ -81,10 +83,7 @@ class _ContributionSetupFormScreenState
     super.dispose();
   }
 
-  double? _parseAmount(String text) {
-    final t = text.trim();
-    return t.isEmpty ? null : double.tryParse(t);
-  }
+  double? _parseAmount(String text) => parseAmountInput(text);
 
   int? _parseInt(String text) {
     final t = text.trim();
@@ -182,16 +181,21 @@ class _ContributionSetupFormScreenState
         _contributionTypeId = setup.contributionTypeId;
         _scheduleMode = setup.scheduleMode;
         _amountMode = setup.amountMode;
-        _fixedAmountController.text = setup.fixedAmount?.toString() ?? '';
+        _fixedAmountController.text = setup.fixedAmount == null
+            ? ''
+            : formatAmount(setup.fixedAmount!);
         _dueDayController.text = setup.defaultDueDay?.toString() ?? '';
         _dueMonthOffsetController.text =
             setup.defaultDueMonthOffset?.toString() ?? '';
         _penaltyMode = setup.penaltyMode;
         _penaltyGraceDaysController.text =
             setup.penaltyGraceDays?.toString() ?? '';
-        _penaltyValueController.text = setup.penaltyValue?.toString() ?? '';
-        _penaltyCapAmountController.text =
-            setup.penaltyCapAmount?.toString() ?? '';
+        _penaltyValueController.text = setup.penaltyValue == null
+            ? ''
+            : formatAmount(setup.penaltyValue!);
+        _penaltyCapAmountController.text = setup.penaltyCapAmount == null
+            ? ''
+            : formatAmount(setup.penaltyCapAmount!);
         _isActive = setup.isActive;
         _original = setup;
         _prefilled = true;
@@ -339,6 +343,7 @@ class _ContributionSetupFormScreenState
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
+                  inputFormatters: const [ThousandsInputFormatter()],
                   decoration: InputDecoration(
                     labelText: l10n.contributionFixedAmountLabel,
                   ),
@@ -414,6 +419,7 @@ class _ContributionSetupFormScreenState
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
+                  inputFormatters: const [ThousandsInputFormatter()],
                   decoration: InputDecoration(
                     labelText: l10n.contributionPenaltyValueLabel,
                   ),
@@ -426,6 +432,7 @@ class _ContributionSetupFormScreenState
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
+                  inputFormatters: const [ThousandsInputFormatter()],
                   decoration: InputDecoration(
                     labelText: l10n.contributionPenaltyCapAmountLabel,
                   ),

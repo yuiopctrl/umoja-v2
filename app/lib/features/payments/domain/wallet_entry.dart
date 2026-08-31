@@ -7,6 +7,7 @@ class WalletEntry {
     required this.effectiveAt,
     this.sourceType,
     this.sourceId,
+    this.sourceReceiptNumber,
     required this.createdAt,
   });
 
@@ -18,6 +19,7 @@ class WalletEntry {
       effectiveAt: DateTime.parse(json['effective_at'] as String),
       sourceType: json['source_type'] as String?,
       sourceId: json['source_id'] as String?,
+      sourceReceiptNumber: json['source_receipt_number'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
@@ -30,6 +32,12 @@ class WalletEntry {
   final DateTime effectiveAt;
   final String? sourceType;
   final String? sourceId;
+
+  /// The originating payment's receipt number (UAT-FIX-02) — populated
+  /// server-side only for a PAYMENT_CREDIT entry sourced from a
+  /// payment (`source_type = 'PAYMENT'`). Never reconstructed
+  /// client-side; null for ALLOCATION_DEBIT/REVERSAL entries.
+  final String? sourceReceiptNumber;
   final DateTime createdAt;
 
   bool get isCredit => entryType == 'PAYMENT_CREDIT';

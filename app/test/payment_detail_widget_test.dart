@@ -65,6 +65,44 @@ void main() {
     },
   );
 
+  testWidgets(
+    'ADMIN\'s resolved permissions include payment.reverse, so the Reverse '
+    'Payment action is visible for ADMIN specifically (Prompt 07 '
+    'UAT-FIX-04 — not just the default TREASURER fixture)',
+    (tester) async {
+      final fakeRepo = FakePaymentRepository()
+        ..nextPaymentDetail = fakePaymentDetail(
+          paymentId: 'p1',
+          status: 'POSTED',
+        );
+
+      final router = await pumpPaymentsApp(
+        tester,
+        fakeRepo: fakeRepo,
+        language: AppLanguage.english,
+        membership: paymentMembership(
+          roles: const ['ADMIN'],
+          permissions: const [
+            'group.view',
+            'payment.view',
+            'payment.create',
+            'payment.reverse',
+            'payment.receipt.view',
+            'wallet.view',
+            'wallet.allocate',
+          ],
+        ),
+      );
+      router.go(AppRoutes.paymentDetailPath('p1'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('paymentDetailReverseAction')),
+        findsOneWidget,
+      );
+    },
+  );
+
   testWidgets('the Reverse Payment action is hidden without payment.reverse', (
     tester,
   ) async {

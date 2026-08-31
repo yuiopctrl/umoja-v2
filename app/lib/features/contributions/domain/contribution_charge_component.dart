@@ -16,6 +16,7 @@ class ContributionChargeComponent {
     required this.sequence,
     required this.createdAt,
     this.createdBy,
+    this.outstanding,
   });
 
   factory ContributionChargeComponent.fromJson(Map<String, dynamic> json) {
@@ -28,6 +29,7 @@ class ContributionChargeComponent {
       sequence: json['sequence'] as int,
       createdAt: DateTime.parse(json['created_at'] as String),
       createdBy: json['created_by'] as String?,
+      outstanding: (json['outstanding'] as num?)?.toDouble(),
     );
   }
 
@@ -44,6 +46,13 @@ class ContributionChargeComponent {
   final int sequence;
   final DateTime createdAt;
   final String? createdBy;
+
+  /// This component's own remaining unallocated amount, server-computed
+  /// (Prompt 07 UAT-FIX-03). `null` for WAIVER/negative-ADJUSTMENT rows,
+  /// which the backend's netting helper never tracks outstanding for —
+  /// a negative component reduces the obligation, it is never itself
+  /// something owed.
+  final double? outstanding;
 
   bool get isBase => componentType == 'BASE';
   bool get isPenalty => componentType == 'PENALTY';

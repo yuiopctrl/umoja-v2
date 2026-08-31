@@ -1,3 +1,4 @@
+import '../domain/member_contribution_charge.dart';
 import '../domain/member_contribution_statement.dart';
 import '../domain/member_wallet.dart';
 import '../domain/payment_allocation_preview.dart';
@@ -52,6 +53,19 @@ abstract class PaymentRepository {
   Future<MemberContributionStatement> getMemberContributionStatement({
     required String groupId,
     required String membershipId,
+  });
+
+  /// The member-centric Charges/Madeni view (Prompt 07 UAT-FIX-03):
+  /// every charge for one membership across every period, filterable
+  /// (ALL/OUTSTANDING/SETTLED/OVERDUE, default OUTSTANDING) and
+  /// paginated. Never restricted by membership status — a
+  /// SUSPENDED/EXITED member's historical charges remain visible.
+  Future<MemberChargesPage> listMemberContributionCharges({
+    required String groupId,
+    required String membershipId,
+    String filter = 'OUTSTANDING',
+    int limit = 10,
+    int offset = 0,
   });
 
   /// Non-posting preview — computed by the exact same server-side plan

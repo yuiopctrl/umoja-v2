@@ -100,6 +100,19 @@ number generation collision-safe under concurrency without needing a
 group identifier embedded in the text. A reversed payment's receipt
 still renders, clearly labeled REVERSED, never hidden or deleted.
 
+**Historical immutability (UAT-FIX-01).** `payment_allocations`
+carries its own `contribution_type_name_snapshot`/`period_label_
+snapshot`/`period_purpose_snapshot`, populated at posting time from
+the live join — mirroring the pre-existing `member_number_snapshot`/
+`member_name_snapshot` on `member_contribution_charges`. A receipt or
+payment detail always renders these snapshot columns, never a live
+join back to `contribution_types`/`contribution_periods` — so
+renaming a contribution type or period label later never rewrites the
+meaning of an already-issued receipt. Proven by deliberately reverting
+the read RPCs back to a live join in `31_payment_allocation_context
+.test.sql`: exactly two assertions fail, confirming the snapshot
+columns (not the live join) are what the RPCs actually read.
+
 ## Reversal
 
 `rpc_reverse_payment` reverses **the books-recorded receipt of cash**
@@ -194,6 +207,40 @@ double-posted. The underlying unique index
 idempotency_key_unique`) is the ultimate backstop even under a race
 between two concurrent first-time submissions with the same key.
 
+## Member-centric charges view (UAT-FIX-03)
+
+`rpc_list_member_contribution_charges(p_group_id, p_membership_id,
+p_filter default 'OUTSTANDING', p_limit default 10, p_offset default
+0)` is a deliberately separate, purpose-built LIST RPC — every charge
+for one membership across every period, filterable
+(ALL/OUTSTANDING/SETTLED/OVERDUE) and paginated — rather than an
+overload of `rpc_get_member_contribution_statement`, whose small,
+unpaginated, always-outstanding-only contract is relied on by the
+Record Payment pre-check flow and must not change. Gated by
+`contribution.view AND payment.view` only (no `wallet.view` — it never
+exposes wallet data). No membership-status restriction: a
+SUSPENDED/EXITED member's historical charges remain fully listed.
+Each charge's `components[]` is sourced from the raw
+`contribution_charge_components` table (not the netted allocation-
+state helper), so a WAIVER or negative ADJUSTMENT renders as its own
+signed reducing line — it is never netted away or mislabeled as a
+payment. `rpc_get_member_contribution_statement` gained one additive
+field, `total_allocated` (a global sum across every charge, including
+ones already excluded from its `charges[]` because they're fully
+settled); its existing fields/contract are otherwise unchanged.
+
+Flutter reaches this via a new `MemberChargesScreen`
+(`/members/:membershipId/charges`), linked from a permission-gated
+Charges/Madeni entry point on Member Detail — not a new top-level
+section. It shows the member's Outstanding/Allocated/Wallet summary,
+filter chips (default Outstanding), and a paginated charge list; each
+row taps through to the *existing* Contribution Charge Detail screen
+(no duplicate detail implementation), and a "Rekodi Malipo" shortcut
+opens the *existing* Record Payment flow with the member already
+selected (`/payments/record/:membershipId` — the membership id lives
+in the route path, never a transient `extra`, per the UAT-FIX-02
+lesson) rather than a second payment implementation.
+
 ## Flutter
 
 Navigation lives under the existing Michango (Contributions) home
@@ -202,7 +249,8 @@ la Mwanachama (member wallet) — rather than a new top-level section.
 Risiti (receipt) and Batili Malipo (reverse) are reached from a
 payment's own detail screen, never from a list-level entry.
 
-The Record Payment flow (`/payments/record`) is a single stateful
+The Record Payment flow (`/payments/record`, or `/payments/record/
+:membershipId` with the member preselected) is a single stateful
 screen with four internal steps (pick member → amount/date/method/
 account/reference/notes → preview → confirm/success) — never posts
 before an explicit confirm on the preview step. The member picker
@@ -214,19 +262,29 @@ unchanged — no second implementation.
 
 Every provider that this phase's mutations can affect is invalidated
 whole-family after posting/reversing/allocating (payment list/detail,
-member contribution summary, contribution charge/period providers,
-wallet ledger, the affected financial account's detail/entries) —
-the same whole-family invalidation pattern established for 08A, and
-deliberately not the 08A staleness bug (a payment/wallet screen
-re-fetches on every entry via `initState`, no full-restart required).
+member contribution summary/statement/charges, contribution charge/
+period providers, wallet ledger, the affected financial account's
+detail/entries) — the same whole-family invalidation pattern
+established for 08A, and deliberately not the 08A staleness bug (a
+payment/wallet screen re-fetches on every entry via `initState`, no
+full-restart required).
+
+`PaymentReversalScreen` derives `groupId` from `selectedGroupProvider`
+(UAT-FIX-04) — never from `PaymentDetail.membershipId`, which is the
+paying member's own id, not a group id. Passing the wrong id made
+`has_group_permission` check a UUID that could never match the
+caller's real membership row, denying reversal for every role
+regardless of their actual permissions; this was a pure client-side
+parameter bug, not an authorization or role-matrix defect.
 
 ## Explicitly out of scope for this phase
 
 Loans and loan repayments, bank statement reconciliation, expense
 management, income analytics, full financial-position reporting,
 wallet-to-wallet transfer, wallet withdrawal/cash refund, and a
-MEMBER self-service portal (see Permissions above). A dedicated
-"member contribution statement" screen was not built in Flutter —
-the backend RPC (`rpc_get_member_contribution_statement`) exists and
-is tested, ready for a future portal/report phase, but nothing in this
-phase's UI requirements calls for its own screen.
+MEMBER self-service portal (see Permissions above). The member-centric
+Charges/Madeni view (`MemberChargesScreen`, UAT-FIX-03 — see above)
+covers the treasurer-facing "see all of one member's charges" need;
+`rpc_get_member_contribution_statement` itself still has no screen of
+its own beyond its pre-payment-check usage, ready for a future
+portal/report phase if one is scoped later.

@@ -83,6 +83,7 @@ class MemberContributionStatement {
     required this.membershipStatus,
     required this.charges,
     required this.totalOutstanding,
+    required this.totalAllocated,
     required this.walletBalance,
   });
 
@@ -98,6 +99,7 @@ class MemberContributionStatement {
           )
           .toList(growable: false),
       totalOutstanding: (json['total_outstanding'] as num).toDouble(),
+      totalAllocated: (json['total_allocated'] as num).toDouble(),
       walletBalance: (json['wallet_balance'] as num).toDouble(),
     );
   }
@@ -114,6 +116,12 @@ class MemberContributionStatement {
   /// here means "no outstanding debt at all", never "failed to load".
   final List<OutstandingCharge> charges;
   final double totalOutstanding;
+
+  /// Global sum of allocations across EVERY charge for this member
+  /// (Prompt 07 UAT-FIX-03), including charges fully settled and
+  /// therefore excluded from [charges] — "how much has this member
+  /// paid/been allocated in total", not just what remains outstanding.
+  final double totalAllocated;
 
   /// Always present, including exactly `0` — a zero wallet balance is
   /// a valid, normal state, never treated as missing data.

@@ -5,7 +5,9 @@ import 'package:umoja/features/contributions/providers/member_contribution_summa
 import 'package:umoja/features/financial_accounts/providers/financial_account_detail_provider.dart';
 import 'package:umoja/features/payments/controllers/payment_post_controller.dart';
 import 'package:umoja/features/payments/data/payment_failure.dart';
+import 'package:umoja/features/payments/domain/wallet_entry_page.dart';
 import 'package:umoja/features/payments/providers/member_contribution_statement_provider.dart';
+import 'package:umoja/features/payments/providers/member_wallet_provider.dart';
 import 'package:umoja/features/payments/providers/payment_repository_provider.dart';
 import 'package:umoja/features/payments/providers/payments_list_provider.dart';
 
@@ -250,5 +252,55 @@ void main() {
 
     expect(statement.totalOutstanding, 0.00);
     expect(statement.walletBalance, 20000.00);
+  });
+
+  test('E (UAT-FIX-02): posting an overpayment invalidates the member '
+      'wallet ledger provider, which then refetches and shows the '
+      'credited balance — the wallet page never needs a restart', () async {
+    const walletQuery = (membershipId: 'm1', limit: 10);
+    fakeRepo.nextWalletEntriesPage = const WalletEntryPage(
+      items: [],
+      totalCount: 0,
+      limit: 10,
+      offset: 0,
+      walletBalance: 0,
+    );
+    fakeRepo.nextPostResult = fakePaymentPostResult(
+      amount: 50000,
+      totalAllocated: 20000,
+      walletCreditAmount: 30000,
+    );
+
+    container.listen(
+      memberWalletEntriesProvider(walletQuery),
+      (_, _) {},
+      fireImmediately: true,
+    );
+    await Future<void>.delayed(Duration.zero);
+
+    fakeRepo.nextWalletEntriesPage = const WalletEntryPage(
+      items: [],
+      totalCount: 0,
+      limit: 10,
+      offset: 0,
+      walletBalance: 30000,
+    );
+
+    await container
+        .read(paymentPostControllerProvider.notifier)
+        .post(
+          groupId: 'g1',
+          membershipId: 'm1',
+          financialAccountId: 'a1',
+          amount: 50000,
+          effectiveAt: DateTime.utc(2026, 1, 10),
+          paymentMethod: 'CASH',
+        );
+
+    final page = await container.read(
+      memberWalletEntriesProvider(walletQuery).future,
+    );
+
+    expect(page.walletBalance, 30000.00);
   });
 }

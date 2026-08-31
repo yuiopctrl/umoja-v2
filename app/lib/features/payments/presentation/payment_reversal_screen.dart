@@ -10,6 +10,7 @@ import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_card.dart';
 import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_page.dart';
+import '../../auth/providers/selected_group_provider.dart';
 import '../controllers/payment_reversal_controller.dart';
 import '../providers/payment_detail_provider.dart';
 
@@ -62,6 +63,10 @@ class _PaymentReversalScreenState extends ConsumerState<PaymentReversalScreen> {
     final l10n = context.l10n;
     final detailAsync = ref.watch(paymentDetailProvider(widget.paymentId));
     final reversalState = ref.watch(paymentReversalControllerProvider);
+    final selectedGroup = ref.watch(selectedGroupProvider);
+    final groupId = selectedGroup is SelectedGroupResolved
+        ? selectedGroup.membership.group.groupId
+        : null;
 
     return UmojaPage(
       title: l10n.reversePaymentTitle,
@@ -121,8 +126,9 @@ class _PaymentReversalScreenState extends ConsumerState<PaymentReversalScreen> {
               label: l10n.reversePaymentConfirmAction,
               expand: true,
               isLoading: reversalState.isSubmitting,
-              onPressed: () =>
-                  _confirm(detail.membershipId, detail.financialAccountId),
+              onPressed: groupId == null
+                  ? null
+                  : () => _confirm(groupId, detail.financialAccountId),
             ),
           ],
         ),

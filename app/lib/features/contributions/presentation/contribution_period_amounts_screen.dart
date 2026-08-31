@@ -6,6 +6,8 @@ import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
+import '../../../core/utils/amount_input_formatter.dart';
+import '../../../core/utils/money_format.dart';
 import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_page.dart';
@@ -52,7 +54,9 @@ class _ContributionPeriodAmountsScreenState
   TextEditingController _controllerFor(String membershipId, double? initial) {
     return _amountControllers.putIfAbsent(
       membershipId,
-      () => TextEditingController(text: initial?.toString() ?? ''),
+      () => TextEditingController(
+        text: initial == null ? '' : formatAmount(initial),
+      ),
     );
   }
 
@@ -61,7 +65,7 @@ class _ContributionPeriodAmountsScreenState
         .map(
           (entry) => ContributionMemberAmountInput(
             membershipId: entry.key,
-            amount: double.tryParse(entry.value.text.trim()),
+            amount: parseAmountInput(entry.value.text),
           ),
         )
         .toList(growable: false);
@@ -159,6 +163,9 @@ class _ContributionPeriodAmountsScreenState
                                   const TextInputType.numberWithOptions(
                                     decimal: true,
                                   ),
+                              inputFormatters: const [
+                                ThousandsInputFormatter(),
+                              ],
                               decoration: InputDecoration(
                                 labelText: l10n.customAmountFieldLabel,
                                 hintText: controller.text.isEmpty

@@ -3,6 +3,8 @@ import 'package:logging/logging.dart';
 
 import '../data/contribution_failure.dart';
 import '../domain/contribution_correction_result.dart';
+import '../../payments/providers/member_contribution_charges_provider.dart';
+import '../../payments/providers/member_contribution_statement_provider.dart';
 import '../providers/contribution_charge_detail_provider.dart';
 import '../providers/contribution_period_charges_provider.dart';
 import '../providers/contribution_repository_provider.dart';
@@ -61,6 +63,8 @@ class ContributionWaiverController extends Notifier<ContributionWaiverState> {
       ref.invalidate(contributionChargeDetailProvider(chargeId));
       ref.invalidate(memberContributionSummaryProvider(membershipId));
       ref.invalidate(contributionPeriodChargesProvider);
+      ref.invalidate(memberContributionStatementProvider(membershipId));
+      ref.invalidate(memberContributionChargesProvider);
       state = ContributionWaiverState(lastResult: result);
       return true;
     } on ContributionFailure catch (error) {

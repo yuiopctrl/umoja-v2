@@ -7,6 +7,7 @@ import '../../contributions/providers/member_contribution_summary_provider.dart'
 import '../../financial_accounts/providers/financial_account_detail_provider.dart';
 import '../../financial_accounts/providers/financial_account_entries_provider.dart';
 import '../data/payment_failure.dart';
+import '../providers/member_contribution_charges_provider.dart';
 import '../providers/member_contribution_statement_provider.dart';
 import '../providers/member_wallet_provider.dart';
 import '../providers/payment_detail_provider.dart';
@@ -55,6 +56,7 @@ class PaymentReversalController extends Notifier<PaymentReversalState> {
       ref.invalidate(receiptProvider(paymentId));
       ref.invalidate(memberContributionSummaryProvider);
       ref.invalidate(memberContributionStatementProvider);
+      ref.invalidate(memberContributionChargesProvider);
       ref.invalidate(contributionChargeDetailProvider);
       ref.invalidate(contributionPeriodChargesProvider);
       ref.invalidate(memberWalletEntriesProvider);

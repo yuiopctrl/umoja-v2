@@ -6,6 +6,7 @@ import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
+import '../../../core/utils/amount_input_formatter.dart';
 import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_form_section.dart';
 import '../../../core/widgets/umoja_page.dart';
@@ -77,9 +78,7 @@ class _FinancialAccountFormScreenState
       return;
     }
 
-    final openingBalance = double.tryParse(
-      _openingBalanceController.text.trim(),
-    );
+    final openingBalance = parseAmountInput(_openingBalanceController.text);
     final success = await controller.create(
       groupId: groupId,
       name: _nameController.text.trim(),
@@ -175,6 +174,7 @@ class _FinancialAccountFormScreenState
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
+                  inputFormatters: const [ThousandsInputFormatter()],
                   decoration: InputDecoration(
                     labelText: l10n.financialAccountOpeningBalanceFieldLabel,
                   ),

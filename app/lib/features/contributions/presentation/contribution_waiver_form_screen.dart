@@ -6,6 +6,7 @@ import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
+import '../../../core/utils/amount_input_formatter.dart';
 import '../../../core/utils/money_format.dart';
 import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_error_state.dart';
@@ -48,7 +49,7 @@ class _ContributionWaiverFormScreenState
     setState(() {
       _isFull = isFull;
       if (isFull) {
-        _amountController.text = netAssessed.toString();
+        _amountController.text = formatAmount(netAssessed);
       }
     });
   }
@@ -66,7 +67,7 @@ class _ContributionWaiverFormScreenState
 
   Future<void> _submit(String groupId, String membershipId) async {
     FocusScope.of(context).unfocus();
-    final amount = double.tryParse(_amountController.text.trim());
+    final amount = parseAmountInput(_amountController.text);
     if (amount == null || amount <= 0) return;
 
     final l10n = context.l10n;
@@ -119,8 +120,7 @@ class _ContributionWaiverFormScreenState
               ref.invalidate(contributionChargeDetailProvider(widget.chargeId)),
         ),
         data: (detail) {
-          final enteredAmount =
-              double.tryParse(_amountController.text.trim()) ?? 0;
+          final enteredAmount = parseAmountInput(_amountController.text) ?? 0;
           final remainingAfter = (detail.netAssessed - enteredAmount).clamp(
             0,
             detail.netAssessed,
@@ -165,6 +165,7 @@ class _ContributionWaiverFormScreenState
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
+                inputFormatters: const [ThousandsInputFormatter()],
                 decoration: InputDecoration(
                   labelText: l10n.waiverAmountFieldLabel,
                 ),

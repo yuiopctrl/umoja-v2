@@ -1739,7 +1739,7 @@ abstract class AppLocalizations {
   /// No description provided for @viewChargesAction.
   ///
   /// In sw, this message translates to:
-  /// **'Angalia Malipo Yaliyotozwa'**
+  /// **'Angalia Madeni'**
   String get viewChargesAction;
 
   /// No description provided for @enrollMemberAction.
@@ -3035,20 +3035,26 @@ abstract class AppLocalizations {
   /// No description provided for @walletEntryTypePaymentCredit.
   ///
   /// In sw, this message translates to:
-  /// **'Salio Lililoongezwa'**
+  /// **'Salio kutoka malipo'**
   String get walletEntryTypePaymentCredit;
 
   /// No description provided for @walletEntryTypeAllocationDebit.
   ///
   /// In sw, this message translates to:
-  /// **'Salio Lililotumika'**
+  /// **'Salio limetumika kulipa deni'**
   String get walletEntryTypeAllocationDebit;
 
   /// No description provided for @walletEntryTypeReversal.
   ///
   /// In sw, this message translates to:
-  /// **'Kubatilishwa'**
+  /// **'Salio limerudishwa'**
   String get walletEntryTypeReversal;
+
+  /// No description provided for @walletEntrySourceReceiptLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Risiti {receiptNumber}'**
+  String walletEntrySourceReceiptLabel(Object receiptNumber);
 
   /// No description provided for @memberPickerSearchHint.
   ///
@@ -3379,6 +3385,60 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Angalia Yote'**
   String get viewAllObligationsAction;
+
+  /// No description provided for @sectionCharges.
+  ///
+  /// In sw, this message translates to:
+  /// **'Madeni'**
+  String get sectionCharges;
+
+  /// No description provided for @memberChargesTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Madeni'**
+  String get memberChargesTitle;
+
+  /// No description provided for @memberChargesTotalAllocatedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo Yaliyogawiwa'**
+  String get memberChargesTotalAllocatedLabel;
+
+  /// No description provided for @memberChargesEmptyOutstandingMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna deni lililobaki.'**
+  String get memberChargesEmptyOutstandingMessage;
+
+  /// No description provided for @memberChargesEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna madeni yanayolingana na kichujio hiki.'**
+  String get memberChargesEmptyMessage;
+
+  /// No description provided for @filterOutstanding.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni Lililobaki'**
+  String get filterOutstanding;
+
+  /// No description provided for @filterSettled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imelipwa'**
+  String get filterSettled;
+
+  /// No description provided for @filterOverdue.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imechelewa'**
+  String get filterOverdue;
+
+  /// No description provided for @chargeOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni Lililobaki'**
+  String get chargeOutstandingLabel;
 }
 
 class _AppLocalizationsDelegate
