@@ -18,6 +18,11 @@ class FinancialAccountEntry {
     this.createdBy,
     this.counterpartyAccountId,
     this.counterpartyAccountName,
+    this.paymentReceiptNumber,
+    this.manualEntryCategoryId,
+    this.manualEntryCategoryName,
+    this.manualEntryStatus,
+    this.adjustmentReason,
   });
 
   factory FinancialAccountEntry.fromJson(Map<String, dynamic> json) {
@@ -36,6 +41,11 @@ class FinancialAccountEntry {
       createdBy: json['created_by'] as String?,
       counterpartyAccountId: json['counterparty_account_id'] as String?,
       counterpartyAccountName: json['counterparty_account_name'] as String?,
+      paymentReceiptNumber: json['payment_receipt_number'] as String?,
+      manualEntryCategoryId: json['manual_entry_category_id'] as String?,
+      manualEntryCategoryName: json['manual_entry_category_name'] as String?,
+      manualEntryStatus: json['manual_entry_status'] as String?,
+      adjustmentReason: json['adjustment_reason'] as String?,
     );
   }
 
@@ -62,5 +72,23 @@ class FinancialAccountEntry {
   final String? counterpartyAccountId;
   final String? counterpartyAccountName;
 
+  /// Set only when [sourceType] is 'PAYMENT' or 'PAYMENT_REVERSAL'.
+  final String? paymentReceiptNumber;
+
+  /// Set only when [sourceType] is 'MANUAL_INCOME', 'EXPENSE',
+  /// 'MANUAL_INCOME_REVERSAL', or 'EXPENSE_REVERSAL'.
+  final String? manualEntryCategoryId;
+  final String? manualEntryCategoryName;
+
+  /// 'POSTED' or 'REVERSED' — the underlying financial_manual_entries
+  /// row's current status, so a cashbook row can tell whether it (or
+  /// its reversal) is still active without a second round-trip.
+  final String? manualEntryStatus;
+
+  /// Set only when [sourceType] is 'FINANCIAL_ADJUSTMENT'.
+  final String? adjustmentReason;
+
   bool get isCredit => entryType == 'INFLOW' || entryType == 'TRANSFER_IN';
+  bool get isTransfer =>
+      entryType == 'TRANSFER_IN' || entryType == 'TRANSFER_OUT';
 }

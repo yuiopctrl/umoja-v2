@@ -9,7 +9,11 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 import { loadPinPepper, loadSupabaseEnvConfig } from "../_shared/config.ts";
-import { errorResponse, jsonResponse } from "../_shared/http.ts";
+import {
+  corsPreflightResponse,
+  errorResponse,
+  jsonResponse,
+} from "../_shared/http.ts";
 import { log, maskPhone } from "../_shared/logger.ts";
 import { normalizeTanzaniaPhone } from "../_shared/phone.ts";
 import {
@@ -244,6 +248,17 @@ export async function handleRequest(
   );
 }
 
+// The Flutter web build calls this function directly from Chrome,
+// which preflights a cross-origin POST-with-JSON-body via OPTIONS
+// before ever sending the real request — never reaches
+// `handleRequest`, which has no reason to know about it. Exported
+// (rather than inlined in the `Deno.serve` callback below) so it is
+// directly unit-testable.
+export function serveRequest(req: Request): Response | Promise<Response> {
+  if (req.method === "OPTIONS") return corsPreflightResponse();
+  return handleRequest(req);
+}
+
 if (import.meta.main) {
-  Deno.serve((req) => handleRequest(req));
+  Deno.serve(serveRequest);
 }

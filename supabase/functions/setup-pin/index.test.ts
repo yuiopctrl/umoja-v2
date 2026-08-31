@@ -4,7 +4,7 @@ import {
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 
 import { deriveInternalPassword } from "../_shared/pin_derivation.ts";
-import { handleRequest } from "./index.ts";
+import { handleRequest, serveRequest } from "./index.ts";
 
 const PEPPER = "test-only-pepper";
 const USER_ID = "11111111-1111-1111-1111-111111111111";
@@ -238,4 +238,21 @@ Deno.test("setup-pin rejects malformed JSON bodies safely", async () => {
   });
   const res = await handleRequest(req, deps);
   assertEquals(res.status, 400);
+});
+
+Deno.test("serveRequest answers an OPTIONS preflight with 204 and CORS headers, without ever reaching handleRequest (no Authorization header is required)", async () => {
+  const req = new Request("https://example.test/setup-pin", {
+    method: "OPTIONS",
+  });
+  const res = await serveRequest(req);
+  assertEquals(res.status, 204);
+  assertEquals(res.headers.get("Access-Control-Allow-Origin"), "*");
+});
+
+Deno.test("serveRequest forwards a real POST to handleRequest, and the "
+  + "response — whatever it is — still carries CORS headers a browser "
+  + "needs in order to read it at all", async () => {
+  const req = request({ pin: "1234" }, { Authorization: "Bearer valid-token" });
+  const res = await serveRequest(req);
+  assertEquals(res.headers.get("Access-Control-Allow-Origin"), "*");
 });

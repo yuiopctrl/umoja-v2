@@ -179,6 +179,8 @@ bool _isOperationalRoute(String location) {
       location.startsWith('${AppRoutes.contributionsHome}/') ||
       location == AppRoutes.financialAccountsList ||
       location.startsWith('${AppRoutes.financialAccountsList}/') ||
+      location == AppRoutes.financeHome ||
+      location.startsWith('${AppRoutes.financeHome}/') ||
       location == AppRoutes.paymentsList ||
       location.startsWith('${AppRoutes.paymentsList}/') ||
       location == AppRoutes.walletMemberPicker ||

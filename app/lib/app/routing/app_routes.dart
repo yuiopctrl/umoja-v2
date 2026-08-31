@@ -193,6 +193,63 @@ class AppRoutes {
   static String financialAccountEditPath(String accountId) =>
       '/financial-accounts/$accountId/edit';
 
+  // -- Financial Operations, Cashbook, Reconciliation & Financial
+  // Position (Prompt 08B) --------------------------------------------------
+  //
+  // Extends the 08A financial-accounts foundation directly — no
+  // parallel cashbook/account model exists under this prefix.
+
+  /// Fedha: the Finance home — Hali ya Fedha + Akaunti za Fedha, kept
+  /// deliberately minimal (section 31 — "do not create excessive
+  /// sidebar entries").
+  static const financeHome = '/finance';
+  static const financialPosition = '/finance/position';
+  static const financialCategoriesList = '/finance/categories';
+
+  /// Path template; use [financialAccountCashbookPath] for a concrete
+  /// URL. The full, filterable cashbook (section 20) — Account Detail
+  /// itself keeps only a short recent-movements preview.
+  static const financialAccountCashbook =
+      '/financial-accounts/:accountId/cashbook';
+  static String financialAccountCashbookPath(String accountId) =>
+      '/financial-accounts/$accountId/cashbook';
+
+  /// Path template; use [financialAccountRecordIncomePath] for a
+  /// concrete URL.
+  static const financialAccountRecordIncome =
+      '/financial-accounts/:accountId/income/record';
+  static String financialAccountRecordIncomePath(String accountId) =>
+      '/financial-accounts/$accountId/income/record';
+
+  /// Path template; use [financialAccountRecordExpensePath] for a
+  /// concrete URL.
+  static const financialAccountRecordExpense =
+      '/financial-accounts/:accountId/expense/record';
+  static String financialAccountRecordExpensePath(String accountId) =>
+      '/financial-accounts/$accountId/expense/record';
+
+  /// Path template; use [financialAccountReconcilePath] for a concrete
+  /// URL.
+  static const financialAccountReconcile =
+      '/financial-accounts/:accountId/reconcile';
+  static String financialAccountReconcilePath(String accountId) =>
+      '/financial-accounts/$accountId/reconcile';
+
+  /// Path template; use [financialAccountAdjustmentPath] for a
+  /// concrete URL.
+  static const financialAccountAdjustment =
+      '/financial-accounts/:accountId/adjustment';
+  static String financialAccountAdjustmentPath(String accountId) =>
+      '/financial-accounts/$accountId/adjustment';
+
+  /// Path template; use [financialEntryReversePath] for a concrete
+  /// URL. `entryId` is a `financial_manual_entries.id` — the account
+  /// id is not needed in the path since the entry's own detail
+  /// resolves it.
+  static const financialEntryReverse = '/finance/entries/:entryId/reverse';
+  static String financialEntryReversePath(String entryId) =>
+      '/finance/entries/$entryId/reverse';
+
   // -- Payments, Wallet, Receipts (Prompt 07) ------------------------------
   //
   // Integrates directly with the 08A financial-accounts foundation

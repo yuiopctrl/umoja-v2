@@ -34,6 +34,37 @@ enum FinancialAccountFailureType {
   /// mapping only; the transfer screen always sends one.
   effectiveDateRequired,
 
+  /// `FINANCIAL_MANUAL_ENTRY_AMOUNT_MUST_BE_POSITIVE` /
+  /// `FINANCIAL_ADJUSTMENT_AMOUNT_MUST_BE_POSITIVE` (Prompt 08B).
+  amountMustBePositive,
+
+  /// `FINANCIAL_CATEGORY_WRONG_TYPE` (Prompt 08B): an INCOME category
+  /// used for an expense posting, or vice versa.
+  categoryWrongType,
+
+  /// `FINANCIAL_CATEGORY_INACTIVE` (Prompt 08B).
+  categoryInactive,
+
+  /// `FINANCIAL_MANUAL_ENTRY_IDEMPOTENCY_KEY_CONFLICT` /
+  /// `FINANCIAL_ADJUSTMENT_IDEMPOTENCY_KEY_CONFLICT` (Prompt 08B).
+  idempotencyKeyConflict,
+
+  /// `FINANCIAL_ENTRY_REVERSAL_REASON_REQUIRED` (Prompt 08B).
+  reversalReasonRequired,
+
+  /// `FINANCIAL_MANUAL_ENTRY_ALREADY_REVERSED` (Prompt 08B).
+  entryAlreadyReversed,
+
+  /// `FINANCIAL_ADJUSTMENT_REASON_REQUIRED` (Prompt 08B).
+  adjustmentReasonRequired,
+
+  /// `FINANCIAL_RECONCILIATION_CANCELLATION_REASON_REQUIRED` (Prompt
+  /// 08B).
+  reconciliationCancellationReasonRequired,
+
+  /// `FINANCIAL_RECONCILIATION_ALREADY_CANCELLED` (Prompt 08B).
+  reconciliationAlreadyCancelled,
+
   permissionDenied,
   network,
   unexpected,

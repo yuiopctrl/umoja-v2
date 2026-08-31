@@ -1263,7 +1263,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adjustmentDirectionLabel => 'Adjustment Type';
 
   @override
-  String get adjustmentIncreaseOption => 'Increase Obligation';
+  String get adjustmentIncreaseOption => 'Increase';
 
   @override
   String get adjustmentReduceOption => 'Reduce Obligation';
@@ -1539,6 +1539,332 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get financialAccountErrorUnexpected =>
       'Something went wrong. Please try again.';
+
+  @override
+  String get financialAccountErrorAmountMustBePositive =>
+      'The amount must be greater than zero.';
+
+  @override
+  String get financialAccountErrorCategoryWrongType =>
+      'That category cannot be used for this kind of entry.';
+
+  @override
+  String get financialAccountErrorCategoryInactive =>
+      'This category is no longer active.';
+
+  @override
+  String get financialAccountErrorIdempotencyKeyConflict =>
+      'This submission conflicts with an earlier one. Please refresh and try again.';
+
+  @override
+  String get financialAccountErrorReversalReasonRequired =>
+      'A reversal reason is required.';
+
+  @override
+  String get financialAccountErrorEntryAlreadyReversed =>
+      'This entry has already been reversed.';
+
+  @override
+  String get financialAccountErrorAdjustmentReasonRequired =>
+      'A reason is required.';
+
+  @override
+  String get financialAccountErrorReconciliationCancellationReasonRequired =>
+      'A cancellation reason is required.';
+
+  @override
+  String get financialAccountErrorReconciliationAlreadyCancelled =>
+      'This reconciliation has already been cancelled.';
+
+  @override
+  String financialAccountPaymentLedgerLabel(String receiptNumber) {
+    return 'Member Payment — Receipt $receiptNumber';
+  }
+
+  @override
+  String financialAccountPaymentReversalLedgerLabel(String receiptNumber) {
+    return 'Payment Reversed — Receipt $receiptNumber';
+  }
+
+  @override
+  String financialAccountManualIncomeLedgerLabel(String category) {
+    return 'Income — $category';
+  }
+
+  @override
+  String financialAccountExpenseLedgerLabel(String category) {
+    return 'Expense — $category';
+  }
+
+  @override
+  String financialAccountManualIncomeReversalLedgerLabel(String category) {
+    return 'Income Reversed — $category';
+  }
+
+  @override
+  String financialAccountExpenseReversalLedgerLabel(String category) {
+    return 'Expense Reversed — $category';
+  }
+
+  @override
+  String financialAccountAdjustmentLedgerLabel(String reason) {
+    return 'Financial Adjustment — $reason';
+  }
+
+  @override
+  String get financeTitle => 'Finance';
+
+  @override
+  String get financeAccountsEntrySubtitle =>
+      'Manage cash, bank, and mobile money accounts';
+
+  @override
+  String get financialPositionTitle => 'Financial Position';
+
+  @override
+  String get financialPositionEntrySubtitle =>
+      'Income, expenses, and where the group\'s cash is held';
+
+  @override
+  String get financialPositionPickRangeAction => 'Select Date Range';
+
+  @override
+  String get financialPositionClearRangeAction => 'Clear';
+
+  @override
+  String get financialPositionTotalBalanceLabel => 'Total Funds';
+
+  @override
+  String get financialPositionIncomeLabel => 'Income';
+
+  @override
+  String get financialPositionExpenseLabel => 'Expenses';
+
+  @override
+  String get financialPositionNetResultLabel => 'Net Result';
+
+  @override
+  String get financialPositionAccountsSectionTitle => 'Funds by Account';
+
+  @override
+  String get financialPositionNoAccountsMessage => 'No financial accounts yet.';
+
+  @override
+  String get financialPositionOtherClassificationsTitle =>
+      'Other Classifications';
+
+  @override
+  String get financialPositionPassThroughLabel => 'Pass-through Funds';
+
+  @override
+  String get financialPositionShareCapitalLabel => 'Share Capital Received';
+
+  @override
+  String get financialPositionWalletLiabilityLabel => 'Member Wallet Liability';
+
+  @override
+  String get financialPositionOutstandingObligationsLabel =>
+      'Outstanding Member Obligations';
+
+  @override
+  String get recordIncomeTitle => 'Record Income';
+
+  @override
+  String get recordExpenseTitle => 'Record Expense';
+
+  @override
+  String get recordIncomeAction => 'Record Income';
+
+  @override
+  String get recordExpenseAction => 'Record Expense';
+
+  @override
+  String get recordIncomeConfirmAction => 'Confirm Income';
+
+  @override
+  String get recordExpenseConfirmAction => 'Confirm Expense';
+
+  @override
+  String get manualEntryValidationError =>
+      'Enter a valid amount and select a category.';
+
+  @override
+  String get manualEntryAmountRequiredError => 'Enter a valid amount.';
+
+  @override
+  String get manualEntryCategoryRequiredError => 'Select a category.';
+
+  @override
+  String get referenceDisplayLabel => 'Reference';
+
+  @override
+  String get manualEntryNoIncomeCategoriesMessage =>
+      'There are no income categories set up for this group yet.';
+
+  @override
+  String get manualEntryNoExpenseCategoriesMessage =>
+      'There are no expense categories set up for this group yet.';
+
+  @override
+  String get manualEntryManageCategoriesAction => 'Manage Categories';
+
+  @override
+  String get financeCategoriesEntrySubtitle =>
+      'Add and manage income/expense categories';
+
+  @override
+  String get recordIncomeSuccessMessage => 'Income recorded.';
+
+  @override
+  String get recordExpenseSuccessMessage => 'Expense recorded.';
+
+  @override
+  String get incomeCategoryFieldLabel => 'Income Category';
+
+  @override
+  String get expenseCategoryFieldLabel => 'Expense Category';
+
+  @override
+  String get amountFieldLabel => 'Amount';
+
+  @override
+  String get effectiveDateFieldLabel => 'Effective Date';
+
+  @override
+  String get descriptionFieldLabel => 'Description';
+
+  @override
+  String get referenceFieldLabel => 'Reference (optional)';
+
+  @override
+  String get financialCategoriesTitle => 'Financial Categories';
+
+  @override
+  String get financialCategoryTypeIncome => 'Income';
+
+  @override
+  String get financialCategoryTypeExpense => 'Expense';
+
+  @override
+  String get addCategoryAction => 'Add Category';
+
+  @override
+  String get categoryNameFieldLabel => 'Category Name';
+
+  @override
+  String get seedDefaultCategoriesAction => 'Add Default Categories';
+
+  @override
+  String get cashbookTitle => 'Cashbook';
+
+  @override
+  String get cashbookFilterPayments => 'Payments';
+
+  @override
+  String get cashbookFilterIncome => 'Income';
+
+  @override
+  String get cashbookFilterExpense => 'Expenses';
+
+  @override
+  String get cashbookFilterTransfers => 'Transfers';
+
+  @override
+  String get cashbookFilterAdjustments => 'Adjustments';
+
+  @override
+  String get cashbookEntryReversedLabel => 'Reversed';
+
+  @override
+  String get viewCashbookAction => 'View Cashbook';
+
+  @override
+  String get reconciliationTitle => 'Reconciliation';
+
+  @override
+  String get reconciliationAction => 'Reconcile';
+
+  @override
+  String get systemBalanceLabel => 'System Balance';
+
+  @override
+  String get statementBalanceLabel => 'Statement/Count Balance';
+
+  @override
+  String get differenceLabel => 'Difference';
+
+  @override
+  String get reconciliationDateLabel => 'Reconciliation Date';
+
+  @override
+  String get reconciliationNotesLabel => 'Notes (optional)';
+
+  @override
+  String get reconciliationSaveAction => 'Save Reconciliation';
+
+  @override
+  String get reconciliationBalancedMessage => 'Balanced';
+
+  @override
+  String get reconciliationDiscrepancyLabel => 'Discrepancy';
+
+  @override
+  String get reconciliationHistoryTitle => 'Reconciliation History';
+
+  @override
+  String get reconciliationHistoryEmptyMessage =>
+      'No reconciliations recorded yet.';
+
+  @override
+  String get reconciliationCancelledLabel => 'Cancelled';
+
+  @override
+  String get lastReconciledLabel => 'Last Reconciled';
+
+  @override
+  String get cancelReconciliationConfirmTitle => 'Cancel Reconciliation?';
+
+  @override
+  String get cancelReconciliationConfirmMessage =>
+      'This reconciliation record will be marked cancelled. The original evidence is kept, never overwritten.';
+
+  @override
+  String get cancelReconciliationConfirmAction => 'Cancel Reconciliation';
+
+  @override
+  String get cancelReconciliationDefaultReason => 'Cancelled by user';
+
+  @override
+  String get financialAdjustmentTitle => 'Financial Adjustment';
+
+  @override
+  String get financialAdjustmentAction => 'Financial Adjustment';
+
+  @override
+  String get financialAdjustmentConfirmAction => 'Confirm Adjustment';
+
+  @override
+  String get financialAdjustmentSuccessMessage =>
+      'Financial adjustment recorded.';
+
+  @override
+  String get financialAdjustmentReasonFieldLabel => 'Reason';
+
+  @override
+  String get adjustmentDecreaseOption => 'Decrease';
+
+  @override
+  String get entryReversalTitle => 'Reverse Entry';
+
+  @override
+  String get entryReversalConfirmAction => 'Confirm Reversal';
+
+  @override
+  String get entryReversalSuccessMessage => 'Entry reversed.';
+
+  @override
+  String get entryAlreadyReversedMessage =>
+      'This entry has already been reversed.';
 
   @override
   String get supabaseConfigMissing =>

@@ -117,13 +117,13 @@ class HomeScreen extends ConsumerWidget {
           if (membership.hasPermission('financial_account.view')) ...[
             const SizedBox(height: UmojaSpacing.lg),
             UmojaCard(
-              key: const Key('homeFinancialAccountsShortcut'),
+              key: const Key('homeFinanceShortcut'),
               padding: EdgeInsets.zero,
               child: UmojaListTile(
                 leading: const Icon(Icons.account_balance_wallet_outlined),
-                title: l10n.financialAccountsTitle,
+                title: l10n.financeTitle,
                 subtitle: Text(l10n.homeFinancialAccountsShortcutSubtitle),
-                onTap: () => context.push(AppRoutes.financialAccountsList),
+                onTap: () => context.push(AppRoutes.financeHome),
               ),
             ),
           ],

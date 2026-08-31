@@ -168,4 +168,38 @@ void main() {
       expect(find.text('Weekly bank deposit'), findsOneWidget);
     },
   );
+
+  testWidgets('UAT-FIX-05: a reference is shown alongside the description on '
+      'Account Detail — previously captured by the manual income/expense '
+      'form and stored, but never displayed anywhere in the ledger', (
+    tester,
+  ) async {
+    final fakeRepo = FakeFinancialAccountRepository()
+      ..nextAccount = fakeFinancialAccount(id: 'a1', name: 'Cash Box')
+      ..nextEntriesPage = FinancialAccountEntryPage(
+        items: [
+          fakeFinancialAccountEntry(
+            entryId: 'e2',
+            entryType: 'INFLOW',
+            sourceType: 'MANUAL_INCOME',
+            amount: 20000,
+            description: 'Harambee contribution',
+            reference: 'RCPT-0042',
+            manualEntryCategoryId: 'c1',
+            manualEntryCategoryName: 'Michango',
+            manualEntryStatus: 'POSTED',
+          ),
+        ],
+        totalCount: 1,
+        limit: 10,
+        offset: 0,
+      );
+
+    final router = await pumpFinancialAccountsApp(tester, fakeRepo: fakeRepo);
+    router.go(AppRoutes.financialAccountDetailPath('a1'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Harambee contribution'), findsOneWidget);
+    expect(find.text('Kumbukumbu: RCPT-0042'), findsOneWidget);
+  });
 }

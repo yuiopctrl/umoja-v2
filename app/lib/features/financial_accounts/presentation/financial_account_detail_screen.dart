@@ -19,6 +19,7 @@ import '../domain/financial_account.dart';
 import '../domain/financial_account_entry.dart';
 import '../providers/financial_account_detail_provider.dart';
 import '../providers/financial_account_entries_provider.dart';
+import '../providers/financial_account_reconciliations_provider.dart';
 import 'widgets/financial_account_labels.dart';
 
 const _defaultLimit = 10;
@@ -64,6 +65,16 @@ class _FinancialAccountDetailScreenState
         : null;
     final canManage =
         membership?.hasPermission('financial_account.manage') ?? false;
+    final canRecordIncome =
+        membership?.hasPermission('financial_income.create') ?? false;
+    final canRecordExpense =
+        membership?.hasPermission('financial_expense.create') ?? false;
+    final canTransfer =
+        membership?.hasPermission('financial_account.transfer.create') ?? false;
+    final canReconcile =
+        membership?.hasPermission('financial_reconciliation.create') ?? false;
+    final canAdjust =
+        membership?.hasPermission('financial_adjustment.create') ?? false;
 
     return UmojaPage(
       title: l10n.financialAccountsTitle,
@@ -84,6 +95,11 @@ class _FinancialAccountDetailScreenState
         data: (account) => _DetailBody(
           account: account,
           canManage: canManage,
+          canRecordIncome: canRecordIncome,
+          canRecordExpense: canRecordExpense,
+          canTransfer: canTransfer,
+          canReconcile: canReconcile,
+          canAdjust: canAdjust,
           limit: _limit,
           onLoadMore: () => setState(() => _limit += _defaultLimit),
           onToggleActive: membership == null
@@ -99,6 +115,11 @@ class _DetailBody extends ConsumerWidget {
   const _DetailBody({
     required this.account,
     required this.canManage,
+    required this.canRecordIncome,
+    required this.canRecordExpense,
+    required this.canTransfer,
+    required this.canReconcile,
+    required this.canAdjust,
     required this.limit,
     required this.onLoadMore,
     required this.onToggleActive,
@@ -106,6 +127,11 @@ class _DetailBody extends ConsumerWidget {
 
   final FinancialAccount account;
   final bool canManage;
+  final bool canRecordIncome;
+  final bool canRecordExpense;
+  final bool canTransfer;
+  final bool canReconcile;
+  final bool canAdjust;
   final int limit;
   final VoidCallback onLoadMore;
   final VoidCallback? onToggleActive;
@@ -113,9 +139,23 @@ class _DetailBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final entriesQuery = (accountId: account.id, limit: limit);
+    final entriesQuery = (
+      accountId: account.id,
+      limit: limit,
+      dateFrom: null,
+      dateTo: null,
+      entryType: null,
+      sourceType: null,
+      categoryId: null,
+    );
     final entriesAsync = ref.watch(
       financialAccountEntriesProvider(entriesQuery),
+    );
+    final reconciliationAsync = ref.watch(
+      financialAccountReconciliationsProvider((
+        accountId: account.id,
+        limit: 1,
+      )),
     );
 
     return Column(
@@ -201,9 +241,104 @@ class _DetailBody extends ConsumerWidget {
             ],
           ),
         ),
+        reconciliationAsync.maybeWhen(
+          data: (page) {
+            if (page.items.isEmpty) return const SizedBox.shrink();
+            final latest = page.items.first;
+            return Padding(
+              padding: const EdgeInsets.only(top: UmojaSpacing.md),
+              child: Row(
+                children: [
+                  Icon(
+                    latest.isCancelled
+                        ? Icons.cancel_outlined
+                        : (latest.isBalanced
+                              ? Icons.check_circle_outline
+                              : Icons.warning_amber_outlined),
+                    size: 16,
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
+                  const SizedBox(width: UmojaSpacing.xs),
+                  Flexible(
+                    child: Text(
+                      '${l10n.lastReconciledLabel}: '
+                      '${formatKiswahiliDate(latest.reconciliationAt)} — '
+                      '${latest.isCancelled ? l10n.reconciliationCancelledLabel : (latest.isBalanced ? l10n.reconciliationBalancedMessage : l10n.reconciliationDiscrepancyLabel)}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+          orElse: () => const SizedBox.shrink(),
+        ),
+        if (canRecordIncome ||
+            canRecordExpense ||
+            canTransfer ||
+            canReconcile ||
+            canAdjust) ...[
+          const SizedBox(height: UmojaSpacing.xxl),
+          Wrap(
+            spacing: UmojaSpacing.md,
+            runSpacing: UmojaSpacing.md,
+            children: [
+              if (canRecordIncome)
+                OutlinedButton.icon(
+                  key: const Key('recordIncomeAction'),
+                  onPressed: () => context.push(
+                    AppRoutes.financialAccountRecordIncomePath(account.id),
+                  ),
+                  icon: const Icon(Icons.add_circle_outline, size: 18),
+                  label: Text(l10n.recordIncomeAction),
+                ),
+              if (canRecordExpense)
+                OutlinedButton.icon(
+                  key: const Key('recordExpenseAction'),
+                  onPressed: () => context.push(
+                    AppRoutes.financialAccountRecordExpensePath(account.id),
+                  ),
+                  icon: const Icon(Icons.remove_circle_outline, size: 18),
+                  label: Text(l10n.recordExpenseAction),
+                ),
+              if (canTransfer)
+                OutlinedButton.icon(
+                  onPressed: () =>
+                      context.push(AppRoutes.financialAccountTransfer),
+                  icon: const Icon(Icons.swap_horiz_outlined, size: 18),
+                  label: Text(l10n.financialAccountTransferAction),
+                ),
+              if (canReconcile)
+                OutlinedButton.icon(
+                  key: const Key('reconcileAction'),
+                  onPressed: () => context.push(
+                    AppRoutes.financialAccountReconcilePath(account.id),
+                  ),
+                  icon: const Icon(Icons.fact_check_outlined, size: 18),
+                  label: Text(l10n.reconciliationAction),
+                ),
+              if (canAdjust)
+                OutlinedButton.icon(
+                  key: const Key('financialAdjustmentAction'),
+                  onPressed: () => context.push(
+                    AppRoutes.financialAccountAdjustmentPath(account.id),
+                  ),
+                  icon: const Icon(Icons.tune_outlined, size: 18),
+                  label: Text(l10n.financialAdjustmentAction),
+                ),
+            ],
+          ),
+        ],
         const SizedBox(height: UmojaSpacing.xxl),
         UmojaSection(
           title: l10n.financialAccountEntriesTitle,
+          trailing: TextButton(
+            key: const Key('viewCashbookAction'),
+            onPressed: () => context.push(
+              AppRoutes.financialAccountCashbookPath(account.id),
+            ),
+            child: Text(l10n.viewCashbookAction),
+          ),
           child: entriesAsync.when(
             loading: () => const Padding(
               padding: EdgeInsets.symmetric(vertical: UmojaSpacing.lg),
@@ -248,6 +383,7 @@ class _EntryRow extends StatelessWidget {
     final amountText =
         '${entry.isCredit ? '+' : '-'}${formatAmount(entry.amount)}';
     final description = entry.description;
+    final reference = entry.reference;
     return UmojaListTile(
       // Names WHERE the money went/came from for a transfer entry
       // (e.g. "Uhamisho kwenda Cash Box") — never the bare
@@ -267,6 +403,11 @@ class _EntryRow extends StatelessWidget {
           // alongside it, on their own line, when present.
           if (description != null && description.isNotEmpty)
             Text(description, style: Theme.of(context).textTheme.bodySmall),
+          if (reference != null && reference.isNotEmpty)
+            Text(
+              '${l10n.referenceDisplayLabel}: $reference',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
         ],
       ),
       trailing: Text(

@@ -138,6 +138,24 @@ String financialAccountFailureMessage(
       l10n.financialAccountErrorAccountInactive,
     FinancialAccountFailureType.effectiveDateRequired =>
       l10n.financialAccountErrorEffectiveDateRequired,
+    FinancialAccountFailureType.amountMustBePositive =>
+      l10n.financialAccountErrorAmountMustBePositive,
+    FinancialAccountFailureType.categoryWrongType =>
+      l10n.financialAccountErrorCategoryWrongType,
+    FinancialAccountFailureType.categoryInactive =>
+      l10n.financialAccountErrorCategoryInactive,
+    FinancialAccountFailureType.idempotencyKeyConflict =>
+      l10n.financialAccountErrorIdempotencyKeyConflict,
+    FinancialAccountFailureType.reversalReasonRequired =>
+      l10n.financialAccountErrorReversalReasonRequired,
+    FinancialAccountFailureType.entryAlreadyReversed =>
+      l10n.financialAccountErrorEntryAlreadyReversed,
+    FinancialAccountFailureType.adjustmentReasonRequired =>
+      l10n.financialAccountErrorAdjustmentReasonRequired,
+    FinancialAccountFailureType.reconciliationCancellationReasonRequired =>
+      l10n.financialAccountErrorReconciliationCancellationReasonRequired,
+    FinancialAccountFailureType.reconciliationAlreadyCancelled =>
+      l10n.financialAccountErrorReconciliationAlreadyCancelled,
     FinancialAccountFailureType.permissionDenied =>
       l10n.financialAccountErrorPermissionDenied,
     FinancialAccountFailureType.network => l10n.financialAccountErrorNetwork,

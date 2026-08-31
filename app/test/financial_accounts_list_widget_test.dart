@@ -7,28 +7,33 @@ import 'fakes/financial_accounts_test_app.dart';
 import 'fakes/fake_financial_account_repository.dart';
 
 void main() {
-  testWidgets('the home shortcut and financial accounts entry are visible with '
-      'financial_account.view', (tester) async {
-    final fakeRepo = FakeFinancialAccountRepository();
+  testWidgets(
+    'the home shortcut opens Fedha (Prompt 08B), from which Akaunti za '
+    'Fedha reaches the existing financial accounts list',
+    (tester) async {
+      final fakeRepo = FakeFinancialAccountRepository();
 
-    final router = await pumpFinancialAccountsApp(tester, fakeRepo: fakeRepo);
-    router.go(AppRoutes.home);
-    await tester.pumpAndSettle();
+      final router = await pumpFinancialAccountsApp(tester, fakeRepo: fakeRepo);
+      router.go(AppRoutes.home);
+      await tester.pumpAndSettle();
 
-    expect(
-      find.byKey(const Key('homeFinancialAccountsShortcut')),
-      findsOneWidget,
-    );
+      expect(find.byKey(const Key('homeFinanceShortcut')), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('homeFinancialAccountsShortcut')));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('homeFinanceShortcut')));
+      await tester.pumpAndSettle();
 
-    // Something only the list screen itself renders — proves this
-    // actually navigated there rather than bouncing back to Home
-    // (where the shortcut card's own title text would be a
-    // false-positive match for a plain "Akaunti za Fedha" search).
-    expect(find.text('Tafuta akaunti'), findsOneWidget);
-  });
+      // Lands on the Fedha home first — never a duplicate/parallel
+      // financial-accounts entry point.
+      expect(find.byKey(const Key('financialAccountsEntry')), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('financialAccountsEntry')));
+      await tester.pumpAndSettle();
+
+      // Something only the list screen itself renders — proves this
+      // actually navigated there.
+      expect(find.text('Tafuta akaunti'), findsOneWidget);
+    },
+  );
 
   testWidgets('the home shortcut is hidden without financial_account.view', (
     tester,
@@ -46,10 +51,7 @@ void main() {
     router.go(AppRoutes.home);
     await tester.pumpAndSettle();
 
-    expect(
-      find.byKey(const Key('homeFinancialAccountsShortcut')),
-      findsNothing,
-    );
+    expect(find.byKey(const Key('homeFinanceShortcut')), findsNothing);
   });
 
   testWidgets('an empty accounts list shows the empty state', (tester) async {

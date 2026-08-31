@@ -525,6 +525,135 @@
   "financialAccountErrorNetwork": "Network error. Check your connection and try again.",
   "financialAccountErrorUnexpected": "Something went wrong. Please try again.",
 
+  "financialAccountErrorAmountMustBePositive": "The amount must be greater than zero.",
+  "financialAccountErrorCategoryWrongType": "That category cannot be used for this kind of entry.",
+  "financialAccountErrorCategoryInactive": "This category is no longer active.",
+  "financialAccountErrorIdempotencyKeyConflict": "This submission conflicts with an earlier one. Please refresh and try again.",
+  "financialAccountErrorReversalReasonRequired": "A reversal reason is required.",
+  "financialAccountErrorEntryAlreadyReversed": "This entry has already been reversed.",
+  "financialAccountErrorAdjustmentReasonRequired": "A reason is required.",
+  "financialAccountErrorReconciliationCancellationReasonRequired": "A cancellation reason is required.",
+  "financialAccountErrorReconciliationAlreadyCancelled": "This reconciliation has already been cancelled.",
+
+  "financialAccountPaymentLedgerLabel": "Member Payment — Receipt {receiptNumber}",
+  "@financialAccountPaymentLedgerLabel": {
+    "placeholders": { "receiptNumber": { "type": "String" } }
+  },
+  "financialAccountPaymentReversalLedgerLabel": "Payment Reversed — Receipt {receiptNumber}",
+  "@financialAccountPaymentReversalLedgerLabel": {
+    "placeholders": { "receiptNumber": { "type": "String" } }
+  },
+  "financialAccountManualIncomeLedgerLabel": "Income — {category}",
+  "@financialAccountManualIncomeLedgerLabel": {
+    "placeholders": { "category": { "type": "String" } }
+  },
+  "financialAccountExpenseLedgerLabel": "Expense — {category}",
+  "@financialAccountExpenseLedgerLabel": {
+    "placeholders": { "category": { "type": "String" } }
+  },
+  "financialAccountManualIncomeReversalLedgerLabel": "Income Reversed — {category}",
+  "@financialAccountManualIncomeReversalLedgerLabel": {
+    "placeholders": { "category": { "type": "String" } }
+  },
+  "financialAccountExpenseReversalLedgerLabel": "Expense Reversed — {category}",
+  "@financialAccountExpenseReversalLedgerLabel": {
+    "placeholders": { "category": { "type": "String" } }
+  },
+  "financialAccountAdjustmentLedgerLabel": "Financial Adjustment — {reason}",
+  "@financialAccountAdjustmentLedgerLabel": {
+    "placeholders": { "reason": { "type": "String" } }
+  },
+
+  "financeTitle": "Finance",
+  "financeAccountsEntrySubtitle": "Manage cash, bank, and mobile money accounts",
+
+  "financialPositionTitle": "Financial Position",
+  "financialPositionEntrySubtitle": "Income, expenses, and where the group's cash is held",
+  "financialPositionPickRangeAction": "Select Date Range",
+  "financialPositionClearRangeAction": "Clear",
+  "financialPositionTotalBalanceLabel": "Total Funds",
+  "financialPositionIncomeLabel": "Income",
+  "financialPositionExpenseLabel": "Expenses",
+  "financialPositionNetResultLabel": "Net Result",
+  "financialPositionAccountsSectionTitle": "Funds by Account",
+  "financialPositionNoAccountsMessage": "No financial accounts yet.",
+  "financialPositionOtherClassificationsTitle": "Other Classifications",
+  "financialPositionPassThroughLabel": "Pass-through Funds",
+  "financialPositionShareCapitalLabel": "Share Capital Received",
+  "financialPositionWalletLiabilityLabel": "Member Wallet Liability",
+  "financialPositionOutstandingObligationsLabel": "Outstanding Member Obligations",
+
+  "recordIncomeTitle": "Record Income",
+  "recordExpenseTitle": "Record Expense",
+  "recordIncomeAction": "Record Income",
+  "recordExpenseAction": "Record Expense",
+  "recordIncomeConfirmAction": "Confirm Income",
+  "recordExpenseConfirmAction": "Confirm Expense",
+  "manualEntryValidationError": "Enter a valid amount and select a category.",
+  "manualEntryAmountRequiredError": "Enter a valid amount.",
+  "manualEntryCategoryRequiredError": "Select a category.",
+  "referenceDisplayLabel": "Reference",
+  "manualEntryNoIncomeCategoriesMessage": "There are no income categories set up for this group yet.",
+  "manualEntryNoExpenseCategoriesMessage": "There are no expense categories set up for this group yet.",
+  "manualEntryManageCategoriesAction": "Manage Categories",
+  "financeCategoriesEntrySubtitle": "Add and manage income/expense categories",
+  "recordIncomeSuccessMessage": "Income recorded.",
+  "recordExpenseSuccessMessage": "Expense recorded.",
+  "incomeCategoryFieldLabel": "Income Category",
+  "expenseCategoryFieldLabel": "Expense Category",
+  "amountFieldLabel": "Amount",
+  "effectiveDateFieldLabel": "Effective Date",
+  "descriptionFieldLabel": "Description",
+  "referenceFieldLabel": "Reference (optional)",
+
+  "financialCategoriesTitle": "Financial Categories",
+  "financialCategoryTypeIncome": "Income",
+  "financialCategoryTypeExpense": "Expense",
+  "addCategoryAction": "Add Category",
+  "categoryNameFieldLabel": "Category Name",
+  "seedDefaultCategoriesAction": "Add Default Categories",
+
+  "cashbookTitle": "Cashbook",
+  "cashbookFilterPayments": "Payments",
+  "cashbookFilterIncome": "Income",
+  "cashbookFilterExpense": "Expenses",
+  "cashbookFilterTransfers": "Transfers",
+  "cashbookFilterAdjustments": "Adjustments",
+  "cashbookEntryReversedLabel": "Reversed",
+  "viewCashbookAction": "View Cashbook",
+
+  "reconciliationTitle": "Reconciliation",
+  "reconciliationAction": "Reconcile",
+  "systemBalanceLabel": "System Balance",
+  "statementBalanceLabel": "Statement/Count Balance",
+  "differenceLabel": "Difference",
+  "reconciliationDateLabel": "Reconciliation Date",
+  "reconciliationNotesLabel": "Notes (optional)",
+  "reconciliationSaveAction": "Save Reconciliation",
+  "reconciliationBalancedMessage": "Balanced",
+  "reconciliationDiscrepancyLabel": "Discrepancy",
+  "reconciliationHistoryTitle": "Reconciliation History",
+  "reconciliationHistoryEmptyMessage": "No reconciliations recorded yet.",
+  "reconciliationCancelledLabel": "Cancelled",
+  "lastReconciledLabel": "Last Reconciled",
+  "cancelReconciliationConfirmTitle": "Cancel Reconciliation?",
+  "cancelReconciliationConfirmMessage": "This reconciliation record will be marked cancelled. The original evidence is kept, never overwritten.",
+  "cancelReconciliationConfirmAction": "Cancel Reconciliation",
+  "cancelReconciliationDefaultReason": "Cancelled by user",
+
+  "financialAdjustmentTitle": "Financial Adjustment",
+  "financialAdjustmentAction": "Financial Adjustment",
+  "financialAdjustmentConfirmAction": "Confirm Adjustment",
+  "financialAdjustmentSuccessMessage": "Financial adjustment recorded.",
+  "financialAdjustmentReasonFieldLabel": "Reason",
+  "adjustmentIncreaseOption": "Increase",
+  "adjustmentDecreaseOption": "Decrease",
+
+  "entryReversalTitle": "Reverse Entry",
+  "entryReversalConfirmAction": "Confirm Reversal",
+  "entryReversalSuccessMessage": "Entry reversed.",
+  "entryAlreadyReversedMessage": "This entry has already been reversed.",
+
   "supabaseConfigMissing": "Supabase configuration missing (SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY not set).",
 
   "backAction": "Back",

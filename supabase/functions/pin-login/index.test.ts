@@ -1,6 +1,6 @@
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 
-import { handleRequest } from "./index.ts";
+import { handleRequest, serveRequest } from "./index.ts";
 
 const PEPPER = "test-only-pepper";
 const USER_ID = "22222222-2222-2222-2222-222222222222";
@@ -201,4 +201,21 @@ Deno.test("pin-login rejects malformed JSON bodies with the same generic respons
   assertEquals(res.status, 401);
   const body = await res.json();
   assertEquals(body.error.code, "INVALID_CREDENTIALS");
+});
+
+Deno.test("serveRequest answers an OPTIONS preflight with 204 and CORS headers, without ever reaching handleRequest (no body is required)", async () => {
+  const req = new Request("https://example.test/pin-login", {
+    method: "OPTIONS",
+  });
+  const res = await serveRequest(req);
+  assertEquals(res.status, 204);
+  assertEquals(res.headers.get("Access-Control-Allow-Origin"), "*");
+});
+
+Deno.test("serveRequest forwards a real POST to handleRequest, and the "
+  + "response — whatever it is — still carries CORS headers a browser "
+  + "needs in order to read it at all", async () => {
+  const req = request({ phone: PHONE_RAW, pin: "1234" });
+  const res = await serveRequest(req);
+  assertEquals(res.headers.get("Access-Control-Allow-Origin"), "*");
 });

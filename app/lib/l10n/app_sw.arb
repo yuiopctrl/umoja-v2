@@ -558,6 +558,135 @@
   "financialAccountErrorNetwork": "Imeshindikana kuunganisha. Jaribu tena.",
   "financialAccountErrorUnexpected": "Hitilafu imetokea. Jaribu tena.",
 
+  "financialAccountErrorAmountMustBePositive": "Kiasi lazima kiwe zaidi ya sifuri.",
+  "financialAccountErrorCategoryWrongType": "Kategoria hiyo haiwezi kutumika kwa aina hii ya kiingilio.",
+  "financialAccountErrorCategoryInactive": "Kategoria hii haifanyi kazi tena.",
+  "financialAccountErrorIdempotencyKeyConflict": "Ombi hili linagongana na lililotangulia. Tafadhali onyesha upya na ujaribu tena.",
+  "financialAccountErrorReversalReasonRequired": "Sababu ya kubatilisha inahitajika.",
+  "financialAccountErrorEntryAlreadyReversed": "Kiingilio hiki tayari kimebatilishwa.",
+  "financialAccountErrorAdjustmentReasonRequired": "Sababu inahitajika.",
+  "financialAccountErrorReconciliationCancellationReasonRequired": "Sababu ya kufuta inahitajika.",
+  "financialAccountErrorReconciliationAlreadyCancelled": "Ulinganishaji huu tayari umefutwa.",
+
+  "financialAccountPaymentLedgerLabel": "Malipo ya Mwanachama — Risiti {receiptNumber}",
+  "@financialAccountPaymentLedgerLabel": {
+    "placeholders": { "receiptNumber": { "type": "String" } }
+  },
+  "financialAccountPaymentReversalLedgerLabel": "Malipo Yamebatilishwa — Risiti {receiptNumber}",
+  "@financialAccountPaymentReversalLedgerLabel": {
+    "placeholders": { "receiptNumber": { "type": "String" } }
+  },
+  "financialAccountManualIncomeLedgerLabel": "Mapato — {category}",
+  "@financialAccountManualIncomeLedgerLabel": {
+    "placeholders": { "category": { "type": "String" } }
+  },
+  "financialAccountExpenseLedgerLabel": "Matumizi — {category}",
+  "@financialAccountExpenseLedgerLabel": {
+    "placeholders": { "category": { "type": "String" } }
+  },
+  "financialAccountManualIncomeReversalLedgerLabel": "Mapato Yamerekebishwa — {category}",
+  "@financialAccountManualIncomeReversalLedgerLabel": {
+    "placeholders": { "category": { "type": "String" } }
+  },
+  "financialAccountExpenseReversalLedgerLabel": "Matumizi Yamerekebishwa — {category}",
+  "@financialAccountExpenseReversalLedgerLabel": {
+    "placeholders": { "category": { "type": "String" } }
+  },
+  "financialAccountAdjustmentLedgerLabel": "Marekebisho ya Fedha — {reason}",
+  "@financialAccountAdjustmentLedgerLabel": {
+    "placeholders": { "reason": { "type": "String" } }
+  },
+
+  "financeTitle": "Fedha",
+  "financeAccountsEntrySubtitle": "Simamia akaunti za fedha taslimu, benki, na simu",
+
+  "financialPositionTitle": "Hali ya Fedha",
+  "financialPositionEntrySubtitle": "Mapato, matumizi, na mahali fedha za kikundi zilipo",
+  "financialPositionPickRangeAction": "Chagua Kipindi",
+  "financialPositionClearRangeAction": "Futa",
+  "financialPositionTotalBalanceLabel": "Jumla ya Fedha",
+  "financialPositionIncomeLabel": "Mapato",
+  "financialPositionExpenseLabel": "Matumizi",
+  "financialPositionNetResultLabel": "Matokeo Halisi",
+  "financialPositionAccountsSectionTitle": "Fedha kwa Akaunti",
+  "financialPositionNoAccountsMessage": "Hakuna akaunti za fedha bado.",
+  "financialPositionOtherClassificationsTitle": "Uainishaji Mwingine",
+  "financialPositionPassThroughLabel": "Fedha Zisizo Pato la Kikundi",
+  "financialPositionShareCapitalLabel": "Mtaji wa Hisa Uliopokelewa",
+  "financialPositionWalletLiabilityLabel": "Deni la Salio la Wanachama",
+  "financialPositionOutstandingObligationsLabel": "Deni la Wanachama Lililobaki",
+
+  "recordIncomeTitle": "Rekodi Mapato",
+  "recordExpenseTitle": "Rekodi Matumizi",
+  "recordIncomeAction": "Rekodi Mapato",
+  "recordExpenseAction": "Rekodi Matumizi",
+  "recordIncomeConfirmAction": "Thibitisha Mapato",
+  "recordExpenseConfirmAction": "Thibitisha Matumizi",
+  "manualEntryValidationError": "Weka kiasi sahihi na chagua kategoria.",
+  "manualEntryAmountRequiredError": "Weka kiasi sahihi.",
+  "manualEntryCategoryRequiredError": "Chagua kategoria.",
+  "referenceDisplayLabel": "Kumbukumbu",
+  "manualEntryNoIncomeCategoriesMessage": "Bado hakuna kategoria za mapato zilizowekwa kwa kikundi hiki.",
+  "manualEntryNoExpenseCategoriesMessage": "Bado hakuna kategoria za matumizi zilizowekwa kwa kikundi hiki.",
+  "manualEntryManageCategoriesAction": "Simamia Kategoria",
+  "financeCategoriesEntrySubtitle": "Ongeza na simamia kategoria za mapato/matumizi",
+  "recordIncomeSuccessMessage": "Mapato yamerekodiwa.",
+  "recordExpenseSuccessMessage": "Matumizi yamerekodiwa.",
+  "incomeCategoryFieldLabel": "Aina ya Mapato",
+  "expenseCategoryFieldLabel": "Aina ya Matumizi",
+  "amountFieldLabel": "Kiasi",
+  "effectiveDateFieldLabel": "Tarehe",
+  "descriptionFieldLabel": "Maelezo",
+  "referenceFieldLabel": "Kumbukumbu (hiari)",
+
+  "financialCategoriesTitle": "Kategoria za Fedha",
+  "financialCategoryTypeIncome": "Mapato",
+  "financialCategoryTypeExpense": "Matumizi",
+  "addCategoryAction": "Ongeza Kategoria",
+  "categoryNameFieldLabel": "Jina la Kategoria",
+  "seedDefaultCategoriesAction": "Ongeza Kategoria za Kawaida",
+
+  "cashbookTitle": "Miamala ya Fedha",
+  "cashbookFilterPayments": "Malipo",
+  "cashbookFilterIncome": "Mapato",
+  "cashbookFilterExpense": "Matumizi",
+  "cashbookFilterTransfers": "Uhamisho",
+  "cashbookFilterAdjustments": "Marekebisho",
+  "cashbookEntryReversedLabel": "Imerekebishwa",
+  "viewCashbookAction": "Angalia Miamala",
+
+  "reconciliationTitle": "Ulinganishaji wa Akaunti",
+  "reconciliationAction": "Linganisha",
+  "systemBalanceLabel": "Salio la Mfumo",
+  "statementBalanceLabel": "Salio la Taarifa",
+  "differenceLabel": "Tofauti",
+  "reconciliationDateLabel": "Tarehe ya Ulinganishaji",
+  "reconciliationNotesLabel": "Maelezo (hiari)",
+  "reconciliationSaveAction": "Hifadhi Ulinganishaji",
+  "reconciliationBalancedMessage": "Imelingana",
+  "reconciliationDiscrepancyLabel": "Tofauti Imepatikana",
+  "reconciliationHistoryTitle": "Historia ya Ulinganishaji",
+  "reconciliationHistoryEmptyMessage": "Hakuna ulinganishaji uliorekodiwa bado.",
+  "reconciliationCancelledLabel": "Imefutwa",
+  "lastReconciledLabel": "Ulinganishaji wa Mwisho",
+  "cancelReconciliationConfirmTitle": "Futa Ulinganishaji?",
+  "cancelReconciliationConfirmMessage": "Rekodi hii ya ulinganishaji itawekwa alama imefutwa. Ushahidi wa asili unabaki, hauandikwi upya.",
+  "cancelReconciliationConfirmAction": "Futa Ulinganishaji",
+  "cancelReconciliationDefaultReason": "Imefutwa na mtumiaji",
+
+  "financialAdjustmentTitle": "Marekebisho ya Fedha",
+  "financialAdjustmentAction": "Marekebisho ya Fedha",
+  "financialAdjustmentConfirmAction": "Thibitisha Marekebisho",
+  "financialAdjustmentSuccessMessage": "Marekebisho ya fedha yamerekodiwa.",
+  "financialAdjustmentReasonFieldLabel": "Sababu",
+  "adjustmentIncreaseOption": "Ongeza",
+  "adjustmentDecreaseOption": "Punguza",
+
+  "entryReversalTitle": "Batilisha Kiingilio",
+  "entryReversalConfirmAction": "Thibitisha Kubatilisha",
+  "entryReversalSuccessMessage": "Kiingilio kimebatilishwa.",
+  "entryAlreadyReversedMessage": "Kiingilio hiki tayari kimebatilishwa.",
+
   "supabaseConfigMissing": "Mipangilio ya Supabase haipo (SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY haijawekwa).",
 
   "backAction": "Rudi",

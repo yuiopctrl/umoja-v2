@@ -1270,7 +1270,7 @@ class AppLocalizationsSw extends AppLocalizations {
   String get adjustmentDirectionLabel => 'Aina ya Marekebisho';
 
   @override
-  String get adjustmentIncreaseOption => 'Ongeza Deni';
+  String get adjustmentIncreaseOption => 'Ongeza';
 
   @override
   String get adjustmentReduceOption => 'Punguza Deni';
@@ -1548,6 +1548,335 @@ class AppLocalizationsSw extends AppLocalizations {
   @override
   String get financialAccountErrorUnexpected =>
       'Hitilafu imetokea. Jaribu tena.';
+
+  @override
+  String get financialAccountErrorAmountMustBePositive =>
+      'Kiasi lazima kiwe zaidi ya sifuri.';
+
+  @override
+  String get financialAccountErrorCategoryWrongType =>
+      'Kategoria hiyo haiwezi kutumika kwa aina hii ya kiingilio.';
+
+  @override
+  String get financialAccountErrorCategoryInactive =>
+      'Kategoria hii haifanyi kazi tena.';
+
+  @override
+  String get financialAccountErrorIdempotencyKeyConflict =>
+      'Ombi hili linagongana na lililotangulia. Tafadhali onyesha upya na ujaribu tena.';
+
+  @override
+  String get financialAccountErrorReversalReasonRequired =>
+      'Sababu ya kubatilisha inahitajika.';
+
+  @override
+  String get financialAccountErrorEntryAlreadyReversed =>
+      'Kiingilio hiki tayari kimebatilishwa.';
+
+  @override
+  String get financialAccountErrorAdjustmentReasonRequired =>
+      'Sababu inahitajika.';
+
+  @override
+  String get financialAccountErrorReconciliationCancellationReasonRequired =>
+      'Sababu ya kufuta inahitajika.';
+
+  @override
+  String get financialAccountErrorReconciliationAlreadyCancelled =>
+      'Ulinganishaji huu tayari umefutwa.';
+
+  @override
+  String financialAccountPaymentLedgerLabel(String receiptNumber) {
+    return 'Malipo ya Mwanachama — Risiti $receiptNumber';
+  }
+
+  @override
+  String financialAccountPaymentReversalLedgerLabel(String receiptNumber) {
+    return 'Malipo Yamebatilishwa — Risiti $receiptNumber';
+  }
+
+  @override
+  String financialAccountManualIncomeLedgerLabel(String category) {
+    return 'Mapato — $category';
+  }
+
+  @override
+  String financialAccountExpenseLedgerLabel(String category) {
+    return 'Matumizi — $category';
+  }
+
+  @override
+  String financialAccountManualIncomeReversalLedgerLabel(String category) {
+    return 'Mapato Yamerekebishwa — $category';
+  }
+
+  @override
+  String financialAccountExpenseReversalLedgerLabel(String category) {
+    return 'Matumizi Yamerekebishwa — $category';
+  }
+
+  @override
+  String financialAccountAdjustmentLedgerLabel(String reason) {
+    return 'Marekebisho ya Fedha — $reason';
+  }
+
+  @override
+  String get financeTitle => 'Fedha';
+
+  @override
+  String get financeAccountsEntrySubtitle =>
+      'Simamia akaunti za fedha taslimu, benki, na simu';
+
+  @override
+  String get financialPositionTitle => 'Hali ya Fedha';
+
+  @override
+  String get financialPositionEntrySubtitle =>
+      'Mapato, matumizi, na mahali fedha za kikundi zilipo';
+
+  @override
+  String get financialPositionPickRangeAction => 'Chagua Kipindi';
+
+  @override
+  String get financialPositionClearRangeAction => 'Futa';
+
+  @override
+  String get financialPositionTotalBalanceLabel => 'Jumla ya Fedha';
+
+  @override
+  String get financialPositionIncomeLabel => 'Mapato';
+
+  @override
+  String get financialPositionExpenseLabel => 'Matumizi';
+
+  @override
+  String get financialPositionNetResultLabel => 'Matokeo Halisi';
+
+  @override
+  String get financialPositionAccountsSectionTitle => 'Fedha kwa Akaunti';
+
+  @override
+  String get financialPositionNoAccountsMessage =>
+      'Hakuna akaunti za fedha bado.';
+
+  @override
+  String get financialPositionOtherClassificationsTitle =>
+      'Uainishaji Mwingine';
+
+  @override
+  String get financialPositionPassThroughLabel =>
+      'Fedha Zisizo Pato la Kikundi';
+
+  @override
+  String get financialPositionShareCapitalLabel => 'Mtaji wa Hisa Uliopokelewa';
+
+  @override
+  String get financialPositionWalletLiabilityLabel =>
+      'Deni la Salio la Wanachama';
+
+  @override
+  String get financialPositionOutstandingObligationsLabel =>
+      'Deni la Wanachama Lililobaki';
+
+  @override
+  String get recordIncomeTitle => 'Rekodi Mapato';
+
+  @override
+  String get recordExpenseTitle => 'Rekodi Matumizi';
+
+  @override
+  String get recordIncomeAction => 'Rekodi Mapato';
+
+  @override
+  String get recordExpenseAction => 'Rekodi Matumizi';
+
+  @override
+  String get recordIncomeConfirmAction => 'Thibitisha Mapato';
+
+  @override
+  String get recordExpenseConfirmAction => 'Thibitisha Matumizi';
+
+  @override
+  String get manualEntryValidationError =>
+      'Weka kiasi sahihi na chagua kategoria.';
+
+  @override
+  String get manualEntryAmountRequiredError => 'Weka kiasi sahihi.';
+
+  @override
+  String get manualEntryCategoryRequiredError => 'Chagua kategoria.';
+
+  @override
+  String get referenceDisplayLabel => 'Kumbukumbu';
+
+  @override
+  String get manualEntryNoIncomeCategoriesMessage =>
+      'Bado hakuna kategoria za mapato zilizowekwa kwa kikundi hiki.';
+
+  @override
+  String get manualEntryNoExpenseCategoriesMessage =>
+      'Bado hakuna kategoria za matumizi zilizowekwa kwa kikundi hiki.';
+
+  @override
+  String get manualEntryManageCategoriesAction => 'Simamia Kategoria';
+
+  @override
+  String get financeCategoriesEntrySubtitle =>
+      'Ongeza na simamia kategoria za mapato/matumizi';
+
+  @override
+  String get recordIncomeSuccessMessage => 'Mapato yamerekodiwa.';
+
+  @override
+  String get recordExpenseSuccessMessage => 'Matumizi yamerekodiwa.';
+
+  @override
+  String get incomeCategoryFieldLabel => 'Aina ya Mapato';
+
+  @override
+  String get expenseCategoryFieldLabel => 'Aina ya Matumizi';
+
+  @override
+  String get amountFieldLabel => 'Kiasi';
+
+  @override
+  String get effectiveDateFieldLabel => 'Tarehe';
+
+  @override
+  String get descriptionFieldLabel => 'Maelezo';
+
+  @override
+  String get referenceFieldLabel => 'Kumbukumbu (hiari)';
+
+  @override
+  String get financialCategoriesTitle => 'Kategoria za Fedha';
+
+  @override
+  String get financialCategoryTypeIncome => 'Mapato';
+
+  @override
+  String get financialCategoryTypeExpense => 'Matumizi';
+
+  @override
+  String get addCategoryAction => 'Ongeza Kategoria';
+
+  @override
+  String get categoryNameFieldLabel => 'Jina la Kategoria';
+
+  @override
+  String get seedDefaultCategoriesAction => 'Ongeza Kategoria za Kawaida';
+
+  @override
+  String get cashbookTitle => 'Miamala ya Fedha';
+
+  @override
+  String get cashbookFilterPayments => 'Malipo';
+
+  @override
+  String get cashbookFilterIncome => 'Mapato';
+
+  @override
+  String get cashbookFilterExpense => 'Matumizi';
+
+  @override
+  String get cashbookFilterTransfers => 'Uhamisho';
+
+  @override
+  String get cashbookFilterAdjustments => 'Marekebisho';
+
+  @override
+  String get cashbookEntryReversedLabel => 'Imerekebishwa';
+
+  @override
+  String get viewCashbookAction => 'Angalia Miamala';
+
+  @override
+  String get reconciliationTitle => 'Ulinganishaji wa Akaunti';
+
+  @override
+  String get reconciliationAction => 'Linganisha';
+
+  @override
+  String get systemBalanceLabel => 'Salio la Mfumo';
+
+  @override
+  String get statementBalanceLabel => 'Salio la Taarifa';
+
+  @override
+  String get differenceLabel => 'Tofauti';
+
+  @override
+  String get reconciliationDateLabel => 'Tarehe ya Ulinganishaji';
+
+  @override
+  String get reconciliationNotesLabel => 'Maelezo (hiari)';
+
+  @override
+  String get reconciliationSaveAction => 'Hifadhi Ulinganishaji';
+
+  @override
+  String get reconciliationBalancedMessage => 'Imelingana';
+
+  @override
+  String get reconciliationDiscrepancyLabel => 'Tofauti Imepatikana';
+
+  @override
+  String get reconciliationHistoryTitle => 'Historia ya Ulinganishaji';
+
+  @override
+  String get reconciliationHistoryEmptyMessage =>
+      'Hakuna ulinganishaji uliorekodiwa bado.';
+
+  @override
+  String get reconciliationCancelledLabel => 'Imefutwa';
+
+  @override
+  String get lastReconciledLabel => 'Ulinganishaji wa Mwisho';
+
+  @override
+  String get cancelReconciliationConfirmTitle => 'Futa Ulinganishaji?';
+
+  @override
+  String get cancelReconciliationConfirmMessage =>
+      'Rekodi hii ya ulinganishaji itawekwa alama imefutwa. Ushahidi wa asili unabaki, hauandikwi upya.';
+
+  @override
+  String get cancelReconciliationConfirmAction => 'Futa Ulinganishaji';
+
+  @override
+  String get cancelReconciliationDefaultReason => 'Imefutwa na mtumiaji';
+
+  @override
+  String get financialAdjustmentTitle => 'Marekebisho ya Fedha';
+
+  @override
+  String get financialAdjustmentAction => 'Marekebisho ya Fedha';
+
+  @override
+  String get financialAdjustmentConfirmAction => 'Thibitisha Marekebisho';
+
+  @override
+  String get financialAdjustmentSuccessMessage =>
+      'Marekebisho ya fedha yamerekodiwa.';
+
+  @override
+  String get financialAdjustmentReasonFieldLabel => 'Sababu';
+
+  @override
+  String get adjustmentDecreaseOption => 'Punguza';
+
+  @override
+  String get entryReversalTitle => 'Batilisha Kiingilio';
+
+  @override
+  String get entryReversalConfirmAction => 'Thibitisha Kubatilisha';
+
+  @override
+  String get entryReversalSuccessMessage => 'Kiingilio kimebatilishwa.';
+
+  @override
+  String get entryAlreadyReversedMessage =>
+      'Kiingilio hiki tayari kimebatilishwa.';
 
   @override
   String get supabaseConfigMissing =>

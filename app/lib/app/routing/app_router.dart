@@ -25,10 +25,18 @@ import '../../features/contributions/presentation/contribution_period_open_previ
 import '../../features/contributions/presentation/contribution_periods_list_screen.dart';
 import '../../features/contributions/presentation/contribution_setup_form_screen.dart';
 import '../../features/contributions/presentation/contribution_waiver_form_screen.dart';
+import '../../features/financial_accounts/presentation/cashbook_screen.dart';
+import '../../features/financial_accounts/presentation/finance_home_screen.dart';
 import '../../features/financial_accounts/presentation/financial_account_detail_screen.dart';
 import '../../features/financial_accounts/presentation/financial_account_form_screen.dart';
 import '../../features/financial_accounts/presentation/financial_account_transfer_screen.dart';
 import '../../features/financial_accounts/presentation/financial_accounts_list_screen.dart';
+import '../../features/financial_accounts/presentation/financial_adjustment_screen.dart';
+import '../../features/financial_accounts/presentation/financial_categories_screen.dart';
+import '../../features/financial_accounts/presentation/financial_entry_reversal_screen.dart';
+import '../../features/financial_accounts/presentation/financial_position_screen.dart';
+import '../../features/financial_accounts/presentation/financial_reconciliation_screen.dart';
+import '../../features/financial_accounts/presentation/manual_entry_form_screen.dart';
 import '../../features/contributions/presentation/contribution_setups_list_screen.dart';
 import '../../features/contributions/presentation/contribution_type_form_screen.dart';
 import '../../features/contributions/presentation/contribution_types_list_screen.dart';
@@ -312,6 +320,55 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: AppRoutes.financialAccountEdit,
             builder: (context, state) => FinancialAccountFormScreen(
               accountId: state.pathParameters['accountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.financeHome,
+            builder: (context, state) => const FinanceHomeScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.financialPosition,
+            builder: (context, state) => const FinancialPositionScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.financialCategoriesList,
+            builder: (context, state) => const FinancialCategoriesScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.financialAccountCashbook,
+            builder: (context, state) =>
+                CashbookScreen(accountId: state.pathParameters['accountId']!),
+          ),
+          GoRoute(
+            path: AppRoutes.financialAccountRecordIncome,
+            builder: (context, state) => ManualEntryFormScreen(
+              accountId: state.pathParameters['accountId']!,
+              entryKind: 'INCOME',
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.financialAccountRecordExpense,
+            builder: (context, state) => ManualEntryFormScreen(
+              accountId: state.pathParameters['accountId']!,
+              entryKind: 'EXPENSE',
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.financialAccountReconcile,
+            builder: (context, state) => FinancialReconciliationScreen(
+              accountId: state.pathParameters['accountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.financialAccountAdjustment,
+            builder: (context, state) => FinancialAdjustmentScreen(
+              accountId: state.pathParameters['accountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.financialEntryReverse,
+            builder: (context, state) => FinancialEntryReversalScreen(
+              entryId: state.pathParameters['entryId']!,
             ),
           ),
           GoRoute(

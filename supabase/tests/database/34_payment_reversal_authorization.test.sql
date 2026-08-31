@@ -72,10 +72,13 @@ select ok(
   'the TREASURER role actually owns a role_permissions row for payment.reverse'
 );
 select is(
-  (select count(*)::int from public.permissions where code ilike '%revers%' and code <> 'payment.reverse'),
+  (select count(*)::int from public.permissions where code ilike 'payment%revers%' and code <> 'payment.reverse'),
   0,
-  'section 3: there is exactly one canonical reversal permission key — no '
-  '''payment.reversal''/''payments.reverse''/etc variant exists in the catalog'
+  'section 3: there is exactly one canonical PAYMENT reversal permission '
+  'key — no ''payment.reversal''/''payments.reverse''/etc variant exists '
+  'in the catalog (a differently-scoped permission like '
+  'financial_entry.reverse from a later phase is not a variant of this '
+  'one and must not be flagged)'
 );
 
 set local role authenticated;

@@ -132,9 +132,12 @@ gated on `financial_account.view`.
 
 ## Deferred to Prompt 07/08/09
 
-- Contribution payment posting (referencing a `financial_account_id`
-  and creating exactly one INFLOW entry per payment).
-- Payment allocation ledger, member wallet, receipts.
-- Payment reversal (expected to use `reverses_entry_id` directly).
-- Loans, loan repayments, expenses, bank statement reconciliation,
-  income analytics, full financial position/reporting.
+- ~~Contribution payment posting~~, ~~payment allocation ledger, member
+  wallet, receipts~~, ~~payment reversal~~ — delivered in Prompt 07, see
+  [docs/product/payments.md](payments.md).
+- ~~Manual income/expense recording, bank/cash reconciliation, a
+  controlled financial adjustment, and Financial Position reporting~~ —
+  delivered in Prompt 08B, see
+  [docs/product/financial_operations.md](financial_operations.md).
+- Loans, loan repayments, full double-entry general ledger, bank API
+  integration, expense approval workflows — remain out of scope.

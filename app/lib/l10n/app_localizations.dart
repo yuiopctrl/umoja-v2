@@ -2405,7 +2405,7 @@ abstract class AppLocalizations {
   /// No description provided for @adjustmentIncreaseOption.
   ///
   /// In sw, this message translates to:
-  /// **'Ongeza Deni'**
+  /// **'Ongeza'**
   String get adjustmentIncreaseOption;
 
   /// No description provided for @adjustmentReduceOption.
@@ -2911,6 +2911,588 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Hitilafu imetokea. Jaribu tena.'**
   String get financialAccountErrorUnexpected;
+
+  /// No description provided for @financialAccountErrorAmountMustBePositive.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi lazima kiwe zaidi ya sifuri.'**
+  String get financialAccountErrorAmountMustBePositive;
+
+  /// No description provided for @financialAccountErrorCategoryWrongType.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kategoria hiyo haiwezi kutumika kwa aina hii ya kiingilio.'**
+  String get financialAccountErrorCategoryWrongType;
+
+  /// No description provided for @financialAccountErrorCategoryInactive.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kategoria hii haifanyi kazi tena.'**
+  String get financialAccountErrorCategoryInactive;
+
+  /// No description provided for @financialAccountErrorIdempotencyKeyConflict.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ombi hili linagongana na lililotangulia. Tafadhali onyesha upya na ujaribu tena.'**
+  String get financialAccountErrorIdempotencyKeyConflict;
+
+  /// No description provided for @financialAccountErrorReversalReasonRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu ya kubatilisha inahitajika.'**
+  String get financialAccountErrorReversalReasonRequired;
+
+  /// No description provided for @financialAccountErrorEntryAlreadyReversed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiingilio hiki tayari kimebatilishwa.'**
+  String get financialAccountErrorEntryAlreadyReversed;
+
+  /// No description provided for @financialAccountErrorAdjustmentReasonRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu inahitajika.'**
+  String get financialAccountErrorAdjustmentReasonRequired;
+
+  /// No description provided for @financialAccountErrorReconciliationCancellationReasonRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu ya kufuta inahitajika.'**
+  String get financialAccountErrorReconciliationCancellationReasonRequired;
+
+  /// No description provided for @financialAccountErrorReconciliationAlreadyCancelled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ulinganishaji huu tayari umefutwa.'**
+  String get financialAccountErrorReconciliationAlreadyCancelled;
+
+  /// No description provided for @financialAccountPaymentLedgerLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo ya Mwanachama — Risiti {receiptNumber}'**
+  String financialAccountPaymentLedgerLabel(String receiptNumber);
+
+  /// No description provided for @financialAccountPaymentReversalLedgerLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo Yamebatilishwa — Risiti {receiptNumber}'**
+  String financialAccountPaymentReversalLedgerLabel(String receiptNumber);
+
+  /// No description provided for @financialAccountManualIncomeLedgerLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mapato — {category}'**
+  String financialAccountManualIncomeLedgerLabel(String category);
+
+  /// No description provided for @financialAccountExpenseLedgerLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Matumizi — {category}'**
+  String financialAccountExpenseLedgerLabel(String category);
+
+  /// No description provided for @financialAccountManualIncomeReversalLedgerLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mapato Yamerekebishwa — {category}'**
+  String financialAccountManualIncomeReversalLedgerLabel(String category);
+
+  /// No description provided for @financialAccountExpenseReversalLedgerLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Matumizi Yamerekebishwa — {category}'**
+  String financialAccountExpenseReversalLedgerLabel(String category);
+
+  /// No description provided for @financialAccountAdjustmentLedgerLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho ya Fedha — {reason}'**
+  String financialAccountAdjustmentLedgerLabel(String reason);
+
+  /// No description provided for @financeTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Fedha'**
+  String get financeTitle;
+
+  /// No description provided for @financeAccountsEntrySubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Simamia akaunti za fedha taslimu, benki, na simu'**
+  String get financeAccountsEntrySubtitle;
+
+  /// No description provided for @financialPositionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali ya Fedha'**
+  String get financialPositionTitle;
+
+  /// No description provided for @financialPositionEntrySubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mapato, matumizi, na mahali fedha za kikundi zilipo'**
+  String get financialPositionEntrySubtitle;
+
+  /// No description provided for @financialPositionPickRangeAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Chagua Kipindi'**
+  String get financialPositionPickRangeAction;
+
+  /// No description provided for @financialPositionClearRangeAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Futa'**
+  String get financialPositionClearRangeAction;
+
+  /// No description provided for @financialPositionTotalBalanceLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Fedha'**
+  String get financialPositionTotalBalanceLabel;
+
+  /// No description provided for @financialPositionIncomeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mapato'**
+  String get financialPositionIncomeLabel;
+
+  /// No description provided for @financialPositionExpenseLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Matumizi'**
+  String get financialPositionExpenseLabel;
+
+  /// No description provided for @financialPositionNetResultLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Matokeo Halisi'**
+  String get financialPositionNetResultLabel;
+
+  /// No description provided for @financialPositionAccountsSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Fedha kwa Akaunti'**
+  String get financialPositionAccountsSectionTitle;
+
+  /// No description provided for @financialPositionNoAccountsMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna akaunti za fedha bado.'**
+  String get financialPositionNoAccountsMessage;
+
+  /// No description provided for @financialPositionOtherClassificationsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Uainishaji Mwingine'**
+  String get financialPositionOtherClassificationsTitle;
+
+  /// No description provided for @financialPositionPassThroughLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Fedha Zisizo Pato la Kikundi'**
+  String get financialPositionPassThroughLabel;
+
+  /// No description provided for @financialPositionShareCapitalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji wa Hisa Uliopokelewa'**
+  String get financialPositionShareCapitalLabel;
+
+  /// No description provided for @financialPositionWalletLiabilityLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni la Salio la Wanachama'**
+  String get financialPositionWalletLiabilityLabel;
+
+  /// No description provided for @financialPositionOutstandingObligationsLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni la Wanachama Lililobaki'**
+  String get financialPositionOutstandingObligationsLabel;
+
+  /// No description provided for @recordIncomeTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rekodi Mapato'**
+  String get recordIncomeTitle;
+
+  /// No description provided for @recordExpenseTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rekodi Matumizi'**
+  String get recordExpenseTitle;
+
+  /// No description provided for @recordIncomeAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rekodi Mapato'**
+  String get recordIncomeAction;
+
+  /// No description provided for @recordExpenseAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rekodi Matumizi'**
+  String get recordExpenseAction;
+
+  /// No description provided for @recordIncomeConfirmAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha Mapato'**
+  String get recordIncomeConfirmAction;
+
+  /// No description provided for @recordExpenseConfirmAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha Matumizi'**
+  String get recordExpenseConfirmAction;
+
+  /// No description provided for @manualEntryValidationError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Weka kiasi sahihi na chagua kategoria.'**
+  String get manualEntryValidationError;
+
+  /// No description provided for @manualEntryAmountRequiredError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Weka kiasi sahihi.'**
+  String get manualEntryAmountRequiredError;
+
+  /// No description provided for @manualEntryCategoryRequiredError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Chagua kategoria.'**
+  String get manualEntryCategoryRequiredError;
+
+  /// No description provided for @referenceDisplayLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kumbukumbu'**
+  String get referenceDisplayLabel;
+
+  /// No description provided for @manualEntryNoIncomeCategoriesMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Bado hakuna kategoria za mapato zilizowekwa kwa kikundi hiki.'**
+  String get manualEntryNoIncomeCategoriesMessage;
+
+  /// No description provided for @manualEntryNoExpenseCategoriesMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Bado hakuna kategoria za matumizi zilizowekwa kwa kikundi hiki.'**
+  String get manualEntryNoExpenseCategoriesMessage;
+
+  /// No description provided for @manualEntryManageCategoriesAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Simamia Kategoria'**
+  String get manualEntryManageCategoriesAction;
+
+  /// No description provided for @financeCategoriesEntrySubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ongeza na simamia kategoria za mapato/matumizi'**
+  String get financeCategoriesEntrySubtitle;
+
+  /// No description provided for @recordIncomeSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mapato yamerekodiwa.'**
+  String get recordIncomeSuccessMessage;
+
+  /// No description provided for @recordExpenseSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Matumizi yamerekodiwa.'**
+  String get recordExpenseSuccessMessage;
+
+  /// No description provided for @incomeCategoryFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina ya Mapato'**
+  String get incomeCategoryFieldLabel;
+
+  /// No description provided for @expenseCategoryFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina ya Matumizi'**
+  String get expenseCategoryFieldLabel;
+
+  /// No description provided for @amountFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi'**
+  String get amountFieldLabel;
+
+  /// No description provided for @effectiveDateFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe'**
+  String get effectiveDateFieldLabel;
+
+  /// No description provided for @descriptionFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo'**
+  String get descriptionFieldLabel;
+
+  /// No description provided for @referenceFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kumbukumbu (hiari)'**
+  String get referenceFieldLabel;
+
+  /// No description provided for @financialCategoriesTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kategoria za Fedha'**
+  String get financialCategoriesTitle;
+
+  /// No description provided for @financialCategoryTypeIncome.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mapato'**
+  String get financialCategoryTypeIncome;
+
+  /// No description provided for @financialCategoryTypeExpense.
+  ///
+  /// In sw, this message translates to:
+  /// **'Matumizi'**
+  String get financialCategoryTypeExpense;
+
+  /// No description provided for @addCategoryAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ongeza Kategoria'**
+  String get addCategoryAction;
+
+  /// No description provided for @categoryNameFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jina la Kategoria'**
+  String get categoryNameFieldLabel;
+
+  /// No description provided for @seedDefaultCategoriesAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ongeza Kategoria za Kawaida'**
+  String get seedDefaultCategoriesAction;
+
+  /// No description provided for @cashbookTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Miamala ya Fedha'**
+  String get cashbookTitle;
+
+  /// No description provided for @cashbookFilterPayments.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo'**
+  String get cashbookFilterPayments;
+
+  /// No description provided for @cashbookFilterIncome.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mapato'**
+  String get cashbookFilterIncome;
+
+  /// No description provided for @cashbookFilterExpense.
+  ///
+  /// In sw, this message translates to:
+  /// **'Matumizi'**
+  String get cashbookFilterExpense;
+
+  /// No description provided for @cashbookFilterTransfers.
+  ///
+  /// In sw, this message translates to:
+  /// **'Uhamisho'**
+  String get cashbookFilterTransfers;
+
+  /// No description provided for @cashbookFilterAdjustments.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho'**
+  String get cashbookFilterAdjustments;
+
+  /// No description provided for @cashbookEntryReversedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imerekebishwa'**
+  String get cashbookEntryReversedLabel;
+
+  /// No description provided for @viewCashbookAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia Miamala'**
+  String get viewCashbookAction;
+
+  /// No description provided for @reconciliationTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ulinganishaji wa Akaunti'**
+  String get reconciliationTitle;
+
+  /// No description provided for @reconciliationAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Linganisha'**
+  String get reconciliationAction;
+
+  /// No description provided for @systemBalanceLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio la Mfumo'**
+  String get systemBalanceLabel;
+
+  /// No description provided for @statementBalanceLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio la Taarifa'**
+  String get statementBalanceLabel;
+
+  /// No description provided for @differenceLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tofauti'**
+  String get differenceLabel;
+
+  /// No description provided for @reconciliationDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Ulinganishaji'**
+  String get reconciliationDateLabel;
+
+  /// No description provided for @reconciliationNotesLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo (hiari)'**
+  String get reconciliationNotesLabel;
+
+  /// No description provided for @reconciliationSaveAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hifadhi Ulinganishaji'**
+  String get reconciliationSaveAction;
+
+  /// No description provided for @reconciliationBalancedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imelingana'**
+  String get reconciliationBalancedMessage;
+
+  /// No description provided for @reconciliationDiscrepancyLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tofauti Imepatikana'**
+  String get reconciliationDiscrepancyLabel;
+
+  /// No description provided for @reconciliationHistoryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Historia ya Ulinganishaji'**
+  String get reconciliationHistoryTitle;
+
+  /// No description provided for @reconciliationHistoryEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna ulinganishaji uliorekodiwa bado.'**
+  String get reconciliationHistoryEmptyMessage;
+
+  /// No description provided for @reconciliationCancelledLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imefutwa'**
+  String get reconciliationCancelledLabel;
+
+  /// No description provided for @lastReconciledLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ulinganishaji wa Mwisho'**
+  String get lastReconciledLabel;
+
+  /// No description provided for @cancelReconciliationConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Futa Ulinganishaji?'**
+  String get cancelReconciliationConfirmTitle;
+
+  /// No description provided for @cancelReconciliationConfirmMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rekodi hii ya ulinganishaji itawekwa alama imefutwa. Ushahidi wa asili unabaki, hauandikwi upya.'**
+  String get cancelReconciliationConfirmMessage;
+
+  /// No description provided for @cancelReconciliationConfirmAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Futa Ulinganishaji'**
+  String get cancelReconciliationConfirmAction;
+
+  /// No description provided for @cancelReconciliationDefaultReason.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imefutwa na mtumiaji'**
+  String get cancelReconciliationDefaultReason;
+
+  /// No description provided for @financialAdjustmentTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho ya Fedha'**
+  String get financialAdjustmentTitle;
+
+  /// No description provided for @financialAdjustmentAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho ya Fedha'**
+  String get financialAdjustmentAction;
+
+  /// No description provided for @financialAdjustmentConfirmAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha Marekebisho'**
+  String get financialAdjustmentConfirmAction;
+
+  /// No description provided for @financialAdjustmentSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho ya fedha yamerekodiwa.'**
+  String get financialAdjustmentSuccessMessage;
+
+  /// No description provided for @financialAdjustmentReasonFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu'**
+  String get financialAdjustmentReasonFieldLabel;
+
+  /// No description provided for @adjustmentDecreaseOption.
+  ///
+  /// In sw, this message translates to:
+  /// **'Punguza'**
+  String get adjustmentDecreaseOption;
+
+  /// No description provided for @entryReversalTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Batilisha Kiingilio'**
+  String get entryReversalTitle;
+
+  /// No description provided for @entryReversalConfirmAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha Kubatilisha'**
+  String get entryReversalConfirmAction;
+
+  /// No description provided for @entryReversalSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiingilio kimebatilishwa.'**
+  String get entryReversalSuccessMessage;
+
+  /// No description provided for @entryAlreadyReversedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiingilio hiki tayari kimebatilishwa.'**
+  String get entryAlreadyReversedMessage;
 
   /// No description provided for @supabaseConfigMissing.
   ///

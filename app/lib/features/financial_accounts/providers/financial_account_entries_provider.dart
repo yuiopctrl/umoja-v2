@@ -4,7 +4,15 @@ import '../../auth/providers/selected_group_provider.dart';
 import '../domain/financial_account_entry_page.dart';
 import 'financial_account_repository_provider.dart';
 
-typedef FinancialAccountEntriesQuery = ({String accountId, int limit});
+typedef FinancialAccountEntriesQuery = ({
+  String accountId,
+  int limit,
+  DateTime? dateFrom,
+  DateTime? dateTo,
+  String? entryType,
+  String? sourceType,
+  String? categoryId,
+});
 
 /// `.autoDispose` for the same freshness reason as
 /// [financialAccountDetailProvider] (see UAT-FIX-01).
@@ -23,5 +31,10 @@ final financialAccountEntriesProvider = FutureProvider.autoDispose
         groupId: selectedGroup.membership.group.groupId,
         accountId: query.accountId,
         limit: query.limit,
+        dateFrom: query.dateFrom,
+        dateTo: query.dateTo,
+        entryType: query.entryType,
+        sourceType: query.sourceType,
+        categoryId: query.categoryId,
       );
     });

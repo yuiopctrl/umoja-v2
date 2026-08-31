@@ -23,6 +23,14 @@ const financialAccountAdminPermissions = [
   'financial_account.view',
   'financial_account.manage',
   'financial_account.transfer.create',
+  'financial_entry.view',
+  'financial_income.create',
+  'financial_expense.create',
+  'financial_entry.reverse',
+  'financial_reconciliation.view',
+  'financial_reconciliation.create',
+  'financial_adjustment.create',
+  'financial_report.view',
 ];
 
 MembershipContext financialAccountMembership({

@@ -7,6 +7,7 @@ import '../providers/financial_account_detail_provider.dart';
 import '../providers/financial_account_entries_provider.dart';
 import '../providers/financial_account_repository_provider.dart';
 import '../providers/financial_accounts_list_provider.dart';
+import '../providers/financial_position_provider.dart';
 
 final _log = Logger('FinancialAccountTransferController');
 
@@ -62,6 +63,7 @@ class FinancialAccountTransferController
       ref.invalidate(financialAccountDetailProvider(fromAccountId));
       ref.invalidate(financialAccountDetailProvider(toAccountId));
       ref.invalidate(financialAccountEntriesProvider);
+      ref.invalidate(financialPositionProvider);
       state = FinancialAccountTransferState(lastResult: result);
       return true;
     } on FinancialAccountFailure catch (error) {

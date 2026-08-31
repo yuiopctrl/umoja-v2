@@ -20,6 +20,19 @@ loans, wallet, or Hisa actually work.
 - Loan disbursement is a cash outflow but not an expense.
 - Loan principal repayment is a cash inflow but not income.
 - Hisa/share capital is not normal group income.
+- Internal transfers between a group's own financial accounts are not
+  income or expense — they net to zero across the group and are
+  excluded from income/expense totals.
+- Financial reconciliation compares the derived ledger balance against
+  an external statement/count; it never automatically adjusts the
+  ledger. A non-zero difference is recorded as evidence only.
+- A correction to a posted financial entry is always a reversal
+  followed by a new, correct entry — never an in-place edit of the
+  original.
+- Umoja v2 does not implement a full double-entry general ledger
+  (Phase 08B and earlier) — the cashbook plus `source_type`
+  classification tags are the model; do not assume ledger accounts,
+  debits/credits, or a chart of accounts exist anywhere in the schema.
 - Financial balances must be reproducible from authoritative ledgers.
 - Posted financial history is never silently edited or deleted.
 - `effective_at` and `created_at` are distinct (see
