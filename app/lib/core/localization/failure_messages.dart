@@ -1,6 +1,7 @@
 import '../../features/auth/data/auth_failure.dart';
 import '../../features/contributions/data/contribution_failure.dart';
 import '../../features/financial_accounts/data/financial_account_failure.dart';
+import '../../features/loans/data/loan_failure.dart';
 import '../../features/members/data/member_failure.dart';
 import '../../features/payments/data/payment_failure.dart';
 import '../../l10n/app_localizations.dart';
@@ -161,6 +162,39 @@ String financialAccountFailureMessage(
     FinancialAccountFailureType.network => l10n.financialAccountErrorNetwork,
     FinancialAccountFailureType.unexpected =>
       l10n.financialAccountErrorUnexpected,
+  };
+}
+
+/// Localizes a [LoanFailureType] for display — the single place this
+/// mapping happens, so no screen pattern-matches [LoanFailure.message].
+String loanFailureMessage(AppLocalizations l10n, LoanFailureType type) {
+  return switch (type) {
+    LoanFailureType.nameRequired => l10n.loanErrorNameRequired,
+    LoanFailureType.duplicateCode => l10n.loanErrorDuplicateCode,
+    LoanFailureType.minimumPrincipalMustBePositive =>
+      l10n.loanErrorMinimumPrincipalMustBePositive,
+    LoanFailureType.maximumPrincipalBelowMinimum =>
+      l10n.loanErrorMaximumPrincipalBelowMinimum,
+    LoanFailureType.minimumTermMustBePositive =>
+      l10n.loanErrorMinimumTermMustBePositive,
+    LoanFailureType.maximumTermBelowMinimum =>
+      l10n.loanErrorMaximumTermBelowMinimum,
+    LoanFailureType.interestRateInvalid => l10n.loanErrorInterestRateInvalid,
+    LoanFailureType.productInactive => l10n.loanErrorProductInactive,
+    LoanFailureType.principalMustBePositive =>
+      l10n.loanErrorPrincipalMustBePositive,
+    LoanFailureType.principalBelowProductMinimum =>
+      l10n.loanErrorPrincipalBelowProductMinimum,
+    LoanFailureType.principalAboveProductMaximum =>
+      l10n.loanErrorPrincipalAboveProductMaximum,
+    LoanFailureType.termOutOfProductRange =>
+      l10n.loanErrorTermOutOfProductRange,
+    LoanFailureType.borrowerNotActive => l10n.loanErrorBorrowerNotActive,
+    LoanFailureType.notDraft => l10n.loanErrorNotDraft,
+    LoanFailureType.notFound => l10n.loanErrorNotFound,
+    LoanFailureType.permissionDenied => l10n.loanErrorPermissionDenied,
+    LoanFailureType.network => l10n.loanErrorNetwork,
+    LoanFailureType.unexpected => l10n.loanErrorUnexpected,
   };
 }
 

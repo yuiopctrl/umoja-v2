@@ -2159,4 +2159,251 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get chargeOutstandingLabel => 'Deni Lililobaki';
+
+  @override
+  String get loansTitle => 'Mikopo';
+
+  @override
+  String get homeLoansShortcutSubtitle => 'Aina za mikopo na akaunti za mikopo';
+
+  @override
+  String get loanAccountsTitle => 'Akaunti za Mikopo';
+
+  @override
+  String get loanAccountsEntrySubtitle =>
+      'Angalia na tengeneza mikopo ya wanachama';
+
+  @override
+  String get loanProductsTitle => 'Aina za Mikopo';
+
+  @override
+  String get loanProductsEntrySubtitle => 'Simamia sera za mikopo za kikundi';
+
+  @override
+  String get loanProductNewAction => 'Aina Mpya ya Mkopo';
+
+  @override
+  String get loanProductActiveBadge => 'Inatumika';
+
+  @override
+  String get loanProductInactiveBadge => 'Haitumiki';
+
+  @override
+  String get loanProductsEmptyTitle => 'Hakuna Aina za Mikopo';
+
+  @override
+  String get loanProductsEmptyMessage =>
+      'Hakuna aina za mikopo zilizowekwa kwa kikundi hiki bado.';
+
+  @override
+  String get loanProductEditTitle => 'Hariri Aina ya Mkopo';
+
+  @override
+  String get loanProductNewTitle => 'Aina Mpya ya Mkopo';
+
+  @override
+  String get sectionLoanProductDetails => 'Maelezo ya Aina ya Mkopo';
+
+  @override
+  String get loanProductCodeFieldLabel => 'Msimbo';
+
+  @override
+  String get loanProductNameFieldLabel => 'Jina';
+
+  @override
+  String get loanProductDescriptionFieldLabel => 'Maelezo (hiari)';
+
+  @override
+  String get sectionLoanProductTerms => 'Masharti ya Mkopo';
+
+  @override
+  String get loanProductMinimumPrincipalFieldLabel =>
+      'Kiwango cha Chini cha Mkopo';
+
+  @override
+  String get loanProductMaximumPrincipalFieldLabel =>
+      'Kiwango cha Juu cha Mkopo (hiari)';
+
+  @override
+  String get loanProductMinimumTermFieldLabel => 'Muda wa Chini (miezi)';
+
+  @override
+  String get loanProductMaximumTermFieldLabel => 'Muda wa Juu (miezi)';
+
+  @override
+  String get loanProductInterestRateFieldLabel => 'Kiwango cha Riba (%)';
+
+  @override
+  String get loanProductInterestRateBasisFieldLabel => 'Msingi wa Riba';
+
+  @override
+  String get loanProductInterestMethodFieldLabel => 'Njia ya Riba';
+
+  @override
+  String get loanInterestRateBasisMonthly => 'Kila Mwezi';
+
+  @override
+  String get loanInterestRateBasisAnnual => 'Kila Mwaka';
+
+  @override
+  String get loanInterestMethodFlat => 'Riba Tambarare';
+
+  @override
+  String get loanInterestMethodReducingBalance => 'Riba Inayopungua';
+
+  @override
+  String get loanStatusDraft => 'Rasimu';
+
+  @override
+  String get loanStatusSubmitted => 'Imewasilishwa';
+
+  @override
+  String get loanStatusApproved => 'Imeidhinishwa';
+
+  @override
+  String get loanStatusRejected => 'Imekataliwa';
+
+  @override
+  String get loanStatusCancelled => 'Imeghairiwa';
+
+  @override
+  String get loanStatusDisbursed => 'Imetolewa';
+
+  @override
+  String get loanStatusActive => 'Inaendelea';
+
+  @override
+  String get loanStatusClosed => 'Imefungwa';
+
+  @override
+  String get newLoanAction => 'Mkopo Mpya';
+
+  @override
+  String get loanAccountsEmptyTitle => 'Hakuna Mikopo';
+
+  @override
+  String get loanAccountsEmptyMessage =>
+      'Hakuna akaunti za mikopo zilizotengenezwa bado.';
+
+  @override
+  String get newLoanTitle => 'Mkopo Mpya';
+
+  @override
+  String get newLoanFormValidationError =>
+      'Weka kiasi sahihi cha mkopo na muda.';
+
+  @override
+  String get loanAccountPrincipalFieldLabel => 'Kiasi cha Mkopo';
+
+  @override
+  String get loanAccountTermFieldLabel => 'Muda (miezi)';
+
+  @override
+  String get loanAccountFirstRepaymentDateFieldLabel =>
+      'Tarehe ya Kwanza ya Kulipa';
+
+  @override
+  String get loanSchedulePreviewAction => 'Onyesha Ratiba';
+
+  @override
+  String get loanScheduleTitle => 'Ratiba ya Marejesho';
+
+  @override
+  String loanInstallmentNumberLabel(int number) {
+    return 'Awamu $number';
+  }
+
+  @override
+  String get loanTotalInterestLabel => 'Jumla ya Riba';
+
+  @override
+  String get loanTotalRepayableLabel => 'Jumla ya Kulipwa';
+
+  @override
+  String get loanSaveDraftAction => 'Hifadhi Rasimu';
+
+  @override
+  String get loanDraftSavedMessage => 'Rasimu ya mkopo imehifadhiwa.';
+
+  @override
+  String get loanAccountDetailTitle => 'Maelezo ya Mkopo';
+
+  @override
+  String get loanCancelDraftConfirmTitle => 'Ghairi Rasimu ya Mkopo?';
+
+  @override
+  String get loanCancelDraftConfirmMessage =>
+      'Rasimu hii ya mkopo itaghairiwa. Hatua hii haiwezi kutenduliwa.';
+
+  @override
+  String get loanCancelDraftAction => 'Ghairi Rasimu';
+
+  @override
+  String get loanRegenerateScheduleAction => 'Tengeneza Ratiba Upya';
+
+  @override
+  String get loanErrorNameRequired => 'Jina na msimbo vinahitajika.';
+
+  @override
+  String get loanErrorDuplicateCode =>
+      'Msimbo huo tayari unatumika katika kikundi hiki.';
+
+  @override
+  String get loanErrorMinimumPrincipalMustBePositive =>
+      'Kiwango cha chini cha mkopo lazima kiwe zaidi ya sifuri.';
+
+  @override
+  String get loanErrorMaximumPrincipalBelowMinimum =>
+      'Kiwango cha juu cha mkopo hakiwezi kuwa chini ya kiwango cha chini.';
+
+  @override
+  String get loanErrorMinimumTermMustBePositive =>
+      'Muda wa chini lazima uwe zaidi ya sifuri.';
+
+  @override
+  String get loanErrorMaximumTermBelowMinimum =>
+      'Muda wa juu hauwezi kuwa chini ya muda wa chini.';
+
+  @override
+  String get loanErrorInterestRateInvalid => 'Weka kiwango sahihi cha riba.';
+
+  @override
+  String get loanErrorProductInactive => 'Aina hii ya mkopo haitumiki tena.';
+
+  @override
+  String get loanErrorPrincipalMustBePositive =>
+      'Kiasi cha mkopo lazima kiwe zaidi ya sifuri.';
+
+  @override
+  String get loanErrorPrincipalBelowProductMinimum =>
+      'Kiasi cha mkopo kiko chini ya kiwango cha chini cha aina hii ya mkopo.';
+
+  @override
+  String get loanErrorPrincipalAboveProductMaximum =>
+      'Kiasi cha mkopo kiko juu ya kiwango cha juu cha aina hii ya mkopo.';
+
+  @override
+  String get loanErrorTermOutOfProductRange =>
+      'Muda uko nje ya kiwango kinachoruhusiwa cha aina hii ya mkopo.';
+
+  @override
+  String get loanErrorBorrowerNotActive =>
+      'Mwanachama huyu si mwanachama anayeendelea wa kikundi.';
+
+  @override
+  String get loanErrorNotDraft =>
+      'Mkopo huu si rasimu tena na hauwezi kuhaririwa.';
+
+  @override
+  String get loanErrorNotFound => 'Haikupatikana.';
+
+  @override
+  String get loanErrorPermissionDenied => 'Huna ruhusa ya kufanya hivyo.';
+
+  @override
+  String get loanErrorNetwork =>
+      'Hitilafu ya mtandao. Angalia muunganisho wako na ujaribu tena.';
+
+  @override
+  String get loanErrorUnexpected => 'Hitilafu imetokea. Tafadhali jaribu tena.';
 }

@@ -290,4 +290,30 @@ class AppRoutes {
   static const walletDetail = '/wallet/:membershipId';
   static String walletDetailPath(String membershipId) =>
       '/wallet/$membershipId';
+
+  // -- Loans (Prompt 09A: Loan Product + Loan Account + Schedule
+  // Foundation) ------------------------------------------------------------
+  //
+  // 09A only implements draft creation/editing — no approval,
+  // disbursement, or repayment routes exist yet (later phases).
+
+  /// Mikopo: the Loans overview — Aina za Mikopo + Akaunti za Mikopo,
+  /// mirroring Fedha's minimal-landing pattern.
+  static const loansHome = '/loans';
+
+  static const loanProductsList = '/loans/products';
+  static const loanProductNew = '/loans/products/new';
+
+  /// Path template; use [loanProductEditPath] for a concrete URL.
+  static const loanProductEdit = '/loans/products/:productId/edit';
+  static String loanProductEditPath(String productId) =>
+      '/loans/products/$productId/edit';
+
+  static const loanAccountsList = '/loans/accounts';
+  static const newLoanAccount = '/loans/accounts/new';
+
+  /// Path template; use [loanAccountDetailPath] for a concrete URL.
+  static const loanAccountDetail = '/loans/accounts/:loanAccountId';
+  static String loanAccountDetailPath(String loanAccountId) =>
+      '/loans/accounts/$loanAccountId';
 }

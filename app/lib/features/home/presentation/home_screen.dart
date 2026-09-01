@@ -127,6 +127,20 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
           ],
+          if (membership.hasPermission('loan.view') ||
+              membership.hasPermission('loan_product.view')) ...[
+            const SizedBox(height: UmojaSpacing.lg),
+            UmojaCard(
+              key: const Key('homeLoansShortcut'),
+              padding: EdgeInsets.zero,
+              child: UmojaListTile(
+                leading: const Icon(Icons.request_quote_outlined),
+                title: l10n.loansTitle,
+                subtitle: Text(l10n.homeLoansShortcutSubtitle),
+                onTap: () => context.push(AppRoutes.loansHome),
+              ),
+            ),
+          ],
         ],
       ),
     );

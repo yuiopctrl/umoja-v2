@@ -43,6 +43,12 @@ import '../../features/contributions/presentation/contribution_types_list_screen
 import '../../features/contributions/presentation/contributions_home_screen.dart';
 import '../../features/groups/presentation/select_group_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/loans/presentation/loan_account_detail_screen.dart';
+import '../../features/loans/presentation/loan_accounts_list_screen.dart';
+import '../../features/loans/presentation/loan_product_form_screen.dart';
+import '../../features/loans/presentation/loan_products_list_screen.dart';
+import '../../features/loans/presentation/loans_home_screen.dart';
+import '../../features/loans/presentation/new_loan_screen.dart';
 import '../../features/members/presentation/member_charges_screen.dart';
 import '../../features/members/presentation/member_detail_screen.dart';
 import '../../features/members/presentation/member_form_screen.dart';
@@ -410,6 +416,38 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: AppRoutes.walletDetail,
             builder: (context, state) => MemberWalletScreen(
               membershipId: state.pathParameters['membershipId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.loansHome,
+            builder: (context, state) => const LoansHomeScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.loanProductsList,
+            builder: (context, state) => const LoanProductsListScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.loanProductNew,
+            builder: (context, state) => const LoanProductFormScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.loanProductEdit,
+            builder: (context, state) => LoanProductFormScreen(
+              productId: state.pathParameters['productId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.loanAccountsList,
+            builder: (context, state) => const LoanAccountsListScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.newLoanAccount,
+            builder: (context, state) => const NewLoanScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.loanAccountDetail,
+            builder: (context, state) => LoanAccountDetailScreen(
+              loanAccountId: state.pathParameters['loanAccountId']!,
             ),
           ),
         ],

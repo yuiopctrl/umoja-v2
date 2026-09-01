@@ -19,6 +19,14 @@ loans, wallet, or Hisa actually work.
 - Pass-through payouts are not group expenses.
 - Loan disbursement is a cash outflow but not an expense.
 - Loan principal repayment is a cash inflow but not income.
+- A draft loan account is not a cash transaction, not a funded
+  receivable, and creates no income-recognition event — creating a
+  loan account or generating/regenerating its repayment schedule posts
+  no cashbook entry and must leave Financial Position unchanged (see
+  [docs/product/loans.md](../product/loans.md)).
+- A Loan Account snapshots its financial terms from its Loan Product at
+  creation time; editing a Loan Product afterwards never alters any
+  Loan Account already created from it.
 - Hisa/share capital is not normal group income.
 - Internal transfers between a group's own financial accounts are not
   income or expense — they net to zero across the group and are

@@ -2150,4 +2150,250 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chargeOutstandingLabel => 'Outstanding';
+
+  @override
+  String get loansTitle => 'Loans';
+
+  @override
+  String get homeLoansShortcutSubtitle => 'Loan products and loan accounts';
+
+  @override
+  String get loanAccountsTitle => 'Loan Accounts';
+
+  @override
+  String get loanAccountsEntrySubtitle => 'View and create member loans';
+
+  @override
+  String get loanProductsTitle => 'Loan Products';
+
+  @override
+  String get loanProductsEntrySubtitle =>
+      'Manage the group\'s lending policies';
+
+  @override
+  String get loanProductNewAction => 'New Loan Product';
+
+  @override
+  String get loanProductActiveBadge => 'Active';
+
+  @override
+  String get loanProductInactiveBadge => 'Inactive';
+
+  @override
+  String get loanProductsEmptyTitle => 'No Loan Products';
+
+  @override
+  String get loanProductsEmptyMessage =>
+      'No loan products have been set up for this group yet.';
+
+  @override
+  String get loanProductEditTitle => 'Edit Loan Product';
+
+  @override
+  String get loanProductNewTitle => 'New Loan Product';
+
+  @override
+  String get sectionLoanProductDetails => 'Product Details';
+
+  @override
+  String get loanProductCodeFieldLabel => 'Code';
+
+  @override
+  String get loanProductNameFieldLabel => 'Name';
+
+  @override
+  String get loanProductDescriptionFieldLabel => 'Description (optional)';
+
+  @override
+  String get sectionLoanProductTerms => 'Lending Terms';
+
+  @override
+  String get loanProductMinimumPrincipalFieldLabel => 'Minimum Principal';
+
+  @override
+  String get loanProductMaximumPrincipalFieldLabel =>
+      'Maximum Principal (optional)';
+
+  @override
+  String get loanProductMinimumTermFieldLabel => 'Minimum Term (months)';
+
+  @override
+  String get loanProductMaximumTermFieldLabel => 'Maximum Term (months)';
+
+  @override
+  String get loanProductInterestRateFieldLabel => 'Interest Rate (%)';
+
+  @override
+  String get loanProductInterestRateBasisFieldLabel => 'Interest Rate Basis';
+
+  @override
+  String get loanProductInterestMethodFieldLabel => 'Interest Method';
+
+  @override
+  String get loanInterestRateBasisMonthly => 'Monthly';
+
+  @override
+  String get loanInterestRateBasisAnnual => 'Annual';
+
+  @override
+  String get loanInterestMethodFlat => 'Flat';
+
+  @override
+  String get loanInterestMethodReducingBalance => 'Reducing Balance';
+
+  @override
+  String get loanStatusDraft => 'Draft';
+
+  @override
+  String get loanStatusSubmitted => 'Submitted';
+
+  @override
+  String get loanStatusApproved => 'Approved';
+
+  @override
+  String get loanStatusRejected => 'Rejected';
+
+  @override
+  String get loanStatusCancelled => 'Cancelled';
+
+  @override
+  String get loanStatusDisbursed => 'Disbursed';
+
+  @override
+  String get loanStatusActive => 'Active';
+
+  @override
+  String get loanStatusClosed => 'Closed';
+
+  @override
+  String get newLoanAction => 'New Loan';
+
+  @override
+  String get loanAccountsEmptyTitle => 'No Loans';
+
+  @override
+  String get loanAccountsEmptyMessage =>
+      'No loan accounts have been created yet.';
+
+  @override
+  String get newLoanTitle => 'New Loan';
+
+  @override
+  String get newLoanFormValidationError => 'Enter a valid principal and term.';
+
+  @override
+  String get loanAccountPrincipalFieldLabel => 'Principal Amount';
+
+  @override
+  String get loanAccountTermFieldLabel => 'Term (months)';
+
+  @override
+  String get loanAccountFirstRepaymentDateFieldLabel => 'First Repayment Date';
+
+  @override
+  String get loanSchedulePreviewAction => 'Preview Schedule';
+
+  @override
+  String get loanScheduleTitle => 'Repayment Schedule';
+
+  @override
+  String loanInstallmentNumberLabel(int number) {
+    return 'Installment $number';
+  }
+
+  @override
+  String get loanTotalInterestLabel => 'Total Interest';
+
+  @override
+  String get loanTotalRepayableLabel => 'Total Repayable';
+
+  @override
+  String get loanSaveDraftAction => 'Save Draft';
+
+  @override
+  String get loanDraftSavedMessage => 'Loan draft saved.';
+
+  @override
+  String get loanAccountDetailTitle => 'Loan Detail';
+
+  @override
+  String get loanCancelDraftConfirmTitle => 'Cancel Loan Draft?';
+
+  @override
+  String get loanCancelDraftConfirmMessage =>
+      'This loan draft will be cancelled. This cannot be undone.';
+
+  @override
+  String get loanCancelDraftAction => 'Cancel Draft';
+
+  @override
+  String get loanRegenerateScheduleAction => 'Regenerate Schedule';
+
+  @override
+  String get loanErrorNameRequired => 'A name and code are required.';
+
+  @override
+  String get loanErrorDuplicateCode =>
+      'That product code is already used in this group.';
+
+  @override
+  String get loanErrorMinimumPrincipalMustBePositive =>
+      'The minimum principal must be greater than zero.';
+
+  @override
+  String get loanErrorMaximumPrincipalBelowMinimum =>
+      'The maximum principal cannot be below the minimum.';
+
+  @override
+  String get loanErrorMinimumTermMustBePositive =>
+      'The minimum term must be greater than zero.';
+
+  @override
+  String get loanErrorMaximumTermBelowMinimum =>
+      'The maximum term cannot be below the minimum.';
+
+  @override
+  String get loanErrorInterestRateInvalid => 'Enter a valid interest rate.';
+
+  @override
+  String get loanErrorProductInactive =>
+      'This loan product is no longer active.';
+
+  @override
+  String get loanErrorPrincipalMustBePositive =>
+      'The principal must be greater than zero.';
+
+  @override
+  String get loanErrorPrincipalBelowProductMinimum =>
+      'The principal is below this product\'s minimum.';
+
+  @override
+  String get loanErrorPrincipalAboveProductMaximum =>
+      'The principal is above this product\'s maximum.';
+
+  @override
+  String get loanErrorTermOutOfProductRange =>
+      'The term is outside this product\'s allowed range.';
+
+  @override
+  String get loanErrorBorrowerNotActive =>
+      'This member is not an active member of the group.';
+
+  @override
+  String get loanErrorNotDraft =>
+      'This loan is no longer a draft and can no longer be edited.';
+
+  @override
+  String get loanErrorNotFound => 'Not found.';
+
+  @override
+  String get loanErrorPermissionDenied =>
+      'You do not have permission to do that.';
+
+  @override
+  String get loanErrorNetwork =>
+      'Network error. Check your connection and try again.';
+
+  @override
+  String get loanErrorUnexpected => 'Something went wrong. Please try again.';
 }
