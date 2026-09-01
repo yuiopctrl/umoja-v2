@@ -91,6 +91,15 @@ String financialAccountEntryDisplayLabel(
       if (reason != null) {
         return l10n.financialAccountAdjustmentLedgerLabel(reason);
       }
+    case 'LOAN_DISBURSEMENT':
+      final loanNumber = entry.loanDisbursementLoanNumber;
+      final borrower = entry.loanDisbursementBorrowerDisplayName;
+      if (loanNumber != null && borrower != null) {
+        return l10n.financialAccountLoanDisbursementLedgerLabel(
+          loanNumber,
+          borrower,
+        );
+      }
   }
 
   return financialAccountEntryTypeLabel(l10n, entry.entryType);

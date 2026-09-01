@@ -27,6 +27,22 @@ loans, wallet, or Hisa actually work.
 - A Loan Account snapshots its financial terms from its Loan Product at
   creation time; editing a Loan Product afterwards never alters any
   Loan Account already created from it.
+- Submitting or approving a loan (Prompt 09B) is authorization only —
+  neither creates a cashbook entry, a funded receivable, or income of
+  any kind. Only disbursement moves money.
+- A loan's principal becomes a funded receivable at the instant of
+  disbursement, not before — and only ever by exactly the loan's
+  frozen principal amount, never an arbitrary operator-entered figure.
+- A loan's scheduled future interest is never recognized as group
+  income at disbursement — it remains a separate, contractual
+  "scheduled/unearned interest" figure until a later phase's repayment/
+  interest-recognition policy says otherwise.
+- A loan account may be disbursed at most once (Prompt 09B) — enforced
+  structurally (a unique constraint), not merely by application logic.
+- Once a loan has been disbursed, ordinary cancellation is blocked;
+  financial correction of a disbursed loan is deferred to a future
+  controlled reversal/correction phase, never solved by deleting
+  cashbook/disbursement rows.
 - Hisa/share capital is not normal group income.
 - Internal transfers between a group's own financial accounts are not
   income or expense — they net to zero across the group and are

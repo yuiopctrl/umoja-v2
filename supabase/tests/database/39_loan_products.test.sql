@@ -184,8 +184,9 @@ select ok(
   (select count(*) from public.role_permissions rp
    join public.roles r on r.id = rp.role_id
    join public.permissions p on p.id = rp.permission_id
-   where r.code = 'ADMIN' and p.code like 'loan%') = 7,
-  '14: ADMIN holds all 7 loan-module permissions'
+   where r.code = 'ADMIN' and p.code like 'loan%') = 12,
+  '14: ADMIN holds all 12 loan-module permissions (7 from Prompt 09A '
+  || 'plus 5 lifecycle permissions added in Prompt 09B)'
 );
 select ok(
   (select count(*) from public.role_permissions rp

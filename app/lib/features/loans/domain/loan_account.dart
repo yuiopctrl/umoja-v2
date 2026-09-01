@@ -1,3 +1,5 @@
+import 'loan_account_event.dart';
+import 'loan_disbursement.dart';
 import 'loan_installment.dart';
 
 /// One specific member's loan instance (Prompt 09A). NOT a cash
@@ -34,6 +36,8 @@ class LoanAccount {
     required this.createdAt,
     required this.updatedAt,
     this.installments = const [],
+    this.events = const [],
+    this.disbursement,
   });
 
   factory LoanAccount.fromJson(Map<String, dynamic> json) {
@@ -72,6 +76,19 @@ class LoanAccount {
                       LoanInstallment.fromJson(item as Map<String, dynamic>),
                 )
                 .toList(growable: false),
+      events: json['events'] == null
+          ? const []
+          : (json['events'] as List<dynamic>)
+                .map(
+                  (item) =>
+                      LoanAccountEvent.fromJson(item as Map<String, dynamic>),
+                )
+                .toList(growable: false),
+      disbursement: json['disbursement'] == null
+          ? null
+          : LoanDisbursement.fromJson(
+              json['disbursement'] as Map<String, dynamic>,
+            ),
     );
   }
 
@@ -104,15 +121,36 @@ class LoanAccount {
   final DateTime firstRepaymentDate;
 
   /// 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' | 'CANCELLED' |
-  /// 'DISBURSED' | 'ACTIVE' | 'CLOSED'. Only DRAFT and CANCELLED are
-  /// actually reachable in Prompt 09A — the rest are reserved for
-  /// later phases.
+  /// 'DISBURSED' | 'ACTIVE' | 'CLOSED'. DISBURSED is transactional and
+  /// never observed at rest in Prompt 09B — disbursement moves a loan
+  /// straight from APPROVED to ACTIVE (see docs/product/loans.md).
   final String status;
   final DateTime createdAt;
   final DateTime updatedAt;
   final List<LoanInstallment> installments;
 
+  /// The lifecycle audit trail (Prompt 09B) — never a second source of
+  /// current-status truth, only a history of how [status] got here.
+  final List<LoanAccountEvent> events;
+
+  /// Non-null only once `rpc_disburse_loan_account()` has succeeded.
+  final LoanDisbursement? disbursement;
+
   bool get isDraft => status == 'DRAFT';
+  bool get isSubmitted => status == 'SUBMITTED';
+  bool get isApproved => status == 'APPROVED';
+  bool get isRejected => status == 'REJECTED';
+  bool get isCancelled => status == 'CANCELLED';
+  bool get isFunded => status == 'DISBURSED' || status == 'ACTIVE';
+
+  /// Sum of every installment's interest — rendered directly from
+  /// server-provided installment rows, never independently computed.
+  double get totalInterest =>
+      installments.fold(0.0, (sum, i) => sum + i.interestDue);
+
+  /// Sum of every installment's total (principal + interest).
+  double get totalRepayable =>
+      installments.fold(0.0, (sum, i) => sum + i.totalDue);
 }
 
 /// One page of `rpc_list_loan_accounts()` results.

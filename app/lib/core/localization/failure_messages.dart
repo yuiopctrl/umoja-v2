@@ -191,6 +191,18 @@ String loanFailureMessage(AppLocalizations l10n, LoanFailureType type) {
       l10n.loanErrorTermOutOfProductRange,
     LoanFailureType.borrowerNotActive => l10n.loanErrorBorrowerNotActive,
     LoanFailureType.notDraft => l10n.loanErrorNotDraft,
+    LoanFailureType.scheduleMismatch => l10n.loanErrorScheduleMismatch,
+    LoanFailureType.notSubmitted => l10n.loanErrorNotSubmitted,
+    LoanFailureType.rejectionReasonRequired =>
+      l10n.loanErrorRejectionReasonRequired,
+    LoanFailureType.cancellationReasonRequired =>
+      l10n.loanErrorCancellationReasonRequired,
+    LoanFailureType.notCancellable => l10n.loanErrorNotCancellable,
+    LoanFailureType.notApproved => l10n.loanErrorNotApproved,
+    LoanFailureType.alreadyDisbursed => l10n.loanErrorAlreadyDisbursed,
+    LoanFailureType.financialAccountInactive =>
+      l10n.loanErrorFinancialAccountInactive,
+    LoanFailureType.insufficientBalance => l10n.loanErrorInsufficientBalance,
     LoanFailureType.notFound => l10n.loanErrorNotFound,
     LoanFailureType.permissionDenied => l10n.loanErrorPermissionDenied,
     LoanFailureType.network => l10n.loanErrorNetwork,

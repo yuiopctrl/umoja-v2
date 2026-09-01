@@ -43,12 +43,16 @@ import '../../features/contributions/presentation/contribution_types_list_screen
 import '../../features/contributions/presentation/contributions_home_screen.dart';
 import '../../features/groups/presentation/select_group_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/loans/presentation/cancel_loan_screen.dart';
+import '../../features/loans/presentation/disburse_loan_screen.dart';
+import '../../features/loans/presentation/edit_loan_terms_screen.dart';
 import '../../features/loans/presentation/loan_account_detail_screen.dart';
 import '../../features/loans/presentation/loan_accounts_list_screen.dart';
 import '../../features/loans/presentation/loan_product_form_screen.dart';
 import '../../features/loans/presentation/loan_products_list_screen.dart';
 import '../../features/loans/presentation/loans_home_screen.dart';
 import '../../features/loans/presentation/new_loan_screen.dart';
+import '../../features/loans/presentation/reject_loan_screen.dart';
 import '../../features/members/presentation/member_charges_screen.dart';
 import '../../features/members/presentation/member_detail_screen.dart';
 import '../../features/members/presentation/member_form_screen.dart';
@@ -447,6 +451,30 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.loanAccountDetail,
             builder: (context, state) => LoanAccountDetailScreen(
+              loanAccountId: state.pathParameters['loanAccountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.loanAccountEdit,
+            builder: (context, state) => EditLoanTermsScreen(
+              loanAccountId: state.pathParameters['loanAccountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.loanAccountReject,
+            builder: (context, state) => RejectLoanScreen(
+              loanAccountId: state.pathParameters['loanAccountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.loanAccountCancel,
+            builder: (context, state) => CancelLoanScreen(
+              loanAccountId: state.pathParameters['loanAccountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.loanAccountDisburse,
+            builder: (context, state) => DisburseLoanScreen(
               loanAccountId: state.pathParameters['loanAccountId']!,
             ),
           ),

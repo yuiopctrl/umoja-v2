@@ -23,6 +23,9 @@ class FinancialAccountEntry {
     this.manualEntryCategoryName,
     this.manualEntryStatus,
     this.adjustmentReason,
+    this.loanDisbursementLoanAccountId,
+    this.loanDisbursementLoanNumber,
+    this.loanDisbursementBorrowerDisplayName,
   });
 
   factory FinancialAccountEntry.fromJson(Map<String, dynamic> json) {
@@ -46,6 +49,12 @@ class FinancialAccountEntry {
       manualEntryCategoryName: json['manual_entry_category_name'] as String?,
       manualEntryStatus: json['manual_entry_status'] as String?,
       adjustmentReason: json['adjustment_reason'] as String?,
+      loanDisbursementLoanAccountId:
+          json['loan_disbursement_loan_account_id'] as String?,
+      loanDisbursementLoanNumber:
+          json['loan_disbursement_loan_number'] as String?,
+      loanDisbursementBorrowerDisplayName:
+          json['loan_disbursement_borrower_display_name'] as String?,
     );
   }
 
@@ -87,6 +96,11 @@ class FinancialAccountEntry {
 
   /// Set only when [sourceType] is 'FINANCIAL_ADJUSTMENT'.
   final String? adjustmentReason;
+
+  /// Set only when [sourceType] is 'LOAN_DISBURSEMENT' (Prompt 09B).
+  final String? loanDisbursementLoanAccountId;
+  final String? loanDisbursementLoanNumber;
+  final String? loanDisbursementBorrowerDisplayName;
 
   bool get isCredit => entryType == 'INFLOW' || entryType == 'TRANSFER_IN';
   bool get isTransfer =>

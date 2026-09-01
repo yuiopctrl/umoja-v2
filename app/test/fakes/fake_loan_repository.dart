@@ -2,9 +2,53 @@ import 'dart:async';
 
 import 'package:umoja/features/loans/data/loan_repository.dart';
 import 'package:umoja/features/loans/domain/loan_account.dart';
+import 'package:umoja/features/loans/domain/loan_account_event.dart';
+import 'package:umoja/features/loans/domain/loan_disbursement.dart';
 import 'package:umoja/features/loans/domain/loan_installment.dart';
 import 'package:umoja/features/loans/domain/loan_product.dart';
 import 'package:umoja/features/loans/domain/loan_schedule_preview.dart';
+
+LoanAccountEvent fakeLoanAccountEvent({
+  String id = 'event-1',
+  String eventType = 'CREATED',
+  String? fromStatus,
+  String toStatus = 'DRAFT',
+  String? reason,
+  DateTime? createdAt,
+  String? createdBy = 'u1',
+}) {
+  return LoanAccountEvent(
+    id: id,
+    eventType: eventType,
+    fromStatus: fromStatus,
+    toStatus: toStatus,
+    reason: reason,
+    createdAt: createdAt ?? DateTime.utc(2026, 1, 1),
+    createdBy: createdBy,
+  );
+}
+
+LoanDisbursement fakeLoanDisbursement({
+  String id = 'disbursement-1',
+  String financialAccountId = 'account-1',
+  String financialAccountName = 'Main Cash',
+  double amount = 120000,
+  DateTime? effectiveAt,
+  String? reference,
+  String? notes,
+  DateTime? createdAt,
+}) {
+  return LoanDisbursement(
+    id: id,
+    financialAccountId: financialAccountId,
+    financialAccountName: financialAccountName,
+    amount: amount,
+    effectiveAt: effectiveAt ?? DateTime.utc(2026, 1, 1),
+    reference: reference,
+    notes: notes,
+    createdAt: createdAt ?? DateTime.utc(2026, 1, 1),
+  );
+}
 
 LoanProduct fakeLoanProduct({
   String id = 'product-1',
@@ -110,6 +154,8 @@ LoanAccount fakeLoanAccount({
   DateTime? firstRepaymentDate,
   String status = 'DRAFT',
   List<LoanInstallment> installments = const [],
+  List<LoanAccountEvent> events = const [],
+  LoanDisbursement? disbursement,
 }) {
   return LoanAccount(
     id: id,
@@ -135,6 +181,8 @@ LoanAccount fakeLoanAccount({
     createdAt: DateTime.utc(2026, 1, 1),
     updatedAt: DateTime.utc(2026, 1, 1),
     installments: installments,
+    events: events,
+    disbursement: disbursement,
   );
 }
 
@@ -196,12 +244,40 @@ class FakeLoanRepository implements LoanRepository {
     })
   >
   createDraftLoanAccountCalls = [];
-  final List<({String groupId, String loanAccountId})>
+  final List<
+    ({
+      String groupId,
+      String loanAccountId,
+      double? principalAmount,
+      int? term,
+      DateTime? firstRepaymentDate,
+    })
+  >
   updateDraftLoanTermsCalls = [];
   final List<({String groupId, String loanAccountId})>
   regenerateLoanScheduleCalls = [];
   final List<({String groupId, String loanAccountId})>
   cancelDraftLoanAccountCalls = [];
+  final List<({String groupId, String loanAccountId})> submitLoanAccountCalls =
+      [];
+  final List<({String groupId, String loanAccountId})> approveLoanAccountCalls =
+      [];
+  final List<({String groupId, String loanAccountId, String reason})>
+  rejectLoanAccountCalls = [];
+  final List<({String groupId, String loanAccountId, String reason})>
+  cancelLoanAccountCalls = [];
+  final List<
+    ({
+      String groupId,
+      String loanAccountId,
+      String financialAccountId,
+      DateTime effectiveAt,
+      String? reference,
+      String? notes,
+      String? idempotencyKey,
+    })
+  >
+  disburseLoanAccountCalls = [];
 
   void _maybeThrow() {
     final f = failure;
@@ -375,6 +451,9 @@ class FakeLoanRepository implements LoanRepository {
     updateDraftLoanTermsCalls.add((
       groupId: groupId,
       loanAccountId: loanAccountId,
+      principalAmount: principalAmount,
+      term: term,
+      firstRepaymentDate: firstRepaymentDate,
     ));
     _maybeThrow();
     return nextAccount;
@@ -401,6 +480,85 @@ class FakeLoanRepository implements LoanRepository {
     cancelDraftLoanAccountCalls.add((
       groupId: groupId,
       loanAccountId: loanAccountId,
+    ));
+    _maybeThrow();
+    return nextAccount;
+  }
+
+  @override
+  Future<LoanAccount> submitLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+  }) async {
+    submitLoanAccountCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+    ));
+    _maybeThrow();
+    return nextAccount;
+  }
+
+  @override
+  Future<LoanAccount> approveLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+  }) async {
+    approveLoanAccountCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+    ));
+    _maybeThrow();
+    return nextAccount;
+  }
+
+  @override
+  Future<LoanAccount> rejectLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+    required String reason,
+  }) async {
+    rejectLoanAccountCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      reason: reason,
+    ));
+    _maybeThrow();
+    return nextAccount;
+  }
+
+  @override
+  Future<LoanAccount> cancelLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+    required String reason,
+  }) async {
+    cancelLoanAccountCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      reason: reason,
+    ));
+    _maybeThrow();
+    return nextAccount;
+  }
+
+  @override
+  Future<LoanAccount> disburseLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+    required String financialAccountId,
+    required DateTime effectiveAt,
+    String? reference,
+    String? notes,
+    String? idempotencyKey,
+  }) async {
+    disburseLoanAccountCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      financialAccountId: financialAccountId,
+      effectiveAt: effectiveAt,
+      reference: reference,
+      notes: notes,
+      idempotencyKey: idempotencyKey,
     ));
     _maybeThrow();
     return nextAccount;

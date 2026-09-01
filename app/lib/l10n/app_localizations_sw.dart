@@ -2342,6 +2342,110 @@ class AppLocalizationsSw extends AppLocalizations {
   String get loanRegenerateScheduleAction => 'Tengeneza Ratiba Upya';
 
   @override
+  String get loanEditTermsAction => 'Hariri Mkopo';
+
+  @override
+  String get loanEditTermsTitle => 'Hariri Masharti ya Mkopo';
+
+  @override
+  String get loanSubmitAction => 'Wasilisha kwa Idhini';
+
+  @override
+  String get loanSubmitConfirmTitle => 'Wasilisha kwa Idhini?';
+
+  @override
+  String loanSubmitConfirmMessage(
+    String borrower,
+    String loanNumber,
+    String product,
+    String principal,
+    String rate,
+    String method,
+    String term,
+    String totalInterest,
+    String totalRepayable,
+    String firstRepaymentDate,
+  ) {
+    return 'Mkopaji: $borrower\nNamba ya Mkopo: $loanNumber\nAina ya Mkopo: $product\nMkopo Mkuu: $principal\nRiba: $rate% $method\nMuda: Miezi $term\nJumla ya Riba: $totalInterest\nJumla ya Kulipwa: $totalRepayable\nTarehe ya Kwanza ya Kulipa: $firstRepaymentDate\n\nBaada ya kuwasilisha, masharti haya yatafungwa na hayataweza kuhaririwa tena.';
+  }
+
+  @override
+  String get loanApproveAction => 'Idhinisha';
+
+  @override
+  String get loanApproveConfirmTitle => 'Idhinisha Mkopo?';
+
+  @override
+  String get loanApproveConfirmMessage =>
+      'Hatua hii itaidhinisha mkopo kwa ajili ya kutolewa.';
+
+  @override
+  String get loanRejectAction => 'Kataa';
+
+  @override
+  String get loanRejectTitle => 'Kataa Mkopo';
+
+  @override
+  String get loanRejectionReasonLabel => 'Sababu ya Kukataa';
+
+  @override
+  String get loanRejectConfirmAction => 'Thibitisha Kukataa';
+
+  @override
+  String get loanCancelAction => 'Ghairi Mkopo';
+
+  @override
+  String get loanCancelTitle => 'Ghairi Mkopo';
+
+  @override
+  String get loanCancellationReasonLabel => 'Sababu ya Kughairi';
+
+  @override
+  String get loanCancelConfirmAction => 'Thibitisha Kughairi';
+
+  @override
+  String get loanReasonLabel => 'Sababu';
+
+  @override
+  String get loanDisburseAction => 'Toa Mkopo';
+
+  @override
+  String get loanDisburseTitle => 'Toa Mkopo';
+
+  @override
+  String get loanDisburseConfirmTitle => 'Toa Mkopo?';
+
+  @override
+  String loanDisburseConfirmMessage(
+    String amount,
+    String account,
+    String borrower,
+  ) {
+    return 'Unakaribia kutoa $amount kutoka $account kwenda kwa $borrower. Hatua hii itapunguza salio la akaunti uliyochagua.';
+  }
+
+  @override
+  String get loanDisburseAmountLabel => 'Kiasi';
+
+  @override
+  String get loanDisburseFinancialAccountLabel => 'Akaunti ya Fedha';
+
+  @override
+  String get loanDisburseAvailableBalanceLabel => 'Salio Lililopo';
+
+  @override
+  String get loanDisburseEffectiveDateLabel => 'Tarehe ya Utekelezaji';
+
+  @override
+  String get loanDisburseReferenceFieldLabel => 'Kumbukumbu (hiari)';
+
+  @override
+  String get loanDisburseNotesFieldLabel => 'Maelezo (hiari)';
+
+  @override
+  String get loanDisbursementDetailTitle => 'Maelezo ya Utoaji';
+
+  @override
   String get loanErrorNameRequired => 'Jina na msimbo vinahitajika.';
 
   @override
@@ -2406,4 +2510,57 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get loanErrorUnexpected => 'Hitilafu imetokea. Tafadhali jaribu tena.';
+
+  @override
+  String get loanErrorScheduleMismatch =>
+      'Ratiba ya mkopo huu haipo au haiendani na masharti yake. Jaribu kuitengeneza upya kwanza.';
+
+  @override
+  String get loanErrorNotSubmitted =>
+      'Mkopo huu haujawasilishwa kusubiri idhini.';
+
+  @override
+  String get loanErrorRejectionReasonRequired =>
+      'Sababu ya kukataa inahitajika.';
+
+  @override
+  String get loanErrorCancellationReasonRequired =>
+      'Sababu ya kughairi inahitajika.';
+
+  @override
+  String get loanErrorNotCancellable => 'Mkopo huu hauwezi kughairiwa tena.';
+
+  @override
+  String get loanErrorNotApproved =>
+      'Mkopo huu lazima uidhinishwe kabla ya kutolewa.';
+
+  @override
+  String get loanErrorAlreadyDisbursed => 'Mkopo huu tayari umetolewa.';
+
+  @override
+  String get loanErrorFinancialAccountInactive =>
+      'Akaunti hii ya fedha haitumiki.';
+
+  @override
+  String get loanErrorInsufficientBalance =>
+      'Akaunti ya fedha iliyochaguliwa haina salio la kutosha kwa mgawanyo huu.';
+
+  @override
+  String get financialPositionFundedLoanPrincipalLabel =>
+      'Mkopo Mkuu Uliotolewa Unaodaiwa';
+
+  @override
+  String get financialPositionScheduledUnearnedInterestLabel =>
+      'Riba Iliyopangwa Isiyopatikana Bado';
+
+  @override
+  String get cashbookFilterLoanDisbursements => 'Utoaji wa Mikopo';
+
+  @override
+  String financialAccountLoanDisbursementLedgerLabel(
+    String loanNumber,
+    String borrower,
+  ) {
+    return 'Utoaji wa Mkopo — $loanNumber ($borrower)';
+  }
 }

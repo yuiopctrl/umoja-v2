@@ -850,6 +850,57 @@
   "loanCancelDraftConfirmMessage": "Rasimu hii ya mkopo itaghairiwa. Hatua hii haiwezi kutenduliwa.",
   "loanCancelDraftAction": "Ghairi Rasimu",
   "loanRegenerateScheduleAction": "Tengeneza Ratiba Upya",
+  "loanEditTermsAction": "Hariri Mkopo",
+  "loanEditTermsTitle": "Hariri Masharti ya Mkopo",
+
+  "loanSubmitAction": "Wasilisha kwa Idhini",
+  "loanSubmitConfirmTitle": "Wasilisha kwa Idhini?",
+  "loanSubmitConfirmMessage": "Mkopaji: {borrower}\nNamba ya Mkopo: {loanNumber}\nAina ya Mkopo: {product}\nMkopo Mkuu: {principal}\nRiba: {rate}% {method}\nMuda: Miezi {term}\nJumla ya Riba: {totalInterest}\nJumla ya Kulipwa: {totalRepayable}\nTarehe ya Kwanza ya Kulipa: {firstRepaymentDate}\n\nBaada ya kuwasilisha, masharti haya yatafungwa na hayataweza kuhaririwa tena.",
+  "@loanSubmitConfirmMessage": {
+    "placeholders": {
+      "borrower": { "type": "String" },
+      "loanNumber": { "type": "String" },
+      "product": { "type": "String" },
+      "principal": { "type": "String" },
+      "rate": { "type": "String" },
+      "method": { "type": "String" },
+      "term": { "type": "String" },
+      "totalInterest": { "type": "String" },
+      "totalRepayable": { "type": "String" },
+      "firstRepaymentDate": { "type": "String" }
+    }
+  },
+  "loanApproveAction": "Idhinisha",
+  "loanApproveConfirmTitle": "Idhinisha Mkopo?",
+  "loanApproveConfirmMessage": "Hatua hii itaidhinisha mkopo kwa ajili ya kutolewa.",
+  "loanRejectAction": "Kataa",
+  "loanRejectTitle": "Kataa Mkopo",
+  "loanRejectionReasonLabel": "Sababu ya Kukataa",
+  "loanRejectConfirmAction": "Thibitisha Kukataa",
+  "loanCancelAction": "Ghairi Mkopo",
+  "loanCancelTitle": "Ghairi Mkopo",
+  "loanCancellationReasonLabel": "Sababu ya Kughairi",
+  "loanCancelConfirmAction": "Thibitisha Kughairi",
+  "loanReasonLabel": "Sababu",
+
+  "loanDisburseAction": "Toa Mkopo",
+  "loanDisburseTitle": "Toa Mkopo",
+  "loanDisburseConfirmTitle": "Toa Mkopo?",
+  "loanDisburseConfirmMessage": "Unakaribia kutoa {amount} kutoka {account} kwenda kwa {borrower}. Hatua hii itapunguza salio la akaunti uliyochagua.",
+  "@loanDisburseConfirmMessage": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "account": { "type": "String" },
+      "borrower": { "type": "String" }
+    }
+  },
+  "loanDisburseAmountLabel": "Kiasi",
+  "loanDisburseFinancialAccountLabel": "Akaunti ya Fedha",
+  "loanDisburseAvailableBalanceLabel": "Salio Lililopo",
+  "loanDisburseEffectiveDateLabel": "Tarehe ya Utekelezaji",
+  "loanDisburseReferenceFieldLabel": "Kumbukumbu (hiari)",
+  "loanDisburseNotesFieldLabel": "Maelezo (hiari)",
+  "loanDisbursementDetailTitle": "Maelezo ya Utoaji",
 
   "loanErrorNameRequired": "Jina na msimbo vinahitajika.",
   "loanErrorDuplicateCode": "Msimbo huo tayari unatumika katika kikundi hiki.",
@@ -868,5 +919,27 @@
   "loanErrorNotFound": "Haikupatikana.",
   "loanErrorPermissionDenied": "Huna ruhusa ya kufanya hivyo.",
   "loanErrorNetwork": "Hitilafu ya mtandao. Angalia muunganisho wako na ujaribu tena.",
-  "loanErrorUnexpected": "Hitilafu imetokea. Tafadhali jaribu tena."
+  "loanErrorUnexpected": "Hitilafu imetokea. Tafadhali jaribu tena.",
+  "loanErrorScheduleMismatch": "Ratiba ya mkopo huu haipo au haiendani na masharti yake. Jaribu kuitengeneza upya kwanza.",
+  "loanErrorNotSubmitted": "Mkopo huu haujawasilishwa kusubiri idhini.",
+  "loanErrorRejectionReasonRequired": "Sababu ya kukataa inahitajika.",
+  "loanErrorCancellationReasonRequired": "Sababu ya kughairi inahitajika.",
+  "loanErrorNotCancellable": "Mkopo huu hauwezi kughairiwa tena.",
+  "loanErrorNotApproved": "Mkopo huu lazima uidhinishwe kabla ya kutolewa.",
+  "loanErrorAlreadyDisbursed": "Mkopo huu tayari umetolewa.",
+  "loanErrorFinancialAccountInactive": "Akaunti hii ya fedha haitumiki.",
+  "loanErrorInsufficientBalance": "Akaunti ya fedha iliyochaguliwa haina salio la kutosha kwa mgawanyo huu.",
+
+  "financialPositionFundedLoanPrincipalLabel": "Mkopo Mkuu Uliotolewa Unaodaiwa",
+  "financialPositionScheduledUnearnedInterestLabel": "Riba Iliyopangwa Isiyopatikana Bado",
+
+  "cashbookFilterLoanDisbursements": "Utoaji wa Mikopo",
+
+  "financialAccountLoanDisbursementLedgerLabel": "Utoaji wa Mkopo — {loanNumber} ({borrower})",
+  "@financialAccountLoanDisbursementLedgerLabel": {
+    "placeholders": {
+      "loanNumber": { "type": "String" },
+      "borrower": { "type": "String" }
+    }
+  }
 }

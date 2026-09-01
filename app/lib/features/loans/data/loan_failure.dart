@@ -44,6 +44,35 @@ enum LoanFailureType {
   /// `LOAN_ACCOUNT_NOT_DRAFT`.
   notDraft,
 
+  /// `LOAN_ACCOUNT_SCHEDULE_MISSING` / `LOAN_ACCOUNT_SCHEDULE_MISMATCH`
+  /// (Prompt 09B submit/approve).
+  scheduleMismatch,
+
+  /// `LOAN_ACCOUNT_NOT_SUBMITTED` (Prompt 09B approve/reject).
+  notSubmitted,
+
+  /// `LOAN_ACCOUNT_REJECTION_REASON_REQUIRED` (Prompt 09B).
+  rejectionReasonRequired,
+
+  /// `LOAN_ACCOUNT_CANCELLATION_REASON_REQUIRED` (Prompt 09B).
+  cancellationReasonRequired,
+
+  /// `LOAN_ACCOUNT_NOT_CANCELLABLE` (Prompt 09B — already
+  /// disbursed/active/closed/rejected/cancelled).
+  notCancellable,
+
+  /// `LOAN_ACCOUNT_NOT_APPROVED` (Prompt 09B disburse).
+  notApproved,
+
+  /// `LOAN_ACCOUNT_ALREADY_DISBURSED` (Prompt 09B).
+  alreadyDisbursed,
+
+  /// `FINANCIAL_ACCOUNT_INACTIVE` (Prompt 09B disburse).
+  financialAccountInactive,
+
+  /// `LOAN_DISBURSEMENT_INSUFFICIENT_BALANCE` (Prompt 09B).
+  insufficientBalance,
+
   /// Not found (product, membership, or loan account not in group).
   notFound,
 

@@ -11,16 +11,19 @@ import 'package:umoja/features/auth/models/group_context.dart';
 import 'package:umoja/features/auth/models/membership_context.dart';
 import 'package:umoja/features/auth/providers/app_context_provider.dart';
 import 'package:umoja/features/auth/providers/auth_session_provider.dart';
+import 'package:umoja/features/financial_accounts/domain/financial_account_page.dart';
+import 'package:umoja/features/financial_accounts/providers/financial_account_repository_provider.dart';
 import 'package:umoja/features/loans/providers/loan_repository_provider.dart';
 import 'package:umoja/features/members/providers/member_repository_provider.dart';
 
+import 'fake_financial_account_repository.dart';
 import 'fake_loan_repository.dart';
 import 'fake_member_repository.dart';
 import 'pin_bypass_overrides.dart';
 
-/// Default full-access loans permission set (Prompt 09A section X —
-/// matches ADMIN/TREASURER's grants from
-/// `20260902090000_create_loan_products.sql`).
+/// Default full-access loans permission set (Prompt 09A section X,
+/// extended 09B with the lifecycle permissions — matches ADMIN's full
+/// grants from `20260903090000_create_loan_lifecycle_events.sql`).
 const loanAdminPermissions = [
   'group.view',
   'loan_product.view',
@@ -30,6 +33,12 @@ const loanAdminPermissions = [
   'loan.edit',
   'loan_schedule.view',
   'loan_schedule.generate',
+  'loan.submit',
+  'loan.approve',
+  'loan.reject',
+  'loan.cancel',
+  'loan.disburse',
+  'financial_account.view',
 ];
 
 /// CHAIRPERSON/SECRETARY's view-only grants — no `.manage`/`.create`/
@@ -39,6 +48,36 @@ const loanViewOnlyPermissions = [
   'loan_product.view',
   'loan.view',
   'loan_schedule.view',
+];
+
+/// TREASURER's 09B grants (section 23) — submit/disburse/cancel, but
+/// deliberately NOT approve/reject (separation of duties: the actor
+/// who submits/disburses is never the same one who decides approval).
+const loanTreasurerPermissions = [
+  'group.view',
+  'loan_product.view',
+  'loan_product.manage',
+  'loan.view',
+  'loan.create',
+  'loan.edit',
+  'loan_schedule.view',
+  'loan_schedule.generate',
+  'loan.submit',
+  'loan.cancel',
+  'loan.disburse',
+  'financial_account.view',
+];
+
+/// CHAIRPERSON's 09B grants (section 23) — approve/reject/cancel, but
+/// deliberately NOT submit/disburse.
+const loanChairpersonPermissions = [
+  'group.view',
+  'loan_product.view',
+  'loan.view',
+  'loan_schedule.view',
+  'loan.approve',
+  'loan.reject',
+  'loan.cancel',
 ];
 
 MembershipContext loanMembership({
@@ -67,6 +106,7 @@ Future<GoRouter> pumpLoansApp(
   WidgetTester tester, {
   required FakeLoanRepository fakeRepo,
   FakeMemberRepository? fakeMemberRepo,
+  FakeFinancialAccountRepository? fakeFinancialAccountRepo,
   MembershipContext? membership,
   AppLanguage? language,
 }) async {
@@ -88,6 +128,18 @@ Future<GoRouter> pumpLoansApp(
       loanRepositoryProvider.overrideWithValue(fakeRepo),
       memberRepositoryProvider.overrideWithValue(
         fakeMemberRepo ?? FakeMemberRepository(),
+      ),
+      financialAccountRepositoryProvider.overrideWithValue(
+        fakeFinancialAccountRepo ??
+            (FakeFinancialAccountRepository()
+              ..nextAccountsPage = FinancialAccountPage(
+                items: [
+                  fakeFinancialAccount(id: 'account-1', name: 'Main Cash'),
+                ],
+                totalCount: 1,
+                limit: 100,
+                offset: 0,
+              )),
       ),
       if (language != null)
         languageProvider.overrideWith(() => _FixedLanguage(language)),

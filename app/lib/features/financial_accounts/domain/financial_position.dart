@@ -47,6 +47,8 @@ class FinancialPosition {
     required this.shareCapitalReceived,
     required this.memberWalletLiability,
     required this.totalOutstandingMemberObligations,
+    this.fundedLoanPrincipalReceivable = 0,
+    this.scheduledUnearnedInterest = 0,
   });
 
   factory FinancialPosition.fromJson(Map<String, dynamic> json) {
@@ -75,6 +77,10 @@ class FinancialPosition {
           .toDouble(),
       totalOutstandingMemberObligations:
           (json['total_outstanding_member_obligations'] as num).toDouble(),
+      fundedLoanPrincipalReceivable:
+          (json['funded_loan_principal_receivable'] as num?)?.toDouble() ?? 0,
+      scheduledUnearnedInterest:
+          (json['scheduled_unearned_interest'] as num?)?.toDouble() ?? 0,
     );
   }
 
@@ -122,4 +128,15 @@ class FinancialPosition {
   /// Always current (never date-filtered) — an unpaid amount has no
   /// historical point-in-time meaning the way a balance does.
   final double totalOutstandingMemberObligations;
+
+  /// Balance AS OF [asOf] (Prompt 09B) — the frozen principal of every
+  /// DISBURSED/ACTIVE loan in the group. Never reduced by repayment in
+  /// 09B (no repayment exists yet); that belongs to 09C.
+  final double fundedLoanPrincipalReceivable;
+
+  /// Balance AS OF [asOf] (Prompt 09B) — the contractual future
+  /// interest across every funded loan's own schedule. Deliberately
+  /// never added to [groupIncome]: interest recognition is a 09C
+  /// policy decision, not a 09B one.
+  final double scheduledUnearnedInterest;
 }

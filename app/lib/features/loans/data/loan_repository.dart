@@ -103,4 +103,41 @@ abstract class LoanRepository {
     required String groupId,
     required String loanAccountId,
   });
+
+  // -- Workflow (Prompt 09B: Submit / Approve / Reject / Cancel /
+  // Disburse) -------------------------------------------------------
+
+  Future<LoanAccount> submitLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+  });
+
+  Future<LoanAccount> approveLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+  });
+
+  Future<LoanAccount> rejectLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+    required String reason,
+  });
+
+  /// SUBMITTED/APPROVED only — DRAFT cancellation stays on
+  /// [cancelDraftLoanAccount].
+  Future<LoanAccount> cancelLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+    required String reason,
+  });
+
+  Future<LoanAccount> disburseLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+    required String financialAccountId,
+    required DateTime effectiveAt,
+    String? reference,
+    String? notes,
+    String? idempotencyKey,
+  });
 }

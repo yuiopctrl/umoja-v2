@@ -288,6 +288,109 @@ class SupabaseLoanRepository implements LoanRepository {
       throw _mapError(error, stackTrace);
     }
   }
+
+  @override
+  Future<LoanAccount> submitLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_submit_loan_account',
+        params: {'p_group_id': groupId, 'p_loan_account_id': loanAccountId},
+      );
+      return LoanAccount.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanAccount> approveLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_approve_loan_account',
+        params: {'p_group_id': groupId, 'p_loan_account_id': loanAccountId},
+      );
+      return LoanAccount.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanAccount> rejectLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+    required String reason,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_reject_loan_account',
+        params: {
+          'p_group_id': groupId,
+          'p_loan_account_id': loanAccountId,
+          'p_reason': reason,
+        },
+      );
+      return LoanAccount.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanAccount> cancelLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+    required String reason,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_cancel_loan_account',
+        params: {
+          'p_group_id': groupId,
+          'p_loan_account_id': loanAccountId,
+          'p_reason': reason,
+        },
+      );
+      return LoanAccount.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanAccount> disburseLoanAccount({
+    required String groupId,
+    required String loanAccountId,
+    required String financialAccountId,
+    required DateTime effectiveAt,
+    String? reference,
+    String? notes,
+    String? idempotencyKey,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_disburse_loan_account',
+        params: {
+          'p_group_id': groupId,
+          'p_loan_account_id': loanAccountId,
+          'p_financial_account_id': financialAccountId,
+          'p_effective_at': _dateOnly(effectiveAt),
+          'p_reference': reference,
+          'p_notes': notes,
+          'p_idempotency_key': idempotencyKey,
+        },
+      );
+      return LoanAccount.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
 }
 
 String _dateOnly(DateTime date) {
@@ -382,6 +485,64 @@ LoanFailure _mapError(Object error, StackTrace stackTrace) {
       return const LoanFailure(
         LoanFailureType.notDraft,
         'This loan is no longer a draft and can no longer be edited.',
+      );
+    }
+    if (message.contains('LOAN_ACCOUNT_SCHEDULE_MISSING') ||
+        message.contains('LOAN_ACCOUNT_SCHEDULE_MISMATCH')) {
+      return const LoanFailure(
+        LoanFailureType.scheduleMismatch,
+        'This loan'
+        's schedule is missing or does not match its terms. '
+        'Try regenerating it first.',
+      );
+    }
+    if (message.contains('LOAN_ACCOUNT_NOT_SUBMITTED')) {
+      return const LoanFailure(
+        LoanFailureType.notSubmitted,
+        'This loan is not awaiting approval.',
+      );
+    }
+    if (message.contains('LOAN_ACCOUNT_REJECTION_REASON_REQUIRED')) {
+      return const LoanFailure(
+        LoanFailureType.rejectionReasonRequired,
+        'A rejection reason is required.',
+      );
+    }
+    if (message.contains('LOAN_ACCOUNT_CANCELLATION_REASON_REQUIRED')) {
+      return const LoanFailure(
+        LoanFailureType.cancellationReasonRequired,
+        'A cancellation reason is required.',
+      );
+    }
+    if (message.contains('LOAN_ACCOUNT_NOT_CANCELLABLE')) {
+      return const LoanFailure(
+        LoanFailureType.notCancellable,
+        'This loan can no longer be cancelled.',
+      );
+    }
+    if (message.contains('LOAN_ACCOUNT_NOT_APPROVED')) {
+      return const LoanFailure(
+        LoanFailureType.notApproved,
+        'This loan must be approved before it can be disbursed.',
+      );
+    }
+    if (message.contains('LOAN_ACCOUNT_ALREADY_DISBURSED')) {
+      return const LoanFailure(
+        LoanFailureType.alreadyDisbursed,
+        'This loan has already been disbursed.',
+      );
+    }
+    if (message.contains('FINANCIAL_ACCOUNT_INACTIVE')) {
+      return const LoanFailure(
+        LoanFailureType.financialAccountInactive,
+        'This financial account is inactive.',
+      );
+    }
+    if (message.contains('LOAN_DISBURSEMENT_INSUFFICIENT_BALANCE')) {
+      return const LoanFailure(
+        LoanFailureType.insufficientBalance,
+        'The selected financial account does not have enough balance '
+        'for this disbursement.',
       );
     }
     if (message.contains('name is required') ||

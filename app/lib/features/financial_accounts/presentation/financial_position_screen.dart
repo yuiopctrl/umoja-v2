@@ -230,6 +230,16 @@ class _PositionBody extends StatelessWidget {
                 label: l10n.financialPositionOutstandingObligationsLabel,
                 value: formatAmount(position.totalOutstandingMemberObligations),
               ),
+              _ClassificationRow(
+                key: const Key('financialPositionFundedLoanPrincipalRow'),
+                label: l10n.financialPositionFundedLoanPrincipalLabel,
+                value: formatAmount(position.fundedLoanPrincipalReceivable),
+              ),
+              _ClassificationRow(
+                key: const Key('financialPositionScheduledUnearnedInterestRow'),
+                label: l10n.financialPositionScheduledUnearnedInterestLabel,
+                value: formatAmount(position.scheduledUnearnedInterest),
+              ),
             ],
           ),
         ),

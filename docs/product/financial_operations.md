@@ -108,6 +108,16 @@ distinct figures (never folded together):
 - `member_wallet_liability` — a liability figure, never deducted from
   cash or folded into the balance.
 - `total_outstanding_member_obligations` — point-in-time.
+- `funded_loan_principal_receivable` (Prompt 09B) — point-in-time sum
+  of frozen principal across every DISBURSED/ACTIVE loan; increases
+  only at the instant of disbursement, never before.
+- `scheduled_unearned_interest` (Prompt 09B) — that same set of loans'
+  contractual future interest, deliberately kept out of `group_income`
+  — interest recognition is a Prompt 09C policy decision.
+
+See [docs/product/loans.md](loans.md) for the full lifecycle
+(Submit/Approve/Reject/Cancel/Disburse) that produces these two
+figures.
 
 No "current month" default is assumed server-side; an unbounded range
 returns unbounded totals. Any default date range lives in the Flutter

@@ -1,3 +1,4 @@
+import '../../../../core/widgets/umoja_status_badge.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Centralized mapping from a `loan_products.interest_rate_basis`
@@ -39,5 +40,18 @@ String loanAccountStatusLabel(AppLocalizations l10n, String status) {
     'ACTIVE' => l10n.loanStatusActive,
     'CLOSED' => l10n.loanStatusClosed,
     _ => status,
+  };
+}
+
+/// Centralized mapping from a `loan_accounts.status` value to the
+/// badge's visual semantic (Prompt 09B) — DRAFT/SUBMITTED/APPROVED are
+/// neutral (in-progress, not yet a decided outcome), REJECTED/
+/// CANCELLED are danger (terminal, negative outcome), and
+/// DISBURSED/ACTIVE/CLOSED are success (funded/completed).
+UmojaStatusSemantic loanAccountStatusSemantic(String status) {
+  return switch (status) {
+    'REJECTED' || 'CANCELLED' => UmojaStatusSemantic.danger,
+    'DISBURSED' || 'ACTIVE' || 'CLOSED' => UmojaStatusSemantic.success,
+    _ => UmojaStatusSemantic.neutral,
   };
 }

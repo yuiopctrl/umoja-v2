@@ -2330,6 +2330,110 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loanRegenerateScheduleAction => 'Regenerate Schedule';
 
   @override
+  String get loanEditTermsAction => 'Edit Loan';
+
+  @override
+  String get loanEditTermsTitle => 'Edit Loan Terms';
+
+  @override
+  String get loanSubmitAction => 'Submit for Approval';
+
+  @override
+  String get loanSubmitConfirmTitle => 'Submit for Approval?';
+
+  @override
+  String loanSubmitConfirmMessage(
+    String borrower,
+    String loanNumber,
+    String product,
+    String principal,
+    String rate,
+    String method,
+    String term,
+    String totalInterest,
+    String totalRepayable,
+    String firstRepaymentDate,
+  ) {
+    return 'Borrower: $borrower\nLoan Number: $loanNumber\nProduct: $product\nPrincipal: $principal\nInterest: $rate% $method\nTerm: $term months\nTotal Interest: $totalInterest\nTotal Repayment: $totalRepayable\nFirst Repayment Date: $firstRepaymentDate\n\nOnce submitted, these terms will be frozen and can no longer be edited.';
+  }
+
+  @override
+  String get loanApproveAction => 'Approve';
+
+  @override
+  String get loanApproveConfirmTitle => 'Approve Loan?';
+
+  @override
+  String get loanApproveConfirmMessage =>
+      'This will approve the loan for disbursement.';
+
+  @override
+  String get loanRejectAction => 'Reject';
+
+  @override
+  String get loanRejectTitle => 'Reject Loan';
+
+  @override
+  String get loanRejectionReasonLabel => 'Rejection Reason';
+
+  @override
+  String get loanRejectConfirmAction => 'Confirm Rejection';
+
+  @override
+  String get loanCancelAction => 'Cancel Loan';
+
+  @override
+  String get loanCancelTitle => 'Cancel Loan';
+
+  @override
+  String get loanCancellationReasonLabel => 'Cancellation Reason';
+
+  @override
+  String get loanCancelConfirmAction => 'Confirm Cancellation';
+
+  @override
+  String get loanReasonLabel => 'Reason';
+
+  @override
+  String get loanDisburseAction => 'Disburse Loan';
+
+  @override
+  String get loanDisburseTitle => 'Disburse Loan';
+
+  @override
+  String get loanDisburseConfirmTitle => 'Disburse Loan?';
+
+  @override
+  String loanDisburseConfirmMessage(
+    String amount,
+    String account,
+    String borrower,
+  ) {
+    return 'You are about to disburse $amount from $account to $borrower. This will reduce the selected account\'s balance.';
+  }
+
+  @override
+  String get loanDisburseAmountLabel => 'Amount';
+
+  @override
+  String get loanDisburseFinancialAccountLabel => 'Financial Account';
+
+  @override
+  String get loanDisburseAvailableBalanceLabel => 'Available Balance';
+
+  @override
+  String get loanDisburseEffectiveDateLabel => 'Effective Date';
+
+  @override
+  String get loanDisburseReferenceFieldLabel => 'Reference (optional)';
+
+  @override
+  String get loanDisburseNotesFieldLabel => 'Notes (optional)';
+
+  @override
+  String get loanDisbursementDetailTitle => 'Disbursement Detail';
+
+  @override
   String get loanErrorNameRequired => 'A name and code are required.';
 
   @override
@@ -2396,4 +2500,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loanErrorUnexpected => 'Something went wrong. Please try again.';
+
+  @override
+  String get loanErrorScheduleMismatch =>
+      'This loan\'s schedule is missing or does not match its terms. Try regenerating it first.';
+
+  @override
+  String get loanErrorNotSubmitted => 'This loan is not awaiting approval.';
+
+  @override
+  String get loanErrorRejectionReasonRequired =>
+      'A rejection reason is required.';
+
+  @override
+  String get loanErrorCancellationReasonRequired =>
+      'A cancellation reason is required.';
+
+  @override
+  String get loanErrorNotCancellable => 'This loan can no longer be cancelled.';
+
+  @override
+  String get loanErrorNotApproved =>
+      'This loan must be approved before it can be disbursed.';
+
+  @override
+  String get loanErrorAlreadyDisbursed =>
+      'This loan has already been disbursed.';
+
+  @override
+  String get loanErrorFinancialAccountInactive =>
+      'This financial account is inactive.';
+
+  @override
+  String get loanErrorInsufficientBalance =>
+      'The selected financial account does not have enough balance for this disbursement.';
+
+  @override
+  String get financialPositionFundedLoanPrincipalLabel =>
+      'Funded Loan Principal Receivable';
+
+  @override
+  String get financialPositionScheduledUnearnedInterestLabel =>
+      'Scheduled Unearned Interest';
+
+  @override
+  String get cashbookFilterLoanDisbursements => 'Loan Disbursements';
+
+  @override
+  String financialAccountLoanDisbursementLedgerLabel(
+    String loanNumber,
+    String borrower,
+  ) {
+    return 'Loan Disbursement — $loanNumber ($borrower)';
+  }
 }

@@ -4364,6 +4364,189 @@ abstract class AppLocalizations {
   /// **'Tengeneza Ratiba Upya'**
   String get loanRegenerateScheduleAction;
 
+  /// No description provided for @loanEditTermsAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hariri Mkopo'**
+  String get loanEditTermsAction;
+
+  /// No description provided for @loanEditTermsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hariri Masharti ya Mkopo'**
+  String get loanEditTermsTitle;
+
+  /// No description provided for @loanSubmitAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wasilisha kwa Idhini'**
+  String get loanSubmitAction;
+
+  /// No description provided for @loanSubmitConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wasilisha kwa Idhini?'**
+  String get loanSubmitConfirmTitle;
+
+  /// No description provided for @loanSubmitConfirmMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopaji: {borrower}\nNamba ya Mkopo: {loanNumber}\nAina ya Mkopo: {product}\nMkopo Mkuu: {principal}\nRiba: {rate}% {method}\nMuda: Miezi {term}\nJumla ya Riba: {totalInterest}\nJumla ya Kulipwa: {totalRepayable}\nTarehe ya Kwanza ya Kulipa: {firstRepaymentDate}\n\nBaada ya kuwasilisha, masharti haya yatafungwa na hayataweza kuhaririwa tena.'**
+  String loanSubmitConfirmMessage(
+    String borrower,
+    String loanNumber,
+    String product,
+    String principal,
+    String rate,
+    String method,
+    String term,
+    String totalInterest,
+    String totalRepayable,
+    String firstRepaymentDate,
+  );
+
+  /// No description provided for @loanApproveAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Idhinisha'**
+  String get loanApproveAction;
+
+  /// No description provided for @loanApproveConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Idhinisha Mkopo?'**
+  String get loanApproveConfirmTitle;
+
+  /// No description provided for @loanApproveConfirmMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatua hii itaidhinisha mkopo kwa ajili ya kutolewa.'**
+  String get loanApproveConfirmMessage;
+
+  /// No description provided for @loanRejectAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kataa'**
+  String get loanRejectAction;
+
+  /// No description provided for @loanRejectTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kataa Mkopo'**
+  String get loanRejectTitle;
+
+  /// No description provided for @loanRejectionReasonLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu ya Kukataa'**
+  String get loanRejectionReasonLabel;
+
+  /// No description provided for @loanRejectConfirmAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha Kukataa'**
+  String get loanRejectConfirmAction;
+
+  /// No description provided for @loanCancelAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ghairi Mkopo'**
+  String get loanCancelAction;
+
+  /// No description provided for @loanCancelTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ghairi Mkopo'**
+  String get loanCancelTitle;
+
+  /// No description provided for @loanCancellationReasonLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu ya Kughairi'**
+  String get loanCancellationReasonLabel;
+
+  /// No description provided for @loanCancelConfirmAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha Kughairi'**
+  String get loanCancelConfirmAction;
+
+  /// No description provided for @loanReasonLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu'**
+  String get loanReasonLabel;
+
+  /// No description provided for @loanDisburseAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Toa Mkopo'**
+  String get loanDisburseAction;
+
+  /// No description provided for @loanDisburseTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Toa Mkopo'**
+  String get loanDisburseTitle;
+
+  /// No description provided for @loanDisburseConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Toa Mkopo?'**
+  String get loanDisburseConfirmTitle;
+
+  /// No description provided for @loanDisburseConfirmMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Unakaribia kutoa {amount} kutoka {account} kwenda kwa {borrower}. Hatua hii itapunguza salio la akaunti uliyochagua.'**
+  String loanDisburseConfirmMessage(
+    String amount,
+    String account,
+    String borrower,
+  );
+
+  /// No description provided for @loanDisburseAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi'**
+  String get loanDisburseAmountLabel;
+
+  /// No description provided for @loanDisburseFinancialAccountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Akaunti ya Fedha'**
+  String get loanDisburseFinancialAccountLabel;
+
+  /// No description provided for @loanDisburseAvailableBalanceLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio Lililopo'**
+  String get loanDisburseAvailableBalanceLabel;
+
+  /// No description provided for @loanDisburseEffectiveDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Utekelezaji'**
+  String get loanDisburseEffectiveDateLabel;
+
+  /// No description provided for @loanDisburseReferenceFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kumbukumbu (hiari)'**
+  String get loanDisburseReferenceFieldLabel;
+
+  /// No description provided for @loanDisburseNotesFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo (hiari)'**
+  String get loanDisburseNotesFieldLabel;
+
+  /// No description provided for @loanDisbursementDetailTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo ya Utoaji'**
+  String get loanDisbursementDetailTitle;
+
   /// No description provided for @loanErrorNameRequired.
   ///
   /// In sw, this message translates to:
@@ -4471,6 +4654,87 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Hitilafu imetokea. Tafadhali jaribu tena.'**
   String get loanErrorUnexpected;
+
+  /// No description provided for @loanErrorScheduleMismatch.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ratiba ya mkopo huu haipo au haiendani na masharti yake. Jaribu kuitengeneza upya kwanza.'**
+  String get loanErrorScheduleMismatch;
+
+  /// No description provided for @loanErrorNotSubmitted.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo huu haujawasilishwa kusubiri idhini.'**
+  String get loanErrorNotSubmitted;
+
+  /// No description provided for @loanErrorRejectionReasonRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu ya kukataa inahitajika.'**
+  String get loanErrorRejectionReasonRequired;
+
+  /// No description provided for @loanErrorCancellationReasonRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu ya kughairi inahitajika.'**
+  String get loanErrorCancellationReasonRequired;
+
+  /// No description provided for @loanErrorNotCancellable.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo huu hauwezi kughairiwa tena.'**
+  String get loanErrorNotCancellable;
+
+  /// No description provided for @loanErrorNotApproved.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo huu lazima uidhinishwe kabla ya kutolewa.'**
+  String get loanErrorNotApproved;
+
+  /// No description provided for @loanErrorAlreadyDisbursed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo huu tayari umetolewa.'**
+  String get loanErrorAlreadyDisbursed;
+
+  /// No description provided for @loanErrorFinancialAccountInactive.
+  ///
+  /// In sw, this message translates to:
+  /// **'Akaunti hii ya fedha haitumiki.'**
+  String get loanErrorFinancialAccountInactive;
+
+  /// No description provided for @loanErrorInsufficientBalance.
+  ///
+  /// In sw, this message translates to:
+  /// **'Akaunti ya fedha iliyochaguliwa haina salio la kutosha kwa mgawanyo huu.'**
+  String get loanErrorInsufficientBalance;
+
+  /// No description provided for @financialPositionFundedLoanPrincipalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo Mkuu Uliotolewa Unaodaiwa'**
+  String get financialPositionFundedLoanPrincipalLabel;
+
+  /// No description provided for @financialPositionScheduledUnearnedInterestLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba Iliyopangwa Isiyopatikana Bado'**
+  String get financialPositionScheduledUnearnedInterestLabel;
+
+  /// No description provided for @cashbookFilterLoanDisbursements.
+  ///
+  /// In sw, this message translates to:
+  /// **'Utoaji wa Mikopo'**
+  String get cashbookFilterLoanDisbursements;
+
+  /// No description provided for @financialAccountLoanDisbursementLedgerLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Utoaji wa Mkopo — {loanNumber} ({borrower})'**
+  String financialAccountLoanDisbursementLedgerLabel(
+    String loanNumber,
+    String borrower,
+  );
 }
 
 class _AppLocalizationsDelegate

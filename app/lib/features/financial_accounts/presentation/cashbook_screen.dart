@@ -26,6 +26,7 @@ const _sourceFilters = [
   'EXPENSE',
   'TRANSFER',
   'FINANCIAL_ADJUSTMENT',
+  'LOAN_DISBURSEMENT',
 ];
 
 String _sourceFilterLabel(AppLocalizations l10n, String? sourceType) {
@@ -36,6 +37,7 @@ String _sourceFilterLabel(AppLocalizations l10n, String? sourceType) {
     'EXPENSE' => l10n.cashbookFilterExpense,
     'TRANSFER' => l10n.cashbookFilterTransfers,
     'FINANCIAL_ADJUSTMENT' => l10n.cashbookFilterAdjustments,
+    'LOAN_DISBURSEMENT' => l10n.cashbookFilterLoanDisbursements,
     _ => sourceType,
   };
 }

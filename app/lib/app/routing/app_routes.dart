@@ -316,4 +316,32 @@ class AppRoutes {
   static const loanAccountDetail = '/loans/accounts/:loanAccountId';
   static String loanAccountDetailPath(String loanAccountId) =>
       '/loans/accounts/$loanAccountId';
+
+  /// Path template; use [loanAccountEditPath] for a concrete URL. The
+  /// only reachable path for editing a DRAFT loan's terms
+  /// (principal/term/first repayment date) — see
+  /// `EditLoanTermsScreen` (Prompt 09A-UAT-FIX-01).
+  static const loanAccountEdit = '/loans/accounts/:loanAccountId/edit';
+  static String loanAccountEditPath(String loanAccountId) =>
+      '/loans/accounts/$loanAccountId/edit';
+
+  // -- Loan workflow (Prompt 09B: Submit/Approve/Reject/Cancel/
+  // Disburse) --------------------------------------------------------
+
+  /// Path template; use [loanAccountRejectPath] for a concrete URL.
+  static const loanAccountReject = '/loans/accounts/:loanAccountId/reject';
+  static String loanAccountRejectPath(String loanAccountId) =>
+      '/loans/accounts/$loanAccountId/reject';
+
+  /// Path template; use [loanAccountCancelPath] for a concrete URL.
+  /// SUBMITTED/APPROVED only — DRAFT cancel stays an inline
+  /// confirmation sheet on the detail screen.
+  static const loanAccountCancel = '/loans/accounts/:loanAccountId/cancel';
+  static String loanAccountCancelPath(String loanAccountId) =>
+      '/loans/accounts/$loanAccountId/cancel';
+
+  /// Path template; use [loanAccountDisbursePath] for a concrete URL.
+  static const loanAccountDisburse = '/loans/accounts/:loanAccountId/disburse';
+  static String loanAccountDisbursePath(String loanAccountId) =>
+      '/loans/accounts/$loanAccountId/disburse';
 }

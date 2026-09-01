@@ -817,6 +817,57 @@
   "loanCancelDraftConfirmMessage": "This loan draft will be cancelled. This cannot be undone.",
   "loanCancelDraftAction": "Cancel Draft",
   "loanRegenerateScheduleAction": "Regenerate Schedule",
+  "loanEditTermsAction": "Edit Loan",
+  "loanEditTermsTitle": "Edit Loan Terms",
+
+  "loanSubmitAction": "Submit for Approval",
+  "loanSubmitConfirmTitle": "Submit for Approval?",
+  "loanSubmitConfirmMessage": "Borrower: {borrower}\nLoan Number: {loanNumber}\nProduct: {product}\nPrincipal: {principal}\nInterest: {rate}% {method}\nTerm: {term} months\nTotal Interest: {totalInterest}\nTotal Repayment: {totalRepayable}\nFirst Repayment Date: {firstRepaymentDate}\n\nOnce submitted, these terms will be frozen and can no longer be edited.",
+  "@loanSubmitConfirmMessage": {
+    "placeholders": {
+      "borrower": { "type": "String" },
+      "loanNumber": { "type": "String" },
+      "product": { "type": "String" },
+      "principal": { "type": "String" },
+      "rate": { "type": "String" },
+      "method": { "type": "String" },
+      "term": { "type": "String" },
+      "totalInterest": { "type": "String" },
+      "totalRepayable": { "type": "String" },
+      "firstRepaymentDate": { "type": "String" }
+    }
+  },
+  "loanApproveAction": "Approve",
+  "loanApproveConfirmTitle": "Approve Loan?",
+  "loanApproveConfirmMessage": "This will approve the loan for disbursement.",
+  "loanRejectAction": "Reject",
+  "loanRejectTitle": "Reject Loan",
+  "loanRejectionReasonLabel": "Rejection Reason",
+  "loanRejectConfirmAction": "Confirm Rejection",
+  "loanCancelAction": "Cancel Loan",
+  "loanCancelTitle": "Cancel Loan",
+  "loanCancellationReasonLabel": "Cancellation Reason",
+  "loanCancelConfirmAction": "Confirm Cancellation",
+  "loanReasonLabel": "Reason",
+
+  "loanDisburseAction": "Disburse Loan",
+  "loanDisburseTitle": "Disburse Loan",
+  "loanDisburseConfirmTitle": "Disburse Loan?",
+  "loanDisburseConfirmMessage": "You are about to disburse {amount} from {account} to {borrower}. This will reduce the selected account's balance.",
+  "@loanDisburseConfirmMessage": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "account": { "type": "String" },
+      "borrower": { "type": "String" }
+    }
+  },
+  "loanDisburseAmountLabel": "Amount",
+  "loanDisburseFinancialAccountLabel": "Financial Account",
+  "loanDisburseAvailableBalanceLabel": "Available Balance",
+  "loanDisburseEffectiveDateLabel": "Effective Date",
+  "loanDisburseReferenceFieldLabel": "Reference (optional)",
+  "loanDisburseNotesFieldLabel": "Notes (optional)",
+  "loanDisbursementDetailTitle": "Disbursement Detail",
 
   "loanErrorNameRequired": "A name and code are required.",
   "loanErrorDuplicateCode": "That product code is already used in this group.",
@@ -835,5 +886,27 @@
   "loanErrorNotFound": "Not found.",
   "loanErrorPermissionDenied": "You do not have permission to do that.",
   "loanErrorNetwork": "Network error. Check your connection and try again.",
-  "loanErrorUnexpected": "Something went wrong. Please try again."
+  "loanErrorUnexpected": "Something went wrong. Please try again.",
+  "loanErrorScheduleMismatch": "This loan's schedule is missing or does not match its terms. Try regenerating it first.",
+  "loanErrorNotSubmitted": "This loan is not awaiting approval.",
+  "loanErrorRejectionReasonRequired": "A rejection reason is required.",
+  "loanErrorCancellationReasonRequired": "A cancellation reason is required.",
+  "loanErrorNotCancellable": "This loan can no longer be cancelled.",
+  "loanErrorNotApproved": "This loan must be approved before it can be disbursed.",
+  "loanErrorAlreadyDisbursed": "This loan has already been disbursed.",
+  "loanErrorFinancialAccountInactive": "This financial account is inactive.",
+  "loanErrorInsufficientBalance": "The selected financial account does not have enough balance for this disbursement.",
+
+  "financialPositionFundedLoanPrincipalLabel": "Funded Loan Principal Receivable",
+  "financialPositionScheduledUnearnedInterestLabel": "Scheduled Unearned Interest",
+
+  "cashbookFilterLoanDisbursements": "Loan Disbursements",
+
+  "financialAccountLoanDisbursementLedgerLabel": "Loan Disbursement — {loanNumber} ({borrower})",
+  "@financialAccountLoanDisbursementLedgerLabel": {
+    "placeholders": {
+      "loanNumber": { "type": "String" },
+      "borrower": { "type": "String" }
+    }
+  }
 }
