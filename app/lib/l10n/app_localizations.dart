@@ -3554,6 +3554,24 @@ abstract class AppLocalizations {
   /// **'Malipo'**
   String get paymentsTitle;
 
+  /// No description provided for @paymentHistoryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Historia ya Malipo'**
+  String get paymentHistoryTitle;
+
+  /// No description provided for @receiptsEntryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Risiti'**
+  String get receiptsEntryTitle;
+
+  /// No description provided for @receiptsEntrySubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tazama na chapisha risiti za malipo'**
+  String get receiptsEntrySubtitle;
+
   /// No description provided for @paymentsSearchHint.
   ///
   /// In sw, this message translates to:
@@ -3968,6 +3986,48 @@ abstract class AppLocalizations {
   /// **'Angalia Yote'**
   String get viewAllObligationsAction;
 
+  /// No description provided for @paymentSummaryContributionsSectionLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Michango'**
+  String get paymentSummaryContributionsSectionLabel;
+
+  /// No description provided for @paymentSummaryLoansSectionLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mikopo'**
+  String get paymentSummaryLoansSectionLabel;
+
+  /// No description provided for @paymentSummaryDueNowLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Inadaiwa Sasa'**
+  String get paymentSummaryDueNowLabel;
+
+  /// No description provided for @paymentSummaryOverdueLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imechelewa'**
+  String get paymentSummaryOverdueLabel;
+
+  /// No description provided for @paymentSummaryTotalPayableNowLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla Inayolipwa Sasa'**
+  String get paymentSummaryTotalPayableNowLabel;
+
+  /// No description provided for @paymentSummaryUpcomingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu Zijazo (Bado Hazijafika)'**
+  String get paymentSummaryUpcomingLabel;
+
+  /// No description provided for @paymentSummaryNoActiveLoansMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwanachama hana mkopo unaoendelea.'**
+  String get paymentSummaryNoActiveLoansMessage;
+
   /// No description provided for @sectionCharges.
   ///
   /// In sw, this message translates to:
@@ -4033,6 +4093,12 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Aina za mikopo na akaunti za mikopo'**
   String get homeLoansShortcutSubtitle;
+
+  /// No description provided for @homePaymentsShortcutSubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rekodi malipo, historia, risiti na salio la mwanachama'**
+  String get homePaymentsShortcutSubtitle;
 
   /// No description provided for @loanAccountsTitle.
   ///
@@ -4709,6 +4775,96 @@ abstract class AppLocalizations {
   /// **'Akaunti ya fedha iliyochaguliwa haina salio la kutosha kwa mgawanyo huu.'**
   String get loanErrorInsufficientBalance;
 
+  /// No description provided for @loanAllocationDueDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Kulipa'**
+  String get loanAllocationDueDateLabel;
+
+  /// No description provided for @loanComponentInterest.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba'**
+  String get loanComponentInterest;
+
+  /// No description provided for @loanComponentPrincipal.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji'**
+  String get loanComponentPrincipal;
+
+  /// No description provided for @loanInstallmentStatusUpcoming.
+  ///
+  /// In sw, this message translates to:
+  /// **'Inakuja'**
+  String get loanInstallmentStatusUpcoming;
+
+  /// No description provided for @loanInstallmentStatusDue.
+  ///
+  /// In sw, this message translates to:
+  /// **'Inadaiwa'**
+  String get loanInstallmentStatusDue;
+
+  /// No description provided for @loanInstallmentStatusPartiallyPaid.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imelipwa Kiasi'**
+  String get loanInstallmentStatusPartiallyPaid;
+
+  /// No description provided for @loanInstallmentStatusPaid.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imelipwa'**
+  String get loanInstallmentStatusPaid;
+
+  /// No description provided for @loanInstallmentStatusOverdue.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imechelewa'**
+  String get loanInstallmentStatusOverdue;
+
+  /// No description provided for @loanSummaryPrincipalRepaidLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji Uliolipwa'**
+  String get loanSummaryPrincipalRepaidLabel;
+
+  /// No description provided for @loanSummaryPrincipalOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji Unaodaiwa'**
+  String get loanSummaryPrincipalOutstandingLabel;
+
+  /// No description provided for @loanSummaryInterestRecognizedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba Iliyopatikana'**
+  String get loanSummaryInterestRecognizedLabel;
+
+  /// No description provided for @loanSummaryInterestOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba Inayodaiwa'**
+  String get loanSummaryInterestOutstandingLabel;
+
+  /// No description provided for @loanSummaryTotalOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla Inayodaiwa'**
+  String get loanSummaryTotalOutstandingLabel;
+
+  /// No description provided for @loanSummaryNextDueDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo Yanayofuata'**
+  String get loanSummaryNextDueDateLabel;
+
+  /// No description provided for @loanSummaryOverdueAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Kilichochelewa'**
+  String get loanSummaryOverdueAmountLabel;
+
   /// No description provided for @financialPositionFundedLoanPrincipalLabel.
   ///
   /// In sw, this message translates to:
@@ -4720,6 +4876,12 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Riba Iliyopangwa Isiyopatikana Bado'**
   String get financialPositionScheduledUnearnedInterestLabel;
+
+  /// No description provided for @financialPositionRecognizedLoanInterestIncomeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mapato ya Riba ya Mikopo Yaliyopatikana'**
+  String get financialPositionRecognizedLoanInterestIncomeLabel;
 
   /// No description provided for @cashbookFilterLoanDisbursements.
   ///

@@ -55,8 +55,20 @@ void main() {
     await tester.tap(find.text('Jane Doe'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Outstanding Balance'), findsOneWidget);
-    expect(find.text('30,000'), findsOneWidget);
+    final outstandingRow = find.byKey(
+      const Key('memberFinancialSummaryOutstandingRow'),
+    );
+    expect(
+      find.descendant(
+        of: outstandingRow,
+        matching: find.text('Outstanding Balance'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: outstandingRow, matching: find.text('30,000')),
+      findsOneWidget,
+    );
     expect(fakeRepo.getMemberContributionStatementCalls, hasLength(1));
     expect(
       fakeRepo.getMemberContributionStatementCalls.single.membershipId,
@@ -90,11 +102,12 @@ void main() {
     await tester.tap(find.text('Jane Doe'));
     await tester.pumpAndSettle();
 
+    final walletRow = find.byKey(const Key('memberFinancialSummaryWalletRow'));
+    expect(walletRow, findsOneWidget);
     expect(
-      find.byKey(const Key('memberFinancialSummaryWalletRow')),
+      find.descendant(of: walletRow, matching: find.text('0')),
       findsOneWidget,
     );
-    expect(find.text('0'), findsOneWidget);
   });
 
   // C/D. Preview allocation lines carry contribution+period context, and

@@ -10,10 +10,16 @@ import '../../../core/widgets/umoja_list_tile.dart';
 import '../../../core/widgets/umoja_page.dart';
 import '../../auth/providers/selected_group_provider.dart';
 
-/// `/contributions`: entry point for the Contribution Engine — Michango
-/// (contribution) obligation ledger, plus the Prompt 07 payments/wallet
-/// entries (Malipo, Rekodi Malipo, Salio la Mwanachama) added under
-/// the same existing workflow rather than a separate top-level home.
+/// `/contributions`: entry point for the Contribution Engine —
+/// contribution-domain functions only (types, setups, periods, opening
+/// balances). Record Payment/Payment History/Member Wallet moved to the
+/// shared Payments hub ("Malipo", `/payments`) in Prompt 09C-UAT-FIX-01
+/// — the Payment Engine settles obligations from Contributions, Loans,
+/// AND the wallet, so it is no longer conceptually owned by
+/// Contributions alone. Opening Balance stays here: it represents
+/// creation/import of an existing contribution obligation/debt, never
+/// received cash (see docs/product/loans.md and
+/// docs/product/payments.md).
 class ContributionsHomeScreen extends ConsumerWidget {
   const ContributionsHomeScreen({super.key});
 
@@ -29,10 +35,6 @@ class ContributionsHomeScreen extends ConsumerWidget {
     final canManageOpeningBalances =
         membership?.hasPermission('contribution.opening_balance.manage') ??
         false;
-    final canViewPayments = membership?.hasPermission('payment.view') ?? false;
-    final canCreatePayments =
-        membership?.hasPermission('payment.create') ?? false;
-    final canViewWallets = membership?.hasPermission('wallet.view') ?? false;
 
     return UmojaPage(
       title: l10n.contributionsTitle,
@@ -85,45 +87,6 @@ class ContributionsHomeScreen extends ConsumerWidget {
                 subtitle: Text(l10n.openingBalancesEntrySubtitle),
                 onTap: () =>
                     context.push(AppRoutes.contributionOpeningBalancesList),
-              ),
-            ),
-          ],
-          if (canViewPayments) ...[
-            const SizedBox(height: UmojaSpacing.lg),
-            UmojaCard(
-              key: const Key('paymentsEntry'),
-              padding: EdgeInsets.zero,
-              child: UmojaListTile(
-                leading: const Icon(Icons.receipt_long_outlined),
-                title: l10n.paymentsEntryTitle,
-                subtitle: Text(l10n.paymentsEntrySubtitle),
-                onTap: () => context.push(AppRoutes.paymentsList),
-              ),
-            ),
-          ],
-          if (canCreatePayments) ...[
-            const SizedBox(height: UmojaSpacing.lg),
-            UmojaCard(
-              key: const Key('recordPaymentEntry'),
-              padding: EdgeInsets.zero,
-              child: UmojaListTile(
-                leading: const Icon(Icons.add_card_outlined),
-                title: l10n.recordPaymentEntryTitle,
-                subtitle: Text(l10n.recordPaymentEntrySubtitle),
-                onTap: () => context.push(AppRoutes.paymentRecord),
-              ),
-            ),
-          ],
-          if (canViewWallets) ...[
-            const SizedBox(height: UmojaSpacing.lg),
-            UmojaCard(
-              key: const Key('memberWalletEntry'),
-              padding: EdgeInsets.zero,
-              child: UmojaListTile(
-                leading: const Icon(Icons.account_balance_wallet_outlined),
-                title: l10n.memberWalletEntryTitle,
-                subtitle: Text(l10n.memberWalletEntrySubtitle),
-                onTap: () => context.push(AppRoutes.walletMemberPicker),
               ),
             ),
           ],

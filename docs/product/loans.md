@@ -1,15 +1,16 @@
-# Loans — Product, Account, Schedule, Workflow & Disbursement (Prompts 09A/09B)
+# Loans — Product, Account, Schedule, Workflow, Disbursement & Repayment (Prompts 09A/09B/09C)
 
 Prompt 09A built the foundational Loan Engine data model: Loan
 Products, DRAFT Loan Accounts, and server-generated repayment
-schedules. Prompt 09B extends it with the full pre-repayment lifecycle
+schedules. Prompt 09B extended it with the full pre-repayment lifecycle
 — Submit → Approve/Reject → Disburse — and atomic disbursement against
-a real Financial Account. Both phases together still implement **no**
-repayment posting, payment allocation, penalties, restructuring,
-refinancing, write-off, disbursement reversal, or guarantors/
-collateral. Those are later phases (09C Repayment/Payment Integration,
-09D Penalties/Restructuring, a future controlled reversal/correction
-phase, ...).
+a real Financial Account. Prompt 09C integrates ACTIVE loan obligations
+into the **existing Prompt 07 Payment Engine** — repayment reuses the
+same payment/wallet/receipt pipeline, never a second payment system —
+adding principal/interest allocation, closure/reopening, and interest
+income recognition. Still deferred: penalties, restructuring,
+refinancing, write-off, disbursement reversal, and guarantors/
+collateral (09D and a future controlled reversal/correction phase).
 
 ## Why this exists
 
@@ -71,9 +72,24 @@ Disbursement (09B) is the one and only point where this changes:
   (`funded_loan_principal_receivable` in Financial Position) — the
   loan moves straight to `ACTIVE`.
 - **does not** recognize the loan's scheduled future interest as group
-  income — that stays a separate `scheduled_unearned_interest` figure
-  in Financial Position; interest recognition policy is 09C's job, not
-  09B's.
+  income at that instant — that stays a separate
+  `scheduled_unearned_interest` figure in Financial Position until
+  actually settled by a repayment allocation (Prompt 09C, below).
+
+Repayment (09C) is the second and only other point where money moves:
+
+- an external repayment still creates **exactly one** cashbook INFLOW
+  (the existing `payments` row) — a loan allocation is never a second
+  cash event, never a second `financial_account_entries` row.
+- **principal** repayment reduces `funded_loan_principal_receivable`
+  by exactly the amount allocated; it is never counted as income.
+- **interest** repayment is recognized as `group_income` (via the new
+  `recognized_loan_interest_income` figure) only at the instant an
+  allocation actually settles it — never merely because it was
+  scheduled, and never twice.
+- wallet-to-loan settlement (an existing member wallet balance applied
+  against a loan obligation) creates **zero** cashbook movement, exactly
+  like wallet-to-contribution settlement already did in Prompt 07.
 
 Financial Position (`docs/product/financial_operations.md`) is
 provably unaffected by a DRAFT loan's creation, terms edit, schedule
@@ -94,9 +110,9 @@ are `total_financial_account_balance` (down by the principal) and
 Implemented transitions (09A + 09B):
 
 ```
-DRAFT ──submit──▶ SUBMITTED ──approve──▶ APPROVED ──disburse──▶ ACTIVE
-  │                   │                      │
-  └──cancel──▶ CANCELLED ◀──cancel───────────┘
+DRAFT ──submit──▶ SUBMITTED ──approve──▶ APPROVED ──disburse──▶ ACTIVE ──(fully settled)──▶ CLOSED
+  │                   │                      │                    ▲                          │
+  └──cancel──▶ CANCELLED ◀──cancel───────────┘                    └──────(reversal reopens)───┘
                    ▲
                    └──reject── SUBMITTED
 ```
@@ -115,10 +131,17 @@ DRAFT ──submit──▶ SUBMITTED ──approve──▶ APPROVED ──disb
   is ever hard-deleted.
 - `DISBURSED`: **deliberately not a durable, observable status** — see
   below.
-- `ACTIVE`: the funded/collectible resting state after disbursement.
-  No edit/regenerate/cancel action exists here; a future controlled
-  reversal/correction phase (not 09B) would handle any mistake.
-- `CLOSED`: reserved for a later phase (loan fully repaid).
+- `ACTIVE`: the funded/collectible resting state after disbursement —
+  and (09C) a valid Payment Engine allocation target. No edit/
+  regenerate/cancel action exists here; a future controlled
+  reversal/correction phase would handle a disbursement mistake.
+- `CLOSED` (09C): every installment's principal AND interest are fully
+  settled (server-authoritative — never merely "payment amount
+  reached" or "installment count reached"). No further ordinary
+  allocation, edit, cancel, or disbursement. If a payment reversal
+  later restores an outstanding balance, the loan **reopens to
+  `ACTIVE`** automatically, with its own audited `REOPENED` lifecycle
+  event — a `CLOSED` loan is never left with positive outstanding debt.
 
 ### Why DISBURSED is transactional, not durable
 
@@ -280,6 +303,151 @@ mistakenly-disbursed loan is deferred to a future, deliberately
 controlled loan-correction/reversal phase; this is never solved by
 deleting `loan_disbursements`/`financial_account_entries` rows.
 
+## Repayment (Prompt 09C)
+
+Loan repayment is integrated directly into the **existing** Prompt 07
+Payment Engine — external member payment → one `payments` row → one
+cashbook INFLOW → allocations → one receipt. No parallel `loan_payments`
+/ `loan_payment_receipts` / `loan_cashbook_entries` ledger exists or is
+ever introduced; the `payments` record remains the single authoritative
+cash receipt for a loan repayment exactly as it is for a contribution
+payment.
+
+### Allocation granularity and target
+
+`payment_allocations` (Prompt 07) is extended with an
+`allocation_target_type` discriminator (`CONTRIBUTION_COMPONENT` |
+`LOAN_PRINCIPAL` | `LOAN_INTEREST`) plus `loan_account_id`/
+`loan_installment_id`, following the exact same pattern the table
+already used for `payment_id`/`wallet_entry_id` ("exactly one source").
+No `loan_installment_components` table exists — a component is
+identified purely by `(loan_installment_id, allocation_target_type)`,
+consistent with `loan_installments` never carrying a mutable
+`paid_amount` column (09A). Outstanding is always derived
+(`loan_installment_component_states()`), never stored. Allocation
+targets an installment's principal and interest **independently** —
+required for partial payment, correct receivable/income figures,
+reversal, and outstanding calculation.
+
+### Allocation priority
+
+No pre-existing repayment priority rule was found in this repository's
+docs, so this is the newly locked policy (`payment_compute_combined_
+allocation_plan()`):
+
+1. oldest `due_date` first, across **both** contribution and loan
+   obligations together.
+2. on an exact `due_date` tie: contribution obligations settle before
+   loan obligations.
+3. within one loan installment: **INTEREST before PRINCIPAL**.
+
+Collectibility (09C, tightened by 09C-UAT-FIX-01): a loan installment
+is an automatic-allocation target only when ALL of —
+
+1. the loan is `ACTIVE` — DRAFT/SUBMITTED/APPROVED/REJECTED/CANCELLED/
+   CLOSED are structurally excluded (the allocation walk only ever
+   queries ACTIVE loans), never merely hidden in the UI;
+2. the installment's `due_date <= ` the payment's own effective date
+   (`p_effective_at` for an external payment, `current_date` for a
+   wallet allocation — wallet has no date input of its own, so it uses
+   the same basis every other wallet posting in this codebase already
+   uses); and
+3. the component (principal or interest) still has positive
+   outstanding.
+
+An installment whose `due_date` is after the effective date is
+**UPCOMING** and is never included in the automatic plan — physical UAT
+found that a large enough payment previously silently prepaid a
+borrower's entire future schedule, recognizing future interest early
+and risking closing a loan months ahead of its actual due dates. This
+was corrected as an authoritative backend rule
+(`loan_member_allocatable_installments`, gated by effective date), not
+merely a Flutter display fix — preview and posting use the identical
+date basis, so they can never diverge on what is currently payable.
+Explicit loan prepayment (paying a future installment on purpose) is a
+deliberately deferred, separate policy decision — see "Manual/future
+prepayment is deferred" below.
+
+Contribution allocation is **unchanged**: a not-yet-due contribution
+charge remains a valid automatic-allocation target, exactly as Prompt
+07 already allowed — this restriction applies to the loan side only.
+
+### Principal, interest, and income
+
+Principal repayment reduces the derived
+`funded_loan_principal_receivable` (`disbursed principal − active
+principal allocations`, never a static sum) and is never income.
+Interest repayment is recognized as `recognized_loan_interest_income`
+(folded into Financial Position's `group_income`) only when an active
+allocation actually settles `LOAN_INTEREST` — `scheduled_unearned_
+interest` is `scheduled interest − recognized interest`, so the two
+figures never double-count. "Active" uses the identical rule every
+other allocation in this codebase already uses: a wallet-sourced
+allocation is always active (wallet allocations are not reversible); a
+payment-sourced allocation is active only while its parent payment is
+still `POSTED`.
+
+### Wallet-to-loan settlement
+
+`rpc_allocate_member_wallet` (Prompt 07, unchanged signature) now also
+walks loan obligations via the same combined plan — settling a loan
+installment from existing wallet credit creates **zero** cashbook
+movement (it never did), reduces the wallet balance, reduces loan
+outstanding, and recognizes interest income under the exact same rule
+as a payment-sourced allocation. No second wallet-to-loan RPC exists.
+
+### Reversal
+
+`rpc_reverse_payment` (Prompt 07, unchanged signature) reverses loan
+allocations exactly the way it already reversed contribution
+allocations — by flipping `payments.status` to `REVERSED`, which alone
+makes every one of that payment's allocations (contribution AND loan)
+inactive; no allocation row is ever edited or deleted. If the reversal
+restores a `CLOSED` loan's outstanding balance above zero, the loan
+reopens to `ACTIVE` with an audited `REOPENED` event in the same
+transaction. Wallet-allocation reversal does not exist for loans for
+the same reason it does not exist for contributions: Prompt 07 never
+built one (wallet allocations are not reversible in this phase) —
+extending a mechanism that does not exist would be new scope beyond
+09C, not a 09C requirement.
+
+### Closure and reopening
+
+`loan_account_recheck_closure()` runs after every posting/reversal that
+could change a loan's outstanding balance. An `ACTIVE` loan closes the
+instant `principal_outstanding + interest_outstanding = 0` across every
+installment (never merely "payment amount reached"), recording exactly
+one `CLOSED` event. A `CLOSED` loan reopens to `ACTIVE` only if a later
+reversal restores a positive outstanding balance, recording exactly one
+`REOPENED` event — a `CLOSED` loan is never left with positive
+outstanding debt, and reopening is always audited, never silent.
+
+### Due/overdue read model
+
+Every installment carries a derived `status` — `UPCOMING` / `DUE` /
+`PARTIALLY_PAID` / `PAID` / `OVERDUE` — computed fresh from `due_date`
+and derived outstanding on every read, never persisted (so it can never
+drift). Penalty behavior on an overdue installment is 09D's job; 09C
+only makes overdue visibility available.
+
+### Manual/future prepayment is deferred (09C-UAT-FIX-01)
+
+Paying a future (UPCOMING) installment on purpose is explicitly out of
+scope here — there is no "pay future installments anyway" checkbox or
+override anywhere in the flow. Genuine early payoff/prepayment needs
+its own dedicated policy decision first (whether future interest is
+still payable or rebated, whether principal prepayment changes the
+schedule/term/installment amount, how early settlement is reported) —
+adding a quick bypass without deciding those questions would just
+re-introduce the exact silent-prepayment bug this fix corrects.
+
+### Receipts
+
+The existing Prompt 07 receipt (`rpc_get_receipt`) now renders a loan
+allocation line with semantic context ("STD-LN-2026-0001 — Awamu 1",
+"Riba"/"Mtaji") alongside unchanged contribution lines — still exactly
+one receipt per payment, never a second loan-specific receipt document.
+
 ## Loan numbering
 
 `loan_number_counters (group_id, year, last_number)` backs a
@@ -299,6 +467,14 @@ per-group-per-year counter pattern already used for member numbers.
   preview and regenerate schedule.
 - `loan.submit` / `loan.approve` / `loan.reject` / `loan.cancel` /
   `loan.disburse` (Prompt 09B) — the workflow/disbursement actions.
+
+Loan repayment (09C) introduces **no new permission**. It reuses
+Prompt 07's `payment.view` / `payment.create` / `payment.reverse` /
+`payment.receipt.view` / `wallet.view` / `wallet.allocate` — a separate
+`loan.payment.create` would be redundant, since the same payment
+authority already governs whether a caller may post any payment,
+regardless of what it allocates against. Loan visibility for read
+models still follows `loan.view`.
 
 09A's ADMIN/TREASURER-full, CHAIRPERSON/SECRETARY-view-only,
 MEMBER-none posture continues, but 09B's five new permissions are
@@ -354,9 +530,54 @@ hidden outright instead:
 - `APPROVED`: Disburse (`/disburse`), Cancel (`/cancel`).
 - `ACTIVE`/`DISBURSED`: no edit/regenerate/cancel — shows the
   disbursement detail (financial account, amount, effective date,
-  reference) and the funded schedule instead.
+  reference), a repayment summary (principal repaid/outstanding,
+  interest recognized/outstanding, total outstanding, next due date,
+  overdue amount), and each installment's derived paid/outstanding
+  figures and status badge (09C).
+- `CLOSED`: read-only, same repayment summary/schedule as ACTIVE but
+  with zero outstanding and no further mutation action.
 - `REJECTED`/`CANCELLED`: read-only history, showing the recorded
   reason from `loan_account_events`.
+
+A convenience "Receive Payment" shortcut from Loan Detail into the
+existing Record Payment flow (preselecting the borrower) was considered
+for 09C but **deferred** — it would only ever call the existing
+`rpc_post_payment` pipeline (never a second implementation), but a
+pre-existing cross-feature `context.push` navigation quirk in this
+app's router made the shortcut unreliable to wire up cleanly within
+this phase; the loan repayment RPCs/read-models themselves are fully
+implemented and reachable via the ordinary Payments module regardless.
+Payment allocation preview/detail/receipt already render loan lines
+(loan product name, loan number, installment, due date, Riba/Mtaji)
+alongside contribution lines, grouped one header per loan installment —
+see the Repayment section above and
+[docs/product/payments.md](payments.md#allocation-preview-loan-context-prompt-09c-uat-fix-02).
+
+### Loan status color mapping (Prompt 09C-UAT-FIX-02)
+
+`loanAccountStatusSemantic()` (`loan_labels.dart`) is the ONE place a
+`loan_accounts.status` value maps to a `UmojaStatusBadge` color — never
+assigned ad hoc per screen. Physical UAT found the loan ACCOUNTS LIST
+screen still used an old `isDraft ? neutral : success` shortcut (the
+detail screen had already been fixed in 09B) — every relevant surface
+(list, detail header) now calls the same centralized function:
+
+| Status | Semantic | Why |
+| --- | --- | --- |
+| `DRAFT` | neutral | unfinished, still editable |
+| `SUBMITTED` | info (blue) | waiting for a decision |
+| `APPROVED` | warning (amber) | approved but not yet funded |
+| `ACTIVE` | success (green) | funded and running — the only strongly "running" state |
+| `CLOSED` | neutral | completed, deliberately NOT the same green as ACTIVE |
+| `REJECTED` | danger (red) | a decided negative outcome |
+| `CANCELLED` | neutral | muted/non-alarming, deliberately distinct from REJECTED's stronger red |
+| `DISBURSED` | success | defensive only — never actually observed as a resting status (see "Why DISBURSED is transactional" above) |
+
+Every color reuses an existing `UmojaStatusSemantic` token (success/
+warning/danger/info/neutral) — no new hex values or "muted" variants
+were added to the shared design system for this. The badge always
+shows its text label alongside the color (never color-only), so status
+remains understandable without relying on color perception.
 
 Submit shows a confirmation summary (borrower, loan number, product,
 principal, interest, term, total scheduled interest, total repayment,
@@ -378,11 +599,14 @@ of what Flutter renders.
 
 ## Deferred to later phases
 
-- 09C: repayment posting, payment allocation against installments,
-  interest income recognition policy.
-- 09D: penalties, restructuring, refinancing, write-off.
+- 09D: loan penalties, overdue penalty assessment, restructuring,
+  refinancing, write-off.
 - A future controlled loan-correction/reversal phase: financial
   correction of a mistakenly-disbursed loan (09B deliberately does not
-  implement this — see "Reversal is deferred" above).
+  implement this — see "Reversal is deferred" above) and wallet-loan
+  allocation reversal (does not exist for the same reason it does not
+  exist for contributions — Prompt 07 never built one).
 - Guarantors/collateral, if required, are deferred until a phase that
   actually needs them.
+- The Loan Detail "Receive Payment" convenience shortcut (see Flutter
+  module above) — deferred pending a router fix, not an accounting gap.

@@ -69,12 +69,17 @@ abstract class PaymentRepository {
   });
 
   /// Non-posting preview — computed by the exact same server-side plan
-  /// [postPayment] would persist.
+  /// [postPayment] would persist. [effectiveAt] must be the SAME date
+  /// the payment will actually post with — it is the authoritative
+  /// basis for which loan installments are currently payable (Prompt
+  /// 09C-UAT-FIX-01): an installment due after this date is never
+  /// included, in preview or in posting.
   Future<PaymentAllocationPreview> previewPaymentAllocation({
     required String groupId,
     required String membershipId,
     required String financialAccountId,
     required double amount,
+    required DateTime effectiveAt,
   });
 
   /// [idempotencyKey], if supplied, makes a retried submission safe to

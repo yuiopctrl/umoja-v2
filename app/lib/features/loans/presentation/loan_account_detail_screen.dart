@@ -24,15 +24,18 @@ import 'widgets/loan_labels.dart';
 /// `/loans/accounts/:loanAccountId`: a single loan account, its
 /// server-generated repayment schedule, and its full lifecycle
 /// (Prompt 09A foundation, extended 09B with Submit/Approve/Reject/
-/// Cancel/Disburse). Actions shown depend on both status and
-/// permission — DRAFT allows Edit/Regenerate/Submit/Cancel; SUBMITTED
-/// allows Approve/Reject/Cancel; APPROVED allows Disburse/Cancel;
-/// DISBURSED/ACTIVE show funded disbursement detail with no further
-/// mutation; REJECTED/CANCELLED are read-only history. No approve/
-/// disburse/receive-payment action ever appears merely disabled for
-/// an unauthorized user — it is hidden outright, matching the rest of
-/// this module's convention; the backend remains the authorization
-/// boundary regardless.
+/// Cancel/Disburse, and 09C with derived repayment summary/installment
+/// status). Actions shown depend on both status and permission — DRAFT
+/// allows Edit/Regenerate/Submit/Cancel; SUBMITTED allows
+/// Approve/Reject/Cancel; APPROVED allows Disburse/Cancel; ACTIVE shows
+/// the repayment summary and per-installment status (a convenience
+/// "Receive Payment" shortcut into the existing Record Payment flow was
+/// considered here but deferred — see docs/product/loans.md); CLOSED
+/// and DISBURSED show funded/settled detail with no further mutation;
+/// REJECTED/CANCELLED are read-only history. No approve/disburse action
+/// ever appears merely disabled for an unauthorized user — it is hidden
+/// outright, matching the rest of this module's convention; the backend
+/// remains the authorization boundary regardless.
 class LoanAccountDetailScreen extends ConsumerWidget {
   const LoanAccountDetailScreen({super.key, required this.loanAccountId});
 
@@ -209,12 +212,61 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: UmojaSpacing.xxl),
-              Text(
-                l10n.loanScheduleTitle,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: UmojaSpacing.sm),
+              if (loan.isActive || loan.isClosed) ...[
+                const SizedBox(height: UmojaSpacing.xxl),
+                Text(
+                  l10n.loanScheduleTitle,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: UmojaSpacing.sm),
+                UmojaCard(
+                  key: const Key('loanRepaymentSummaryCard'),
+                  padding: const EdgeInsets.all(UmojaSpacing.lg),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _DetailRow(
+                        label: l10n.loanSummaryPrincipalRepaidLabel,
+                        value: formatAmount(loan.principalRepaid),
+                      ),
+                      _DetailRow(
+                        label: l10n.loanSummaryPrincipalOutstandingLabel,
+                        value: formatAmount(loan.principalOutstanding ?? 0),
+                      ),
+                      _DetailRow(
+                        label: l10n.loanSummaryInterestRecognizedLabel,
+                        value: formatAmount(loan.interestRecognized),
+                      ),
+                      _DetailRow(
+                        label: l10n.loanSummaryInterestOutstandingLabel,
+                        value: formatAmount(loan.interestOutstanding ?? 0),
+                      ),
+                      _DetailRow(
+                        label: l10n.loanSummaryTotalOutstandingLabel,
+                        value: formatAmount(loan.totalOutstanding ?? 0),
+                      ),
+                      if (loan.nextDueDate != null)
+                        _DetailRow(
+                          label: l10n.loanSummaryNextDueDateLabel,
+                          value: formatKiswahiliDate(loan.nextDueDate!),
+                        ),
+                      if (loan.overdueAmount > 0)
+                        _DetailRow(
+                          label: l10n.loanSummaryOverdueAmountLabel,
+                          value: formatAmount(loan.overdueAmount),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: UmojaSpacing.lg),
+              ] else ...[
+                const SizedBox(height: UmojaSpacing.xxl),
+                Text(
+                  l10n.loanScheduleTitle,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: UmojaSpacing.sm),
+              ],
               UmojaCard(
                 padding: const EdgeInsets.all(UmojaSpacing.lg),
                 child: Column(
@@ -225,14 +277,38 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                         child: Row(
                           children: [
                             Expanded(
-                              child: Text(
-                                l10n.loanInstallmentNumberLabel(
-                                  installment.installmentNumber,
-                                ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    l10n.loanInstallmentNumberLabel(
+                                      installment.installmentNumber,
+                                    ),
+                                  ),
+                                  Text(
+                                    formatKiswahiliDate(installment.dueDate),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall,
+                                  ),
+                                ],
                               ),
                             ),
-                            Text(formatKiswahiliDate(installment.dueDate)),
-                            const SizedBox(width: UmojaSpacing.md),
+                            if (installment.status != null)
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  right: UmojaSpacing.sm,
+                                ),
+                                child: UmojaStatusBadge(
+                                  label: loanInstallmentStatusLabel(
+                                    l10n,
+                                    installment.status!,
+                                  ),
+                                  semantic: loanInstallmentStatusSemantic(
+                                    installment.status!,
+                                  ),
+                                ),
+                              ),
                             Text(formatAmount(installment.totalDue)),
                           ],
                         ),

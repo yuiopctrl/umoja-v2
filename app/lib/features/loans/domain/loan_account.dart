@@ -38,6 +38,13 @@ class LoanAccount {
     this.installments = const [],
     this.events = const [],
     this.disbursement,
+    this.principalRepaid = 0,
+    this.principalOutstanding,
+    this.interestRecognized = 0,
+    this.interestOutstanding,
+    this.totalOutstanding,
+    this.nextDueDate,
+    this.overdueAmount = 0,
   });
 
   factory LoanAccount.fromJson(Map<String, dynamic> json) {
@@ -89,6 +96,27 @@ class LoanAccount {
           : LoanDisbursement.fromJson(
               json['disbursement'] as Map<String, dynamic>,
             ),
+      principalRepaid: json['principal_repaid'] == null
+          ? 0
+          : (json['principal_repaid'] as num).toDouble(),
+      principalOutstanding: json['principal_outstanding'] == null
+          ? null
+          : (json['principal_outstanding'] as num).toDouble(),
+      interestRecognized: json['interest_recognized'] == null
+          ? 0
+          : (json['interest_recognized'] as num).toDouble(),
+      interestOutstanding: json['interest_outstanding'] == null
+          ? null
+          : (json['interest_outstanding'] as num).toDouble(),
+      totalOutstanding: json['total_outstanding'] == null
+          ? null
+          : (json['total_outstanding'] as num).toDouble(),
+      nextDueDate: json['next_due_date'] == null
+          ? null
+          : DateTime.parse(json['next_due_date'] as String),
+      overdueAmount: json['overdue_amount'] == null
+          ? 0
+          : (json['overdue_amount'] as num).toDouble(),
     );
   }
 
@@ -136,12 +164,25 @@ class LoanAccount {
   /// Non-null only once `rpc_disburse_loan_account()` has succeeded.
   final LoanDisbursement? disbursement;
 
+  /// Member loan summary (Prompt 09C) — always server-derived from
+  /// allocations across every installment, never computed here. Zero/
+  /// null for a loan that has never been disbursed.
+  final double principalRepaid;
+  final double? principalOutstanding;
+  final double interestRecognized;
+  final double? interestOutstanding;
+  final double? totalOutstanding;
+  final DateTime? nextDueDate;
+  final double overdueAmount;
+
   bool get isDraft => status == 'DRAFT';
   bool get isSubmitted => status == 'SUBMITTED';
   bool get isApproved => status == 'APPROVED';
   bool get isRejected => status == 'REJECTED';
   bool get isCancelled => status == 'CANCELLED';
   bool get isFunded => status == 'DISBURSED' || status == 'ACTIVE';
+  bool get isActive => status == 'ACTIVE';
+  bool get isClosed => status == 'CLOSED';
 
   /// Sum of every installment's interest — rendered directly from
   /// server-provided installment rows, never independently computed.

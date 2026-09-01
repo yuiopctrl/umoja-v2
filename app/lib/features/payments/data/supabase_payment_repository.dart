@@ -140,6 +140,7 @@ class SupabasePaymentRepository implements PaymentRepository {
     required String membershipId,
     required String financialAccountId,
     required double amount,
+    required DateTime effectiveAt,
   }) async {
     try {
       final result = await _client.rpc(
@@ -149,6 +150,7 @@ class SupabasePaymentRepository implements PaymentRepository {
           'p_membership_id': membershipId,
           'p_financial_account_id': financialAccountId,
           'p_amount': amount,
+          'p_effective_at': _dateOnlyOrNull(effectiveAt),
         },
       );
       return PaymentAllocationPreview.fromJson(result as Map<String, dynamic>);

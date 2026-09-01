@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/localization/app_localizations_x.dart';
 import '../../../../core/theme/umoja_spacing.dart';
+import '../../../../core/utils/kiswahili_date.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/money_format.dart';
 import '../../../../core/widgets/umoja_card.dart';
@@ -77,9 +78,80 @@ class _MemberFinancialSummaryCardState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                l10n.paymentSummaryContributionsSectionLabel,
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: UmojaSpacing.xs),
               _SummaryRow(
+                key: const Key('memberFinancialSummaryContributionDueNowRow'),
+                label: l10n.paymentSummaryDueNowLabel,
+                value: formatAmount(statement.contributionDueNowAmount),
+              ),
+              _SummaryRow(
+                key: const Key('memberFinancialSummaryContributionOverdueRow'),
+                label: l10n.paymentSummaryOverdueLabel,
+                value: formatAmount(statement.contributionOverdueAmount),
+              ),
+              _SummaryRow(
+                key: const Key('memberFinancialSummaryOutstandingRow'),
                 label: l10n.paymentSummaryOutstandingLabel,
                 value: formatAmount(statement.totalOutstanding),
+              ),
+              const SizedBox(height: UmojaSpacing.md),
+              Text(
+                l10n.paymentSummaryLoansSectionLabel,
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: UmojaSpacing.xs),
+              if (statement.loans.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: UmojaSpacing.sm),
+                  child: Text(
+                    l10n.paymentSummaryNoActiveLoansMessage,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                )
+              else
+                for (final loan in statement.loans)
+                  Padding(
+                    key: Key(
+                      'memberFinancialSummaryLoanRow-${loan.loanAccountId}',
+                    ),
+                    padding: const EdgeInsets.only(bottom: UmojaSpacing.sm),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          loan.loanNumber,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        _SummaryRow(
+                          label: l10n.paymentSummaryDueNowLabel,
+                          value: formatAmount(loan.dueNowAmount),
+                        ),
+                        _SummaryRow(
+                          label: l10n.paymentSummaryOverdueLabel,
+                          value: formatAmount(loan.overdueAmount),
+                        ),
+                        if (loan.nextDueDate != null)
+                          _SummaryRow(
+                            label: l10n.loanSummaryNextDueDateLabel,
+                            value: formatKiswahiliDate(loan.nextDueDate!),
+                          ),
+                        if (loan.upcomingAmount > 0)
+                          _SummaryRow(
+                            label: l10n.paymentSummaryUpcomingLabel,
+                            value: formatAmount(loan.upcomingAmount),
+                          ),
+                      ],
+                    ),
+                  ),
+              const Divider(height: UmojaSpacing.xl),
+              _SummaryRow(
+                key: const Key('memberFinancialSummaryTotalPayableNowRow'),
+                label: l10n.paymentSummaryTotalPayableNowLabel,
+                value: formatAmount(statement.totalPayableNow),
               ),
               const SizedBox(height: UmojaSpacing.sm),
               _SummaryRow(

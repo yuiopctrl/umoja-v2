@@ -15,7 +15,6 @@ import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_page.dart';
 import '../../../core/widgets/umoja_status_badge.dart';
 import '../../auth/providers/selected_group_provider.dart';
-import '../../contributions/presentation/widgets/contribution_component_labels.dart';
 import '../../financial_accounts/domain/financial_account.dart';
 import '../../financial_accounts/presentation/widgets/financial_account_labels.dart';
 import '../../financial_accounts/providers/financial_accounts_list_provider.dart';
@@ -23,6 +22,7 @@ import '../../members/domain/group_member.dart';
 import '../../members/providers/member_detail_provider.dart';
 import '../controllers/payment_post_controller.dart';
 import '../controllers/payment_preview_controller.dart';
+import 'widgets/allocation_lines_list.dart';
 import 'widgets/member_financial_summary_card.dart';
 import 'widgets/member_search_picker.dart';
 import 'widgets/payment_labels.dart';
@@ -106,6 +106,7 @@ class _RecordPaymentScreenState extends ConsumerState<RecordPaymentScreen> {
           membershipId: member.membershipId,
           financialAccountId: accountId,
           amount: amount,
+          effectiveAt: _effectiveAt,
         );
     if (!mounted) return;
     if (ref.read(paymentPreviewControllerProvider).preview != null) {
@@ -418,38 +419,9 @@ class _PreviewStep extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: UmojaSpacing.sm),
-              for (final line in preview.allocations)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: UmojaSpacing.sm),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              obligationContextLabel(
-                                contributionTypeName: line.contributionTypeName,
-                                periodLabel: line.periodLabel,
-                                periodPurpose: line.periodPurpose,
-                              ),
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                            Text(
-                              contributionComponentTypeLabel(
-                                l10n,
-                                line.componentType,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(formatAmount(line.amount)),
-                    ],
-                  ),
-                ),
-              if (preview.allocations.isEmpty)
+              if (preview.allocations.isNotEmpty)
+                AllocationLinesList(lines: preview.allocations)
+              else
                 Text(l10n.paymentPreviewNoOutstandingMessage),
               const Divider(height: UmojaSpacing.xxl),
               _PreviewSummaryRow(
@@ -522,7 +494,8 @@ class _PreviewSummaryRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label),
+          Expanded(child: Text(label)),
+          const SizedBox(width: UmojaSpacing.sm),
           Text(value, style: Theme.of(context).textTheme.titleSmall),
         ],
       ),

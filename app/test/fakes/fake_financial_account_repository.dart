@@ -217,6 +217,9 @@ FinancialPosition fakeFinancialPosition({
   double shareCapitalReceived = 10000,
   double memberWalletLiability = 5000,
   double totalOutstandingMemberObligations = 15000,
+  double fundedLoanPrincipalReceivable = 0,
+  double scheduledUnearnedInterest = 0,
+  double recognizedLoanInterestIncome = 0,
 }) {
   return FinancialPosition(
     asOf: asOf ?? DateTime.utc(2026, 1, 1),
@@ -241,6 +244,9 @@ FinancialPosition fakeFinancialPosition({
     shareCapitalReceived: shareCapitalReceived,
     memberWalletLiability: memberWalletLiability,
     totalOutstandingMemberObligations: totalOutstandingMemberObligations,
+    fundedLoanPrincipalReceivable: fundedLoanPrincipalReceivable,
+    scheduledUnearnedInterest: scheduledUnearnedInterest,
+    recognizedLoanInterestIncome: recognizedLoanInterestIncome,
   );
 }
 

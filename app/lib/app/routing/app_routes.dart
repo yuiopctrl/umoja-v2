@@ -255,7 +255,19 @@ class AppRoutes {
   // Integrates directly with the 08A financial-accounts foundation
   // above — no second cashbook route/model exists here.
 
+  /// The Payments hub ("Malipo") — Prompt 09C-UAT-FIX-01's shared home
+  /// for Record Payment/Payment History/Receipts/Member Wallet, no
+  /// longer conceptually owned by Contributions (loans/wallet also
+  /// settle through the same Payment Engine — see docs/product/payments.md).
   static const paymentsList = '/payments';
+
+  /// Paginated, filterable payment history — the actual list
+  /// previously rendered directly at [paymentsList]; reached from the
+  /// hub's own "Payment History" entry now. Declared as a literal
+  /// sibling of [paymentDetail] (same precedent as [memberNew] vs
+  /// [memberDetail]) so it is never captured as a `paymentId`.
+  static const paymentsHistory = '/payments/history';
+
   static const paymentRecord = '/payments/record';
 
   /// Path template; use [paymentRecordPath] for a concrete URL. Same

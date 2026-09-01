@@ -72,6 +72,9 @@ void main() {
         '10000',
       );
       await tester.pumpAndSettle();
+      await tester.ensureVisible(
+        find.byKey(const Key('recordPaymentAccountField')),
+      );
       await tester.tap(find.byKey(const Key('recordPaymentAccountField')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Main Cash (Cash)').last);

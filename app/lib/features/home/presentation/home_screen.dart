@@ -114,6 +114,20 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
           ],
+          if (membership.hasPermission('payment.view') ||
+              membership.hasPermission('payment.create')) ...[
+            const SizedBox(height: UmojaSpacing.lg),
+            UmojaCard(
+              key: const Key('homePaymentsShortcut'),
+              padding: EdgeInsets.zero,
+              child: UmojaListTile(
+                leading: const Icon(Icons.add_card_outlined),
+                title: l10n.paymentsTitle,
+                subtitle: Text(l10n.homePaymentsShortcutSubtitle),
+                onTap: () => context.push(AppRoutes.paymentsList),
+              ),
+            ),
+          ],
           if (membership.hasPermission('financial_account.view')) ...[
             const SizedBox(height: UmojaSpacing.lg),
             UmojaCard(

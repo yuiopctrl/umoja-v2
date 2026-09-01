@@ -1911,6 +1911,15 @@ class AppLocalizationsSw extends AppLocalizations {
   String get paymentsTitle => 'Malipo';
 
   @override
+  String get paymentHistoryTitle => 'Historia ya Malipo';
+
+  @override
+  String get receiptsEntryTitle => 'Risiti';
+
+  @override
+  String get receiptsEntrySubtitle => 'Tazama na chapisha risiti za malipo';
+
+  @override
   String get paymentsSearchHint => 'Tafuta malipo';
 
   @override
@@ -2133,6 +2142,28 @@ class AppLocalizationsSw extends AppLocalizations {
   String get viewAllObligationsAction => 'Angalia Yote';
 
   @override
+  String get paymentSummaryContributionsSectionLabel => 'Michango';
+
+  @override
+  String get paymentSummaryLoansSectionLabel => 'Mikopo';
+
+  @override
+  String get paymentSummaryDueNowLabel => 'Inadaiwa Sasa';
+
+  @override
+  String get paymentSummaryOverdueLabel => 'Imechelewa';
+
+  @override
+  String get paymentSummaryTotalPayableNowLabel => 'Jumla Inayolipwa Sasa';
+
+  @override
+  String get paymentSummaryUpcomingLabel => 'Awamu Zijazo (Bado Hazijafika)';
+
+  @override
+  String get paymentSummaryNoActiveLoansMessage =>
+      'Mwanachama hana mkopo unaoendelea.';
+
+  @override
   String get sectionCharges => 'Madeni';
 
   @override
@@ -2165,6 +2196,10 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get homeLoansShortcutSubtitle => 'Aina za mikopo na akaunti za mikopo';
+
+  @override
+  String get homePaymentsShortcutSubtitle =>
+      'Rekodi malipo, historia, risiti na salio la mwanachama';
 
   @override
   String get loanAccountsTitle => 'Akaunti za Mikopo';
@@ -2546,12 +2581,61 @@ class AppLocalizationsSw extends AppLocalizations {
       'Akaunti ya fedha iliyochaguliwa haina salio la kutosha kwa mgawanyo huu.';
 
   @override
+  String get loanAllocationDueDateLabel => 'Tarehe ya Kulipa';
+
+  @override
+  String get loanComponentInterest => 'Riba';
+
+  @override
+  String get loanComponentPrincipal => 'Mtaji';
+
+  @override
+  String get loanInstallmentStatusUpcoming => 'Inakuja';
+
+  @override
+  String get loanInstallmentStatusDue => 'Inadaiwa';
+
+  @override
+  String get loanInstallmentStatusPartiallyPaid => 'Imelipwa Kiasi';
+
+  @override
+  String get loanInstallmentStatusPaid => 'Imelipwa';
+
+  @override
+  String get loanInstallmentStatusOverdue => 'Imechelewa';
+
+  @override
+  String get loanSummaryPrincipalRepaidLabel => 'Mtaji Uliolipwa';
+
+  @override
+  String get loanSummaryPrincipalOutstandingLabel => 'Mtaji Unaodaiwa';
+
+  @override
+  String get loanSummaryInterestRecognizedLabel => 'Riba Iliyopatikana';
+
+  @override
+  String get loanSummaryInterestOutstandingLabel => 'Riba Inayodaiwa';
+
+  @override
+  String get loanSummaryTotalOutstandingLabel => 'Jumla Inayodaiwa';
+
+  @override
+  String get loanSummaryNextDueDateLabel => 'Malipo Yanayofuata';
+
+  @override
+  String get loanSummaryOverdueAmountLabel => 'Kiasi Kilichochelewa';
+
+  @override
   String get financialPositionFundedLoanPrincipalLabel =>
       'Mkopo Mkuu Uliotolewa Unaodaiwa';
 
   @override
   String get financialPositionScheduledUnearnedInterestLabel =>
       'Riba Iliyopangwa Isiyopatikana Bado';
+
+  @override
+  String get financialPositionRecognizedLoanInterestIncomeLabel =>
+      'Mapato ya Riba ya Mikopo Yaliyopatikana';
 
   @override
   String get cashbookFilterLoanDisbursements => 'Utoaji wa Mikopo';

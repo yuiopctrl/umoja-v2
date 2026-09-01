@@ -13,10 +13,10 @@ import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_page.dart';
 import '../../../core/widgets/umoja_section.dart';
 import '../../auth/providers/selected_group_provider.dart';
-import '../../contributions/presentation/widgets/contribution_component_labels.dart';
 import '../controllers/wallet_allocation_controller.dart';
 import '../controllers/wallet_allocation_preview_controller.dart';
 import '../providers/member_wallet_provider.dart';
+import 'widgets/allocation_lines_list.dart';
 import 'widgets/payment_labels.dart';
 
 const _defaultLimit = 10;
@@ -281,14 +281,9 @@ class _AllocateWalletSheetState extends ConsumerState<_AllocateWalletSheet> {
               l10n.paymentPreviewWillSettleLabel,
               style: Theme.of(context).textTheme.titleSmall,
             ),
-            for (final line in preview.allocations)
-              Padding(
-                padding: const EdgeInsets.only(top: UmojaSpacing.xs),
-                child: Text(
-                  '${contributionComponentTypeLabel(l10n, line.componentType)} — ${formatAmount(line.amount)}',
-                ),
-              ),
-            if (preview.allocations.isEmpty)
+            if (preview.allocations.isNotEmpty)
+              AllocationLinesList(lines: preview.allocations)
+            else
               Text(l10n.paymentPreviewNoOutstandingMessage),
           ],
           if (previewState.errorType != null ||

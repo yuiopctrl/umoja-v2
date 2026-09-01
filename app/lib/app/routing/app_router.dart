@@ -63,6 +63,7 @@ import '../../features/onboarding/presentation/profile_onboarding_screen.dart';
 import '../../features/payments/presentation/member_wallet_screen.dart';
 import '../../features/payments/presentation/payment_detail_screen.dart';
 import '../../features/payments/presentation/payment_reversal_screen.dart';
+import '../../features/payments/presentation/payments_home_screen.dart';
 import '../../features/payments/presentation/payments_list_screen.dart';
 import '../../features/payments/presentation/receipt_screen.dart';
 import '../../features/payments/presentation/record_payment_screen.dart';
@@ -383,6 +384,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: AppRoutes.paymentsList,
+            builder: (context, state) => const PaymentsHomeScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.paymentsHistory,
             builder: (context, state) => const PaymentsListScreen(),
           ),
           GoRoute(

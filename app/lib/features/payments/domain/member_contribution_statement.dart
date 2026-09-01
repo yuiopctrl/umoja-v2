@@ -69,6 +69,52 @@ class OutstandingCharge {
   bool get isOpeningBalance => periodPurpose == 'OPENING_BALANCE';
 }
 
+/// One ACTIVE loan's pre-payment obligation summary (Prompt
+/// 09C-UAT-FIX-01), as returned within
+/// [MemberContributionStatement.loans]. [currentlyPayableAmount] is
+/// exactly what an ordinary payment would automatically allocate to
+/// this loan today ([overdueAmount] + [dueNowAmount]) — [upcomingAmount]
+/// (a future installment's scheduled amount) is never included in it,
+/// matching the server allocator's own currently-due rule.
+class MemberLoanObligationSummary {
+  const MemberLoanObligationSummary({
+    required this.loanAccountId,
+    required this.loanNumber,
+    required this.overdueAmount,
+    required this.dueNowAmount,
+    required this.currentlyPayableAmount,
+    this.nextDueDate,
+    required this.upcomingAmount,
+  });
+
+  factory MemberLoanObligationSummary.fromJson(Map<String, dynamic> json) {
+    return MemberLoanObligationSummary(
+      loanAccountId: json['loan_account_id'] as String,
+      loanNumber: json['loan_number'] as String,
+      overdueAmount: (json['overdue_amount'] as num).toDouble(),
+      dueNowAmount: (json['due_now_amount'] as num).toDouble(),
+      currentlyPayableAmount: (json['currently_payable_amount'] as num)
+          .toDouble(),
+      nextDueDate: json['next_due_date'] == null
+          ? null
+          : DateTime.parse(json['next_due_date'] as String),
+      upcomingAmount: (json['upcoming_amount'] as num).toDouble(),
+    );
+  }
+
+  final String loanAccountId;
+  final String loanNumber;
+  final double overdueAmount;
+  final double dueNowAmount;
+  final double currentlyPayableAmount;
+  final DateTime? nextDueDate;
+
+  /// Scheduled amount on installments due AFTER today — shown only as
+  /// "upcoming", never folded into [currentlyPayableAmount] or into any
+  /// "Amount Payable Now" figure.
+  final double upcomingAmount;
+}
+
 /// Result of `rpc_get_member_contribution_statement` — the
 /// authoritative "before payment" summary (Prompt 07 UAT-FIX-01,
 /// section 1/2): member identity, total outstanding debt, wallet
@@ -85,6 +131,11 @@ class MemberContributionStatement {
     required this.totalOutstanding,
     required this.totalAllocated,
     required this.walletBalance,
+    this.contributionOverdueAmount = 0,
+    this.contributionDueNowAmount = 0,
+    this.loans = const [],
+    this.totalLoansCurrentlyPayableAmount = 0,
+    this.totalPayableNow = 0,
   });
 
   factory MemberContributionStatement.fromJson(Map<String, dynamic> json) {
@@ -101,6 +152,23 @@ class MemberContributionStatement {
       totalOutstanding: (json['total_outstanding'] as num).toDouble(),
       totalAllocated: (json['total_allocated'] as num).toDouble(),
       walletBalance: (json['wallet_balance'] as num).toDouble(),
+      contributionOverdueAmount:
+          (json['contribution_overdue_amount'] as num?)?.toDouble() ?? 0,
+      contributionDueNowAmount:
+          (json['contribution_due_now_amount'] as num?)?.toDouble() ?? 0,
+      loans: json['loans'] == null
+          ? const []
+          : (json['loans'] as List<dynamic>)
+                .map(
+                  (item) => MemberLoanObligationSummary.fromJson(
+                    item as Map<String, dynamic>,
+                  ),
+                )
+                .toList(growable: false),
+      totalLoansCurrentlyPayableAmount:
+          (json['total_loans_currently_payable_amount'] as num?)?.toDouble() ??
+          0,
+      totalPayableNow: (json['total_payable_now'] as num?)?.toDouble() ?? 0,
     );
   }
 
@@ -126,4 +194,23 @@ class MemberContributionStatement {
   /// Always present, including exactly `0` — a zero wallet balance is
   /// a valid, normal state, never treated as missing data.
   final double walletBalance;
+
+  /// Prompt 09C-UAT-FIX-01 — a breakdown of [totalOutstanding] by due
+  /// date, for display only (contribution allocatability itself is
+  /// unchanged: a not-yet-due contribution charge remains a valid
+  /// automatic-allocation target, unlike a loan installment).
+  final double contributionOverdueAmount;
+  final double contributionDueNowAmount;
+
+  /// One entry per ACTIVE loan this member is borrower on.
+  final List<MemberLoanObligationSummary> loans;
+
+  /// Sum of every loan's [MemberLoanObligationSummary.currentlyPayableAmount].
+  final double totalLoansCurrentlyPayableAmount;
+
+  /// [totalOutstanding] + [totalLoansCurrentlyPayableAmount] — what an
+  /// ordinary payment today would actually be able to allocate across
+  /// both domains combined. Never includes any loan's
+  /// [MemberLoanObligationSummary.upcomingAmount].
+  final double totalPayableNow;
 }

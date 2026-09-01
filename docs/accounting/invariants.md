@@ -43,6 +43,31 @@ loans, wallet, or Hisa actually work.
   financial correction of a disbursed loan is deferred to a future
   controlled reversal/correction phase, never solved by deleting
   cashbook/disbursement rows.
+- Loan repayment reuses the existing Prompt 07 Payment Engine — one
+  external repayment still creates exactly one cashbook INFLOW; a loan
+  allocation is never a second cash event and never a competing
+  ledger (Prompt 09C).
+- Loan principal repayment reduces the funded principal receivable and
+  is never counted as group income.
+- Loan interest is recognized as group income only at the instant an
+  allocation actually settles it — never merely because it is
+  scheduled, and never both as "scheduled/unearned" and "recognized"
+  at once.
+- Wallet-to-loan settlement, like wallet-to-contribution settlement,
+  creates zero cashbook movement.
+- A loan closes only when its principal AND interest are both fully
+  settled across every installment — never merely by payment amount or
+  installment count — and a payment reversal that restores outstanding
+  debt on a CLOSED loan reopens it, audited, never leaving it CLOSED
+  with positive outstanding debt.
+- A loan installment is automatically allocatable only when its
+  `due_date` is on or before the payment's own effective date — an
+  ordinary payment, however large, never silently prepays a future
+  installment, never recognizes its scheduled interest early, and
+  never closes a loan ahead of its actual due dates (Prompt
+  09C-UAT-FIX-01). Explicit loan prepayment is a separate, deferred
+  policy decision. Contribution allocatability is unaffected — a
+  not-yet-due contribution charge remains a valid early-payment target.
 - Hisa/share capital is not normal group income.
 - Internal transfers between a group's own financial accounts are not
   income or expense — they net to zero across the group and are

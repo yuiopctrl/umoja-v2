@@ -102,22 +102,29 @@ distinct figures (never folded together):
   never period-bound.
 - `group_income` / `expenses` / `net_operating_result` — period-bound
   when a range is given, unbounded otherwise. Only GROUP_INCOME-treated
-  contribution inflows plus manual income count as income.
+  contribution inflows, manual income, and recognized loan interest
+  (Prompt 09C) count as income.
 - `pass_through_received` / `share_capital_received` — shown
   separately, never added into `group_income`.
 - `member_wallet_liability` — a liability figure, never deducted from
   cash or folded into the balance.
 - `total_outstanding_member_obligations` — point-in-time.
-- `funded_loan_principal_receivable` (Prompt 09B) — point-in-time sum
-  of frozen principal across every DISBURSED/ACTIVE loan; increases
-  only at the instant of disbursement, never before.
-- `scheduled_unearned_interest` (Prompt 09B) — that same set of loans'
-  contractual future interest, deliberately kept out of `group_income`
-  — interest recognition is a Prompt 09C policy decision.
+- `funded_loan_principal_receivable` (Prompt 09B, derived 09C) —
+  point-in-time: disbursed principal minus every active principal
+  allocation to date. Increases at disbursement, decreases as principal
+  is repaid — never a static sum once repayment exists.
+- `scheduled_unearned_interest` (Prompt 09B, derived 09C) — scheduled
+  contractual interest across every funded loan minus interest actually
+  recognized to date. Never double-counts against
+  `recognized_loan_interest_income` below.
+- `recognized_loan_interest_income` (Prompt 09C) — period-bound;
+  already folded into `group_income` above, recognized only when an
+  active loan allocation actually settles `LOAN_INTEREST`, never merely
+  because interest was scheduled.
 
 See [docs/product/loans.md](loans.md) for the full lifecycle
-(Submit/Approve/Reject/Cancel/Disburse) that produces these two
-figures.
+(Submit/Approve/Reject/Cancel/Disburse/Repayment/Closure) that produces
+these figures.
 
 No "current month" default is assumed server-side; an unbounded range
 returns unbounded totals. Any default date range lives in the Flutter

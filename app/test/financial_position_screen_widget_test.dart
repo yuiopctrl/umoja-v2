@@ -149,6 +149,33 @@ void main() {
     expect(find.text('Member Wallet Liability'), findsOneWidget);
   });
 
+  testWidgets('Prompt 09C: recognized loan interest income is shown as its own '
+      'classification row', (tester) async {
+    final fakeRepo = FakeFinancialAccountRepository()
+      ..nextPosition = fakeFinancialPosition(
+        fundedLoanPrincipalReceivable: 750000,
+        scheduledUnearnedInterest: 150000,
+        recognizedLoanInterestIncome: 50000,
+      );
+
+    final router = await pumpFinancialAccountsApp(
+      tester,
+      fakeRepo: fakeRepo,
+      language: AppLanguage.english,
+    );
+    router.go(AppRoutes.financialPosition);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Recognized Loan Interest Income'), findsOneWidget);
+    final row = find.byKey(
+      const Key('financialPositionRecognizedLoanInterestIncomeRow'),
+    );
+    expect(
+      find.descendant(of: row, matching: find.textContaining('50,000')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets(
     'R: no layout overflow at a realistic small Android width (360)',
     (tester) async {

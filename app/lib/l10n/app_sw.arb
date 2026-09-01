@@ -700,6 +700,9 @@
   "memberWalletEntrySubtitle": "Tazama na tumia salio la mwanachama",
 
   "paymentsTitle": "Malipo",
+  "paymentHistoryTitle": "Historia ya Malipo",
+  "receiptsEntryTitle": "Risiti",
+  "receiptsEntrySubtitle": "Tazama na chapisha risiti za malipo",
   "paymentsSearchHint": "Tafuta malipo",
   "paymentsEmptyTitle": "Hakuna Malipo",
   "paymentsEmptyMessage": "Bado hakuna malipo yaliyorekodiwa.",
@@ -779,6 +782,14 @@
   "outstandingObligationsEmptyMessage": "Mwanachama hana deni lililobaki.",
   "viewAllObligationsAction": "Angalia Yote",
 
+  "paymentSummaryContributionsSectionLabel": "Michango",
+  "paymentSummaryLoansSectionLabel": "Mikopo",
+  "paymentSummaryDueNowLabel": "Inadaiwa Sasa",
+  "paymentSummaryOverdueLabel": "Imechelewa",
+  "paymentSummaryTotalPayableNowLabel": "Jumla Inayolipwa Sasa",
+  "paymentSummaryUpcomingLabel": "Awamu Zijazo (Bado Hazijafika)",
+  "paymentSummaryNoActiveLoansMessage": "Mwanachama hana mkopo unaoendelea.",
+
   "sectionCharges": "Madeni",
   "viewChargesAction": "Angalia Madeni",
   "memberChargesTitle": "Madeni",
@@ -792,6 +803,7 @@
 
   "loansTitle": "Mikopo",
   "homeLoansShortcutSubtitle": "Aina za mikopo na akaunti za mikopo",
+  "homePaymentsShortcutSubtitle": "Rekodi malipo, historia, risiti na salio la mwanachama",
   "loanAccountsTitle": "Akaunti za Mikopo",
   "loanAccountsEntrySubtitle": "Angalia na tengeneza mikopo ya wanachama",
   "loanProductsTitle": "Aina za Mikopo",
@@ -930,8 +942,27 @@
   "loanErrorFinancialAccountInactive": "Akaunti hii ya fedha haitumiki.",
   "loanErrorInsufficientBalance": "Akaunti ya fedha iliyochaguliwa haina salio la kutosha kwa mgawanyo huu.",
 
+  "loanAllocationDueDateLabel": "Tarehe ya Kulipa",
+  "loanComponentInterest": "Riba",
+  "loanComponentPrincipal": "Mtaji",
+
+  "loanInstallmentStatusUpcoming": "Inakuja",
+  "loanInstallmentStatusDue": "Inadaiwa",
+  "loanInstallmentStatusPartiallyPaid": "Imelipwa Kiasi",
+  "loanInstallmentStatusPaid": "Imelipwa",
+  "loanInstallmentStatusOverdue": "Imechelewa",
+
+  "loanSummaryPrincipalRepaidLabel": "Mtaji Uliolipwa",
+  "loanSummaryPrincipalOutstandingLabel": "Mtaji Unaodaiwa",
+  "loanSummaryInterestRecognizedLabel": "Riba Iliyopatikana",
+  "loanSummaryInterestOutstandingLabel": "Riba Inayodaiwa",
+  "loanSummaryTotalOutstandingLabel": "Jumla Inayodaiwa",
+  "loanSummaryNextDueDateLabel": "Malipo Yanayofuata",
+  "loanSummaryOverdueAmountLabel": "Kiasi Kilichochelewa",
+
   "financialPositionFundedLoanPrincipalLabel": "Mkopo Mkuu Uliotolewa Unaodaiwa",
   "financialPositionScheduledUnearnedInterestLabel": "Riba Iliyopangwa Isiyopatikana Bado",
+  "financialPositionRecognizedLoanInterestIncomeLabel": "Mapato ya Riba ya Mikopo Yaliyopatikana",
 
   "cashbookFilterLoanDisbursements": "Utoaji wa Mikopo",
 

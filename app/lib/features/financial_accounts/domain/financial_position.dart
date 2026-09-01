@@ -49,6 +49,7 @@ class FinancialPosition {
     required this.totalOutstandingMemberObligations,
     this.fundedLoanPrincipalReceivable = 0,
     this.scheduledUnearnedInterest = 0,
+    this.recognizedLoanInterestIncome = 0,
   });
 
   factory FinancialPosition.fromJson(Map<String, dynamic> json) {
@@ -81,6 +82,8 @@ class FinancialPosition {
           (json['funded_loan_principal_receivable'] as num?)?.toDouble() ?? 0,
       scheduledUnearnedInterest:
           (json['scheduled_unearned_interest'] as num?)?.toDouble() ?? 0,
+      recognizedLoanInterestIncome:
+          (json['recognized_loan_interest_income'] as num?)?.toDouble() ?? 0,
     );
   }
 
@@ -139,4 +142,11 @@ class FinancialPosition {
   /// never added to [groupIncome]: interest recognition is a 09C
   /// policy decision, not a 09B one.
   final double scheduledUnearnedInterest;
+
+  /// Movement DURING the period (Prompt 09C) — interest recognized as
+  /// income only when an active loan allocation actually settles it;
+  /// already included inside [groupIncome], never double-counted. Never
+  /// derived from [scheduledUnearnedInterest] — the two are computed
+  /// independently server-side and must never double-count.
+  final double recognizedLoanInterestIncome;
 }

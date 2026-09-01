@@ -152,9 +152,7 @@ class _LoanAccountRow extends StatelessWidget {
           const SizedBox(height: UmojaSpacing.xs),
           UmojaStatusBadge(
             label: loanAccountStatusLabel(l10n, loan.status),
-            semantic: loan.isDraft
-                ? UmojaStatusSemantic.neutral
-                : UmojaStatusSemantic.success,
+            semantic: loanAccountStatusSemantic(loan.status),
           ),
         ],
       ),

@@ -14,9 +14,9 @@ import '../../../core/widgets/umoja_page.dart';
 import '../../../core/widgets/umoja_section.dart';
 import '../../../core/widgets/umoja_status_badge.dart';
 import '../../auth/providers/selected_group_provider.dart';
-import '../../contributions/presentation/widgets/contribution_component_labels.dart';
 import '../domain/payment_detail.dart';
 import '../providers/payment_detail_provider.dart';
+import 'widgets/allocation_lines_list.dart';
 import 'widgets/payment_labels.dart';
 
 /// `/payments/:paymentId`: full payment detail — metadata, member,
@@ -42,8 +42,8 @@ class PaymentDetailScreen extends ConsumerWidget {
     return UmojaPage(
       title: l10n.paymentDetailTitle,
       maxWidth: 700,
-      backTo: AppRoutes.paymentsList,
-      backLabel: l10n.paymentsTitle,
+      backTo: AppRoutes.paymentsHistory,
+      backLabel: l10n.paymentHistoryTitle,
       body: detailAsync.when(
         loading: () => const Padding(
           padding: EdgeInsets.symmetric(vertical: 64),
@@ -145,45 +145,9 @@ class _DetailBody extends StatelessWidget {
         const SizedBox(height: UmojaSpacing.xxl),
         UmojaSection(
           title: l10n.paymentAllocationsTitle,
-          child: Column(
-            children: [
-              for (final line in detail.allocations)
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: UmojaSpacing.xs,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              obligationContextLabel(
-                                contributionTypeName: line.contributionTypeName,
-                                periodLabel: line.periodLabel,
-                                periodPurpose: line.periodPurpose,
-                              ),
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                            Text(
-                              contributionComponentTypeLabel(
-                                l10n,
-                                line.componentType,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(formatAmount(line.amount)),
-                    ],
-                  ),
-                ),
-              if (detail.allocations.isEmpty)
-                Text(l10n.paymentPreviewNoOutstandingMessage),
-            ],
-          ),
+          child: detail.allocations.isNotEmpty
+              ? AllocationLinesList(lines: detail.allocations)
+              : Text(l10n.paymentPreviewNoOutstandingMessage),
         ),
         const SizedBox(height: UmojaSpacing.xxl),
         Wrap(

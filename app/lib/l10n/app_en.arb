@@ -667,6 +667,9 @@
   "memberWalletEntrySubtitle": "View and allocate a member's wallet balance",
 
   "paymentsTitle": "Payments",
+  "paymentHistoryTitle": "Payment History",
+  "receiptsEntryTitle": "Receipts",
+  "receiptsEntrySubtitle": "View and print payment receipts",
   "paymentsSearchHint": "Search payments",
   "paymentsEmptyTitle": "No Payments",
   "paymentsEmptyMessage": "No payments have been recorded yet.",
@@ -746,6 +749,14 @@
   "outstandingObligationsEmptyMessage": "This member has no outstanding debt.",
   "viewAllObligationsAction": "View All",
 
+  "paymentSummaryContributionsSectionLabel": "Contributions",
+  "paymentSummaryLoansSectionLabel": "Loans",
+  "paymentSummaryDueNowLabel": "Due Now",
+  "paymentSummaryOverdueLabel": "Overdue",
+  "paymentSummaryTotalPayableNowLabel": "Total Payable Now",
+  "paymentSummaryUpcomingLabel": "Upcoming (Not Yet Due)",
+  "paymentSummaryNoActiveLoansMessage": "This member has no active loan.",
+
   "sectionCharges": "Charges",
   "viewChargesAction": "View Charges",
   "memberChargesTitle": "Charges",
@@ -759,6 +770,7 @@
 
   "loansTitle": "Loans",
   "homeLoansShortcutSubtitle": "Loan products and loan accounts",
+  "homePaymentsShortcutSubtitle": "Record payments, history, receipts, and member wallet",
   "loanAccountsTitle": "Loan Accounts",
   "loanAccountsEntrySubtitle": "View and create member loans",
   "loanProductsTitle": "Loan Products",
@@ -897,8 +909,27 @@
   "loanErrorFinancialAccountInactive": "This financial account is inactive.",
   "loanErrorInsufficientBalance": "The selected financial account does not have enough balance for this disbursement.",
 
+  "loanAllocationDueDateLabel": "Due",
+  "loanComponentInterest": "Interest",
+  "loanComponentPrincipal": "Principal",
+
+  "loanInstallmentStatusUpcoming": "Upcoming",
+  "loanInstallmentStatusDue": "Due",
+  "loanInstallmentStatusPartiallyPaid": "Partially Paid",
+  "loanInstallmentStatusPaid": "Paid",
+  "loanInstallmentStatusOverdue": "Overdue",
+
+  "loanSummaryPrincipalRepaidLabel": "Principal Repaid",
+  "loanSummaryPrincipalOutstandingLabel": "Principal Outstanding",
+  "loanSummaryInterestRecognizedLabel": "Interest Recognized",
+  "loanSummaryInterestOutstandingLabel": "Interest Outstanding",
+  "loanSummaryTotalOutstandingLabel": "Total Outstanding",
+  "loanSummaryNextDueDateLabel": "Next Due Date",
+  "loanSummaryOverdueAmountLabel": "Overdue Amount",
+
   "financialPositionFundedLoanPrincipalLabel": "Funded Loan Principal Receivable",
   "financialPositionScheduledUnearnedInterestLabel": "Scheduled Unearned Interest",
+  "financialPositionRecognizedLoanInterestIncomeLabel": "Recognized Loan Interest Income",
 
   "cashbookFilterLoanDisbursements": "Loan Disbursements",
 

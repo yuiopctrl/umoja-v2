@@ -10,8 +10,8 @@ import '../../../core/widgets/umoja_card.dart';
 import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_page.dart';
 import '../../../core/widgets/umoja_status_badge.dart';
-import '../../contributions/presentation/widgets/contribution_component_labels.dart';
 import '../providers/receipt_provider.dart';
+import 'widgets/allocation_lines_list.dart';
 import 'widgets/payment_labels.dart';
 
 /// `/payments/:paymentId/receipt`: a view-only receipt (section 62) —
@@ -89,37 +89,8 @@ class ReceiptScreen extends ConsumerWidget {
                 l10n.paymentPreviewWillSettleLabel,
                 style: Theme.of(context).textTheme.titleSmall,
               ),
-              for (final line in receipt.allocations)
-                Padding(
-                  padding: const EdgeInsets.only(top: UmojaSpacing.xs),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              obligationContextLabel(
-                                contributionTypeName: line.contributionTypeName,
-                                periodLabel: line.periodLabel,
-                                periodPurpose: line.periodPurpose,
-                              ),
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                            Text(
-                              contributionComponentTypeLabel(
-                                l10n,
-                                line.componentType,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(formatAmount(line.amount)),
-                    ],
-                  ),
-                ),
+              if (receipt.allocations.isNotEmpty)
+                AllocationLinesList(lines: receipt.allocations),
               const Divider(height: UmojaSpacing.xxl),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

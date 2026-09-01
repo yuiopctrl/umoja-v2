@@ -24,8 +24,10 @@ import 'widgets/payment_labels.dart';
 
 const _defaultLimit = 10;
 
-/// `/payments`: group-wide, paginated, searchable payment history
-/// (Malipo). Gated by `payment.view` — MEMBER does not hold this
+/// `/payments/history`: group-wide, paginated, searchable payment
+/// history — reached from the Payments hub's "Historia ya Malipo"
+/// entry (Prompt 09C-UAT-FIX-01; previously rendered directly at
+/// `/payments`). Gated by `payment.view` — MEMBER does not hold this
 /// permission in this phase (see `docs/product/payments.md`).
 class PaymentsListScreen extends ConsumerStatefulWidget {
   const PaymentsListScreen({super.key});
@@ -84,7 +86,7 @@ class _PaymentsListScreenState extends ConsumerState<PaymentsListScreen> {
     final pageAsync = ref.watch(paymentsListProvider(query));
 
     return UmojaPage(
-      title: l10n.paymentsTitle,
+      title: l10n.paymentHistoryTitle,
       scrollable: false,
       maxWidth: 900,
       headerTrailing: canCreate

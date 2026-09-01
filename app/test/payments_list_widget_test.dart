@@ -17,7 +17,7 @@ void main() {
       fakeRepo: fakeRepo,
       language: AppLanguage.english,
     );
-    router.go(AppRoutes.paymentsList);
+    router.go(AppRoutes.paymentsHistory);
     await tester.pumpAndSettle();
 
     expect(find.text('No Payments'), findsOneWidget);
@@ -52,7 +52,7 @@ void main() {
       fakeRepo: fakeRepo,
       language: AppLanguage.english,
     );
-    router.go(AppRoutes.paymentsList);
+    router.go(AppRoutes.paymentsHistory);
     await tester.pumpAndSettle();
 
     expect(find.text('Jane Doe'), findsOneWidget);
@@ -79,7 +79,7 @@ void main() {
         ],
       ),
     );
-    router.go(AppRoutes.paymentsList);
+    router.go(AppRoutes.paymentsHistory);
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('paymentRecordFab')), findsNothing);
@@ -96,7 +96,7 @@ void main() {
       fakeRepo: fakeRepo,
       language: AppLanguage.english,
     );
-    router.go(AppRoutes.paymentsList);
+    router.go(AppRoutes.paymentsHistory);
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('paymentRecordFab')), findsOneWidget);
@@ -122,7 +122,7 @@ void main() {
       fakeRepo: fakeRepo,
       language: AppLanguage.english,
     );
-    router.go(AppRoutes.paymentsList);
+    router.go(AppRoutes.paymentsHistory);
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Jane Doe'));

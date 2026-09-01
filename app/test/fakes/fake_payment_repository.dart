@@ -214,6 +214,27 @@ OutstandingCharge fakeOutstandingCharge({
   );
 }
 
+MemberLoanObligationSummary fakeMemberLoanObligationSummary({
+  String loanAccountId = 'loan-1',
+  String loanNumber = 'STD-LN-2026-0001',
+  double overdueAmount = 0,
+  double dueNowAmount = 0,
+  double? currentlyPayableAmount,
+  DateTime? nextDueDate,
+  double upcomingAmount = 0,
+}) {
+  return MemberLoanObligationSummary(
+    loanAccountId: loanAccountId,
+    loanNumber: loanNumber,
+    overdueAmount: overdueAmount,
+    dueNowAmount: dueNowAmount,
+    currentlyPayableAmount:
+        currentlyPayableAmount ?? (overdueAmount + dueNowAmount),
+    nextDueDate: nextDueDate,
+    upcomingAmount: upcomingAmount,
+  );
+}
+
 MemberContributionStatement fakeMemberContributionStatement({
   String membershipId = 'm1',
   String memberDisplayName = 'Test Member',
@@ -223,7 +244,19 @@ MemberContributionStatement fakeMemberContributionStatement({
   double totalOutstanding = 20000,
   double totalAllocated = 0,
   double walletBalance = 0,
+  double contributionOverdueAmount = 0,
+  double contributionDueNowAmount = 0,
+  List<MemberLoanObligationSummary>? loans,
+  double? totalLoansCurrentlyPayableAmount,
+  double? totalPayableNow,
 }) {
+  final resolvedLoans = loans ?? const [];
+  final resolvedLoansPayable =
+      totalLoansCurrentlyPayableAmount ??
+      resolvedLoans.fold<double>(
+        0.0,
+        (sum, l) => sum + l.currentlyPayableAmount,
+      );
   return MemberContributionStatement(
     membershipId: membershipId,
     memberDisplayName: memberDisplayName,
@@ -233,6 +266,12 @@ MemberContributionStatement fakeMemberContributionStatement({
     totalOutstanding: totalOutstanding,
     totalAllocated: totalAllocated,
     walletBalance: walletBalance,
+    contributionOverdueAmount: contributionOverdueAmount,
+    contributionDueNowAmount: contributionDueNowAmount,
+    loans: resolvedLoans,
+    totalLoansCurrentlyPayableAmount: resolvedLoansPayable,
+    totalPayableNow:
+        totalPayableNow ?? (totalOutstanding + resolvedLoansPayable),
   );
 }
 
@@ -336,6 +375,7 @@ class FakePaymentRepository implements PaymentRepository {
       String membershipId,
       String financialAccountId,
       double amount,
+      DateTime effectiveAt,
     })
   >
   previewPaymentAllocationCalls = [];
@@ -444,12 +484,14 @@ class FakePaymentRepository implements PaymentRepository {
     required String membershipId,
     required String financialAccountId,
     required double amount,
+    required DateTime effectiveAt,
   }) async {
     previewPaymentAllocationCalls.add((
       groupId: groupId,
       membershipId: membershipId,
       financialAccountId: financialAccountId,
       amount: amount,
+      effectiveAt: effectiveAt,
     ));
     _maybeThrow();
     return nextPaymentPreview;

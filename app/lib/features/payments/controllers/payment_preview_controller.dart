@@ -31,6 +31,7 @@ class PaymentPreviewController extends Notifier<PaymentPreviewState> {
     required String membershipId,
     required String financialAccountId,
     required double amount,
+    required DateTime effectiveAt,
   }) async {
     state = const PaymentPreviewState(isLoading: true);
     try {
@@ -41,6 +42,7 @@ class PaymentPreviewController extends Notifier<PaymentPreviewState> {
             membershipId: membershipId,
             financialAccountId: financialAccountId,
             amount: amount,
+            effectiveAt: effectiveAt,
           );
       state = PaymentPreviewState(preview: result);
     } on PaymentFailure catch (error) {

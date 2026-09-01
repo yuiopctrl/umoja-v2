@@ -1900,6 +1900,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentsTitle => 'Payments';
 
   @override
+  String get paymentHistoryTitle => 'Payment History';
+
+  @override
+  String get receiptsEntryTitle => 'Receipts';
+
+  @override
+  String get receiptsEntrySubtitle => 'View and print payment receipts';
+
+  @override
   String get paymentsSearchHint => 'Search payments';
 
   @override
@@ -2125,6 +2134,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewAllObligationsAction => 'View All';
 
   @override
+  String get paymentSummaryContributionsSectionLabel => 'Contributions';
+
+  @override
+  String get paymentSummaryLoansSectionLabel => 'Loans';
+
+  @override
+  String get paymentSummaryDueNowLabel => 'Due Now';
+
+  @override
+  String get paymentSummaryOverdueLabel => 'Overdue';
+
+  @override
+  String get paymentSummaryTotalPayableNowLabel => 'Total Payable Now';
+
+  @override
+  String get paymentSummaryUpcomingLabel => 'Upcoming (Not Yet Due)';
+
+  @override
+  String get paymentSummaryNoActiveLoansMessage =>
+      'This member has no active loan.';
+
+  @override
   String get sectionCharges => 'Charges';
 
   @override
@@ -2156,6 +2187,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeLoansShortcutSubtitle => 'Loan products and loan accounts';
+
+  @override
+  String get homePaymentsShortcutSubtitle =>
+      'Record payments, history, receipts, and member wallet';
 
   @override
   String get loanAccountsTitle => 'Loan Accounts';
@@ -2536,12 +2571,61 @@ class AppLocalizationsEn extends AppLocalizations {
       'The selected financial account does not have enough balance for this disbursement.';
 
   @override
+  String get loanAllocationDueDateLabel => 'Due';
+
+  @override
+  String get loanComponentInterest => 'Interest';
+
+  @override
+  String get loanComponentPrincipal => 'Principal';
+
+  @override
+  String get loanInstallmentStatusUpcoming => 'Upcoming';
+
+  @override
+  String get loanInstallmentStatusDue => 'Due';
+
+  @override
+  String get loanInstallmentStatusPartiallyPaid => 'Partially Paid';
+
+  @override
+  String get loanInstallmentStatusPaid => 'Paid';
+
+  @override
+  String get loanInstallmentStatusOverdue => 'Overdue';
+
+  @override
+  String get loanSummaryPrincipalRepaidLabel => 'Principal Repaid';
+
+  @override
+  String get loanSummaryPrincipalOutstandingLabel => 'Principal Outstanding';
+
+  @override
+  String get loanSummaryInterestRecognizedLabel => 'Interest Recognized';
+
+  @override
+  String get loanSummaryInterestOutstandingLabel => 'Interest Outstanding';
+
+  @override
+  String get loanSummaryTotalOutstandingLabel => 'Total Outstanding';
+
+  @override
+  String get loanSummaryNextDueDateLabel => 'Next Due Date';
+
+  @override
+  String get loanSummaryOverdueAmountLabel => 'Overdue Amount';
+
+  @override
   String get financialPositionFundedLoanPrincipalLabel =>
       'Funded Loan Principal Receivable';
 
   @override
   String get financialPositionScheduledUnearnedInterestLabel =>
       'Scheduled Unearned Interest';
+
+  @override
+  String get financialPositionRecognizedLoanInterestIncomeLabel =>
+      'Recognized Loan Interest Income';
 
   @override
   String get cashbookFilterLoanDisbursements => 'Loan Disbursements';

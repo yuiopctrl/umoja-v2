@@ -84,6 +84,29 @@ derived (`member_wallet_balance()`), never negative, scoped to
 No wallet-to-wallet transfer, expiry, negative balance, auto-
 withdrawal, or cash refund exists in this phase.
 
+## Allocation preview loan context (Prompt 09C-UAT-FIX-02)
+
+Physical UAT found that Wallet → Loan "Preview Allocation" showed bare
+`Interest — 20,000` / `Principal — 20,000` lines with no indication of
+which loan — especially a problem for a member holding more than one
+ACTIVE loan. `rpc_preview_payment_allocation`/
+`rpc_preview_wallet_allocation` (and, for consistency,
+`rpc_get_payment_detail`/`rpc_get_receipt`) now also resolve
+`loan_product_name` via a live join to `loan_products` — the one field
+that was genuinely missing alongside the already-present
+`loan_number`/`installment_number`/`due_date`.
+
+`AllocationLinesList` (`payments/presentation/widgets/`) is the single
+shared widget every one of these four screens uses to render
+allocation lines — contribution lines render individually as before;
+loan lines for the SAME installment (interest + principal, which the
+server's allocation walk always emits contiguously) are grouped under
+one header naming the loan product, loan number, installment, and due
+date. This is what makes two ACTIVE loans visually distinguishable
+before an allocation is confirmed, and keeps Wallet and Record Payment
+using the exact same presentation rather than one being richer than
+the other.
+
 ## Receipts
 
 Not a separate table — `rpc_get_receipt` is a read projection over
@@ -243,11 +266,22 @@ lesson) rather than a second payment implementation.
 
 ## Flutter
 
-Navigation lives under the existing Michango (Contributions) home
-screen — Malipo (payment list), Rekodi Malipo (record payment), Salio
-la Mwanachama (member wallet) — rather than a new top-level section.
-Risiti (receipt) and Batili Malipo (reverse) are reached from a
-payment's own detail screen, never from a list-level entry.
+Navigation lives under a dedicated Malipo (Payments) hub (`/payments`,
+`PaymentsHomeScreen`), reached from Home — not the Contributions home
+screen. This was Prompt 07's original placement, revisited in
+09C-UAT-FIX-01 once loan repayment made the Payment Engine shared
+across Contributions/Loans/Wallet rather than Contributions-owned: the
+hub lists Rekodi Malipo (record payment), Historia ya Malipo (payment
+history, `/payments/history` — the actual paginated list, moved off the
+bare `/payments` path), Risiti (receipts, same history screen), and
+Salio la Mwanachama (member wallet). Contributions keeps only
+contribution-domain functions plus Madeni ya Mwanzo (Opening Balance —
+obligation creation/import, never received cash, so it was never moved
+here). `Batili Malipo` (reverse) is still reached from a payment's own
+detail screen, never from a list-level entry. This is navigation/
+information architecture only — every entry routes into the exact same
+Prompt 07 screens/RPCs; nothing about the Payment Engine itself
+changed.
 
 The Record Payment flow (`/payments/record`, or `/payments/record/
 :membershipId` with the member preselected) is a single stateful
@@ -277,12 +311,50 @@ caller's real membership row, denying reversal for every role
 regardless of their actual permissions; this was a pure client-side
 parameter bug, not an authorization or role-matrix defect.
 
+## Loan repayment integration (Prompt 09C, tightened by 09C-UAT-FIX-01)
+
+Loan repayment is **not** a separate payment system — it integrates
+directly into this exact pipeline. `payment_compute_combined_
+allocation_plan()` extends the charge-walk above into a single ordered
+walk across both contribution charges and one borrower's ACTIVE loan
+installments (oldest `due_date` first; contribution before loan on an
+exact tie; within a loan installment, INTEREST before PRINCIPAL) —
+`rpc_post_payment`/`rpc_allocate_member_wallet`/`rpc_reverse_payment`
+keep their exact 07 signatures (`rpc_preview_payment_allocation` gained
+one new, defaulted `p_effective_at` parameter). See
+[docs/product/loans.md](loans.md#repayment-prompt-09c) for the full
+accounting model (principal receivable, interest income recognition,
+closure/reopening).
+
+Physical UAT found that a sufficiently large payment silently prepaid a
+borrower's ENTIRE future loan schedule. The locked correction: a loan
+installment is only ever automatically allocatable when its `due_date`
+is on or before the payment's own effective date (`p_effective_at` for
+an external payment; `current_date` for a wallet allocation, matching
+every other wallet posting's dating convention) — an UPCOMING
+installment is never included, regardless of amount. Preview and
+posting share the exact same date basis so they can never diverge.
+Contribution allocatability is **unchanged** — a not-yet-due
+contribution charge remains payable early, exactly as before; this
+restriction is loan-side only. See
+[docs/product/loans.md](loans.md#collectibility-09c-tightened-by-09c-uat-fix-01)
+for the full rule and its rationale.
+
+The "before payment" statement (`rpc_get_member_contribution_
+statement`) now also returns a `loans[]` block (per ACTIVE loan:
+overdue/due-now/currently-payable amounts, next due date, and a
+separately-labeled `upcoming_amount`) and a `total_payable_now` that
+combines both domains under this same currently-due rule — shown to
+the operator immediately after selecting a member, before any amount
+is entered, so a large payment's actual effect is never a surprise at
+Preview time.
+
 ## Explicitly out of scope for this phase
 
-Loans and loan repayments, bank statement reconciliation, expense
-management, income analytics, full financial-position reporting,
-wallet-to-wallet transfer, wallet withdrawal/cash refund, and a
-MEMBER self-service portal (see Permissions above). The member-centric
+Bank statement reconciliation, expense management, income analytics,
+full financial-position reporting, wallet-to-wallet transfer, wallet
+withdrawal/cash refund, and a MEMBER self-service portal (see
+Permissions above). The member-centric
 Charges/Madeni view (`MemberChargesScreen`, UAT-FIX-03 — see above)
 covers the treasurer-facing "see all of one member's charges" need;
 `rpc_get_member_contribution_statement` itself still has no screen of

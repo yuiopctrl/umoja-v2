@@ -25,10 +25,17 @@ class PaymentAllocationLine {
     this.periodLabel,
     this.periodPurpose,
     this.componentOutstandingBefore,
+    this.obligationKind = 'CONTRIBUTION',
+    this.loanAccountId,
+    this.loanInstallmentId,
+    this.loanNumber,
+    this.loanProductName,
+    this.installmentNumber,
   });
 
-  /// `rpc_get_payment_detail` shape (charge_id/component_id present) —
-  /// key `amount`.
+  /// `rpc_get_payment_detail` shape (charge_id/component_id present for
+  /// a contribution row; loan_account_id/loan_installment_id present
+  /// for a loan row instead) — key `amount`.
   factory PaymentAllocationLine.fromJson(Map<String, dynamic> json) {
     return PaymentAllocationLine(
       chargeId: json['charge_id'] as String?,
@@ -39,6 +46,12 @@ class PaymentAllocationLine {
       contributionTypeName: json['contribution_type_name'] as String?,
       periodLabel: json['period_label'] as String?,
       periodPurpose: json['period_purpose'] as String?,
+      obligationKind: _obligationKindOf(json),
+      loanAccountId: json['loan_account_id'] as String?,
+      loanInstallmentId: json['loan_installment_id'] as String?,
+      loanNumber: json['loan_number'] as String?,
+      loanProductName: json['loan_product_name'] as String?,
+      installmentNumber: json['installment_number'] as int?,
     );
   }
 
@@ -46,8 +59,8 @@ class PaymentAllocationLine {
   /// shape — key `allocate_amount`.
   factory PaymentAllocationLine.fromPreviewJson(Map<String, dynamic> json) {
     return PaymentAllocationLine(
-      chargeId: json['charge_id'] as String,
-      componentId: json['component_id'] as String,
+      chargeId: json['charge_id'] as String?,
+      componentId: json['component_id'] as String?,
       componentType: json['component_type'] as String,
       dueDate: DateTime.parse(json['due_date'] as String),
       amount: (json['allocate_amount'] as num).toDouble(),
@@ -58,6 +71,12 @@ class PaymentAllocationLine {
       componentOutstandingBefore: json['component_outstanding_before'] == null
           ? null
           : (json['component_outstanding_before'] as num).toDouble(),
+      obligationKind: _obligationKindOf(json),
+      loanAccountId: json['loan_account_id'] as String?,
+      loanInstallmentId: json['loan_installment_id'] as String?,
+      loanNumber: json['loan_number'] as String?,
+      loanProductName: json['loan_product_name'] as String?,
+      installmentNumber: json['installment_number'] as int?,
     );
   }
 
@@ -70,13 +89,35 @@ class PaymentAllocationLine {
       contributionTypeName: json['contribution_type_name'] as String?,
       periodLabel: json['period_label'] as String?,
       periodPurpose: json['period_purpose'] as String?,
+      obligationKind: _obligationKindOf(json),
+      loanNumber: json['loan_number'] as String?,
+      loanProductName: json['loan_product_name'] as String?,
+      installmentNumber: json['installment_number'] as int?,
     );
+  }
+
+  /// The preview RPCs return an explicit `obligation_kind`
+  /// ('CONTRIBUTION'/'LOAN_INTEREST'/'LOAN_PRINCIPAL'); the posted
+  /// detail/receipt RPCs return `allocation_target_type`
+  /// ('CONTRIBUTION_COMPONENT'/'LOAN_INTEREST'/'LOAN_PRINCIPAL')
+  /// instead — normalized here to one consistent value so every caller
+  /// only ever branches on [obligationKind].
+  static String _obligationKindOf(Map<String, dynamic> json) {
+    final kind = json['obligation_kind'] as String?;
+    if (kind != null) return kind;
+    final targetType = json['allocation_target_type'] as String?;
+    if (targetType == 'CONTRIBUTION_COMPONENT' || targetType == null) {
+      return 'CONTRIBUTION';
+    }
+    return targetType;
   }
 
   final String? chargeId;
   final String? componentId;
 
-  /// One of BASE / PENALTY / ADJUSTMENT / OPENING_BALANCE.
+  /// One of BASE / PENALTY / ADJUSTMENT / OPENING_BALANCE (contribution
+  /// row) or INTEREST / PRINCIPAL (loan row) — see [obligationKind] to
+  /// distinguish which.
   final String componentType;
   final DateTime dueDate;
   final double amount;
@@ -97,5 +138,25 @@ class PaymentAllocationLine {
   /// posted [PaymentDetail]/[Receipt] line).
   final double? componentOutstandingBefore;
 
+  /// 'CONTRIBUTION' | 'LOAN_INTEREST' | 'LOAN_PRINCIPAL' (Prompt 09C).
+  /// Discriminates a contribution line ([contributionTypeName] etc.
+  /// populated) from a loan line ([loanNumber]/[installmentNumber]
+  /// populated instead).
+  final String obligationKind;
+  final String? loanAccountId;
+  final String? loanInstallmentId;
+  final String? loanNumber;
+
+  /// The borrower's loan PRODUCT name (Prompt 09C-UAT-FIX-02) — e.g.
+  /// "Emergency Loan" — the piece that was previously missing entirely,
+  /// making two ACTIVE loans indistinguishable in an allocation
+  /// preview. Always resolved via a live join (never snapshotted,
+  /// matching [loanNumber]'s existing precedent).
+  final String? loanProductName;
+  final int? installmentNumber;
+
   bool get isOpeningBalance => periodPurpose == 'OPENING_BALANCE';
+  bool get isLoan =>
+      obligationKind == 'LOAN_INTEREST' || obligationKind == 'LOAN_PRINCIPAL';
+  bool get isLoanInterest => obligationKind == 'LOAN_INTEREST';
 }

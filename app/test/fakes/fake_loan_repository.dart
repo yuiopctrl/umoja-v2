@@ -94,6 +94,12 @@ LoanInstallment fakeLoanInstallment({
   double principalDue = 10000,
   double interestDue = 1200,
   double? totalDue,
+  double principalPaid = 0,
+  double? principalOutstanding,
+  double interestPaid = 0,
+  double? interestOutstanding,
+  double? totalOutstanding,
+  String? status,
 }) {
   return LoanInstallment(
     installmentNumber: installmentNumber,
@@ -101,6 +107,15 @@ LoanInstallment fakeLoanInstallment({
     principalDue: principalDue,
     interestDue: interestDue,
     totalDue: totalDue ?? (principalDue + interestDue),
+    principalPaid: principalPaid,
+    principalOutstanding:
+        principalOutstanding ?? (principalDue - principalPaid),
+    interestPaid: interestPaid,
+    interestOutstanding: interestOutstanding ?? (interestDue - interestPaid),
+    totalOutstanding:
+        totalOutstanding ??
+        (principalDue - principalPaid) + (interestDue - interestPaid),
+    status: status ?? 'UPCOMING',
   );
 }
 
@@ -156,6 +171,13 @@ LoanAccount fakeLoanAccount({
   List<LoanInstallment> installments = const [],
   List<LoanAccountEvent> events = const [],
   LoanDisbursement? disbursement,
+  double principalRepaid = 0,
+  double? principalOutstanding,
+  double interestRecognized = 0,
+  double? interestOutstanding,
+  double? totalOutstanding,
+  DateTime? nextDueDate,
+  double overdueAmount = 0,
 }) {
   return LoanAccount(
     id: id,
@@ -183,6 +205,14 @@ LoanAccount fakeLoanAccount({
     installments: installments,
     events: events,
     disbursement: disbursement,
+    principalRepaid: principalRepaid,
+    principalOutstanding:
+        principalOutstanding ?? (principalAmount - principalRepaid),
+    interestRecognized: interestRecognized,
+    interestOutstanding: interestOutstanding,
+    totalOutstanding: totalOutstanding,
+    nextDueDate: nextDueDate,
+    overdueAmount: overdueAmount,
   );
 }
 
