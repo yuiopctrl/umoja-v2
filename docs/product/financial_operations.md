@@ -102,8 +102,9 @@ distinct figures (never folded together):
   never period-bound.
 - `group_income` / `expenses` / `net_operating_result` — period-bound
   when a range is given, unbounded otherwise. Only GROUP_INCOME-treated
-  contribution inflows, manual income, and recognized loan interest
-  (Prompt 09C) count as income.
+  contribution inflows, manual income, recognized loan interest
+  (Prompt 09C), and recognized loan penalty income (Prompt 09D) count
+  as income — each counted exactly once.
 - `pass_through_received` / `share_capital_received` — shown
   separately, never added into `group_income`.
 - `member_wallet_liability` — a liability figure, never deducted from
@@ -121,6 +122,46 @@ distinct figures (never folded together):
   already folded into `group_income` above, recognized only when an
   active loan allocation actually settles `LOAN_INTEREST`, never merely
   because interest was scheduled.
+- `loan_penalties_outstanding` (Prompt 09D) — point-in-time: every
+  assessed penalty charge across the group's funded loans minus every
+  active `LOAN_PENALTY` allocation to date. An unpaid penalty is never
+  classified as physical funds or as funded principal receivable.
+- `recognized_loan_penalty_income` (Prompt 09D) — period-bound; already
+  folded into `group_income` above, recognized only when an active
+  allocation actually settles `LOAN_PENALTY`, never merely because a
+  penalty was assessed.
+
+`funded_loan_principal_receivable` is origin-aware (Prompt
+09D-UAT-BLOCKER-01): a NEW loan contributes its disbursed
+`principal_amount`; a MIGRATED loan contributes its
+`opening_principal_outstanding` instead — never `principal_amount`
+(the historical original principal, most of which may already have
+been repaid before Umoja). Posting a migrated loan (`rpc_create_
+migrated_loan`) increases this figure directly as an OPENING position —
+it creates zero cashbook movement, zero income, and zero expense; it
+never requires a Financial Account and never writes a fake
+`loan_disbursements` row. Opening unpaid interest/penalty arrears are
+never recognized as income at migration — exactly like a NEW loan's
+scheduled interest, they become income only once an actual allocation
+settles them after onboarding. `opening_principal_outstanding` itself
+is unaffected by whether the loan's historical arrears are represented
+as one row or several separate historical installments (Prompt
+09D-UAT-BLOCKER-02) — it is always the single opening-position figure,
+with the historical/future split derived from the underlying
+installments only for display. For a Simple Import (Prompt
+09D-UAT-BLOCKER-03/04) it is the sum of ONLY the principal portions of
+the loan's HISTORICAL_OVERDUE and FUTURE installments — installments
+already settled before the group started using Umoja
+(`paid_before_umoja_count`, derived from the required original loan
+term) contribute nothing. It is `original_principal` only in the
+special case where nothing has ever been repaid
+(`paid_before_umoja_count = 0`); BLOCKER-03 incorrectly assumed this
+held universally, which overstated the receivable whenever some
+installments had already been paid off. A loan with a more complex
+partial-repayment/rescheduling history uses Detailed Import instead.
+See
+[docs/product/loans.md](loans.md#existing-loan--opening-loan-onboarding-prompt-09d-uat-blocker-01)
+for the full opening-position model.
 
 See [docs/product/loans.md](loans.md) for the full lifecycle
 (Submit/Approve/Reject/Cancel/Disburse/Repayment/Closure) that produces
@@ -199,6 +240,33 @@ knowing before adding further screens under `/finance`:
   invalidates a *different* provider (`financialAccountsActiveForPickerProvider`,
   unparameterized and not watched by the list screen it's pushed from)
   and was never affected.
+
+## Money input / display convention (Prompt 09D-UAT-BLOCKER-03)
+
+Every amount-entry field across the app (Contributions, Payments,
+Wallet, Financial Operations, Loans/Loan Products/Existing Loan
+onboarding, Manual Income/Expense, Transfers, Opening Balances,
+Adjustments/Waivers, Reconciliation) shares ONE formatter —
+`ThousandsInputFormatter` (`app/lib/core/utils/amount_input_formatter.dart`)
+— never a per-screen reimplementation. A cursor-positioning bug in that
+single shared component (counting digits alone cannot distinguish "just
+before the decimal point" from "just after it" once zero digits follow
+the dot, so a freshly-typed "." snapped the cursor back to BEFORE
+itself and corrupted every digit typed after it) was fixed there once,
+fixing every screen that uses it simultaneously — never patched
+per-screen. The cursor is now anchored to a specific digit-or-dot
+position rather than a bare digit count.
+
+Display (`formatAmount`, `app/lib/core/utils/money_format.dart`) groups
+thousands and shows a fractional part only when the value actually has
+one (`12000` -> "12,000", `12000.5` -> "12,000.5") — it never forces a
+trailing ".00" for the common case of whole-shilling entries, and never
+truncates a genuine fractional value arising from interest
+calculations, rates, allocations, reconciliation, or an imported
+balance. Both input and display cap at 2 decimal places, matching every
+authoritative money column's `numeric(14, 2)` scale — Flutter never
+introduces binary floating-point as authoritative money; every
+calculation remains server-side exact `numeric`.
 
 ## Deferred
 

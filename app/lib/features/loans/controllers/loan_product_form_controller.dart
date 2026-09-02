@@ -41,6 +41,12 @@ class LoanProductFormController extends Notifier<LoanProductFormState> {
     required String interestMethod,
     double? maximumPrincipal,
     String? description,
+    bool penaltyEnabled = false,
+    String? penaltyType,
+    String? penaltyFrequency,
+    int? penaltyGraceDays,
+    double? penaltyFixedAmount,
+    double? penaltyRate,
   }) async {
     if (state.isSubmitting) return false;
 
@@ -60,6 +66,12 @@ class LoanProductFormController extends Notifier<LoanProductFormState> {
             interestMethod: interestMethod,
             maximumPrincipal: maximumPrincipal,
             description: description,
+            penaltyEnabled: penaltyEnabled,
+            penaltyType: penaltyType,
+            penaltyFrequency: penaltyFrequency,
+            penaltyGraceDays: penaltyGraceDays,
+            penaltyFixedAmount: penaltyFixedAmount,
+            penaltyRate: penaltyRate,
           );
       ref.invalidate(loanProductsProvider);
       ref.invalidate(activeLoanProductsForPickerProvider);
@@ -88,6 +100,12 @@ class LoanProductFormController extends Notifier<LoanProductFormState> {
     String? interestRateBasis,
     String? interestMethod,
     bool? isActive,
+    bool? penaltyEnabled,
+    String? penaltyType,
+    String? penaltyFrequency,
+    int? penaltyGraceDays,
+    double? penaltyFixedAmount,
+    double? penaltyRate,
   }) async {
     if (state.isSubmitting) return false;
 
@@ -108,6 +126,12 @@ class LoanProductFormController extends Notifier<LoanProductFormState> {
             interestRateBasis: interestRateBasis,
             interestMethod: interestMethod,
             isActive: isActive,
+            penaltyEnabled: penaltyEnabled,
+            penaltyType: penaltyType,
+            penaltyFrequency: penaltyFrequency,
+            penaltyGraceDays: penaltyGraceDays,
+            penaltyFixedAmount: penaltyFixedAmount,
+            penaltyRate: penaltyRate,
           );
       ref.invalidate(loanProductsProvider);
       ref.invalidate(activeLoanProductsForPickerProvider);

@@ -49,6 +49,13 @@ class _LoanProductFormScreenState extends ConsumerState<LoanProductFormScreen> {
   bool _isActive = true;
   bool _prefilled = false;
 
+  bool _penaltyEnabled = false;
+  String _penaltyType = 'FIXED';
+  String _penaltyFrequency = 'ONCE';
+  final _penaltyGraceDaysController = TextEditingController();
+  final _penaltyFixedAmountController = TextEditingController();
+  final _penaltyRateController = TextEditingController();
+
   @override
   void dispose() {
     _codeController.dispose();
@@ -59,6 +66,9 @@ class _LoanProductFormScreenState extends ConsumerState<LoanProductFormScreen> {
     _minimumTermController.dispose();
     _maximumTermController.dispose();
     _interestRateController.dispose();
+    _penaltyGraceDaysController.dispose();
+    _penaltyFixedAmountController.dispose();
+    _penaltyRateController.dispose();
     super.dispose();
   }
 
@@ -78,6 +88,18 @@ class _LoanProductFormScreenState extends ConsumerState<LoanProductFormScreen> {
         maximumPrincipal: parseAmountInput(_maximumPrincipalController.text),
         interestRate: double.tryParse(_interestRateController.text.trim()),
         isActive: _isActive,
+        penaltyEnabled: _penaltyEnabled,
+        penaltyType: _penaltyEnabled ? _penaltyType : null,
+        penaltyFrequency: _penaltyEnabled ? _penaltyFrequency : null,
+        penaltyGraceDays: _penaltyEnabled
+            ? int.tryParse(_penaltyGraceDaysController.text.trim())
+            : null,
+        penaltyFixedAmount: _penaltyEnabled && _penaltyType == 'FIXED'
+            ? parseAmountInput(_penaltyFixedAmountController.text)
+            : null,
+        penaltyRate: _penaltyEnabled && _penaltyType == 'PERCENTAGE'
+            ? double.tryParse(_penaltyRateController.text.trim())
+            : null,
       );
       if (success && mounted) context.pop();
       return;
@@ -97,6 +119,18 @@ class _LoanProductFormScreenState extends ConsumerState<LoanProductFormScreen> {
       interestRate: double.tryParse(_interestRateController.text.trim()) ?? 0,
       interestRateBasis: _interestRateBasis,
       interestMethod: _interestMethod,
+      penaltyEnabled: _penaltyEnabled,
+      penaltyType: _penaltyEnabled ? _penaltyType : null,
+      penaltyFrequency: _penaltyEnabled ? _penaltyFrequency : null,
+      penaltyGraceDays: _penaltyEnabled
+          ? (int.tryParse(_penaltyGraceDaysController.text.trim()) ?? 0)
+          : null,
+      penaltyFixedAmount: _penaltyEnabled && _penaltyType == 'FIXED'
+          ? parseAmountInput(_penaltyFixedAmountController.text)
+          : null,
+      penaltyRate: _penaltyEnabled && _penaltyType == 'PERCENTAGE'
+          ? double.tryParse(_penaltyRateController.text.trim())
+          : null,
     );
     if (success && mounted) context.pop();
   }
@@ -129,6 +163,14 @@ class _LoanProductFormScreenState extends ConsumerState<LoanProductFormScreen> {
         _interestRateBasis = product.interestRateBasis;
         _interestMethod = product.interestMethod;
         _isActive = product.isActive;
+        _penaltyEnabled = product.penaltyEnabled;
+        _penaltyType = product.penaltyType ?? 'FIXED';
+        _penaltyFrequency = product.penaltyFrequency ?? 'ONCE';
+        _penaltyGraceDaysController.text =
+            product.penaltyGraceDays?.toString() ?? '';
+        _penaltyFixedAmountController.text =
+            product.penaltyFixedAmount?.toStringAsFixed(0) ?? '';
+        _penaltyRateController.text = product.penaltyRate?.toString() ?? '';
         _prefilled = true;
       }
     }
@@ -291,6 +333,116 @@ class _LoanProductFormScreenState extends ConsumerState<LoanProductFormScreen> {
                         child: Text(loanInterestMethodLabel(l10n, method)),
                       ),
                   ],
+                ),
+            ],
+          ),
+          UmojaFormSection(
+            title: l10n.sectionLoanProductPenalty,
+            fields: [
+              SwitchListTile(
+                key: const Key('loanProductPenaltyEnabledField'),
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.loanProductPenaltyEnabledFieldLabel),
+                value: _penaltyEnabled,
+                onChanged: formState.isSubmitting
+                    ? null
+                    : (value) => setState(() => _penaltyEnabled = value),
+              ),
+              if (_penaltyEnabled) ...[
+                const SizedBox(height: UmojaSpacing.sm),
+                DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  key: const Key('loanProductPenaltyTypeField'),
+                  initialValue: _penaltyType,
+                  decoration: InputDecoration(
+                    labelText: l10n.loanProductPenaltyTypeFieldLabel,
+                  ),
+                  onChanged: formState.isSubmitting
+                      ? null
+                      : (value) => setState(() => _penaltyType = value!),
+                  items: [
+                    for (final type in loanPenaltyTypeOptions)
+                      DropdownMenuItem(
+                        value: type,
+                        child: Text(loanPenaltyTypeLabel(l10n, type)),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: UmojaSpacing.lg),
+                DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  key: const Key('loanProductPenaltyFrequencyField'),
+                  initialValue: _penaltyFrequency,
+                  decoration: InputDecoration(
+                    labelText: l10n.loanProductPenaltyFrequencyFieldLabel,
+                  ),
+                  onChanged: formState.isSubmitting
+                      ? null
+                      : (value) => setState(() => _penaltyFrequency = value!),
+                  items: [
+                    for (final frequency in loanPenaltyFrequencyOptions)
+                      DropdownMenuItem(
+                        value: frequency,
+                        child: Text(loanPenaltyFrequencyLabel(l10n, frequency)),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: UmojaSpacing.lg),
+                TextField(
+                  key: const Key('loanProductPenaltyGraceDaysField'),
+                  controller: _penaltyGraceDaysController,
+                  enabled: !formState.isSubmitting,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: l10n.loanProductPenaltyGraceDaysFieldLabel,
+                  ),
+                ),
+                const SizedBox(height: UmojaSpacing.lg),
+                if (_penaltyType == 'FIXED')
+                  TextField(
+                    key: const Key('loanProductPenaltyFixedAmountField'),
+                    controller: _penaltyFixedAmountController,
+                    enabled: !formState.isSubmitting,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: const [ThousandsInputFormatter()],
+                    decoration: InputDecoration(
+                      labelText: l10n.loanProductPenaltyFixedAmountFieldLabel,
+                    ),
+                  )
+                else
+                  TextField(
+                    key: const Key('loanProductPenaltyRateField'),
+                    controller: _penaltyRateController,
+                    enabled: !formState.isSubmitting,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: l10n.loanProductPenaltyRateFieldLabel,
+                    ),
+                  ),
+                const SizedBox(height: UmojaSpacing.sm),
+                Text(
+                  loanPenaltyPolicyDescription(
+                    l10n,
+                    penaltyType: _penaltyType,
+                    penaltyFrequency: _penaltyFrequency,
+                    graceDays:
+                        int.tryParse(_penaltyGraceDaysController.text.trim()) ??
+                        0,
+                    fixedAmount: parseAmountInput(
+                      _penaltyFixedAmountController.text,
+                    ),
+                    rate: double.tryParse(_penaltyRateController.text.trim()),
+                  ),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ] else
+                Text(
+                  l10n.loanPenaltyPolicyDisabledLabel,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
             ],
           ),

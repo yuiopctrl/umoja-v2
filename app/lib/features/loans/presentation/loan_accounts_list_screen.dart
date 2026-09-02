@@ -138,7 +138,9 @@ class _LoanAccountRow extends StatelessWidget {
     return UmojaListTile(
       title: loan.borrowerDisplayName,
       subtitle: Text(
-        '${loan.loanNumber} · ${loan.loanProductName}',
+        loan.isMigrated
+            ? '${loan.loanNumber} · ${loan.loanProductName} · ${l10n.loanOriginMigratedLabel}'
+            : '${loan.loanNumber} · ${loan.loanProductName}',
         style: Theme.of(context).textTheme.bodyMedium,
       ),
       trailing: Column(

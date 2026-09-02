@@ -427,8 +427,10 @@ outstanding debt, and reopening is always audited, never silent.
 Every installment carries a derived `status` — `UPCOMING` / `DUE` /
 `PARTIALLY_PAID` / `PAID` / `OVERDUE` — computed fresh from `due_date`
 and derived outstanding on every read, never persisted (so it can never
-drift). Penalty behavior on an overdue installment is 09D's job; 09C
-only makes overdue visibility available.
+drift). `PAID` requires principal, interest, AND penalty (09D) all to
+be zero — an installment whose contractual principal/interest is
+settled but carries an unpaid penalty is never rendered as fully
+`PAID`.
 
 ### Manual/future prepayment is deferred (09C-UAT-FIX-01)
 
@@ -447,6 +449,446 @@ The existing Prompt 07 receipt (`rpc_get_receipt`) now renders a loan
 allocation line with semantic context ("STD-LN-2026-0001 — Awamu 1",
 "Riba"/"Mtaji") alongside unchanged contribution lines — still exactly
 one receipt per payment, never a second loan-specific receipt document.
+
+## Loan Penalties (Prompt 09D)
+
+A loan penalty is a monetary obligation created because a funded loan
+installment remains unpaid after its applicable penalty trigger. It
+reuses the existing Payment Engine end to end — no
+`loan_penalty_payments`/`loan_penalty_receipts`/`loan_penalty_cashbook`
+tables exist, and a single external payment may settle a penalty
+alongside interest/principal/contributions while still creating
+exactly one payment, one cashbook `INFLOW`, and one receipt.
+
+### Accounting rule (non-negotiable)
+
+Assessing a penalty is a pure obligation increase: it creates zero cash
+movement, zero cashbook entry, and zero group income, however overdue
+the installment is. Income is recognized only when an active payment
+or wallet allocation actually settles `LOAN_PENALTY` — never merely
+because a penalty exists. Reversing a payment that settled a penalty
+restores its outstanding balance and reverses the recognized income
+exactly as it does for interest.
+
+### Policy configuration and snapshot
+
+`loan_products` defines the reusable policy: `penalty_enabled`,
+`penalty_type` (`FIXED` | `PERCENTAGE`), `penalty_frequency` (`ONCE` |
+`RECURRING_MONTHLY`), `penalty_grace_days`, `penalty_fixed_amount` (for
+`FIXED`) or `penalty_rate` (for `PERCENTAGE`), and `penalty_basis`
+(locked to `OUTSTANDING_INSTALLMENT` in this phase). `loan_accounts`
+freezes this policy at the exact same DRAFT-creation instant every
+other financial term is frozen (section "Product snapshot rule") — a
+later product edit never changes an existing loan's penalty economics;
+only a NEW loan created after the edit picks up the new policy.
+
+### Penalty basis: `OUTSTANDING_INSTALLMENT`
+
+The basis for both `FIXED` and `PERCENTAGE` calculations is the
+installment's CURRENT principal outstanding + interest outstanding at
+assessment time — reflecting any prior partial payment — and NEVER
+includes the installment's own existing penalty outstanding (no
+penalty-on-penalty compounding, ever). `PERCENTAGE` amount is
+`round(basis_amount * rate / 100, 2)` — the same NUMERIC rounding
+convention used everywhere else in this project (never a float).
+
+### Eligibility and grace
+
+An installment qualifies for assessment only when its loan is `ACTIVE`,
+its basis amount is positive (a fully-settled installment is never
+penalized, which is also what stops further `RECURRING_MONTHLY`
+occurrences once it's paid off), and the assessment date is strictly
+after `due_date + grace_days` — `due_date + grace_days` itself is still
+inside grace. A future (`UPCOMING`) installment can never qualify,
+since its due date is necessarily after any sane assessment date. A
+`CLOSED` loan is likewise never assessed (its basis is always zero by
+construction).
+
+### `ONCE` vs `RECURRING_MONTHLY`
+
+`ONCE` assesses at most one charge per installment, ever — a retried or
+later assessment run creates zero duplicates. `RECURRING_MONTHLY`
+anchors each occurrence to `due_date + grace_days` advanced by
+`(occurrence - 1)` CALENDAR months (`+ make_interval(months => n)`),
+the exact month-safe, non-cumulative anchoring already used for
+installment due-date generation (section "Month-end / date generation
+policy") — never a fixed-30-day drift. A structural unique index on
+`(loan_installment_id, sequence_number)` makes every occurrence
+provably idempotent regardless of how many times or how late the
+assessment RPC runs.
+
+### Immutable penalty charge
+
+`loan_penalty_charges` is append-only: one row per assessed occurrence,
+tracing loan/installment/policy/assessment date/basis amount/rate or
+fixed amount/penalty amount. No RPC in this phase ever `UPDATE`s or
+`DELETE`s a posted charge — correction/waiver is explicitly deferred.
+Outstanding is always derived from this row's `penalty_amount` minus
+active `payment_allocations` referencing it, never a stored counter.
+
+### Allocation priority
+
+Within one loan installment, the locked priority is now **PENALTY
+before INTEREST before PRINCIPAL** (penalty is already overdue and
+immediately payable). Cross-obligation ordering is completely
+unchanged: oldest due date first across contribution and loan
+obligations together, contribution before loan on an exact tie. An
+installment may carry more than one outstanding penalty charge under
+`RECURRING_MONTHLY`; a payment settles them oldest-assessment-date
+first (FIFO), and every allocation traces to the exact charge it
+settled via `payment_allocations.loan_penalty_charge_id`.
+
+### Wallet-to-penalty settlement
+
+A member's wallet may settle a currently-payable penalty exactly like
+it already settles interest/principal: wallet balance decreases,
+penalty outstanding decreases, penalty income is recognized, and ZERO
+cashbook movement is ever created.
+
+### Closure interaction
+
+`loan_account_recheck_closure()`'s condition now requires principal
+outstanding = 0 AND interest outstanding = 0 AND penalty outstanding =
+0, summed across every installment — a loan is never closed while any
+penalty remains unpaid. Reversing a payment that had fully settled a
+loan (including its penalties) restores the outstanding balance and
+reopens it to `ACTIVE`, recording exactly one `REOPENED` event, exactly
+as 09C's closure/reopening already worked for principal/interest alone.
+
+### Assessment RPC
+
+`rpc_assess_loan_penalties(p_group_id, p_assessment_date, p_loan_account_id)`
+is the sole, server-authoritative way a penalty is ever created —
+Flutter never computes or posts a penalty amount itself. It is
+explicitly date-driven (never bare `current_timestamp`) for backdated
+assessment, deterministic UAT, and auditability; `p_loan_account_id` is
+optional (omit to sweep every eligible loan in the group). It returns a
+structured result (eligible/assessed/skipped/failed counts, total
+penalty amount) and is safe to re-run for the same date (creates
+nothing new) or an advancing date (creates only newly-due occurrences).
+
+### Permissions
+
+`loan_penalty.view` and `loan_penalty.assess` — ADMIN/TREASURER hold
+both; CHAIRPERSON/SECRETARY hold view-only; MEMBER holds neither in the
+staff module. No `loan_penalty.waive` permission exists yet — waiver is
+deferred.
+
+## Existing Loan / Opening Loan onboarding (Prompt 09D-UAT-BLOCKER-01)
+
+Every loan now carries an authoritative `loan_origin` — `NEW`
+(originated inside Umoja; the unchanged DRAFT -> SUBMITTED -> APPROVED
+-> DISBURSE -> ACTIVE lifecycle, real disbursement, cashbook OUTFLOW,
+funded receivable at that instant) or `MIGRATED` (already funded before
+the group started using Umoja). Every pre-existing loan backfills to
+`NEW` via the column's own default — never inferred from dates. Normal
+loan creation (`rpc_create_draft_loan_account`) is completely
+unaffected by this phase: no loosened date restriction, no bolted-on
+backdate checkbox.
+
+### The core accounting decision
+
+A MIGRATED loan enters Umoja as an **opening financial position**, not
+a disbursement. It creates a funded principal receivable directly and
+**never**: a cashbook movement, income, expense, a `payments` row, a
+receipt, or a `loan_disbursements` row. Crediting a Financial Account
+with fake "opening balance" income and then "disbursing" it back out
+is explicitly forbidden — even though cash would net to zero, it would
+falsely report income, cash movement, and a current-period
+disbursement that never happened.
+
+### `rpc_create_migrated_loan` — one atomic posting RPC
+
+The sole way a migrated loan is ever created. In one transaction, it:
+validates group/member/product; creates the loan account directly with
+`status = 'ACTIVE'` and `loan_origin = 'MIGRATED'` (never a fake
+SUBMITTED/APPROVED/DISBURSED sequence — exactly one `MIGRATED`
+lifecycle event is written instead); snapshots the chosen product's
+interest/penalty policy onto the loan exactly like a NEW loan (the same
+snapshot rule — editing the product afterwards never changes an
+already-migrated loan); creates an immutable `loan_opening_positions`
+row; creates zero or more historical arrears `loan_installments` rows
+— one per declared overdue installment, each keeping its own real due
+date (which may be before `opening_as_of_date`), never one synthetic
+combined row (Prompt 09D-UAT-BLOCKER-02, see below) — plus (for each
+row with a declared opening penalty) its own `loan_penalty_charges` row
+with `origin = 'OPENING'`; generates the remaining future schedule (even
+split of future principal/interest across the remaining installment
+count, the same trunc-with-remainder-on-the-last-installment rounding
+policy as the ordinary schedule engine, anchored month-safe to
+`next_due_date`). Any failure rolls back everything. It never requires
+a Financial Account.
+
+Because an arrears installment is just an ordinary `loan_installments`
+row and an opening penalty is just an ordinary `loan_penalty_charges`
+row, the ENTIRE existing Payment Engine (combined allocation plan,
+component-states derivation, wallet allocation, receipt, reversal,
+closure/reopening) works for a migrated loan with **zero code
+changes** — no `migrated_loan_payment`/`opening_loan_payment`/
+`legacy_loan_receipt` tables exist or are needed.
+
+### Key fields (`loan_opening_positions`, immutable after posting)
+
+`opening_as_of_date` ("these are the balances that existed as at ...",
+distinct from `created_at` and from `original_disbursement_date`),
+`original_disbursement_date` (may be arbitrarily far in the past — the
+normal NEW-loan backdate restriction never applies here, since this
+never creates a cashbook transaction), `original_loan_number`
+(optional, kept purely as a historical reference — the loan still
+receives a normal Umoja-generated `loan_number` so it participates
+identically in payments/receipts/wallet/penalties/reports),
+`original_principal`, `opening_principal_outstanding`,
+`opening_principal_arrears`, `opening_interest_arrears`,
+`opening_penalty_arrears`, `future_scheduled_principal` (DERIVED as
+`opening_principal_outstanding - opening_principal_arrears`, never an
+independent input — this makes the section-20 reconciliation invariant
+hold by construction, not merely by RPC-side care), `future_scheduled_
+interest`, `arrears_due_date`, `remaining_installment_count`,
+`next_due_date`.
+
+### Funded Loan Principal Receivable — origin-aware, no double-counting
+
+`rpc_get_financial_position`'s disbursed-principal sum uses each loan's
+ACTUAL funded contribution: a NEW loan contributes its full
+`principal_amount`; a MIGRATED loan contributes its
+`opening_principal_outstanding` — **never** `principal_amount` (the
+historical original), most of which may already have been repaid
+before Umoja. Using the original figure would permanently overstate
+the receivable with no installment ever able to pay off the excess.
+
+### Opening arrears retain loan semantics — three distinct kinds
+
+Opening arrears are never dumped into a generic, loan-identity-losing
+obligation. Principal arrears (part of the funded receivable — repaying
+it reduces the receivable, never income), interest arrears (an
+obligation now; recognized as `recognized_loan_interest_income` only
+once actually paid, exactly like 09C's cash-basis interest rule), and
+penalty arrears (origin = `OPENING` in `loan_penalty_charges`,
+`sequence_number` always 0 — distinct from a later 09D-assessed penalty,
+`origin = 'ASSESSED'`, `sequence_number` 1..N) are each represented
+distinctly, because their accounting treatment differs.
+
+### Migrated arrears remain eligible for the 09D Penalty Engine
+
+An OPENING penalty charge is historical debt, not "Umoja's own first
+assessed occurrence" — `rpc_assess_loan_penalties`'s existing-count
+query counts only `origin = 'ASSESSED'` charges, so a migrated overdue
+installment remains fully assessable under its policy exactly like any
+other overdue installment (ONCE/RECURRING_MONTHLY numbering is
+unaffected by whether an OPENING charge already exists). The
+`OUTSTANDING_INSTALLMENT` basis still excludes ALL existing penalty
+(opening or previously-assessed) — this was already true of the 09D
+basis calculation and needed no change. A future migrated installment
+is never penalized, exactly like any other future installment.
+
+### Closed-loan rejection
+
+Importing a fully-settled historical loan as an operationally ACTIVE
+loan is rejected (`opening_principal_outstanding`,
+`opening_interest_arrears`, `opening_penalty_arrears`, and
+`future_scheduled_interest` all zero -> `LOAN_OPENING_NO_OUTSTANDING_
+POSITION`). Historical closed-loan import (for record-keeping only,
+never operationally active) is out of scope for this phase.
+
+### Correction is deferred
+
+A posted `loan_opening_positions` row is immutable — no RPC in this
+phase edits or deletes one. A data-entry mistake requires a future
+controlled correction/reversal workflow, not implemented here. This is
+a documented limitation, not an oversight.
+
+### Reporting distinction
+
+The loan list and detail screens show a MIGRATED badge; migrated
+principal is never counted as a current-period disbursement in any
+report. `docs/accounting/invariants.md` records the full set of
+opening-position invariants.
+
+## Multiple historical arrears installments (Prompt 09D-UAT-BLOCKER-02)
+
+Physical UAT revealed that a real historical loan is rarely represented
+by a single combined arrears figure — it typically has several separate
+overdue installments (e.g. three consecutive missed months), each with
+its own due date, principal/interest outstanding, and possibly its own
+already-owed penalty. BLOCKER-01's single `p_arrears_due_date` +
+`p_opening_principal_arrears`/`p_opening_interest_arrears`/
+`p_opening_penalty_arrears` scalar inputs could not represent this.
+
+`rpc_create_migrated_loan` now accepts `p_historical_arrears_
+installments` — a JSONB array (zero or more elements; no fixed
+maximum), each `{due_date, principal_outstanding, interest_outstanding,
+opening_penalty_outstanding}`. Every element is posted as its own
+ordinary `loan_installments` row (installment_number 1..N, ordered
+oldest-due-first) plus, when it carries an opening penalty, its own
+`loan_penalty_charges` row (`origin = 'OPENING'`, `sequence_number = 0`
+— already unique per installment via the existing BLOCKER-01 index, so
+no schema change was needed for this). A migrated loan may have zero
+historical arrears (an all-future import), historical arrears with zero
+future installments (a loan at contractual maturity but still owing old
+balances), or both — never required to have at least one arrears row.
+
+**Aggregates are derived, never independently stored.**
+`loan_opening_positions.opening_principal_arrears`/
+`opening_interest_arrears`/`opening_penalty_arrears`/`arrears_due_date`
+are still populated (kept for audit/reporting compatibility) but are
+now computed as the SUM (MIN for the due date) across the historical
+array in the same transaction that creates the underlying rows — they
+can never drift from the per-installment detail, because the detail
+*is* the source they're computed from. `future_scheduled_principal`
+remains `opening_principal_outstanding` minus the arrears-principal
+sum, exactly as BLOCKER-01 established.
+
+**Everything downstream already worked without further code changes.**
+Because each historical installment is an ordinary `loan_installments`
+row, the existing combined-allocation-plan / component-states /
+closure derivation settles them oldest-due-first, PENALTY -> INTEREST
+-> PRINCIPAL within each, exactly like any loan with multiple overdue
+installments — proven directly against section 13's worked example (a
+1,500,000 payment against June/July/August arrears settles June in
+full, then July's penalty plus a partial interest allocation, touching
+neither August nor the future schedule). `rpc_assess_loan_penalties`
+already loops per-installment (`for v_installment in ... order by
+installment_number`), so it independently assesses each eligible
+historical installment — including each maintaining its OWN
+ONCE/RECURRING_MONTHLY occurrence sequence anchored to its own due date
+(e.g. one assessment run can produce June's 3rd occurrence, July's 2nd,
+and August's 1st, simultaneously) — with zero additional code. The 09D
+penalty basis already excluded all existing penalty regardless of
+origin, so it was already correct for multiple installments too. Loan
+Detail (`loanHistoricalArrearsCard`), the Review screen, and Member
+Outstanding Obligations all render each historical installment
+separately (never one aggregate row) by filtering the loan's ordinary
+installment list on `due_date <= opening_as_of_date` — no new read RPC
+was needed, since `rpc_get_loan_account` already returns every
+installment with its own due date and outstanding figures.
+
+## Simple Import + pre-post schedule preview (Prompt 09D-UAT-BLOCKER-03)
+
+BLOCKER-02's per-installment Detailed Import remains fully supported
+(section I: use it when a historical statement gives an exact
+installment breakdown, rescheduling happened before Umoja, partial
+historical payments make automatic reconstruction unreliable, or legacy
+penalties need exact per-installment attribution) — but requiring a
+treasurer to manually know principal/interest/penalty for every
+overdue installment is unnecessarily hard when only the original
+contract terms and the total outstanding arrears are known. **Simple
+Import** is now the default onboarding mode.
+
+### Simple Import input
+
+Member, product, original loan number (optional), original loan date,
+original principal, contracted interest (the loan's total flat
+interest amount, not a rate), the **original loan term** (total
+contractual installment count — required, see BLOCKER-04 below), the
+contractual monthly installment amount, opening as-of date, the number
+of unpaid historical installments, the total historical arrears (from
+old records), the number of remaining future installments, and the
+next future due date — plus the product's frozen penalty policy,
+exactly like Detailed Import. The user never enters a
+principal/interest/penalty breakdown per installment.
+
+### Original loan term & paid-before-Umoja classification (Prompt 09D-UAT-BLOCKER-04)
+
+Physical UAT found that Simple Import had no way to represent
+installments already settled BEFORE the group started using Umoja — it
+silently assumed "historical arrears + remaining future" accounted for
+the loan's entire principal/interest, so it divided the FULL original
+principal by whatever few installments remained (e.g.
+20,000,000 / 7 instead of recognizing that 5 of the original 12
+installments were already paid off). The original loan term is now a
+**required** Simple Import field, and the server derives:
+
+```
+paid_before_umoja_count = original_term - historical_unpaid_count - remaining_future_count
+```
+
+rejecting the request outright if this goes negative (the two counts
+exceed the term). `compute_simple_migrated_loan_reconstruction()`
+(called identically by both `rpc_preview_migrated_loan` and
+`rpc_create_migrated_loan`, so preview and posting can never drift)
+reconstructs the FULL original contractual schedule — every one of the
+`original_term` installments, in order — and classifies it oldest-first
+into three buckets:
+
+1. **PAID_BEFORE_UMOJA** (the first `paid_before_umoja_count`) —
+   historical contract context only. Never persisted as a
+   `loan_installments` row, never a fake payment/receipt/cashbook
+   entry/income/expense/disbursement.
+2. **HISTORICAL_OVERDUE** (the next `historical_unpaid_count`) — real,
+   payable operational installments, exactly as BLOCKER-02/03.
+3. **FUTURE** (the final `remaining_future_count`) — real, not-yet-due
+   operational installments.
+
+Each installment's principal/interest split uses the SAME proportional
+fraction (`principal_fraction = original_principal /
+(original_principal + contracted_interest)`) applied to the regular
+contractual installment amount, computed ONCE up front and completely
+independent of classification — an installment's amount never changes
+depending on which bucket it lands in. The historical/future totals fed
+to the (unchanged) BLOCKER-01/02 insertion logic are now the ACTUAL sum
+of the reconstructed HISTORICAL_OVERDUE/FUTURE installments — never a
+naive `count x monthly_installment_amount`, and never "whatever's left
+of the original principal."
+
+### Final-installment reconciliation (never redistributed)
+
+A real contract's monthly installment amount and its
+principal+interest total commonly do not divide out evenly (e.g. 12 x
+1,834,000 = 22,008,000 while principal 20,000,000 + interest 2,000,000
+= 22,000,000, an 8,000 difference). Every installment except the
+term's own FINAL one carries the exact regular contractual amount; only
+the final installment absorbs the exact reconciliation difference —
+computed as the true remainder against `original_principal`/
+`contracted_interest`, never redistributed across every installment (a
+prior draft of this fix incorrectly re-split an aggregate future total
+evenly across the remaining count, which silently reintroduced values
+like 1,832,857.xx instead of preserving 1,834,000 flat).
+
+**Legacy penalty distribution rule** (documented, one deterministic
+formula): equal split across the historical installments,
+`trunc(legacy_penalty_total / n, 2)` with the exact remainder on the
+most recent historical installment. A proportional-to-outstanding
+alternative was considered but degenerates to the same formula here,
+since every historical installment shares the same
+`monthly_installment_amount` by construction; an "oldest-first
+waterfall" was rejected because a legacy penalty balance has no natural
+per-installment cap to wall against (unlike principal). This is an
+**import allocation for opening-balance/reporting purposes only** —
+never a claim that historical penalty was actually assessed
+installment-by-installment. Every row this produces carries `origin =
+OPENING` and sums to exactly the supplied legacy penalty total, with
+zero rounding drift.
+
+### Mandatory pre-post preview
+
+`rpc_preview_migrated_loan` (SIMPLE or DETAILED mode) computes and
+returns the full historical + future schedule, the aggregate figures
+(including `paid_before_umoja_count` in SIMPLE mode), and a
+zero-cash/zero-income accounting preview — **without writing to any
+table**: no loan account, opening position, installment, penalty
+charge, or cashbook entry. The Flutter flow is Member -> Product ->
+Contract/Opening Position form (live, informational-only "Paid before
+Umoja" summary, disabling Preview Schedule if the counts do not
+reconcile) -> **Schedule Preview** (a "Paid Before Umoja" count, then
+historical and future installments shown as visually separate sections,
+each with its own due date/principal/interest/opening-penalty/total/
+status — never showing an already-settled installment as payable) ->
+**Review & Confirm** (concise summary + accounting impact + the
+confirmation statement "This loan existed before Umoja. Adding it
+records an opening balance only. No cash movement or income is
+created.") -> Success. The Post/Create action (`Confirm & Add Existing
+Loan` / `Thibitisha na Ingiza Mkopo`) exists ONLY on the final Review
+step — never reachable from the data-entry form.
+
+`rpc_create_migrated_loan` never trusts the preview's numbers as input:
+in SIMPLE mode it ignores whatever the caller passes for
+`p_historical_arrears_installments`/`p_opening_principal_outstanding`/
+`p_future_scheduled_interest` and recomputes all three itself via the
+same reconstruction function, from the same raw contract inputs
+(`p_original_principal`, `p_contracted_interest_amount`,
+`p_monthly_installment_amount`, `p_historical_unpaid_count`,
+`p_total_historical_arrears`) Flutter is only ever allowed to submit —
+a stale or tampered preview payload can never become authoritative.
 
 ## Loan numbering
 
@@ -599,8 +1041,10 @@ of what Flutter renders.
 
 ## Deferred to later phases
 
-- 09D: loan penalties, overdue penalty assessment, restructuring,
-  refinancing, write-off.
+- Loan penalty waiver/correction (09D implements assessment and
+  posting only — a posted `loan_penalty_charges` row is immutable;
+  there is no `loan_penalty.waive` permission or waiver RPC yet).
+- Restructuring, refinancing, write-off.
 - A future controlled loan-correction/reversal phase: financial
   correction of a mistakenly-disbursed loan (09B deliberately does not
   implement this — see "Reversal is deferred" above) and wallet-loan

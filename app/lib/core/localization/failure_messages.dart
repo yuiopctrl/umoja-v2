@@ -203,6 +203,28 @@ String loanFailureMessage(AppLocalizations l10n, LoanFailureType type) {
     LoanFailureType.financialAccountInactive =>
       l10n.loanErrorFinancialAccountInactive,
     LoanFailureType.insufficientBalance => l10n.loanErrorInsufficientBalance,
+    LoanFailureType.penaltyConfigInvalid => l10n.loanErrorPenaltyConfigInvalid,
+    LoanFailureType.penaltyFixedAmountRequired =>
+      l10n.loanErrorPenaltyFixedAmountRequired,
+    LoanFailureType.penaltyRateRequired => l10n.loanErrorPenaltyRateRequired,
+    LoanFailureType.openingOriginalPrincipalInvalid =>
+      l10n.loanErrorOpeningOriginalPrincipalInvalid,
+    LoanFailureType.openingPrincipalArrearsExceedsOutstanding =>
+      l10n.loanErrorOpeningPrincipalArrearsExceedsOutstanding,
+    LoanFailureType.openingArrearsDueDateInvalid =>
+      l10n.loanErrorOpeningArrearsDueDateInvalid,
+    LoanFailureType.openingArrearsInstallmentInvalid =>
+      l10n.loanErrorOpeningArrearsInstallmentInvalid,
+    LoanFailureType.openingArrearsDuplicateDueDate =>
+      l10n.loanErrorOpeningArrearsDuplicateDueDate,
+    LoanFailureType.openingSimpleArrearsBelowContractual =>
+      l10n.loanErrorOpeningSimpleArrearsBelowContractual,
+    LoanFailureType.openingSimpleInputInvalid =>
+      l10n.loanErrorOpeningSimpleInputInvalid,
+    LoanFailureType.openingRemainingScheduleInvalid =>
+      l10n.loanErrorOpeningRemainingScheduleInvalid,
+    LoanFailureType.openingNoOutstandingPosition =>
+      l10n.loanErrorOpeningNoOutstandingPosition,
     LoanFailureType.notFound => l10n.loanErrorNotFound,
     LoanFailureType.permissionDenied => l10n.loanErrorPermissionDenied,
     LoanFailureType.network => l10n.loanErrorNetwork,

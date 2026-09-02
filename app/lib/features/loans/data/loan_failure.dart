@@ -73,6 +73,60 @@ enum LoanFailureType {
   /// `LOAN_DISBURSEMENT_INSUFFICIENT_BALANCE` (Prompt 09B).
   insufficientBalance,
 
+  /// `LOAN_PRODUCT_PENALTY_TYPE_REQUIRED` /
+  /// `LOAN_PRODUCT_PENALTY_FREQUENCY_REQUIRED` /
+  /// `LOAN_PRODUCT_PENALTY_GRACE_DAYS_INVALID` (Prompt 09D).
+  penaltyConfigInvalid,
+
+  /// `LOAN_PRODUCT_PENALTY_FIXED_AMOUNT_REQUIRED` (Prompt 09D).
+  penaltyFixedAmountRequired,
+
+  /// `LOAN_PRODUCT_PENALTY_RATE_REQUIRED` (Prompt 09D).
+  penaltyRateRequired,
+
+  /// `LOAN_OPENING_ORIGINAL_PRINCIPAL_MUST_BE_POSITIVE`
+  /// (Prompt 09D-UAT-BLOCKER-01).
+  openingOriginalPrincipalInvalid,
+
+  /// `LOAN_OPENING_PRINCIPAL_ARREARS_EXCEEDS_OUTSTANDING`
+  /// (Prompt 09D-UAT-BLOCKER-01).
+  openingPrincipalArrearsExceedsOutstanding,
+
+  /// `LOAN_OPENING_ARREARS_DUE_DATE_REQUIRED` /
+  /// `LOAN_OPENING_ARREARS_DUE_DATE_AFTER_AS_OF`
+  /// (Prompt 09D-UAT-BLOCKER-01).
+  openingArrearsDueDateInvalid,
+
+  /// `LOAN_OPENING_ARREARS_INSTALLMENTS_INVALID` /
+  /// `LOAN_OPENING_ARREARS_COMPONENT_NEGATIVE` /
+  /// `LOAN_OPENING_ARREARS_ROW_EMPTY` (Prompt 09D-UAT-BLOCKER-02).
+  openingArrearsInstallmentInvalid,
+
+  /// `LOAN_OPENING_ARREARS_DUPLICATE_DUE_DATE` (Prompt
+  /// 09D-UAT-BLOCKER-02).
+  openingArrearsDuplicateDueDate,
+
+  /// `LOAN_OPENING_SIMPLE_ARREARS_BELOW_CONTRACTUAL` (Prompt
+  /// 09D-UAT-BLOCKER-03) — the entered total historical arrears is less
+  /// than the derived contractual arrears; suggest Detailed Import.
+  openingSimpleArrearsBelowContractual,
+
+  /// `LOAN_OPENING_SIMPLE_CONTRACTED_INTEREST_INVALID` /
+  /// `LOAN_OPENING_SIMPLE_INSTALLMENT_AMOUNT_INVALID` /
+  /// `LOAN_OPENING_SIMPLE_HISTORICAL_COUNT_INVALID` /
+  /// `LOAN_OPENING_SIMPLE_TOTAL_ARREARS_INVALID` /
+  /// `LOAN_OPENING_SIMPLE_RECONSTRUCTION_INCONSISTENT` /
+  /// `LOAN_OPENING_MODE_INVALID` (Prompt 09D-UAT-BLOCKER-03).
+  openingSimpleInputInvalid,
+
+  /// `LOAN_OPENING_REMAINING_SCHEDULE_INCONSISTENT` /
+  /// `LOAN_OPENING_NEXT_DUE_DATE_REQUIRED` (Prompt 09D-UAT-BLOCKER-01).
+  openingRemainingScheduleInvalid,
+
+  /// `LOAN_OPENING_NO_OUTSTANDING_POSITION` (Prompt
+  /// 09D-UAT-BLOCKER-01) — nothing left to migrate.
+  openingNoOutstandingPosition,
+
   /// Not found (product, membership, or loan account not in group).
   notFound,
 

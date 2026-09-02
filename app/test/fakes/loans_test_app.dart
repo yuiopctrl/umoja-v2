@@ -39,15 +39,20 @@ const loanAdminPermissions = [
   'loan.cancel',
   'loan.disburse',
   'financial_account.view',
+  'loan_penalty.view',
+  'loan_penalty.assess',
+  'loan_opening.create',
 ];
 
 /// CHAIRPERSON/SECRETARY's view-only grants — no `.manage`/`.create`/
-/// `.edit`/`.generate` (Prompt 09A section X).
+/// `.edit`/`.generate` (Prompt 09A section X). `loan_penalty.view` only
+/// (never `.assess` — Prompt 09D).
 const loanViewOnlyPermissions = [
   'group.view',
   'loan_product.view',
   'loan.view',
   'loan_schedule.view',
+  'loan_penalty.view',
 ];
 
 /// TREASURER's 09B grants (section 23) — submit/disburse/cancel, but
@@ -66,6 +71,8 @@ const loanTreasurerPermissions = [
   'loan.cancel',
   'loan.disburse',
   'financial_account.view',
+  'loan_penalty.view',
+  'loan_penalty.assess',
 ];
 
 /// CHAIRPERSON's 09B grants (section 23) — approve/reject/cancel, but
@@ -78,6 +85,7 @@ const loanChairpersonPermissions = [
   'loan.approve',
   'loan.reject',
   'loan.cancel',
+  'loan_penalty.view',
 ];
 
 MembershipContext loanMembership({

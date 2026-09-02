@@ -2,6 +2,9 @@ import 'package:logging/logging.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../domain/loan_account.dart';
+import '../domain/loan_historical_arrears_installment.dart';
+import '../domain/loan_migration_preview.dart';
+import '../domain/loan_penalty_charge.dart';
 import '../domain/loan_product.dart';
 import '../domain/loan_schedule_preview.dart';
 import 'loan_failure.dart';
@@ -66,6 +69,12 @@ class SupabaseLoanRepository implements LoanRepository {
     required String interestMethod,
     double? maximumPrincipal,
     String? description,
+    bool penaltyEnabled = false,
+    String? penaltyType,
+    String? penaltyFrequency,
+    int? penaltyGraceDays,
+    double? penaltyFixedAmount,
+    double? penaltyRate,
   }) async {
     try {
       final result = await _client.rpc(
@@ -82,6 +91,12 @@ class SupabaseLoanRepository implements LoanRepository {
           'p_interest_method': interestMethod,
           'p_maximum_principal': maximumPrincipal,
           'p_description': description,
+          'p_penalty_enabled': penaltyEnabled,
+          'p_penalty_type': penaltyType,
+          'p_penalty_frequency': penaltyFrequency,
+          'p_penalty_grace_days': penaltyGraceDays,
+          'p_penalty_fixed_amount': penaltyFixedAmount,
+          'p_penalty_rate': penaltyRate,
         },
       );
       return LoanProduct.fromJson(result as Map<String, dynamic>);
@@ -104,6 +119,12 @@ class SupabaseLoanRepository implements LoanRepository {
     String? interestRateBasis,
     String? interestMethod,
     bool? isActive,
+    bool? penaltyEnabled,
+    String? penaltyType,
+    String? penaltyFrequency,
+    int? penaltyGraceDays,
+    double? penaltyFixedAmount,
+    double? penaltyRate,
   }) async {
     try {
       final result = await _client.rpc(
@@ -121,6 +142,12 @@ class SupabaseLoanRepository implements LoanRepository {
           'p_interest_rate_basis': interestRateBasis,
           'p_interest_method': interestMethod,
           'p_is_active': isActive,
+          'p_penalty_enabled': penaltyEnabled,
+          'p_penalty_type': penaltyType,
+          'p_penalty_frequency': penaltyFrequency,
+          'p_penalty_grace_days': penaltyGraceDays,
+          'p_penalty_fixed_amount': penaltyFixedAmount,
+          'p_penalty_rate': penaltyRate,
         },
       );
       return LoanProduct.fromJson(result as Map<String, dynamic>);
@@ -391,6 +418,178 @@ class SupabaseLoanRepository implements LoanRepository {
       throw _mapError(error, stackTrace);
     }
   }
+
+  @override
+  Future<LoanPenaltyAssessmentResult> assessLoanPenalties({
+    required String groupId,
+    required DateTime assessmentDate,
+    String? loanAccountId,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_assess_loan_penalties',
+        params: {
+          'p_group_id': groupId,
+          'p_assessment_date': _dateOnly(assessmentDate),
+          'p_loan_account_id': loanAccountId,
+        },
+      );
+      return LoanPenaltyAssessmentResult.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<List<LoanPenaltyCharge>> listLoanPenaltyCharges({
+    required String groupId,
+    required String loanAccountId,
+    String? loanInstallmentId,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_list_loan_penalty_charges',
+        params: {
+          'p_group_id': groupId,
+          'p_loan_account_id': loanAccountId,
+          'p_loan_installment_id': loanInstallmentId,
+        },
+      );
+      final json = result as Map<String, dynamic>;
+      return (json['items'] as List<dynamic>)
+          .map(
+            (item) => LoanPenaltyCharge.fromJson(item as Map<String, dynamic>),
+          )
+          .toList(growable: false);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanAccount> createMigratedLoan({
+    required String groupId,
+    required String membershipId,
+    required String loanProductId,
+    required double originalPrincipal,
+    required DateTime originalDisbursementDate,
+    required DateTime openingAsOfDate,
+    required double openingPrincipalOutstanding,
+    List<LoanHistoricalArrearsInstallmentInput> historicalArrearsInstallments =
+        const [],
+    required double futureScheduledInterest,
+    required int remainingInstallmentCount,
+    DateTime? nextDueDate,
+    String? originalLoanNumber,
+    String? notes,
+    String? idempotencyKey,
+    String mode = 'DETAILED',
+    double? contractedInterestAmount,
+    double? monthlyInstallmentAmount,
+    int? historicalUnpaidCount,
+    double? totalHistoricalArrears,
+    int? originalTerm,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_create_migrated_loan',
+        params: {
+          'p_group_id': groupId,
+          'p_membership_id': membershipId,
+          'p_loan_product_id': loanProductId,
+          'p_original_principal': originalPrincipal,
+          'p_original_disbursement_date': _dateOnly(originalDisbursementDate),
+          'p_opening_as_of_date': _dateOnly(openingAsOfDate),
+          'p_opening_principal_outstanding': openingPrincipalOutstanding,
+          'p_historical_arrears_installments': _arrearsJson(
+            historicalArrearsInstallments,
+          ),
+          'p_future_scheduled_interest': futureScheduledInterest,
+          'p_remaining_installment_count': remainingInstallmentCount,
+          'p_next_due_date': _dateOnlyOrNull(nextDueDate),
+          'p_original_loan_number': originalLoanNumber,
+          'p_notes': notes,
+          'p_idempotency_key': idempotencyKey,
+          'p_mode': mode,
+          'p_contracted_interest_amount': contractedInterestAmount,
+          'p_monthly_installment_amount': monthlyInstallmentAmount,
+          'p_historical_unpaid_count': historicalUnpaidCount,
+          'p_total_historical_arrears': totalHistoricalArrears,
+          'p_original_term': originalTerm,
+        },
+      );
+      return LoanAccount.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanMigrationPreview> previewMigratedLoan({
+    required String groupId,
+    required String membershipId,
+    required String loanProductId,
+    required double originalPrincipal,
+    required DateTime openingAsOfDate,
+    double? openingPrincipalOutstanding,
+    List<LoanHistoricalArrearsInstallmentInput> historicalArrearsInstallments =
+        const [],
+    double futureScheduledInterest = 0,
+    int remainingInstallmentCount = 0,
+    DateTime? nextDueDate,
+    String mode = 'DETAILED',
+    double? contractedInterestAmount,
+    double? monthlyInstallmentAmount,
+    int? historicalUnpaidCount,
+    double? totalHistoricalArrears,
+    int? originalTerm,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_preview_migrated_loan',
+        params: {
+          'p_group_id': groupId,
+          'p_membership_id': membershipId,
+          'p_loan_product_id': loanProductId,
+          'p_original_principal': originalPrincipal,
+          'p_opening_as_of_date': _dateOnly(openingAsOfDate),
+          'p_opening_principal_outstanding': openingPrincipalOutstanding,
+          'p_historical_arrears_installments': _arrearsJson(
+            historicalArrearsInstallments,
+          ),
+          'p_future_scheduled_interest': futureScheduledInterest,
+          'p_remaining_installment_count': remainingInstallmentCount,
+          'p_next_due_date': _dateOnlyOrNull(nextDueDate),
+          'p_mode': mode,
+          'p_contracted_interest_amount': contractedInterestAmount,
+          'p_monthly_installment_amount': monthlyInstallmentAmount,
+          'p_historical_unpaid_count': historicalUnpaidCount,
+          'p_total_historical_arrears': totalHistoricalArrears,
+          'p_original_term': originalTerm,
+        },
+      );
+      return LoanMigrationPreview.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+}
+
+List<Map<String, dynamic>> _arrearsJson(
+  List<LoanHistoricalArrearsInstallmentInput> installments,
+) {
+  return installments
+      .map(
+        (installment) => {
+          'due_date': _dateOnly(installment.dueDate),
+          'principal_outstanding': installment.principalOutstanding,
+          'interest_outstanding': installment.interestOutstanding,
+          'opening_penalty_outstanding': installment.openingPenaltyOutstanding,
+        },
+      )
+      .toList(growable: false);
 }
 
 String _dateOnly(DateTime date) {
@@ -543,6 +742,94 @@ LoanFailure _mapError(Object error, StackTrace stackTrace) {
         LoanFailureType.insufficientBalance,
         'The selected financial account does not have enough balance '
         'for this disbursement.',
+      );
+    }
+    if (message.contains('LOAN_PRODUCT_PENALTY_FIXED_AMOUNT_REQUIRED')) {
+      return const LoanFailure(
+        LoanFailureType.penaltyFixedAmountRequired,
+        'A fixed penalty amount is required for a FIXED penalty type.',
+      );
+    }
+    if (message.contains('LOAN_PRODUCT_PENALTY_RATE_REQUIRED')) {
+      return const LoanFailure(
+        LoanFailureType.penaltyRateRequired,
+        'A penalty rate is required for a PERCENTAGE penalty type.',
+      );
+    }
+    if (message.contains('LOAN_OPENING_ORIGINAL_PRINCIPAL_MUST_BE_POSITIVE')) {
+      return const LoanFailure(
+        LoanFailureType.openingOriginalPrincipalInvalid,
+        'The original principal must be greater than zero.',
+      );
+    }
+    if (message.contains(
+      'LOAN_OPENING_PRINCIPAL_ARREARS_EXCEEDS_OUTSTANDING',
+    )) {
+      return const LoanFailure(
+        LoanFailureType.openingPrincipalArrearsExceedsOutstanding,
+        'Principal arrears cannot exceed the opening principal outstanding.',
+      );
+    }
+    if (message.contains('LOAN_OPENING_ARREARS_DUE_DATE_REQUIRED') ||
+        message.contains('LOAN_OPENING_ARREARS_DUE_DATE_AFTER_AS_OF')) {
+      return const LoanFailure(
+        LoanFailureType.openingArrearsDueDateInvalid,
+        'Enter a valid arrears due date on or before the opening as-of date.',
+      );
+    }
+    if (message.contains('LOAN_OPENING_ARREARS_INSTALLMENTS_INVALID') ||
+        message.contains('LOAN_OPENING_ARREARS_COMPONENT_NEGATIVE') ||
+        message.contains('LOAN_OPENING_ARREARS_ROW_EMPTY')) {
+      return const LoanFailure(
+        LoanFailureType.openingArrearsInstallmentInvalid,
+        'Each historical arrears installment needs a due date and at least one positive amount.',
+      );
+    }
+    if (message.contains('LOAN_OPENING_ARREARS_DUPLICATE_DUE_DATE')) {
+      return const LoanFailure(
+        LoanFailureType.openingArrearsDuplicateDueDate,
+        'Two historical arrears installments cannot share the same due date.',
+      );
+    }
+    if (message.contains('LOAN_OPENING_REMAINING_SCHEDULE_INCONSISTENT') ||
+        message.contains('LOAN_OPENING_NEXT_DUE_DATE_REQUIRED')) {
+      return const LoanFailure(
+        LoanFailureType.openingRemainingScheduleInvalid,
+        'The remaining schedule is inconsistent — check the installment count and next due date.',
+      );
+    }
+    if (message.contains('LOAN_OPENING_SIMPLE_ARREARS_BELOW_CONTRACTUAL')) {
+      return const LoanFailure(
+        LoanFailureType.openingSimpleArrearsBelowContractual,
+        'The total historical arrears entered is less than the contractual amount for these unpaid installments.',
+      );
+    }
+    if (message.contains('LOAN_OPENING_SIMPLE_CONTRACTED_INTEREST_INVALID') ||
+        message.contains('LOAN_OPENING_SIMPLE_INSTALLMENT_AMOUNT_INVALID') ||
+        message.contains('LOAN_OPENING_SIMPLE_HISTORICAL_COUNT_INVALID') ||
+        message.contains('LOAN_OPENING_SIMPLE_TOTAL_ARREARS_INVALID') ||
+        message.contains('LOAN_OPENING_SIMPLE_ORIGINAL_TERM_INVALID') ||
+        message.contains('LOAN_OPENING_SIMPLE_REMAINING_COUNT_INVALID') ||
+        message.contains('LOAN_OPENING_SIMPLE_COUNTS_EXCEED_TERM') ||
+        message.contains('LOAN_OPENING_SIMPLE_RECONSTRUCTION_INCONSISTENT') ||
+        message.contains('LOAN_OPENING_MODE_INVALID')) {
+      return const LoanFailure(
+        LoanFailureType.openingSimpleInputInvalid,
+        'Check the original loan terms entered for this Simple Import.',
+      );
+    }
+    if (message.contains('LOAN_OPENING_NO_OUTSTANDING_POSITION')) {
+      return const LoanFailure(
+        LoanFailureType.openingNoOutstandingPosition,
+        'There is no outstanding loan position to migrate.',
+      );
+    }
+    if (message.contains('LOAN_PRODUCT_PENALTY_TYPE_REQUIRED') ||
+        message.contains('LOAN_PRODUCT_PENALTY_FREQUENCY_REQUIRED') ||
+        message.contains('LOAN_PRODUCT_PENALTY_GRACE_DAYS_INVALID')) {
+      return const LoanFailure(
+        LoanFailureType.penaltyConfigInvalid,
+        'Complete the penalty type, frequency, and grace days.',
       );
     }
     if (message.contains('name is required') ||

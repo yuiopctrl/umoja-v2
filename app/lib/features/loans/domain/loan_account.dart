@@ -1,6 +1,7 @@
 import 'loan_account_event.dart';
 import 'loan_disbursement.dart';
 import 'loan_installment.dart';
+import 'loan_opening_position.dart';
 
 /// One specific member's loan instance (Prompt 09A). NOT a cash
 /// transaction and NOT yet a funded receivable — see
@@ -22,6 +23,8 @@ class LoanAccount {
     required this.loanProductName,
     required this.loanProductCode,
     required this.loanNumber,
+    this.loanOrigin = 'NEW',
+    this.openingPosition,
     required this.principalAmount,
     required this.interestRate,
     required this.interestRateBasis,
@@ -42,9 +45,18 @@ class LoanAccount {
     this.principalOutstanding,
     this.interestRecognized = 0,
     this.interestOutstanding,
+    this.penaltyPaid = 0,
+    this.penaltyOutstanding,
     this.totalOutstanding,
     this.nextDueDate,
     this.overdueAmount = 0,
+    this.penaltyEnabled = false,
+    this.penaltyType,
+    this.penaltyFrequency,
+    this.penaltyGraceDays,
+    this.penaltyFixedAmount,
+    this.penaltyRate,
+    this.penaltyBasis,
   });
 
   factory LoanAccount.fromJson(Map<String, dynamic> json) {
@@ -58,6 +70,12 @@ class LoanAccount {
       loanProductName: json['loan_product_name'] as String,
       loanProductCode: json['loan_product_code'] as String,
       loanNumber: json['loan_number'] as String,
+      loanOrigin: json['loan_origin'] as String? ?? 'NEW',
+      openingPosition: json['opening_position'] == null
+          ? null
+          : LoanOpeningPosition.fromJson(
+              json['opening_position'] as Map<String, dynamic>,
+            ),
       principalAmount: (json['principal_amount'] as num).toDouble(),
       interestRate: (json['interest_rate'] as num).toDouble(),
       interestRateBasis: json['interest_rate_basis'] as String,
@@ -108,6 +126,12 @@ class LoanAccount {
       interestOutstanding: json['interest_outstanding'] == null
           ? null
           : (json['interest_outstanding'] as num).toDouble(),
+      penaltyPaid: json['penalty_paid'] == null
+          ? 0
+          : (json['penalty_paid'] as num).toDouble(),
+      penaltyOutstanding: json['penalty_outstanding'] == null
+          ? null
+          : (json['penalty_outstanding'] as num).toDouble(),
       totalOutstanding: json['total_outstanding'] == null
           ? null
           : (json['total_outstanding'] as num).toDouble(),
@@ -117,6 +141,13 @@ class LoanAccount {
       overdueAmount: json['overdue_amount'] == null
           ? 0
           : (json['overdue_amount'] as num).toDouble(),
+      penaltyEnabled: json['penalty_enabled'] as bool? ?? false,
+      penaltyType: json['penalty_type'] as String?,
+      penaltyFrequency: json['penalty_frequency'] as String?,
+      penaltyGraceDays: json['penalty_grace_days'] as int?,
+      penaltyFixedAmount: (json['penalty_fixed_amount'] as num?)?.toDouble(),
+      penaltyRate: (json['penalty_rate'] as num?)?.toDouble(),
+      penaltyBasis: json['penalty_basis'] as String?,
     );
   }
 
@@ -129,6 +160,14 @@ class LoanAccount {
   final String loanProductName;
   final String loanProductCode;
   final String loanNumber;
+
+  /// 'NEW' (originated inside Umoja) or 'MIGRATED' (Prompt
+  /// 09D-UAT-BLOCKER-01 — an opening financial position for a loan
+  /// already funded before the group started using Umoja).
+  final String loanOrigin;
+
+  /// Non-null only for a MIGRATED loan.
+  final LoanOpeningPosition? openingPosition;
   final double principalAmount;
   final double interestRate;
 
@@ -171,9 +210,32 @@ class LoanAccount {
   final double? principalOutstanding;
   final double interestRecognized;
   final double? interestOutstanding;
+
+  /// Penalty summary (Prompt 09D) — same derivation guarantee: always
+  /// server-computed from `loan_penalty_charges` minus active
+  /// allocations, never a stored balance.
+  final double penaltyPaid;
+  final double? penaltyOutstanding;
   final double? totalOutstanding;
   final DateTime? nextDueDate;
   final double overdueAmount;
+
+  /// Frozen penalty policy snapshot (Prompt 09D) — taken from the loan
+  /// product at DRAFT creation time, exactly like every other financial
+  /// term; a later product edit never changes these for this loan.
+  final bool penaltyEnabled;
+
+  /// 'FIXED' or 'PERCENTAGE'.
+  final String? penaltyType;
+
+  /// 'ONCE' or 'RECURRING_MONTHLY'.
+  final String? penaltyFrequency;
+  final int? penaltyGraceDays;
+  final double? penaltyFixedAmount;
+  final double? penaltyRate;
+  final String? penaltyBasis;
+
+  bool get isMigrated => loanOrigin == 'MIGRATED';
 
   bool get isDraft => status == 'DRAFT';
   bool get isSubmitted => status == 'SUBMITTED';

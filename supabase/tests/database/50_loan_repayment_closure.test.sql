@@ -64,10 +64,10 @@ insert into public.payments (
   'MANUAL-TEST-0001', '4d000000-0000-0000-0000-000000000001'
 );
 insert into public.payment_allocations (
-  group_id, payment_id, membership_id, amount, allocation_target_type, loan_account_id, loan_installment_id, created_by
+  group_id, payment_id, membership_id, amount, allocation_target_type, line_number, loan_account_id, loan_installment_id, created_by
 ) values (
   '4d100000-0000-0000-0000-000000000001'::uuid, '4d900000-0000-0000-0000-000000000001', '4d200000-0000-0000-0000-000000000005'::uuid,
-  400000, 'LOAN_PRINCIPAL', :'loan_id'::uuid, :'installment_id'::uuid, '4d000000-0000-0000-0000-000000000001'
+  400000, 'LOAN_PRINCIPAL', 1, :'loan_id'::uuid, :'installment_id'::uuid, '4d000000-0000-0000-0000-000000000001'
 );
 select public.loan_account_recheck_closure(
   '4d100000-0000-0000-0000-000000000001'::uuid, :'loan_id'::uuid, '4d000000-0000-0000-0000-000000000001'::uuid

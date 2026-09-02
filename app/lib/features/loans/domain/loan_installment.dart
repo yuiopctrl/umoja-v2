@@ -17,6 +17,8 @@ class LoanInstallment {
     this.principalOutstanding,
     this.interestPaid = 0,
     this.interestOutstanding,
+    this.penaltyPaid = 0,
+    this.penaltyOutstanding,
     this.totalOutstanding,
     this.status,
   });
@@ -44,6 +46,12 @@ class LoanInstallment {
       interestOutstanding: json['interest_outstanding'] == null
           ? null
           : (json['interest_outstanding'] as num).toDouble(),
+      penaltyPaid: json['penalty_paid'] == null
+          ? 0
+          : (json['penalty_paid'] as num).toDouble(),
+      penaltyOutstanding: json['penalty_outstanding'] == null
+          ? null
+          : (json['penalty_outstanding'] as num).toDouble(),
       totalOutstanding: json['total_outstanding'] == null
           ? null
           : (json['total_outstanding'] as num).toDouble(),
@@ -64,6 +72,11 @@ class LoanInstallment {
   final double? principalOutstanding;
   final double interestPaid;
   final double? interestOutstanding;
+
+  /// Prompt 09D — always derived from `loan_penalty_charges` minus
+  /// active allocations, never a stored counter.
+  final double penaltyPaid;
+  final double? penaltyOutstanding;
   final double? totalOutstanding;
 
   /// UPCOMING | DUE | PARTIALLY_PAID | PAID | OVERDUE — null for a

@@ -48,9 +48,11 @@ import '../../features/loans/presentation/disburse_loan_screen.dart';
 import '../../features/loans/presentation/edit_loan_terms_screen.dart';
 import '../../features/loans/presentation/loan_account_detail_screen.dart';
 import '../../features/loans/presentation/loan_accounts_list_screen.dart';
+import '../../features/loans/presentation/loan_penalties_screen.dart';
 import '../../features/loans/presentation/loan_product_form_screen.dart';
 import '../../features/loans/presentation/loan_products_list_screen.dart';
 import '../../features/loans/presentation/loans_home_screen.dart';
+import '../../features/loans/presentation/new_existing_loan_screen.dart';
 import '../../features/loans/presentation/new_loan_screen.dart';
 import '../../features/loans/presentation/reject_loan_screen.dart';
 import '../../features/members/presentation/member_charges_screen.dart';
@@ -450,8 +452,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const LoanAccountsListScreen(),
           ),
           GoRoute(
+            path: AppRoutes.loanPenalties,
+            builder: (context, state) => const LoanPenaltiesScreen(),
+          ),
+          GoRoute(
             path: AppRoutes.newLoanAccount,
             builder: (context, state) => const NewLoanScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.newExistingLoanAccount,
+            builder: (context, state) => const NewExistingLoanScreen(),
           ),
           GoRoute(
             path: AppRoutes.loanAccountDetail,

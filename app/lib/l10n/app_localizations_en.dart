@@ -2277,6 +2277,74 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loanInterestMethodReducingBalance => 'Reducing Balance';
 
   @override
+  String get sectionLoanProductPenalty => 'Penalty Policy';
+
+  @override
+  String get loanProductPenaltyEnabledFieldLabel => 'Enable Penalty';
+
+  @override
+  String get loanProductPenaltyTypeFieldLabel => 'Penalty Type';
+
+  @override
+  String get loanProductPenaltyFrequencyFieldLabel => 'Penalty Frequency';
+
+  @override
+  String get loanProductPenaltyGraceDaysFieldLabel => 'Grace Days';
+
+  @override
+  String get loanProductPenaltyFixedAmountFieldLabel => 'Fixed Penalty Amount';
+
+  @override
+  String get loanProductPenaltyRateFieldLabel => 'Penalty Rate (%)';
+
+  @override
+  String get loanPenaltyTypeFixed => 'Fixed';
+
+  @override
+  String get loanPenaltyTypePercentage => 'Percentage';
+
+  @override
+  String get loanPenaltyFrequencyOnce => 'Once';
+
+  @override
+  String get loanPenaltyFrequencyRecurringMonthly => 'Recurring Monthly';
+
+  @override
+  String loanPenaltyPolicyDescriptionFixedOnce(String amount, int graceDays) {
+    return 'TSh $amount after $graceDays grace days, assessed once.';
+  }
+
+  @override
+  String loanPenaltyPolicyDescriptionFixedRecurring(
+    String amount,
+    int graceDays,
+  ) {
+    return 'TSh $amount after $graceDays grace days, assessed monthly while overdue.';
+  }
+
+  @override
+  String loanPenaltyPolicyDescriptionPercentageOnce(
+    String rate,
+    int graceDays,
+  ) {
+    return '$rate% of the outstanding installment balance after $graceDays grace days, assessed once.';
+  }
+
+  @override
+  String loanPenaltyPolicyDescriptionPercentageRecurring(
+    String rate,
+    int graceDays,
+  ) {
+    return '$rate% of the outstanding installment balance after $graceDays grace days, assessed monthly while overdue.';
+  }
+
+  @override
+  String get loanPenaltyPolicyDisabledLabel => 'No penalty policy';
+
+  @override
+  String get loanPenaltySnapshotTitle => 'Penalty Terms';
+
+  @override
   String get loanStatusDraft => 'Draft';
 
   @override
@@ -2571,6 +2639,54 @@ class AppLocalizationsEn extends AppLocalizations {
       'The selected financial account does not have enough balance for this disbursement.';
 
   @override
+  String get loanErrorPenaltyConfigInvalid =>
+      'Complete the penalty type, frequency, and grace days.';
+
+  @override
+  String get loanErrorPenaltyFixedAmountRequired =>
+      'A fixed penalty amount is required for a FIXED penalty type.';
+
+  @override
+  String get loanErrorPenaltyRateRequired =>
+      'A penalty rate is required for a PERCENTAGE penalty type.';
+
+  @override
+  String get loanErrorOpeningOriginalPrincipalInvalid =>
+      'The original principal must be greater than zero.';
+
+  @override
+  String get loanErrorOpeningPrincipalArrearsExceedsOutstanding =>
+      'Principal arrears cannot exceed the opening principal outstanding.';
+
+  @override
+  String get loanErrorOpeningArrearsDueDateInvalid =>
+      'Enter a valid arrears due date on or before the opening as-of date.';
+
+  @override
+  String get loanErrorOpeningArrearsInstallmentInvalid =>
+      'Each historical arrears installment needs a due date and at least one positive amount.';
+
+  @override
+  String get loanErrorOpeningArrearsDuplicateDueDate =>
+      'Two historical arrears installments cannot share the same due date.';
+
+  @override
+  String get loanErrorOpeningSimpleArrearsBelowContractual =>
+      'The total historical arrears entered is less than the contractual amount for these unpaid installments. Check the figures, or switch to Detailed Import if this loan\'s history is more complex.';
+
+  @override
+  String get loanErrorOpeningSimpleInputInvalid =>
+      'Check the original loan terms — the contracted interest, installment amount, unpaid installment count, and total arrears must all be valid.';
+
+  @override
+  String get loanErrorOpeningRemainingScheduleInvalid =>
+      'The remaining schedule is inconsistent — check the installment count and next due date.';
+
+  @override
+  String get loanErrorOpeningNoOutstandingPosition =>
+      'There is no outstanding loan position to migrate.';
+
+  @override
   String get loanAllocationDueDateLabel => 'Due';
 
   @override
@@ -2578,6 +2694,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loanComponentPrincipal => 'Principal';
+
+  @override
+  String get loanComponentPenalty => 'Loan Penalty';
 
   @override
   String get loanInstallmentStatusUpcoming => 'Upcoming';
@@ -2616,6 +2735,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loanSummaryOverdueAmountLabel => 'Overdue Amount';
 
   @override
+  String get loanSummaryPenaltyPaidLabel => 'Penalty Paid';
+
+  @override
+  String get loanSummaryPenaltyOutstandingLabel => 'Penalty Outstanding';
+
+  @override
   String get financialPositionFundedLoanPrincipalLabel =>
       'Funded Loan Principal Receivable';
 
@@ -2626,6 +2751,306 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get financialPositionRecognizedLoanInterestIncomeLabel =>
       'Recognized Loan Interest Income';
+
+  @override
+  String get financialPositionLoanPenaltiesOutstandingLabel =>
+      'Loan Penalties Outstanding';
+
+  @override
+  String get financialPositionRecognizedLoanPenaltyIncomeLabel =>
+      'Recognized Loan Penalty Income';
+
+  @override
+  String get loanPenaltiesEntryTitle => 'Penalties';
+
+  @override
+  String get loanPenaltiesEntrySubtitle =>
+      'Overdue installments, penalty history, and assessment';
+
+  @override
+  String get loanPenaltiesScreenTitle => 'Loan Penalties';
+
+  @override
+  String get loanPenaltyAssessActionLabel => 'Assess Penalties';
+
+  @override
+  String get loanPenaltyAssessmentDateFieldLabel => 'Assessment Date';
+
+  @override
+  String get loanPenaltyAssessmentResultAssessedLabel => 'Assessed';
+
+  @override
+  String get loanPenaltyAssessmentResultSkippedLabel => 'Skipped';
+
+  @override
+  String get loanPenaltyAssessmentResultTotalLabel => 'Total Amount';
+
+  @override
+  String get loanPenaltyAssessmentResultEligibleLabel =>
+      'Eligible Installments';
+
+  @override
+  String get loanPenaltyHistoryTitle => 'Penalty History';
+
+  @override
+  String get loanPenaltyHistoryEmptyMessage =>
+      'No penalties have been assessed for this loan.';
+
+  @override
+  String get loanPenaltiesOutstandingTotalLabel =>
+      'Total Outstanding Penalties';
+
+  @override
+  String loanPenaltyOccurrenceLabel(int number) {
+    return 'Occurrence $number';
+  }
+
+  @override
+  String get loanPenaltyOriginOpeningLabel => 'Opening';
+
+  @override
+  String get loanPenaltyOriginAssessedLabel => 'Assessed';
+
+  @override
+  String get addExistingLoanAction => 'Add Existing Loan';
+
+  @override
+  String get existingLoanEntrySubtitle =>
+      'Onboard a loan already funded before Umoja';
+
+  @override
+  String get migratedLoanFormTitle => 'Add Existing Loan';
+
+  @override
+  String get sectionMigratedLoanDetails => 'Existing Loan Details';
+
+  @override
+  String get sectionMigratedLoanOpeningPosition => 'Opening Position';
+
+  @override
+  String get sectionMigratedLoanArrears => 'Arrears';
+
+  @override
+  String get sectionMigratedLoanRemainingSchedule => 'Remaining Schedule';
+
+  @override
+  String get sectionMigratedLoanReview => 'Review';
+
+  @override
+  String get originalLoanNumberFieldLabel => 'Original Loan Number (optional)';
+
+  @override
+  String get originalDisbursementDateFieldLabel => 'Original Disbursement Date';
+
+  @override
+  String get openingAsOfDateFieldLabel => 'Opening As-Of Date';
+
+  @override
+  String get originalPrincipalFieldLabel => 'Original Principal';
+
+  @override
+  String get openingPrincipalOutstandingFieldLabel =>
+      'Opening Principal Outstanding';
+
+  @override
+  String get openingPrincipalArrearsFieldLabel => 'Principal Arrears';
+
+  @override
+  String get openingInterestArrearsFieldLabel => 'Interest Arrears';
+
+  @override
+  String get openingPenaltyArrearsFieldLabel => 'Penalty Arrears';
+
+  @override
+  String get arrearsDueDateFieldLabel => 'Arrears Due Date';
+
+  @override
+  String get remainingInstallmentCountFieldLabel => 'Remaining Installments';
+
+  @override
+  String get nextDueDateFieldLabel => 'Next Due Date';
+
+  @override
+  String get futureScheduledInterestFieldLabel => 'Future Scheduled Interest';
+
+  @override
+  String get migratedLoanNotesFieldLabel => 'Notes (optional)';
+
+  @override
+  String get migratedLoanPostAction => 'Post Opening Loan';
+
+  @override
+  String get loanOriginLabel => 'Loan Origin';
+
+  @override
+  String get loanOriginMigratedLabel => 'Migrated / Brought Forward';
+
+  @override
+  String get loanOriginNewLabel => 'New';
+
+  @override
+  String get accountingImpactTitle => 'Accounting Impact';
+
+  @override
+  String get financialAccountLabel => 'Financial Account';
+
+  @override
+  String get financialAccountNoneLabel => 'None';
+
+  @override
+  String get cashbookImpactLabel => 'Cashbook Impact';
+
+  @override
+  String get incomeRecognizedNowLabel => 'Income Recognized Now';
+
+  @override
+  String get expenseRecognizedNowLabel => 'Expense Recognized Now';
+
+  @override
+  String get fundedPrincipalReceivableChangeLabel =>
+      'Funded Principal Receivable';
+
+  @override
+  String get futureScheduledPrincipalLabel => 'Future Scheduled Principal';
+
+  @override
+  String get migratedBadgeLabel => 'Migrated / Brought Forward';
+
+  @override
+  String get originalDisbursementDateLabel => 'Original Disbursement Date';
+
+  @override
+  String get openingAsOfDateLabel => 'Opening As-Of Date';
+
+  @override
+  String get originalPrincipalLabel => 'Original Principal';
+
+  @override
+  String get sectionMigratedLoanHistoricalArrears => 'Historical Arrears';
+
+  @override
+  String get addArrearsInstallmentAction => '+ Add Arrears Installment';
+
+  @override
+  String get arrearsRowPrincipalLabel => 'Principal Outstanding';
+
+  @override
+  String get arrearsRowInterestLabel => 'Interest Outstanding';
+
+  @override
+  String get arrearsRowPenaltyLabel => 'Existing Penalty';
+
+  @override
+  String get arrearsRowTotalLabel => 'Total';
+
+  @override
+  String get totalHistoricalArrearsLabel => 'Total Historical Arrears';
+
+  @override
+  String get historicalArrearsEmptyMessage =>
+      'No historical arrears added — this loan has only a remaining future schedule.';
+
+  @override
+  String get removeAction => 'Remove';
+
+  @override
+  String get saveAction => 'Save';
+
+  @override
+  String get cancelAction => 'Cancel';
+
+  @override
+  String get simpleImportModeLabel => 'Simple Import';
+
+  @override
+  String get detailedImportModeLabel => 'Detailed Import';
+
+  @override
+  String get simpleImportModeDescription =>
+      'Enter the original loan terms and the total outstanding arrears. Umoja will reconstruct the contractual schedule and separate brought-forward penalties.';
+
+  @override
+  String get contractedInterestFieldLabel => 'Contracted Interest';
+
+  @override
+  String get monthlyInstallmentAmountFieldLabel =>
+      'Contractual Monthly Installment';
+
+  @override
+  String get historicalUnpaidCountFieldLabel => 'Unpaid Installments';
+
+  @override
+  String get totalHistoricalArrearsFieldLabel => 'Total Historical Arrears';
+
+  @override
+  String get contractualArrearsLabel => 'Contractual Arrears';
+
+  @override
+  String get openingLegacyPenaltyLabel => 'Opening / Legacy Penalty';
+
+  @override
+  String get sectionSchedulePreview => 'Schedule Preview';
+
+  @override
+  String get historicalOverdueInstallmentsTitle =>
+      'Historical Overdue Installments';
+
+  @override
+  String get futureRemainingInstallmentsTitle =>
+      'Future Remaining Installments';
+
+  @override
+  String get previewScheduleAction => 'Preview Schedule';
+
+  @override
+  String get editScheduleInputsAction => 'Back / Edit';
+
+  @override
+  String get continueToReviewAction => 'Continue to Review';
+
+  @override
+  String get sectionReviewAndConfirm => 'Review & Confirm';
+
+  @override
+  String get confirmAndAddExistingLoanAction => 'Confirm & Add Existing Loan';
+
+  @override
+  String get migratedLoanConfirmationSafetyMessage =>
+      'This loan existed before Umoja. Adding it records an opening balance only. No cash movement or income is created.';
+
+  @override
+  String get originalPrincipalSummaryLabel => 'Original Principal';
+
+  @override
+  String get contractedInterestSummaryLabel => 'Contracted Interest';
+
+  @override
+  String get contractualTotalSummaryLabel => 'Contractual Total';
+
+  @override
+  String get historicalUnpaidInstallmentsSummaryLabel =>
+      'Historical Unpaid Installments';
+
+  @override
+  String get historicalContractualDebtSummaryLabel =>
+      'Historical Contractual Debt';
+
+  @override
+  String get remainingFutureInstallmentsSummaryLabel =>
+      'Remaining Future Installments';
+
+  @override
+  String get futureContractualTotalSummaryLabel => 'Future Contractual Total';
+
+  @override
+  String get originalLoanTermFieldLabel => 'Original Loan Term';
+
+  @override
+  String get originalLoanTermHelperText =>
+      'The total number of installments in the original loan contract.';
+
+  @override
+  String get paidBeforeUmojaLabel => 'Paid before Umoja';
 
   @override
   String get cashbookFilterLoanDisbursements => 'Loan Disbursements';

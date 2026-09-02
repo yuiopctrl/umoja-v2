@@ -220,6 +220,8 @@ FinancialPosition fakeFinancialPosition({
   double fundedLoanPrincipalReceivable = 0,
   double scheduledUnearnedInterest = 0,
   double recognizedLoanInterestIncome = 0,
+  double loanPenaltiesOutstanding = 0,
+  double recognizedLoanPenaltyIncome = 0,
 }) {
   return FinancialPosition(
     asOf: asOf ?? DateTime.utc(2026, 1, 1),
@@ -247,6 +249,8 @@ FinancialPosition fakeFinancialPosition({
     fundedLoanPrincipalReceivable: fundedLoanPrincipalReceivable,
     scheduledUnearnedInterest: scheduledUnearnedInterest,
     recognizedLoanInterestIncome: recognizedLoanInterestIncome,
+    loanPenaltiesOutstanding: loanPenaltiesOutstanding,
+    recognizedLoanPenaltyIncome: recognizedLoanPenaltyIncome,
   );
 }
 

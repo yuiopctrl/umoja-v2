@@ -4,7 +4,11 @@ import 'package:umoja/features/loans/data/loan_repository.dart';
 import 'package:umoja/features/loans/domain/loan_account.dart';
 import 'package:umoja/features/loans/domain/loan_account_event.dart';
 import 'package:umoja/features/loans/domain/loan_disbursement.dart';
+import 'package:umoja/features/loans/domain/loan_historical_arrears_installment.dart';
 import 'package:umoja/features/loans/domain/loan_installment.dart';
+import 'package:umoja/features/loans/domain/loan_migration_preview.dart';
+import 'package:umoja/features/loans/domain/loan_opening_position.dart';
+import 'package:umoja/features/loans/domain/loan_penalty_charge.dart';
 import 'package:umoja/features/loans/domain/loan_product.dart';
 import 'package:umoja/features/loans/domain/loan_schedule_preview.dart';
 
@@ -66,6 +70,13 @@ LoanProduct fakeLoanProduct({
   String interestRateBasis = 'ANNUAL',
   String interestMethod = 'FLAT',
   String repaymentFrequency = 'MONTHLY',
+  bool penaltyEnabled = false,
+  String? penaltyType,
+  String? penaltyFrequency,
+  int? penaltyGraceDays,
+  double? penaltyFixedAmount,
+  double? penaltyRate,
+  String? penaltyBasis,
 }) {
   return LoanProduct(
     id: id,
@@ -83,6 +94,13 @@ LoanProduct fakeLoanProduct({
     interestRateBasis: interestRateBasis,
     interestMethod: interestMethod,
     repaymentFrequency: repaymentFrequency,
+    penaltyEnabled: penaltyEnabled,
+    penaltyType: penaltyType,
+    penaltyFrequency: penaltyFrequency,
+    penaltyGraceDays: penaltyGraceDays,
+    penaltyFixedAmount: penaltyFixedAmount,
+    penaltyRate: penaltyRate,
+    penaltyBasis: penaltyBasis,
     createdAt: DateTime.utc(2026, 1, 1),
     updatedAt: DateTime.utc(2026, 1, 1),
   );
@@ -98,6 +116,8 @@ LoanInstallment fakeLoanInstallment({
   double? principalOutstanding,
   double interestPaid = 0,
   double? interestOutstanding,
+  double penaltyPaid = 0,
+  double penaltyOutstanding = 0,
   double? totalOutstanding,
   String? status,
 }) {
@@ -112,9 +132,13 @@ LoanInstallment fakeLoanInstallment({
         principalOutstanding ?? (principalDue - principalPaid),
     interestPaid: interestPaid,
     interestOutstanding: interestOutstanding ?? (interestDue - interestPaid),
+    penaltyPaid: penaltyPaid,
+    penaltyOutstanding: penaltyOutstanding,
     totalOutstanding:
         totalOutstanding ??
-        (principalDue - principalPaid) + (interestDue - interestPaid),
+        (principalDue - principalPaid) +
+            (interestDue - interestPaid) +
+            penaltyOutstanding,
     status: status ?? 'UPCOMING',
   );
 }
@@ -157,6 +181,8 @@ LoanAccount fakeLoanAccount({
   String loanProductName = 'Standard Loan',
   String loanProductCode = 'STD',
   String loanNumber = 'STD-LN-2026-0001',
+  String loanOrigin = 'NEW',
+  LoanOpeningPosition? openingPosition,
   double principalAmount = 120000,
   double interestRate = 12,
   String interestRateBasis = 'ANNUAL',
@@ -175,9 +201,18 @@ LoanAccount fakeLoanAccount({
   double? principalOutstanding,
   double interestRecognized = 0,
   double? interestOutstanding,
+  double penaltyPaid = 0,
+  double? penaltyOutstanding,
   double? totalOutstanding,
   DateTime? nextDueDate,
   double overdueAmount = 0,
+  bool penaltyEnabled = false,
+  String? penaltyType,
+  String? penaltyFrequency,
+  int? penaltyGraceDays,
+  double? penaltyFixedAmount,
+  double? penaltyRate,
+  String? penaltyBasis,
 }) {
   return LoanAccount(
     id: id,
@@ -189,6 +224,8 @@ LoanAccount fakeLoanAccount({
     loanProductName: loanProductName,
     loanProductCode: loanProductCode,
     loanNumber: loanNumber,
+    loanOrigin: loanOrigin,
+    openingPosition: openingPosition,
     principalAmount: principalAmount,
     interestRate: interestRate,
     interestRateBasis: interestRateBasis,
@@ -210,9 +247,55 @@ LoanAccount fakeLoanAccount({
         principalOutstanding ?? (principalAmount - principalRepaid),
     interestRecognized: interestRecognized,
     interestOutstanding: interestOutstanding,
+    penaltyPaid: penaltyPaid,
+    penaltyOutstanding: penaltyOutstanding,
     totalOutstanding: totalOutstanding,
     nextDueDate: nextDueDate,
     overdueAmount: overdueAmount,
+    penaltyEnabled: penaltyEnabled,
+    penaltyType: penaltyType,
+    penaltyFrequency: penaltyFrequency,
+    penaltyGraceDays: penaltyGraceDays,
+    penaltyFixedAmount: penaltyFixedAmount,
+    penaltyRate: penaltyRate,
+    penaltyBasis: penaltyBasis,
+  );
+}
+
+LoanOpeningPosition fakeLoanOpeningPosition({
+  DateTime? openingAsOfDate,
+  DateTime? originalDisbursementDate,
+  String? originalLoanNumber,
+  double originalPrincipal = 10000000,
+  double openingPrincipalOutstanding = 4000000,
+  double openingPrincipalArrears = 400000,
+  double openingInterestArrears = 80000,
+  double openingPenaltyArrears = 20000,
+  double futureScheduledPrincipal = 3600000,
+  double futureScheduledInterest = 600000,
+  DateTime? arrearsDueDate,
+  int remainingInstallmentCount = 4,
+  DateTime? nextDueDate,
+  String? notes,
+  DateTime? createdAt,
+}) {
+  return LoanOpeningPosition(
+    openingAsOfDate: openingAsOfDate ?? DateTime.utc(2026, 8, 31),
+    originalDisbursementDate:
+        originalDisbursementDate ?? DateTime.utc(2025, 11, 10),
+    originalLoanNumber: originalLoanNumber,
+    originalPrincipal: originalPrincipal,
+    openingPrincipalOutstanding: openingPrincipalOutstanding,
+    openingPrincipalArrears: openingPrincipalArrears,
+    openingInterestArrears: openingInterestArrears,
+    openingPenaltyArrears: openingPenaltyArrears,
+    futureScheduledPrincipal: futureScheduledPrincipal,
+    futureScheduledInterest: futureScheduledInterest,
+    arrearsDueDate: arrearsDueDate ?? DateTime.utc(2026, 8, 1),
+    remainingInstallmentCount: remainingInstallmentCount,
+    nextDueDate: nextDueDate ?? DateTime.utc(2026, 9, 1),
+    notes: notes,
+    createdAt: createdAt ?? DateTime.utc(2026, 8, 31),
   );
 }
 
@@ -238,10 +321,28 @@ class FakeLoanRepository implements LoanRepository {
   final List<({String groupId, bool? isActive, int limit, int offset})>
   listLoanProductsCalls = [];
   final List<({String groupId, String productId})> getLoanProductCalls = [];
-  final List<({String groupId, String code, String name})>
+  final List<({String groupId, String code, String name, bool penaltyEnabled})>
   createLoanProductCalls = [];
-  final List<({String groupId, String productId, bool? isActive})>
+  final List<
+    ({String groupId, String productId, bool? isActive, bool? penaltyEnabled})
+  >
   updateLoanProductCalls = [];
+  LoanPenaltyAssessmentResult nextAssessmentResult =
+      LoanPenaltyAssessmentResult(
+        assessmentDate: DateTime.utc(2026, 1, 1),
+        eligibleInstallmentCount: 0,
+        assessedCount: 0,
+        skippedCount: 0,
+        failedCount: 0,
+        totalPenaltyAmount: 0,
+      );
+  List<LoanPenaltyCharge> nextPenaltyCharges = const [];
+  final List<({String groupId, DateTime assessmentDate, String? loanAccountId})>
+  assessLoanPenaltiesCalls = [];
+  final List<
+    ({String groupId, String loanAccountId, String? loanInstallmentId})
+  >
+  listLoanPenaltyChargesCalls = [];
   final List<
     ({
       String groupId,
@@ -354,8 +455,19 @@ class FakeLoanRepository implements LoanRepository {
     required String interestMethod,
     double? maximumPrincipal,
     String? description,
+    bool penaltyEnabled = false,
+    String? penaltyType,
+    String? penaltyFrequency,
+    int? penaltyGraceDays,
+    double? penaltyFixedAmount,
+    double? penaltyRate,
   }) async {
-    createLoanProductCalls.add((groupId: groupId, code: code, name: name));
+    createLoanProductCalls.add((
+      groupId: groupId,
+      code: code,
+      name: name,
+      penaltyEnabled: penaltyEnabled,
+    ));
     _maybeThrow();
     nextProductsPage = LoanProductPage(
       items: [...nextProductsPage.items, nextProduct],
@@ -380,11 +492,18 @@ class FakeLoanRepository implements LoanRepository {
     String? interestRateBasis,
     String? interestMethod,
     bool? isActive,
+    bool? penaltyEnabled,
+    String? penaltyType,
+    String? penaltyFrequency,
+    int? penaltyGraceDays,
+    double? penaltyFixedAmount,
+    double? penaltyRate,
   }) async {
     updateLoanProductCalls.add((
       groupId: groupId,
       productId: productId,
       isActive: isActive,
+      penaltyEnabled: penaltyEnabled,
     ));
     _maybeThrow();
     return nextProduct;
@@ -593,4 +712,212 @@ class FakeLoanRepository implements LoanRepository {
     _maybeThrow();
     return nextAccount;
   }
+
+  @override
+  Future<LoanPenaltyAssessmentResult> assessLoanPenalties({
+    required String groupId,
+    required DateTime assessmentDate,
+    String? loanAccountId,
+  }) async {
+    assessLoanPenaltiesCalls.add((
+      groupId: groupId,
+      assessmentDate: assessmentDate,
+      loanAccountId: loanAccountId,
+    ));
+    _maybeThrow();
+    return nextAssessmentResult;
+  }
+
+  @override
+  Future<List<LoanPenaltyCharge>> listLoanPenaltyCharges({
+    required String groupId,
+    required String loanAccountId,
+    String? loanInstallmentId,
+  }) async {
+    listLoanPenaltyChargesCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      loanInstallmentId: loanInstallmentId,
+    ));
+    _maybeThrow();
+    return nextPenaltyCharges;
+  }
+
+  final List<
+    ({
+      String groupId,
+      String membershipId,
+      String loanProductId,
+      double originalPrincipal,
+      double openingPrincipalOutstanding,
+      List<LoanHistoricalArrearsInstallmentInput> historicalArrearsInstallments,
+      String? idempotencyKey,
+      String mode,
+      double? contractedInterestAmount,
+      double? monthlyInstallmentAmount,
+      int? historicalUnpaidCount,
+      double? totalHistoricalArrears,
+      int? originalTerm,
+    })
+  >
+  createMigratedLoanCalls = [];
+
+  @override
+  Future<LoanAccount> createMigratedLoan({
+    required String groupId,
+    required String membershipId,
+    required String loanProductId,
+    required double originalPrincipal,
+    required DateTime originalDisbursementDate,
+    required DateTime openingAsOfDate,
+    required double openingPrincipalOutstanding,
+    List<LoanHistoricalArrearsInstallmentInput> historicalArrearsInstallments =
+        const [],
+    required double futureScheduledInterest,
+    required int remainingInstallmentCount,
+    DateTime? nextDueDate,
+    String? originalLoanNumber,
+    String? notes,
+    String? idempotencyKey,
+    String mode = 'DETAILED',
+    double? contractedInterestAmount,
+    double? monthlyInstallmentAmount,
+    int? historicalUnpaidCount,
+    double? totalHistoricalArrears,
+    int? originalTerm,
+  }) async {
+    createMigratedLoanCalls.add((
+      groupId: groupId,
+      membershipId: membershipId,
+      loanProductId: loanProductId,
+      originalPrincipal: originalPrincipal,
+      openingPrincipalOutstanding: openingPrincipalOutstanding,
+      historicalArrearsInstallments: historicalArrearsInstallments,
+      idempotencyKey: idempotencyKey,
+      mode: mode,
+      contractedInterestAmount: contractedInterestAmount,
+      monthlyInstallmentAmount: monthlyInstallmentAmount,
+      historicalUnpaidCount: historicalUnpaidCount,
+      totalHistoricalArrears: totalHistoricalArrears,
+      originalTerm: originalTerm,
+    ));
+    _maybeThrow();
+    return nextAccount;
+  }
+
+  LoanMigrationPreview? nextMigrationPreview;
+
+  final List<
+    ({
+      String groupId,
+      String membershipId,
+      String loanProductId,
+      double originalPrincipal,
+      String mode,
+    })
+  >
+  previewMigratedLoanCalls = [];
+
+  @override
+  Future<LoanMigrationPreview> previewMigratedLoan({
+    required String groupId,
+    required String membershipId,
+    required String loanProductId,
+    required double originalPrincipal,
+    required DateTime openingAsOfDate,
+    double? openingPrincipalOutstanding,
+    List<LoanHistoricalArrearsInstallmentInput> historicalArrearsInstallments =
+        const [],
+    double futureScheduledInterest = 0,
+    int remainingInstallmentCount = 0,
+    DateTime? nextDueDate,
+    String mode = 'DETAILED',
+    double? contractedInterestAmount,
+    double? monthlyInstallmentAmount,
+    int? historicalUnpaidCount,
+    double? totalHistoricalArrears,
+    int? originalTerm,
+  }) async {
+    previewMigratedLoanCalls.add((
+      groupId: groupId,
+      membershipId: membershipId,
+      loanProductId: loanProductId,
+      originalPrincipal: originalPrincipal,
+      mode: mode,
+    ));
+    _maybeThrow();
+    return nextMigrationPreview ?? fakeLoanMigrationPreview();
+  }
+}
+
+LoanMigrationPreview fakeLoanMigrationPreview({
+  String mode = 'SIMPLE',
+  int? paidBeforeUmojaCount,
+  List<LoanMigrationPreviewInstallment> historicalInstallments = const [],
+  List<LoanMigrationPreviewInstallment> futureInstallments = const [],
+  double? contractualHistoricalArrears,
+  double? legacyPenaltyTotal,
+  double historicalPrincipalTotal = 0,
+  double historicalInterestTotal = 0,
+  double historicalPenaltyTotal = 0,
+  double totalHistoricalArrears = 0,
+  double openingPrincipalOutstanding = 0,
+  double futureScheduledPrincipal = 0,
+  double futureScheduledInterest = 0,
+  double futureContractualTotal = 0,
+}) {
+  return LoanMigrationPreview(
+    mode: mode,
+    paidBeforeUmojaCount: paidBeforeUmojaCount,
+    historicalInstallments: historicalInstallments,
+    futureInstallments: futureInstallments,
+    contractualHistoricalArrears: contractualHistoricalArrears,
+    legacyPenaltyTotal: legacyPenaltyTotal,
+    historicalPrincipalTotal: historicalPrincipalTotal,
+    historicalInterestTotal: historicalInterestTotal,
+    historicalPenaltyTotal: historicalPenaltyTotal,
+    totalHistoricalArrears: totalHistoricalArrears,
+    openingPrincipalOutstanding: openingPrincipalOutstanding,
+    futureScheduledPrincipal: futureScheduledPrincipal,
+    futureScheduledInterest: futureScheduledInterest,
+    futureContractualTotal: futureContractualTotal,
+  );
+}
+
+LoanPenaltyCharge fakeLoanPenaltyCharge({
+  String id = 'charge-1',
+  String loanAccountId = 'loan-1',
+  String loanInstallmentId = 'installment-1',
+  int installmentNumber = 1,
+  DateTime? assessmentDate,
+  int sequenceNumber = 1,
+  String origin = 'ASSESSED',
+  String? penaltyType = 'FIXED',
+  String? penaltyFrequency = 'ONCE',
+  double? basisAmount = 100000,
+  double? rate,
+  double? fixedAmount = 20000,
+  double penaltyAmount = 20000,
+  double paidAmount = 0,
+  double outstandingAmount = 20000,
+  DateTime? createdAt,
+}) {
+  return LoanPenaltyCharge(
+    id: id,
+    loanAccountId: loanAccountId,
+    loanInstallmentId: loanInstallmentId,
+    installmentNumber: installmentNumber,
+    assessmentDate: assessmentDate ?? DateTime.utc(2026, 9, 1),
+    sequenceNumber: sequenceNumber,
+    origin: origin,
+    penaltyType: penaltyType,
+    penaltyFrequency: penaltyFrequency,
+    basisAmount: basisAmount,
+    rate: rate,
+    fixedAmount: fixedAmount,
+    penaltyAmount: penaltyAmount,
+    paidAmount: paidAmount,
+    outstandingAmount: outstandingAmount,
+    createdAt: createdAt ?? DateTime.utc(2026, 9, 1),
+  );
 }

@@ -247,6 +247,18 @@ class _PositionBody extends StatelessWidget {
                 label: l10n.financialPositionRecognizedLoanInterestIncomeLabel,
                 value: formatAmount(position.recognizedLoanInterestIncome),
               ),
+              _ClassificationRow(
+                key: const Key('financialPositionLoanPenaltiesOutstandingRow'),
+                label: l10n.financialPositionLoanPenaltiesOutstandingLabel,
+                value: formatAmount(position.loanPenaltiesOutstanding),
+              ),
+              _ClassificationRow(
+                key: const Key(
+                  'financialPositionRecognizedLoanPenaltyIncomeRow',
+                ),
+                label: l10n.financialPositionRecognizedLoanPenaltyIncomeLabel,
+                value: formatAmount(position.recognizedLoanPenaltyIncome),
+              ),
             ],
           ),
         ),

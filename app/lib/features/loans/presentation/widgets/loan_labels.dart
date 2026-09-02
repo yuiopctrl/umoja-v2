@@ -79,15 +79,67 @@ UmojaStatusSemantic loanAccountStatusSemantic(String status) {
 }
 
 /// Centralized mapping from a `loan_installments` component type
-/// (INTEREST/PRINCIPAL, Prompt 09C) to its localized display label —
-/// shared by the loan schedule and every payment allocation/receipt
-/// line that targets a loan.
+/// (INTEREST/PRINCIPAL/PENALTY, Prompt 09C/09D) to its localized
+/// display label — shared by the loan schedule and every payment
+/// allocation/receipt line that targets a loan.
 String loanComponentTypeLabel(AppLocalizations l10n, String componentType) {
   return switch (componentType) {
     'INTEREST' || 'LOAN_INTEREST' => l10n.loanComponentInterest,
     'PRINCIPAL' || 'LOAN_PRINCIPAL' => l10n.loanComponentPrincipal,
+    'PENALTY' || 'LOAN_PENALTY' => l10n.loanComponentPenalty,
     _ => componentType,
   };
+}
+
+/// Centralized mapping from `loan_products`/`loan_accounts`
+/// `penalty_type` to its localized label (Prompt 09D).
+String loanPenaltyTypeLabel(AppLocalizations l10n, String penaltyType) {
+  return switch (penaltyType) {
+    'FIXED' => l10n.loanPenaltyTypeFixed,
+    'PERCENTAGE' => l10n.loanPenaltyTypePercentage,
+    _ => penaltyType,
+  };
+}
+
+const loanPenaltyTypeOptions = ['FIXED', 'PERCENTAGE'];
+
+/// Centralized mapping from `penalty_frequency` to its localized label
+/// (Prompt 09D).
+String loanPenaltyFrequencyLabel(AppLocalizations l10n, String frequency) {
+  return switch (frequency) {
+    'ONCE' => l10n.loanPenaltyFrequencyOnce,
+    'RECURRING_MONTHLY' => l10n.loanPenaltyFrequencyRecurringMonthly,
+    _ => frequency,
+  };
+}
+
+const loanPenaltyFrequencyOptions = ['ONCE', 'RECURRING_MONTHLY'];
+
+/// A human-readable policy description, e.g. "5% of the outstanding
+/// installment balance after 5 grace days, assessed once." (section 38
+/// worked examples) — never rendered when penalty is disabled.
+String loanPenaltyPolicyDescription(
+  AppLocalizations l10n, {
+  required String penaltyType,
+  required String penaltyFrequency,
+  required int graceDays,
+  double? fixedAmount,
+  double? rate,
+}) {
+  final isRecurring = penaltyFrequency == 'RECURRING_MONTHLY';
+  if (penaltyType == 'FIXED') {
+    final amount = (fixedAmount ?? 0).toStringAsFixed(0);
+    return isRecurring
+        ? l10n.loanPenaltyPolicyDescriptionFixedRecurring(amount, graceDays)
+        : l10n.loanPenaltyPolicyDescriptionFixedOnce(amount, graceDays);
+  }
+  final rateText = (rate ?? 0).toStringAsFixed(1);
+  return isRecurring
+      ? l10n.loanPenaltyPolicyDescriptionPercentageRecurring(
+          rateText,
+          graceDays,
+        )
+      : l10n.loanPenaltyPolicyDescriptionPercentageOnce(rateText, graceDays);
 }
 
 /// Centralized mapping from an installment's derived `status` (Prompt

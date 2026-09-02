@@ -18,6 +18,13 @@ class LoanProduct {
     required this.interestRateBasis,
     required this.interestMethod,
     required this.repaymentFrequency,
+    required this.penaltyEnabled,
+    this.penaltyType,
+    this.penaltyFrequency,
+    this.penaltyGraceDays,
+    this.penaltyFixedAmount,
+    this.penaltyRate,
+    this.penaltyBasis,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -39,6 +46,13 @@ class LoanProduct {
       interestRateBasis: json['interest_rate_basis'] as String,
       interestMethod: json['interest_method'] as String,
       repaymentFrequency: json['repayment_frequency'] as String,
+      penaltyEnabled: json['penalty_enabled'] as bool? ?? false,
+      penaltyType: json['penalty_type'] as String?,
+      penaltyFrequency: json['penalty_frequency'] as String?,
+      penaltyGraceDays: json['penalty_grace_days'] as int?,
+      penaltyFixedAmount: (json['penalty_fixed_amount'] as num?)?.toDouble(),
+      penaltyRate: (json['penalty_rate'] as num?)?.toDouble(),
+      penaltyBasis: json['penalty_basis'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -67,6 +81,21 @@ class LoanProduct {
 
   /// 'MONTHLY'.
   final String repaymentFrequency;
+
+  final bool penaltyEnabled;
+
+  /// 'FIXED' or 'PERCENTAGE'.
+  final String? penaltyType;
+
+  /// 'ONCE' or 'RECURRING_MONTHLY'.
+  final String? penaltyFrequency;
+  final int? penaltyGraceDays;
+  final double? penaltyFixedAmount;
+  final double? penaltyRate;
+
+  /// 'OUTSTANDING_INSTALLMENT' (the only supported basis in this phase).
+  final String? penaltyBasis;
+
   final DateTime createdAt;
   final DateTime updatedAt;
 }

@@ -4262,6 +4262,114 @@ abstract class AppLocalizations {
   /// **'Riba Inayopungua'**
   String get loanInterestMethodReducingBalance;
 
+  /// No description provided for @sectionLoanProductPenalty.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sera ya Adhabu'**
+  String get sectionLoanProductPenalty;
+
+  /// No description provided for @loanProductPenaltyEnabledFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wezesha Adhabu'**
+  String get loanProductPenaltyEnabledFieldLabel;
+
+  /// No description provided for @loanProductPenaltyTypeFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina ya Adhabu'**
+  String get loanProductPenaltyTypeFieldLabel;
+
+  /// No description provided for @loanProductPenaltyFrequencyFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marudio ya Adhabu'**
+  String get loanProductPenaltyFrequencyFieldLabel;
+
+  /// No description provided for @loanProductPenaltyGraceDaysFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Siku za Msamaha'**
+  String get loanProductPenaltyGraceDaysFieldLabel;
+
+  /// No description provided for @loanProductPenaltyFixedAmountFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Maalum cha Adhabu'**
+  String get loanProductPenaltyFixedAmountFieldLabel;
+
+  /// No description provided for @loanProductPenaltyRateFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiwango cha Adhabu (%)'**
+  String get loanProductPenaltyRateFieldLabel;
+
+  /// No description provided for @loanPenaltyTypeFixed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Maalum'**
+  String get loanPenaltyTypeFixed;
+
+  /// No description provided for @loanPenaltyTypePercentage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Asilimia'**
+  String get loanPenaltyTypePercentage;
+
+  /// No description provided for @loanPenaltyFrequencyOnce.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mara Moja'**
+  String get loanPenaltyFrequencyOnce;
+
+  /// No description provided for @loanPenaltyFrequencyRecurringMonthly.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kila Mwezi'**
+  String get loanPenaltyFrequencyRecurringMonthly;
+
+  /// No description provided for @loanPenaltyPolicyDescriptionFixedOnce.
+  ///
+  /// In sw, this message translates to:
+  /// **'TSh {amount} baada ya siku {graceDays} za msamaha, hukadiriwa mara moja.'**
+  String loanPenaltyPolicyDescriptionFixedOnce(String amount, int graceDays);
+
+  /// No description provided for @loanPenaltyPolicyDescriptionFixedRecurring.
+  ///
+  /// In sw, this message translates to:
+  /// **'TSh {amount} baada ya siku {graceDays} za msamaha, hukadiriwa kila mwezi ikiwa bado imechelewa.'**
+  String loanPenaltyPolicyDescriptionFixedRecurring(
+    String amount,
+    int graceDays,
+  );
+
+  /// No description provided for @loanPenaltyPolicyDescriptionPercentageOnce.
+  ///
+  /// In sw, this message translates to:
+  /// **'Asilimia {rate} ya salio la awamu lililobaki baada ya siku {graceDays} za msamaha, hukadiriwa mara moja.'**
+  String loanPenaltyPolicyDescriptionPercentageOnce(String rate, int graceDays);
+
+  /// No description provided for @loanPenaltyPolicyDescriptionPercentageRecurring.
+  ///
+  /// In sw, this message translates to:
+  /// **'Asilimia {rate} ya salio la awamu lililobaki baada ya siku {graceDays} za msamaha, hukadiriwa kila mwezi ikiwa bado imechelewa.'**
+  String loanPenaltyPolicyDescriptionPercentageRecurring(
+    String rate,
+    int graceDays,
+  );
+
+  /// No description provided for @loanPenaltyPolicyDisabledLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna sera ya adhabu'**
+  String get loanPenaltyPolicyDisabledLabel;
+
+  /// No description provided for @loanPenaltySnapshotTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Masharti ya Adhabu'**
+  String get loanPenaltySnapshotTitle;
+
   /// No description provided for @loanStatusDraft.
   ///
   /// In sw, this message translates to:
@@ -4775,6 +4883,78 @@ abstract class AppLocalizations {
   /// **'Akaunti ya fedha iliyochaguliwa haina salio la kutosha kwa mgawanyo huu.'**
   String get loanErrorInsufficientBalance;
 
+  /// No description provided for @loanErrorPenaltyConfigInvalid.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kamilisha aina ya adhabu, marudio, na siku za msamaha.'**
+  String get loanErrorPenaltyConfigInvalid;
+
+  /// No description provided for @loanErrorPenaltyFixedAmountRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi maalum cha adhabu kinahitajika kwa aina ya adhabu ya Kiasi Maalum.'**
+  String get loanErrorPenaltyFixedAmountRequired;
+
+  /// No description provided for @loanErrorPenaltyRateRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiwango cha adhabu kinahitajika kwa aina ya adhabu ya Asilimia.'**
+  String get loanErrorPenaltyRateRequired;
+
+  /// No description provided for @loanErrorOpeningOriginalPrincipalInvalid.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji wa awali lazima uwe zaidi ya sifuri.'**
+  String get loanErrorOpeningOriginalPrincipalInvalid;
+
+  /// No description provided for @loanErrorOpeningPrincipalArrearsExceedsOutstanding.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni la mtaji lililopita haliwezi kuzidi mtaji uliobaki mwanzoni.'**
+  String get loanErrorOpeningPrincipalArrearsExceedsOutstanding;
+
+  /// No description provided for @loanErrorOpeningArrearsDueDateInvalid.
+  ///
+  /// In sw, this message translates to:
+  /// **'Weka tarehe sahihi ya malipo ya deni, isiyozidi tarehe ya salio la awali.'**
+  String get loanErrorOpeningArrearsDueDateInvalid;
+
+  /// No description provided for @loanErrorOpeningArrearsInstallmentInvalid.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kila awamu yenye deni la nyuma inahitaji tarehe ya kulipa na kiasi kimoja angalau kikubwa kuliko sifuri.'**
+  String get loanErrorOpeningArrearsInstallmentInvalid;
+
+  /// No description provided for @loanErrorOpeningArrearsDuplicateDueDate.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu mbili za deni la nyuma haziwezi kuwa na tarehe moja ya kulipa.'**
+  String get loanErrorOpeningArrearsDuplicateDueDate;
+
+  /// No description provided for @loanErrorOpeningSimpleArrearsBelowContractual.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya deni la nyuma ulilolisajili ni ndogo kuliko kiasi cha mkataba kwa awamu hizi zisizolipwa. Angalia namba, au tumia Ingiza kwa Maelezo kama historia ya mkopo huu ni ngumu zaidi.'**
+  String get loanErrorOpeningSimpleArrearsBelowContractual;
+
+  /// No description provided for @loanErrorOpeningSimpleInputInvalid.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia masharti ya awali ya mkopo — riba ya mkataba, kiasi cha awamu, idadi ya awamu zisizolipwa, na jumla ya deni lazima viwe sahihi.'**
+  String get loanErrorOpeningSimpleInputInvalid;
+
+  /// No description provided for @loanErrorOpeningRemainingScheduleInvalid.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ratiba iliyobaki haiendani — angalia idadi ya awamu na tarehe inayofuata.'**
+  String get loanErrorOpeningRemainingScheduleInvalid;
+
+  /// No description provided for @loanErrorOpeningNoOutstandingPosition.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna salio la mkopo linalodaiwa la kuhamishwa.'**
+  String get loanErrorOpeningNoOutstandingPosition;
+
   /// No description provided for @loanAllocationDueDateLabel.
   ///
   /// In sw, this message translates to:
@@ -4792,6 +4972,12 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Mtaji'**
   String get loanComponentPrincipal;
+
+  /// No description provided for @loanComponentPenalty.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu ya Mkopo'**
+  String get loanComponentPenalty;
 
   /// No description provided for @loanInstallmentStatusUpcoming.
   ///
@@ -4865,6 +5051,18 @@ abstract class AppLocalizations {
   /// **'Kiasi Kilichochelewa'**
   String get loanSummaryOverdueAmountLabel;
 
+  /// No description provided for @loanSummaryPenaltyPaidLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu Iliyolipwa'**
+  String get loanSummaryPenaltyPaidLabel;
+
+  /// No description provided for @loanSummaryPenaltyOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu Iliyobaki'**
+  String get loanSummaryPenaltyOutstandingLabel;
+
   /// No description provided for @financialPositionFundedLoanPrincipalLabel.
   ///
   /// In sw, this message translates to:
@@ -4882,6 +5080,564 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Mapato ya Riba ya Mikopo Yaliyopatikana'**
   String get financialPositionRecognizedLoanInterestIncomeLabel;
+
+  /// No description provided for @financialPositionLoanPenaltiesOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu za Mikopo Zinazodaiwa'**
+  String get financialPositionLoanPenaltiesOutstandingLabel;
+
+  /// No description provided for @financialPositionRecognizedLoanPenaltyIncomeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mapato ya Adhabu ya Mikopo Yaliyopatikana'**
+  String get financialPositionRecognizedLoanPenaltyIncomeLabel;
+
+  /// No description provided for @loanPenaltiesEntryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu'**
+  String get loanPenaltiesEntryTitle;
+
+  /// No description provided for @loanPenaltiesEntrySubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu zilizochelewa, historia ya adhabu, na ukadiriaji'**
+  String get loanPenaltiesEntrySubtitle;
+
+  /// No description provided for @loanPenaltiesScreenTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu za Mikopo'**
+  String get loanPenaltiesScreenTitle;
+
+  /// No description provided for @loanPenaltyAssessActionLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kadiria Adhabu'**
+  String get loanPenaltyAssessActionLabel;
+
+  /// No description provided for @loanPenaltyAssessmentDateFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Ukadiriaji'**
+  String get loanPenaltyAssessmentDateFieldLabel;
+
+  /// No description provided for @loanPenaltyAssessmentResultAssessedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Zilizokadiriwa'**
+  String get loanPenaltyAssessmentResultAssessedLabel;
+
+  /// No description provided for @loanPenaltyAssessmentResultSkippedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Zilizorukwa'**
+  String get loanPenaltyAssessmentResultSkippedLabel;
+
+  /// No description provided for @loanPenaltyAssessmentResultTotalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Kiasi'**
+  String get loanPenaltyAssessmentResultTotalLabel;
+
+  /// No description provided for @loanPenaltyAssessmentResultEligibleLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu Zinazostahili'**
+  String get loanPenaltyAssessmentResultEligibleLabel;
+
+  /// No description provided for @loanPenaltyHistoryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Historia ya Adhabu'**
+  String get loanPenaltyHistoryTitle;
+
+  /// No description provided for @loanPenaltyHistoryEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna adhabu zilizokadiriwa kwa mkopo huu.'**
+  String get loanPenaltyHistoryEmptyMessage;
+
+  /// No description provided for @loanPenaltiesOutstandingTotalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Adhabu Zinazodaiwa'**
+  String get loanPenaltiesOutstandingTotalLabel;
+
+  /// No description provided for @loanPenaltyOccurrenceLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tukio {number}'**
+  String loanPenaltyOccurrenceLabel(int number);
+
+  /// No description provided for @loanPenaltyOriginOpeningLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio la Awali'**
+  String get loanPenaltyOriginOpeningLabel;
+
+  /// No description provided for @loanPenaltyOriginAssessedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ilikadiriwa'**
+  String get loanPenaltyOriginAssessedLabel;
+
+  /// No description provided for @addExistingLoanAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ingiza Mkopo Uliopo'**
+  String get addExistingLoanAction;
+
+  /// No description provided for @existingLoanEntrySubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ingiza mkopo uliokwisha kutolewa kabla ya Umoja'**
+  String get existingLoanEntrySubtitle;
+
+  /// No description provided for @migratedLoanFormTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ingiza Mkopo Uliopo'**
+  String get migratedLoanFormTitle;
+
+  /// No description provided for @sectionMigratedLoanDetails.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo ya Mkopo Uliopo'**
+  String get sectionMigratedLoanDetails;
+
+  /// No description provided for @sectionMigratedLoanOpeningPosition.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio la Awali'**
+  String get sectionMigratedLoanOpeningPosition;
+
+  /// No description provided for @sectionMigratedLoanArrears.
+  ///
+  /// In sw, this message translates to:
+  /// **'Madeni Yaliyopita'**
+  String get sectionMigratedLoanArrears;
+
+  /// No description provided for @sectionMigratedLoanRemainingSchedule.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ratiba Iliyobaki'**
+  String get sectionMigratedLoanRemainingSchedule;
+
+  /// No description provided for @sectionMigratedLoanReview.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kagua'**
+  String get sectionMigratedLoanReview;
+
+  /// No description provided for @originalLoanNumberFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Namba ya Awali ya Mkopo (hiari)'**
+  String get originalLoanNumberFieldLabel;
+
+  /// No description provided for @originalDisbursementDateFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Awali ya Mkopo'**
+  String get originalDisbursementDateFieldLabel;
+
+  /// No description provided for @openingAsOfDateFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Salio la Awali'**
+  String get openingAsOfDateFieldLabel;
+
+  /// No description provided for @originalPrincipalFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji wa Awali'**
+  String get originalPrincipalFieldLabel;
+
+  /// No description provided for @openingPrincipalOutstandingFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji Uliobaki Mwanzoni'**
+  String get openingPrincipalOutstandingFieldLabel;
+
+  /// No description provided for @openingPrincipalArrearsFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni la Mtaji Lililopita'**
+  String get openingPrincipalArrearsFieldLabel;
+
+  /// No description provided for @openingInterestArrearsFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni la Riba Lililopita'**
+  String get openingInterestArrearsFieldLabel;
+
+  /// No description provided for @openingPenaltyArrearsFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni la Adhabu Lililopita'**
+  String get openingPenaltyArrearsFieldLabel;
+
+  /// No description provided for @arrearsDueDateFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Malipo ya Deni'**
+  String get arrearsDueDateFieldLabel;
+
+  /// No description provided for @remainingInstallmentCountFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu Zilizobaki'**
+  String get remainingInstallmentCountFieldLabel;
+
+  /// No description provided for @nextDueDateFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe Inayofuata'**
+  String get nextDueDateFieldLabel;
+
+  /// No description provided for @futureScheduledInterestFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba Itakayokuja'**
+  String get futureScheduledInterestFieldLabel;
+
+  /// No description provided for @migratedLoanNotesFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo (hiari)'**
+  String get migratedLoanNotesFieldLabel;
+
+  /// No description provided for @migratedLoanPostAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Weka Salio la Awali la Mkopo'**
+  String get migratedLoanPostAction;
+
+  /// No description provided for @loanOriginLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Chanzo cha Mkopo'**
+  String get loanOriginLabel;
+
+  /// No description provided for @loanOriginMigratedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Umehamishwa / Salio la Awali'**
+  String get loanOriginMigratedLabel;
+
+  /// No description provided for @loanOriginNewLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mpya'**
+  String get loanOriginNewLabel;
+
+  /// No description provided for @accountingImpactTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Athari za Kihasibu'**
+  String get accountingImpactTitle;
+
+  /// No description provided for @financialAccountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Akaunti ya Fedha'**
+  String get financialAccountLabel;
+
+  /// No description provided for @financialAccountNoneLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna'**
+  String get financialAccountNoneLabel;
+
+  /// No description provided for @cashbookImpactLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Athari kwa Kitabu cha Fedha'**
+  String get cashbookImpactLabel;
+
+  /// No description provided for @incomeRecognizedNowLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mapato Yaliyotambuliwa Sasa'**
+  String get incomeRecognizedNowLabel;
+
+  /// No description provided for @expenseRecognizedNowLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Matumizi Yaliyotambuliwa Sasa'**
+  String get expenseRecognizedNowLabel;
+
+  /// No description provided for @fundedPrincipalReceivableChangeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo Mkuu Uliotolewa Unaodaiwa'**
+  String get fundedPrincipalReceivableChangeLabel;
+
+  /// No description provided for @futureScheduledPrincipalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji Utakaokuja'**
+  String get futureScheduledPrincipalLabel;
+
+  /// No description provided for @migratedBadgeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Umehamishwa / Salio la Awali'**
+  String get migratedBadgeLabel;
+
+  /// No description provided for @originalDisbursementDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Awali ya Mkopo'**
+  String get originalDisbursementDateLabel;
+
+  /// No description provided for @openingAsOfDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Salio la Awali'**
+  String get openingAsOfDateLabel;
+
+  /// No description provided for @originalPrincipalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji wa Awali'**
+  String get originalPrincipalLabel;
+
+  /// No description provided for @sectionMigratedLoanHistoricalArrears.
+  ///
+  /// In sw, this message translates to:
+  /// **'Madeni ya Awamu Zilizopita'**
+  String get sectionMigratedLoanHistoricalArrears;
+
+  /// No description provided for @addArrearsInstallmentAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'+ Ongeza Awamu Yenye Deni'**
+  String get addArrearsInstallmentAction;
+
+  /// No description provided for @arrearsRowPrincipalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji Uliobaki'**
+  String get arrearsRowPrincipalLabel;
+
+  /// No description provided for @arrearsRowInterestLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba Iliyobaki'**
+  String get arrearsRowInterestLabel;
+
+  /// No description provided for @arrearsRowPenaltyLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu ya Awali'**
+  String get arrearsRowPenaltyLabel;
+
+  /// No description provided for @arrearsRowTotalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla'**
+  String get arrearsRowTotalLabel;
+
+  /// No description provided for @totalHistoricalArrearsLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Madeni Yaliyopita'**
+  String get totalHistoricalArrearsLabel;
+
+  /// No description provided for @historicalArrearsEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna madeni ya awamu zilizopita yaliyoongezwa — mkopo huu una ratiba ya baadaye tu.'**
+  String get historicalArrearsEmptyMessage;
+
+  /// No description provided for @removeAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ondoa'**
+  String get removeAction;
+
+  /// No description provided for @saveAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hifadhi'**
+  String get saveAction;
+
+  /// No description provided for @cancelAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ghairi'**
+  String get cancelAction;
+
+  /// No description provided for @simpleImportModeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ingiza kwa Urahisi'**
+  String get simpleImportModeLabel;
+
+  /// No description provided for @detailedImportModeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ingiza kwa Maelezo'**
+  String get detailedImportModeLabel;
+
+  /// No description provided for @simpleImportModeDescription.
+  ///
+  /// In sw, this message translates to:
+  /// **'Weka masharti ya awali ya mkopo na jumla ya deni lililobaki. Umoja itajenga upya ratiba ya mkataba na kutenganisha adhabu zilizoletwa kutoka nyuma.'**
+  String get simpleImportModeDescription;
+
+  /// No description provided for @contractedInterestFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba ya Mkataba'**
+  String get contractedInterestFieldLabel;
+
+  /// No description provided for @monthlyInstallmentAmountFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu ya Mkataba kwa Mwezi'**
+  String get monthlyInstallmentAmountFieldLabel;
+
+  /// No description provided for @historicalUnpaidCountFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu Ambazo Hazijalipwa'**
+  String get historicalUnpaidCountFieldLabel;
+
+  /// No description provided for @totalHistoricalArrearsFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Deni la Nyuma'**
+  String get totalHistoricalArrearsFieldLabel;
+
+  /// No description provided for @contractualArrearsLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni la Marejesho'**
+  String get contractualArrearsLabel;
+
+  /// No description provided for @openingLegacyPenaltyLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu ya Deni la Nyuma'**
+  String get openingLegacyPenaltyLabel;
+
+  /// No description provided for @sectionSchedulePreview.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakiki Ratiba ya Marejesho'**
+  String get sectionSchedulePreview;
+
+  /// No description provided for @historicalOverdueInstallmentsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu za Nyuma Zilizochelewa'**
+  String get historicalOverdueInstallmentsTitle;
+
+  /// No description provided for @futureRemainingInstallmentsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu Zijazo Zilizobaki'**
+  String get futureRemainingInstallmentsTitle;
+
+  /// No description provided for @previewScheduleAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakiki Ratiba'**
+  String get previewScheduleAction;
+
+  /// No description provided for @editScheduleInputsAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rudi / Hariri'**
+  String get editScheduleInputsAction;
+
+  /// No description provided for @continueToReviewAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Endelea Kuhakiki'**
+  String get continueToReviewAction;
+
+  /// No description provided for @sectionReviewAndConfirm.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakiki na Thibitisha'**
+  String get sectionReviewAndConfirm;
+
+  /// No description provided for @confirmAndAddExistingLoanAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha na Ingiza Mkopo'**
+  String get confirmAndAddExistingLoanAction;
+
+  /// No description provided for @migratedLoanConfirmationSafetyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo huu ulikuwepo kabla ya Umoja. Kuuingiza kunasajili salio la awali tu. Hakuna fedha zinazohama wala mapato yanayotambuliwa.'**
+  String get migratedLoanConfirmationSafetyMessage;
+
+  /// No description provided for @originalPrincipalSummaryLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji wa Awali'**
+  String get originalPrincipalSummaryLabel;
+
+  /// No description provided for @contractedInterestSummaryLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba ya Mkataba'**
+  String get contractedInterestSummaryLabel;
+
+  /// No description provided for @contractualTotalSummaryLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Mkataba'**
+  String get contractualTotalSummaryLabel;
+
+  /// No description provided for @historicalUnpaidInstallmentsSummaryLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu za Nyuma Zisizolipwa'**
+  String get historicalUnpaidInstallmentsSummaryLabel;
+
+  /// No description provided for @historicalContractualDebtSummaryLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni la Mkataba la Nyuma'**
+  String get historicalContractualDebtSummaryLabel;
+
+  /// No description provided for @remainingFutureInstallmentsSummaryLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu Zijazo Zilizobaki'**
+  String get remainingFutureInstallmentsSummaryLabel;
+
+  /// No description provided for @futureContractualTotalSummaryLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Mkataba Ijayo'**
+  String get futureContractualTotalSummaryLabel;
+
+  /// No description provided for @originalLoanTermFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Awamu za Mkopo'**
+  String get originalLoanTermFieldLabel;
+
+  /// No description provided for @originalLoanTermHelperText.
+  ///
+  /// In sw, this message translates to:
+  /// **'Idadi ya jumla ya awamu katika mkataba wa awali wa mkopo.'**
+  String get originalLoanTermHelperText;
+
+  /// No description provided for @paidBeforeUmojaLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Zilizolipwa Kabla ya Umoja'**
+  String get paidBeforeUmojaLabel;
 
   /// No description provided for @cashbookFilterLoanDisbursements.
   ///

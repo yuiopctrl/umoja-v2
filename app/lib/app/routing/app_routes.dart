@@ -324,6 +324,15 @@ class AppRoutes {
   static const loanAccountsList = '/loans/accounts';
   static const newLoanAccount = '/loans/accounts/new';
 
+  /// Ingiza Mkopo Uliopo (Prompt 09D-UAT-BLOCKER-01) — Existing/Opening
+  /// Loan onboarding, a deliberately SEPARATE workflow from
+  /// [newLoanAccount] (never a backdate checkbox bolted onto it).
+  static const newExistingLoanAccount = '/loans/accounts/existing';
+
+  /// Adhabu za Mikopo (Prompt 09D) — eligible/overdue installments,
+  /// recent assessments, and (permission-gated) Run Assessment.
+  static const loanPenalties = '/loans/penalties';
+
   /// Path template; use [loanAccountDetailPath] for a concrete URL.
   static const loanAccountDetail = '/loans/accounts/:loanAccountId';
   static String loanAccountDetailPath(String loanAccountId) =>

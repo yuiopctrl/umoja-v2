@@ -50,6 +50,8 @@ class FinancialPosition {
     this.fundedLoanPrincipalReceivable = 0,
     this.scheduledUnearnedInterest = 0,
     this.recognizedLoanInterestIncome = 0,
+    this.loanPenaltiesOutstanding = 0,
+    this.recognizedLoanPenaltyIncome = 0,
   });
 
   factory FinancialPosition.fromJson(Map<String, dynamic> json) {
@@ -84,6 +86,10 @@ class FinancialPosition {
           (json['scheduled_unearned_interest'] as num?)?.toDouble() ?? 0,
       recognizedLoanInterestIncome:
           (json['recognized_loan_interest_income'] as num?)?.toDouble() ?? 0,
+      loanPenaltiesOutstanding:
+          (json['loan_penalties_outstanding'] as num?)?.toDouble() ?? 0,
+      recognizedLoanPenaltyIncome:
+          (json['recognized_loan_penalty_income'] as num?)?.toDouble() ?? 0,
     );
   }
 
@@ -149,4 +155,16 @@ class FinancialPosition {
   /// derived from [scheduledUnearnedInterest] — the two are computed
   /// independently server-side and must never double-count.
   final double recognizedLoanInterestIncome;
+
+  /// Balance AS OF [asOf] (Prompt 09D) — every assessed loan penalty
+  /// charge across the group's funded loans, minus every active
+  /// LOAN_PENALTY allocation to date. An unpaid penalty is never
+  /// classified as physical funds or as funded principal receivable.
+  final double loanPenaltiesOutstanding;
+
+  /// Movement DURING the period (Prompt 09D) — penalty income
+  /// recognized only when an active allocation actually settles
+  /// LOAN_PENALTY, never merely because a penalty was assessed;
+  /// already included inside [groupIncome], never double-counted.
+  final double recognizedLoanPenaltyIncome;
 }

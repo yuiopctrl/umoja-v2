@@ -2287,6 +2287,75 @@ class AppLocalizationsSw extends AppLocalizations {
   String get loanInterestMethodReducingBalance => 'Riba Inayopungua';
 
   @override
+  String get sectionLoanProductPenalty => 'Sera ya Adhabu';
+
+  @override
+  String get loanProductPenaltyEnabledFieldLabel => 'Wezesha Adhabu';
+
+  @override
+  String get loanProductPenaltyTypeFieldLabel => 'Aina ya Adhabu';
+
+  @override
+  String get loanProductPenaltyFrequencyFieldLabel => 'Marudio ya Adhabu';
+
+  @override
+  String get loanProductPenaltyGraceDaysFieldLabel => 'Siku za Msamaha';
+
+  @override
+  String get loanProductPenaltyFixedAmountFieldLabel =>
+      'Kiasi Maalum cha Adhabu';
+
+  @override
+  String get loanProductPenaltyRateFieldLabel => 'Kiwango cha Adhabu (%)';
+
+  @override
+  String get loanPenaltyTypeFixed => 'Kiasi Maalum';
+
+  @override
+  String get loanPenaltyTypePercentage => 'Asilimia';
+
+  @override
+  String get loanPenaltyFrequencyOnce => 'Mara Moja';
+
+  @override
+  String get loanPenaltyFrequencyRecurringMonthly => 'Kila Mwezi';
+
+  @override
+  String loanPenaltyPolicyDescriptionFixedOnce(String amount, int graceDays) {
+    return 'TSh $amount baada ya siku $graceDays za msamaha, hukadiriwa mara moja.';
+  }
+
+  @override
+  String loanPenaltyPolicyDescriptionFixedRecurring(
+    String amount,
+    int graceDays,
+  ) {
+    return 'TSh $amount baada ya siku $graceDays za msamaha, hukadiriwa kila mwezi ikiwa bado imechelewa.';
+  }
+
+  @override
+  String loanPenaltyPolicyDescriptionPercentageOnce(
+    String rate,
+    int graceDays,
+  ) {
+    return 'Asilimia $rate ya salio la awamu lililobaki baada ya siku $graceDays za msamaha, hukadiriwa mara moja.';
+  }
+
+  @override
+  String loanPenaltyPolicyDescriptionPercentageRecurring(
+    String rate,
+    int graceDays,
+  ) {
+    return 'Asilimia $rate ya salio la awamu lililobaki baada ya siku $graceDays za msamaha, hukadiriwa kila mwezi ikiwa bado imechelewa.';
+  }
+
+  @override
+  String get loanPenaltyPolicyDisabledLabel => 'Hakuna sera ya adhabu';
+
+  @override
+  String get loanPenaltySnapshotTitle => 'Masharti ya Adhabu';
+
+  @override
   String get loanStatusDraft => 'Rasimu';
 
   @override
@@ -2581,6 +2650,54 @@ class AppLocalizationsSw extends AppLocalizations {
       'Akaunti ya fedha iliyochaguliwa haina salio la kutosha kwa mgawanyo huu.';
 
   @override
+  String get loanErrorPenaltyConfigInvalid =>
+      'Kamilisha aina ya adhabu, marudio, na siku za msamaha.';
+
+  @override
+  String get loanErrorPenaltyFixedAmountRequired =>
+      'Kiasi maalum cha adhabu kinahitajika kwa aina ya adhabu ya Kiasi Maalum.';
+
+  @override
+  String get loanErrorPenaltyRateRequired =>
+      'Kiwango cha adhabu kinahitajika kwa aina ya adhabu ya Asilimia.';
+
+  @override
+  String get loanErrorOpeningOriginalPrincipalInvalid =>
+      'Mtaji wa awali lazima uwe zaidi ya sifuri.';
+
+  @override
+  String get loanErrorOpeningPrincipalArrearsExceedsOutstanding =>
+      'Deni la mtaji lililopita haliwezi kuzidi mtaji uliobaki mwanzoni.';
+
+  @override
+  String get loanErrorOpeningArrearsDueDateInvalid =>
+      'Weka tarehe sahihi ya malipo ya deni, isiyozidi tarehe ya salio la awali.';
+
+  @override
+  String get loanErrorOpeningArrearsInstallmentInvalid =>
+      'Kila awamu yenye deni la nyuma inahitaji tarehe ya kulipa na kiasi kimoja angalau kikubwa kuliko sifuri.';
+
+  @override
+  String get loanErrorOpeningArrearsDuplicateDueDate =>
+      'Awamu mbili za deni la nyuma haziwezi kuwa na tarehe moja ya kulipa.';
+
+  @override
+  String get loanErrorOpeningSimpleArrearsBelowContractual =>
+      'Jumla ya deni la nyuma ulilolisajili ni ndogo kuliko kiasi cha mkataba kwa awamu hizi zisizolipwa. Angalia namba, au tumia Ingiza kwa Maelezo kama historia ya mkopo huu ni ngumu zaidi.';
+
+  @override
+  String get loanErrorOpeningSimpleInputInvalid =>
+      'Angalia masharti ya awali ya mkopo — riba ya mkataba, kiasi cha awamu, idadi ya awamu zisizolipwa, na jumla ya deni lazima viwe sahihi.';
+
+  @override
+  String get loanErrorOpeningRemainingScheduleInvalid =>
+      'Ratiba iliyobaki haiendani — angalia idadi ya awamu na tarehe inayofuata.';
+
+  @override
+  String get loanErrorOpeningNoOutstandingPosition =>
+      'Hakuna salio la mkopo linalodaiwa la kuhamishwa.';
+
+  @override
   String get loanAllocationDueDateLabel => 'Tarehe ya Kulipa';
 
   @override
@@ -2588,6 +2705,9 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get loanComponentPrincipal => 'Mtaji';
+
+  @override
+  String get loanComponentPenalty => 'Adhabu ya Mkopo';
 
   @override
   String get loanInstallmentStatusUpcoming => 'Inakuja';
@@ -2626,6 +2746,12 @@ class AppLocalizationsSw extends AppLocalizations {
   String get loanSummaryOverdueAmountLabel => 'Kiasi Kilichochelewa';
 
   @override
+  String get loanSummaryPenaltyPaidLabel => 'Adhabu Iliyolipwa';
+
+  @override
+  String get loanSummaryPenaltyOutstandingLabel => 'Adhabu Iliyobaki';
+
+  @override
   String get financialPositionFundedLoanPrincipalLabel =>
       'Mkopo Mkuu Uliotolewa Unaodaiwa';
 
@@ -2636,6 +2762,303 @@ class AppLocalizationsSw extends AppLocalizations {
   @override
   String get financialPositionRecognizedLoanInterestIncomeLabel =>
       'Mapato ya Riba ya Mikopo Yaliyopatikana';
+
+  @override
+  String get financialPositionLoanPenaltiesOutstandingLabel =>
+      'Adhabu za Mikopo Zinazodaiwa';
+
+  @override
+  String get financialPositionRecognizedLoanPenaltyIncomeLabel =>
+      'Mapato ya Adhabu ya Mikopo Yaliyopatikana';
+
+  @override
+  String get loanPenaltiesEntryTitle => 'Adhabu';
+
+  @override
+  String get loanPenaltiesEntrySubtitle =>
+      'Awamu zilizochelewa, historia ya adhabu, na ukadiriaji';
+
+  @override
+  String get loanPenaltiesScreenTitle => 'Adhabu za Mikopo';
+
+  @override
+  String get loanPenaltyAssessActionLabel => 'Kadiria Adhabu';
+
+  @override
+  String get loanPenaltyAssessmentDateFieldLabel => 'Tarehe ya Ukadiriaji';
+
+  @override
+  String get loanPenaltyAssessmentResultAssessedLabel => 'Zilizokadiriwa';
+
+  @override
+  String get loanPenaltyAssessmentResultSkippedLabel => 'Zilizorukwa';
+
+  @override
+  String get loanPenaltyAssessmentResultTotalLabel => 'Jumla ya Kiasi';
+
+  @override
+  String get loanPenaltyAssessmentResultEligibleLabel => 'Awamu Zinazostahili';
+
+  @override
+  String get loanPenaltyHistoryTitle => 'Historia ya Adhabu';
+
+  @override
+  String get loanPenaltyHistoryEmptyMessage =>
+      'Hakuna adhabu zilizokadiriwa kwa mkopo huu.';
+
+  @override
+  String get loanPenaltiesOutstandingTotalLabel =>
+      'Jumla ya Adhabu Zinazodaiwa';
+
+  @override
+  String loanPenaltyOccurrenceLabel(int number) {
+    return 'Tukio $number';
+  }
+
+  @override
+  String get loanPenaltyOriginOpeningLabel => 'Salio la Awali';
+
+  @override
+  String get loanPenaltyOriginAssessedLabel => 'Ilikadiriwa';
+
+  @override
+  String get addExistingLoanAction => 'Ingiza Mkopo Uliopo';
+
+  @override
+  String get existingLoanEntrySubtitle =>
+      'Ingiza mkopo uliokwisha kutolewa kabla ya Umoja';
+
+  @override
+  String get migratedLoanFormTitle => 'Ingiza Mkopo Uliopo';
+
+  @override
+  String get sectionMigratedLoanDetails => 'Maelezo ya Mkopo Uliopo';
+
+  @override
+  String get sectionMigratedLoanOpeningPosition => 'Salio la Awali';
+
+  @override
+  String get sectionMigratedLoanArrears => 'Madeni Yaliyopita';
+
+  @override
+  String get sectionMigratedLoanRemainingSchedule => 'Ratiba Iliyobaki';
+
+  @override
+  String get sectionMigratedLoanReview => 'Kagua';
+
+  @override
+  String get originalLoanNumberFieldLabel => 'Namba ya Awali ya Mkopo (hiari)';
+
+  @override
+  String get originalDisbursementDateFieldLabel => 'Tarehe ya Awali ya Mkopo';
+
+  @override
+  String get openingAsOfDateFieldLabel => 'Tarehe ya Salio la Awali';
+
+  @override
+  String get originalPrincipalFieldLabel => 'Mtaji wa Awali';
+
+  @override
+  String get openingPrincipalOutstandingFieldLabel => 'Mtaji Uliobaki Mwanzoni';
+
+  @override
+  String get openingPrincipalArrearsFieldLabel => 'Deni la Mtaji Lililopita';
+
+  @override
+  String get openingInterestArrearsFieldLabel => 'Deni la Riba Lililopita';
+
+  @override
+  String get openingPenaltyArrearsFieldLabel => 'Deni la Adhabu Lililopita';
+
+  @override
+  String get arrearsDueDateFieldLabel => 'Tarehe ya Malipo ya Deni';
+
+  @override
+  String get remainingInstallmentCountFieldLabel => 'Awamu Zilizobaki';
+
+  @override
+  String get nextDueDateFieldLabel => 'Tarehe Inayofuata';
+
+  @override
+  String get futureScheduledInterestFieldLabel => 'Riba Itakayokuja';
+
+  @override
+  String get migratedLoanNotesFieldLabel => 'Maelezo (hiari)';
+
+  @override
+  String get migratedLoanPostAction => 'Weka Salio la Awali la Mkopo';
+
+  @override
+  String get loanOriginLabel => 'Chanzo cha Mkopo';
+
+  @override
+  String get loanOriginMigratedLabel => 'Umehamishwa / Salio la Awali';
+
+  @override
+  String get loanOriginNewLabel => 'Mpya';
+
+  @override
+  String get accountingImpactTitle => 'Athari za Kihasibu';
+
+  @override
+  String get financialAccountLabel => 'Akaunti ya Fedha';
+
+  @override
+  String get financialAccountNoneLabel => 'Hakuna';
+
+  @override
+  String get cashbookImpactLabel => 'Athari kwa Kitabu cha Fedha';
+
+  @override
+  String get incomeRecognizedNowLabel => 'Mapato Yaliyotambuliwa Sasa';
+
+  @override
+  String get expenseRecognizedNowLabel => 'Matumizi Yaliyotambuliwa Sasa';
+
+  @override
+  String get fundedPrincipalReceivableChangeLabel =>
+      'Mkopo Mkuu Uliotolewa Unaodaiwa';
+
+  @override
+  String get futureScheduledPrincipalLabel => 'Mtaji Utakaokuja';
+
+  @override
+  String get migratedBadgeLabel => 'Umehamishwa / Salio la Awali';
+
+  @override
+  String get originalDisbursementDateLabel => 'Tarehe ya Awali ya Mkopo';
+
+  @override
+  String get openingAsOfDateLabel => 'Tarehe ya Salio la Awali';
+
+  @override
+  String get originalPrincipalLabel => 'Mtaji wa Awali';
+
+  @override
+  String get sectionMigratedLoanHistoricalArrears =>
+      'Madeni ya Awamu Zilizopita';
+
+  @override
+  String get addArrearsInstallmentAction => '+ Ongeza Awamu Yenye Deni';
+
+  @override
+  String get arrearsRowPrincipalLabel => 'Mtaji Uliobaki';
+
+  @override
+  String get arrearsRowInterestLabel => 'Riba Iliyobaki';
+
+  @override
+  String get arrearsRowPenaltyLabel => 'Adhabu ya Awali';
+
+  @override
+  String get arrearsRowTotalLabel => 'Jumla';
+
+  @override
+  String get totalHistoricalArrearsLabel => 'Jumla ya Madeni Yaliyopita';
+
+  @override
+  String get historicalArrearsEmptyMessage =>
+      'Hakuna madeni ya awamu zilizopita yaliyoongezwa — mkopo huu una ratiba ya baadaye tu.';
+
+  @override
+  String get removeAction => 'Ondoa';
+
+  @override
+  String get saveAction => 'Hifadhi';
+
+  @override
+  String get cancelAction => 'Ghairi';
+
+  @override
+  String get simpleImportModeLabel => 'Ingiza kwa Urahisi';
+
+  @override
+  String get detailedImportModeLabel => 'Ingiza kwa Maelezo';
+
+  @override
+  String get simpleImportModeDescription =>
+      'Weka masharti ya awali ya mkopo na jumla ya deni lililobaki. Umoja itajenga upya ratiba ya mkataba na kutenganisha adhabu zilizoletwa kutoka nyuma.';
+
+  @override
+  String get contractedInterestFieldLabel => 'Riba ya Mkataba';
+
+  @override
+  String get monthlyInstallmentAmountFieldLabel => 'Awamu ya Mkataba kwa Mwezi';
+
+  @override
+  String get historicalUnpaidCountFieldLabel => 'Awamu Ambazo Hazijalipwa';
+
+  @override
+  String get totalHistoricalArrearsFieldLabel => 'Jumla ya Deni la Nyuma';
+
+  @override
+  String get contractualArrearsLabel => 'Deni la Marejesho';
+
+  @override
+  String get openingLegacyPenaltyLabel => 'Adhabu ya Deni la Nyuma';
+
+  @override
+  String get sectionSchedulePreview => 'Hakiki Ratiba ya Marejesho';
+
+  @override
+  String get historicalOverdueInstallmentsTitle =>
+      'Awamu za Nyuma Zilizochelewa';
+
+  @override
+  String get futureRemainingInstallmentsTitle => 'Awamu Zijazo Zilizobaki';
+
+  @override
+  String get previewScheduleAction => 'Hakiki Ratiba';
+
+  @override
+  String get editScheduleInputsAction => 'Rudi / Hariri';
+
+  @override
+  String get continueToReviewAction => 'Endelea Kuhakiki';
+
+  @override
+  String get sectionReviewAndConfirm => 'Hakiki na Thibitisha';
+
+  @override
+  String get confirmAndAddExistingLoanAction => 'Thibitisha na Ingiza Mkopo';
+
+  @override
+  String get migratedLoanConfirmationSafetyMessage =>
+      'Mkopo huu ulikuwepo kabla ya Umoja. Kuuingiza kunasajili salio la awali tu. Hakuna fedha zinazohama wala mapato yanayotambuliwa.';
+
+  @override
+  String get originalPrincipalSummaryLabel => 'Mtaji wa Awali';
+
+  @override
+  String get contractedInterestSummaryLabel => 'Riba ya Mkataba';
+
+  @override
+  String get contractualTotalSummaryLabel => 'Jumla ya Mkataba';
+
+  @override
+  String get historicalUnpaidInstallmentsSummaryLabel =>
+      'Awamu za Nyuma Zisizolipwa';
+
+  @override
+  String get historicalContractualDebtSummaryLabel =>
+      'Deni la Mkataba la Nyuma';
+
+  @override
+  String get remainingFutureInstallmentsSummaryLabel =>
+      'Awamu Zijazo Zilizobaki';
+
+  @override
+  String get futureContractualTotalSummaryLabel => 'Jumla ya Mkataba Ijayo';
+
+  @override
+  String get originalLoanTermFieldLabel => 'Jumla ya Awamu za Mkopo';
+
+  @override
+  String get originalLoanTermHelperText =>
+      'Idadi ya jumla ya awamu katika mkataba wa awali wa mkopo.';
+
+  @override
+  String get paidBeforeUmojaLabel => 'Zilizolipwa Kabla ya Umoja';
 
   @override
   String get cashbookFilterLoanDisbursements => 'Utoaji wa Mikopo';

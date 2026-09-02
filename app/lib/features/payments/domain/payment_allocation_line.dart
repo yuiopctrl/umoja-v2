@@ -31,6 +31,7 @@ class PaymentAllocationLine {
     this.loanNumber,
     this.loanProductName,
     this.installmentNumber,
+    this.loanPenaltyChargeId,
   });
 
   /// `rpc_get_payment_detail` shape (charge_id/component_id present for
@@ -52,6 +53,7 @@ class PaymentAllocationLine {
       loanNumber: json['loan_number'] as String?,
       loanProductName: json['loan_product_name'] as String?,
       installmentNumber: json['installment_number'] as int?,
+      loanPenaltyChargeId: json['loan_penalty_charge_id'] as String?,
     );
   }
 
@@ -77,6 +79,7 @@ class PaymentAllocationLine {
       loanNumber: json['loan_number'] as String?,
       loanProductName: json['loan_product_name'] as String?,
       installmentNumber: json['installment_number'] as int?,
+      loanPenaltyChargeId: json['loan_penalty_charge_id'] as String?,
     );
   }
 
@@ -93,6 +96,7 @@ class PaymentAllocationLine {
       loanNumber: json['loan_number'] as String?,
       loanProductName: json['loan_product_name'] as String?,
       installmentNumber: json['installment_number'] as int?,
+      loanPenaltyChargeId: json['loan_penalty_charge_id'] as String?,
     );
   }
 
@@ -155,8 +159,17 @@ class PaymentAllocationLine {
   final String? loanProductName;
   final int? installmentNumber;
 
+  /// Populated only when [obligationKind] is 'LOAN_PENALTY' (Prompt
+  /// 09D) — identifies exactly which penalty assessment (occurrence)
+  /// this line settles, since an installment may carry more than one
+  /// outstanding penalty charge (RECURRING_MONTHLY).
+  final String? loanPenaltyChargeId;
+
   bool get isOpeningBalance => periodPurpose == 'OPENING_BALANCE';
   bool get isLoan =>
-      obligationKind == 'LOAN_INTEREST' || obligationKind == 'LOAN_PRINCIPAL';
+      obligationKind == 'LOAN_INTEREST' ||
+      obligationKind == 'LOAN_PRINCIPAL' ||
+      obligationKind == 'LOAN_PENALTY';
   bool get isLoanInterest => obligationKind == 'LOAN_INTEREST';
+  bool get isLoanPenalty => obligationKind == 'LOAN_PENALTY';
 }

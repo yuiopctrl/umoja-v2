@@ -1,4 +1,7 @@
 import '../domain/loan_account.dart';
+import '../domain/loan_historical_arrears_installment.dart';
+import '../domain/loan_migration_preview.dart';
+import '../domain/loan_penalty_charge.dart';
 import '../domain/loan_product.dart';
 import '../domain/loan_schedule_preview.dart';
 
@@ -34,6 +37,12 @@ abstract class LoanRepository {
     required String interestMethod,
     double? maximumPrincipal,
     String? description,
+    bool penaltyEnabled = false,
+    String? penaltyType,
+    String? penaltyFrequency,
+    int? penaltyGraceDays,
+    double? penaltyFixedAmount,
+    double? penaltyRate,
   });
 
   Future<LoanProduct> updateLoanProduct({
@@ -49,6 +58,12 @@ abstract class LoanRepository {
     String? interestRateBasis,
     String? interestMethod,
     bool? isActive,
+    bool? penaltyEnabled,
+    String? penaltyType,
+    String? penaltyFrequency,
+    int? penaltyGraceDays,
+    double? penaltyFixedAmount,
+    double? penaltyRate,
   });
 
   // -- Loan accounts ------------------------------------------------------
@@ -139,5 +154,79 @@ abstract class LoanRepository {
     String? reference,
     String? notes,
     String? idempotencyKey,
+  });
+
+  // -- Penalties (Prompt 09D) ---------------------------------------------
+
+  /// Server-authoritative penalty assessment. Never computed/posted by
+  /// Flutter — [loanAccountId] optionally scopes the run to one loan;
+  /// omitted, it assesses every eligible loan in the group.
+  Future<LoanPenaltyAssessmentResult> assessLoanPenalties({
+    required String groupId,
+    required DateTime assessmentDate,
+    String? loanAccountId,
+  });
+
+  /// Authoritative penalty history for one loan (optionally one
+  /// installment).
+  Future<List<LoanPenaltyCharge>> listLoanPenaltyCharges({
+    required String groupId,
+    required String loanAccountId,
+    String? loanInstallmentId,
+  });
+
+  // -- Existing/opening loan onboarding (Prompt 09D-UAT-BLOCKER-01) -------
+
+  /// The sole, atomic way to onboard a loan already funded before the
+  /// group started using Umoja. Creates zero cash movement, zero
+  /// income/expense, zero payment/receipt, and zero loan_disbursements
+  /// row — it recognizes an opening funded principal receivable
+  /// directly. Never requires a Financial Account.
+  Future<LoanAccount> createMigratedLoan({
+    required String groupId,
+    required String membershipId,
+    required String loanProductId,
+    required double originalPrincipal,
+    required DateTime originalDisbursementDate,
+    required DateTime openingAsOfDate,
+    required double openingPrincipalOutstanding,
+    List<LoanHistoricalArrearsInstallmentInput> historicalArrearsInstallments =
+        const [],
+    required double futureScheduledInterest,
+    required int remainingInstallmentCount,
+    DateTime? nextDueDate,
+    String? originalLoanNumber,
+    String? notes,
+    String? idempotencyKey,
+    String mode = 'DETAILED',
+    double? contractedInterestAmount,
+    double? monthlyInstallmentAmount,
+    int? historicalUnpaidCount,
+    double? totalHistoricalArrears,
+    int? originalTerm,
+  });
+
+  /// Server-authoritative, non-persisting preview of a migrated-loan
+  /// import (Prompt 09D-UAT-BLOCKER-03) — required before
+  /// [createMigratedLoan] is ever called. Touches zero tables; posting
+  /// always recomputes the same figures independently.
+  Future<LoanMigrationPreview> previewMigratedLoan({
+    required String groupId,
+    required String membershipId,
+    required String loanProductId,
+    required double originalPrincipal,
+    required DateTime openingAsOfDate,
+    double? openingPrincipalOutstanding,
+    List<LoanHistoricalArrearsInstallmentInput> historicalArrearsInstallments =
+        const [],
+    double futureScheduledInterest = 0,
+    int remainingInstallmentCount = 0,
+    DateTime? nextDueDate,
+    String mode = 'DETAILED',
+    double? contractedInterestAmount,
+    double? monthlyInstallmentAmount,
+    int? historicalUnpaidCount,
+    double? totalHistoricalArrears,
+    int? originalTerm,
   });
 }

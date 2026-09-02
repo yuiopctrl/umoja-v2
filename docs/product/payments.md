@@ -99,13 +99,15 @@ that was genuinely missing alongside the already-present
 `AllocationLinesList` (`payments/presentation/widgets/`) is the single
 shared widget every one of these four screens uses to render
 allocation lines — contribution lines render individually as before;
-loan lines for the SAME installment (interest + principal, which the
-server's allocation walk always emits contiguously) are grouped under
-one header naming the loan product, loan number, installment, and due
-date. This is what makes two ACTIVE loans visually distinguishable
-before an allocation is confirmed, and keeps Wallet and Record Payment
-using the exact same presentation rather than one being richer than
-the other.
+loan lines for the SAME installment (penalty (09D) + interest +
+principal, which the server's allocation walk always emits
+contiguously) are grouped under one header naming the loan product,
+loan number, installment, and due date. This is what makes two ACTIVE
+loans visually distinguishable before an allocation is confirmed, and
+keeps Wallet and Record Payment using the exact same presentation
+rather than one being richer than the other. A penalty line renders
+with the localized "Adhabu ya Mkopo" label (`loanComponentTypeLabel`,
+extended 09D) — never a bare `PENALTY`/`LOAN_PENALTY` enum value.
 
 ## Receipts
 
@@ -348,6 +350,84 @@ combines both domains under this same currently-due rule — shown to
 the operator immediately after selecting a member, before any amount
 is entered, so a large payment's actual effect is never a surprise at
 Preview time.
+
+## Loan penalty allocation integration (Prompt 09D)
+
+`LOAN_PENALTY` is a third loan allocation target alongside
+`LOAN_INTEREST`/`LOAN_PRINCIPAL` (same `payment_allocation_target_type`
+enum, same `payment_allocations` table — no second allocation model).
+Within a loan installment, the combined allocation walk's priority is
+now **PENALTY before INTEREST before PRINCIPAL** (penalty is already
+overdue and immediately payable); cross-obligation ordering is
+completely unchanged (oldest due date first across contribution and
+loan together, contribution before loan on an exact tie). An
+installment may carry more than one outstanding penalty charge under
+`RECURRING_MONTHLY`, so the walk attributes a payment to the specific
+charge(s) it settles, oldest assessment date first (FIFO) —
+`payment_allocations.loan_penalty_charge_id` traces every such
+allocation. Wallet-to-penalty settlement follows the exact same
+zero-cashbook-movement rule already established for wallet-to-loan-
+interest. See
+[docs/product/loans.md](loans.md#loan-penalties-prompt-09d) for the
+full penalty policy/assessment/closure model.
+
+## Migrated loan allocation integration (Prompt 09D-UAT-BLOCKER-01)
+
+A migrated loan's opening arrears (principal, interest, penalty) and
+remaining schedule are settled through the EXACT same combined
+allocation walk as any NEW loan — each historical overdue installment is
+just an ordinary `loan_installments` row (dated at its own real
+historical due date — Prompt 09D-UAT-BLOCKER-02 extended this to zero
+or more SEPARATE installments, never one combined row) and each
+opening penalty is just an ordinary `loan_penalty_charges` row, so no
+Payment Engine code needed to change at all, for one arrears row or
+many. Priority is unaffected: PENALTY before INTEREST before
+PRINCIPAL within the arrears installment, oldest due date first across
+obligations, contribution before loan on an exact tie. A single
+external payment may settle opening penalty + opening interest +
+opening principal + a currently-due future installment + a
+09D-assessed penalty together and still create exactly one payment,
+one cashbook INFLOW, and one receipt. Wallet settlement of any migrated
+obligation creates zero cashbook movement, identically to a NEW loan.
+Reversal restores every opening obligation's outstanding balance and
+reverses recognized income exactly once, without ever mutating the
+immutable `loan_opening_positions` row. See
+[docs/product/loans.md](loans.md#existing-loan--opening-loan-onboarding-prompt-09d-uat-blocker-01)
+for the full opening-position model.
+
+### Bug fix: allocation line display order (Prompt 09D-UAT-BLOCKER-01)
+
+Writing this blocker's tests surfaced a genuine, pre-existing ordering
+defect: preview allocation lines were re-sorted by
+`(due_date, loan_installment_id, component_type)`, a tiebreaker added
+in 09C when only INTEREST/PRINCIPAL existed (alphabetical order
+happened to match priority order by coincidence). 09D's PENALTY sorts
+alphabetically BETWEEN INTEREST and PRINCIPAL, silently breaking the
+locked PENALTY -> INTEREST -> PRINCIPAL display order the moment all
+three apply to one installment in the same payment — exactly what this
+blocker's migrated-arrears scenario exercises for the first time. Fixed
+by adding an explicit `payment_allocations.line_number` (populated in
+priority-walk insertion order) and ordering every read RPC
+(preview/detail/receipt) by it directly, never by re-deriving order
+from component type or a same-transaction timestamp.
+
+### Simple Import obligations settle identically (Prompt 09D-UAT-BLOCKER-03)
+
+A Simple-Import-created historical OR future installment is the exact
+same `loan_installments` row shape as a Detailed-Import or NEW loan
+installment — its principal/interest/opening-penalty were merely
+computed by `compute_simple_migrated_loan_reconstruction()` instead of
+being typed in directly. The Payment Engine, wallet allocation, receipt
+rendering, reversal, and the 09D Penalty Engine's per-installment
+independence therefore require zero additional code for Simple Import;
+this is verified directly against the section-B worked scenario
+(20,000,000 principal / 2,000,000 contracted interest / 5 historical
+installments / 324,606 legacy penalty) in
+`72_migrated_loan_simple_import_payment_penalty_regression.test.sql`.
+An installment classified PAID_BEFORE_UMOJA (Prompt 09D-UAT-BLOCKER-04)
+is never created as a row at all — it therefore structurally cannot
+ever become an allocation target, with no additional guard needed in
+the Payment Engine.
 
 ## Explicitly out of scope for this phase
 

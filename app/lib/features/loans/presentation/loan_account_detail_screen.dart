@@ -18,7 +18,9 @@ import '../../auth/providers/selected_group_provider.dart';
 import '../controllers/loan_account_draft_controller.dart';
 import '../controllers/loan_workflow_controller.dart';
 import '../domain/loan_account.dart';
+import '../domain/loan_installment.dart';
 import '../providers/loan_account_detail_provider.dart';
+import '../providers/loan_penalty_charges_provider.dart';
 import 'widgets/loan_labels.dart';
 
 /// `/loans/accounts/:loanAccountId`: a single loan account, its
@@ -185,6 +187,14 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                       ],
                     ),
                     Text(loan.loanNumber),
+                    if (loan.isMigrated) ...[
+                      const SizedBox(height: UmojaSpacing.xs),
+                      UmojaStatusBadge(
+                        key: const Key('loanMigratedBadge'),
+                        label: l10n.migratedBadgeLabel,
+                        semantic: UmojaStatusSemantic.info,
+                      ),
+                    ],
                     const SizedBox(height: UmojaSpacing.md),
                     _DetailRow(
                       label: l10n.loanProductsTitle,
@@ -212,6 +222,162 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: UmojaSpacing.lg),
+              // Frozen penalty snapshot (Prompt 09D, section 39) — the
+              // loan's OWN terms, never the current (possibly since-
+              // edited) loan product policy.
+              UmojaCard(
+                key: const Key('loanPenaltySnapshotCard'),
+                padding: const EdgeInsets.all(UmojaSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.loanPenaltySnapshotTitle,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: UmojaSpacing.xs),
+                    if (loan.penaltyEnabled)
+                      Text(
+                        loanPenaltyPolicyDescription(
+                          l10n,
+                          penaltyType: loan.penaltyType!,
+                          penaltyFrequency: loan.penaltyFrequency!,
+                          graceDays: loan.penaltyGraceDays ?? 0,
+                          fixedAmount: loan.penaltyFixedAmount,
+                          rate: loan.penaltyRate,
+                        ),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      )
+                    else
+                      Text(
+                        l10n.loanPenaltyPolicyDisabledLabel,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                  ],
+                ),
+              ),
+              if (loan.isMigrated && loan.openingPosition != null) ...[
+                const SizedBox(height: UmojaSpacing.lg),
+                UmojaCard(
+                  key: const Key('loanOpeningPositionCard'),
+                  padding: const EdgeInsets.all(UmojaSpacing.lg),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.sectionMigratedLoanOpeningPosition,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: UmojaSpacing.xs),
+                      _DetailRow(
+                        label: l10n.originalDisbursementDateLabel,
+                        value: formatKiswahiliDate(
+                          loan.openingPosition!.originalDisbursementDate,
+                        ),
+                      ),
+                      _DetailRow(
+                        label: l10n.openingAsOfDateLabel,
+                        value: formatKiswahiliDate(
+                          loan.openingPosition!.openingAsOfDate,
+                        ),
+                      ),
+                      _DetailRow(
+                        label: l10n.originalPrincipalLabel,
+                        value: formatAmount(
+                          loan.openingPosition!.originalPrincipal,
+                        ),
+                      ),
+                      _DetailRow(
+                        label: l10n.openingPrincipalOutstandingFieldLabel,
+                        value: formatAmount(
+                          loan.openingPosition!.openingPrincipalOutstanding,
+                        ),
+                      ),
+                      _DetailRow(
+                        label: l10n.openingPrincipalArrearsFieldLabel,
+                        value: formatAmount(
+                          loan.openingPosition!.openingPrincipalArrears,
+                        ),
+                      ),
+                      _DetailRow(
+                        label: l10n.openingInterestArrearsFieldLabel,
+                        value: formatAmount(
+                          loan.openingPosition!.openingInterestArrears,
+                        ),
+                      ),
+                      _DetailRow(
+                        label: l10n.openingPenaltyArrearsFieldLabel,
+                        value: formatAmount(
+                          loan.openingPosition!.openingPenaltyArrears,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (_historicalArrearsInstallments(loan).isNotEmpty) ...[
+                  const SizedBox(height: UmojaSpacing.lg),
+                  UmojaCard(
+                    key: const Key('loanHistoricalArrearsCard'),
+                    padding: const EdgeInsets.all(UmojaSpacing.lg),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.sectionMigratedLoanHistoricalArrears,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        const SizedBox(height: UmojaSpacing.xs),
+                        for (final (i, installment)
+                            in _historicalArrearsInstallments(loan).indexed)
+                          Padding(
+                            key: Key('loanHistoricalArrearsRow_$i'),
+                            padding: const EdgeInsets.only(
+                              bottom: UmojaSpacing.sm,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  formatKiswahiliDate(installment.dueDate),
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                _DetailRow(
+                                  label: l10n.arrearsRowPrincipalLabel,
+                                  value: formatAmount(
+                                    installment.principalOutstanding ??
+                                        installment.principalDue,
+                                  ),
+                                ),
+                                _DetailRow(
+                                  label: l10n.arrearsRowInterestLabel,
+                                  value: formatAmount(
+                                    installment.interestOutstanding ??
+                                        installment.interestDue,
+                                  ),
+                                ),
+                                if ((installment.penaltyOutstanding ?? 0) > 0)
+                                  _DetailRow(
+                                    label: l10n.arrearsRowPenaltyLabel,
+                                    value: formatAmount(
+                                      installment.penaltyOutstanding!,
+                                    ),
+                                  ),
+                                _DetailRow(
+                                  label: l10n.arrearsRowTotalLabel,
+                                  value: formatAmount(
+                                    installment.totalOutstanding ??
+                                        installment.totalDue,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
               if (loan.isActive || loan.isClosed) ...[
                 const SizedBox(height: UmojaSpacing.xxl),
                 Text(
@@ -241,6 +407,18 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                         label: l10n.loanSummaryInterestOutstandingLabel,
                         value: formatAmount(loan.interestOutstanding ?? 0),
                       ),
+                      if (loan.penaltyOutstanding != null &&
+                          loan.penaltyOutstanding! > 0) ...[
+                        _DetailRow(
+                          label: l10n.loanSummaryPenaltyPaidLabel,
+                          value: formatAmount(loan.penaltyPaid),
+                        ),
+                        _DetailRow(
+                          key: const Key('loanSummaryPenaltyOutstandingRow'),
+                          label: l10n.loanSummaryPenaltyOutstandingLabel,
+                          value: formatAmount(loan.penaltyOutstanding!),
+                        ),
+                      ],
                       _DetailRow(
                         label: l10n.loanSummaryTotalOutstandingLabel,
                         value: formatAmount(loan.totalOutstanding ?? 0),
@@ -291,6 +469,16 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                                         .textTheme
                                         .bodySmall,
                                   ),
+                                  if ((installment.penaltyOutstanding ?? 0) > 0)
+                                    Text(
+                                      '${l10n.loanComponentPenalty}: '
+                                      '${formatAmount(installment.penaltyOutstanding!)}',
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .error,
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
@@ -349,6 +537,83 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                         ),
                     ],
                   ),
+                ),
+              ],
+              if (loan.penaltyEnabled) ...[
+                const SizedBox(height: UmojaSpacing.xxl),
+                Text(
+                  l10n.loanPenaltyHistoryTitle,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: UmojaSpacing.sm),
+                Consumer(
+                  key: const Key('loanPenaltyHistorySection'),
+                  builder: (context, ref, _) {
+                    final chargesAsync = ref.watch(
+                      loanPenaltyChargesProvider(loanAccountId),
+                    );
+                    return chargesAsync.when(
+                      loading: () => const Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: UmojaSpacing.lg,
+                        ),
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                      error: (error, stackTrace) => UmojaErrorState(
+                        message: l10n.refreshFailedMessage,
+                        retryLabel: l10n.retryButton,
+                        onRetry: () => ref.invalidate(
+                          loanPenaltyChargesProvider(loanAccountId),
+                        ),
+                      ),
+                      data: (charges) {
+                        if (charges.isEmpty) {
+                          return Text(l10n.loanPenaltyHistoryEmptyMessage);
+                        }
+                        return UmojaCard(
+                          padding: const EdgeInsets.all(UmojaSpacing.lg),
+                          child: Column(
+                            children: [
+                              for (final charge in charges)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: UmojaSpacing.sm,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              charge.isOpening
+                                                  ? l10n.loanPenaltyOriginOpeningLabel
+                                                  : l10n.loanPenaltyOccurrenceLabel(
+                                                      charge.sequenceNumber,
+                                                    ),
+                                            ),
+                                            Text(
+                                              formatKiswahiliDate(
+                                                charge.assessmentDate,
+                                              ),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(formatAmount(charge.penaltyAmount)),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
               ],
               if (loan.isRejected || loan.isCancelled) ...[
@@ -486,8 +751,21 @@ class LoanAccountDetailScreen extends ConsumerWidget {
   }
 }
 
+/// A migrated loan's historical overdue installments — each preserved
+/// as its own `loan_installments` row with due_date <= the opening
+/// as-of date (Prompt 09D-UAT-BLOCKER-02, section 23). Never one
+/// synthetic combined row, and never shown for a NEW loan (which has no
+/// opening position at all).
+List<LoanInstallment> _historicalArrearsInstallments(LoanAccount loan) {
+  final openingAsOfDate = loan.openingPosition?.openingAsOfDate;
+  if (openingAsOfDate == null) return const [];
+  return loan.installments
+      .where((installment) => !installment.dueDate.isAfter(openingAsOfDate))
+      .toList(growable: false);
+}
+
 class _DetailRow extends StatelessWidget {
-  const _DetailRow({required this.label, required this.value});
+  const _DetailRow({super.key, required this.label, required this.value});
 
   final String label;
   final String value;

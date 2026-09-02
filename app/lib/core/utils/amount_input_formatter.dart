@@ -25,12 +25,24 @@ class ThousandsInputFormatter extends TextInputFormatter {
   ) {
     if (newValue.text.isEmpty) return newValue;
 
-    final digitsBeforeCursor = _digitCount(
-      newValue.text.substring(
-        0,
-        newValue.selection.end.clamp(0, newValue.text.length),
-      ),
-    );
+    // Anchor the cursor to a specific DIGIT-OR-DOT position (never just a
+    // digit count) — counting digits alone cannot distinguish "cursor
+    // right before the decimal point" from "cursor right after it" once
+    // zero digits follow the dot, which used to snap a freshly-typed "."
+    // back to BEFORE itself and corrupt every digit typed after it (the
+    // original decimal-entry bug this replaces).
+    final cursorIndex = newValue.selection.end.clamp(0, newValue.text.length);
+    var contentBeforeCursor = 0;
+    var seenDotBeforeCursor = false;
+    for (var i = 0; i < cursorIndex; i++) {
+      final char = newValue.text[i];
+      if (char == '.' && !seenDotBeforeCursor) {
+        contentBeforeCursor++;
+        seenDotBeforeCursor = true;
+      } else if (_digitPattern.hasMatch(char)) {
+        contentBeforeCursor++;
+      }
+    }
 
     final raw = newValue.text.replaceAll(RegExp(r'[^\d.]'), '');
     final firstDot = raw.indexOf('.');
@@ -52,21 +64,20 @@ class ThousandsInputFormatter extends TextInputFormatter {
     return TextEditingValue(
       text: formatted,
       selection: TextSelection.collapsed(
-        offset: _offsetForDigitCount(formatted, digitsBeforeCursor),
+        offset: _offsetForContentCount(formatted, contentBeforeCursor),
       ),
     );
   }
 
-  static int _digitCount(String text) =>
-      text.replaceAll(RegExp(r'[^\d]'), '').length;
+  static final _digitPattern = RegExp(r'\d');
 
-  static int _offsetForDigitCount(String text, int digitCount) {
-    if (digitCount <= 0) return 0;
+  static int _offsetForContentCount(String text, int contentCount) {
+    if (contentCount <= 0) return 0;
     var seen = 0;
     for (var i = 0; i < text.length; i++) {
-      if (RegExp(r'\d').hasMatch(text[i])) {
+      if (text[i] == '.' || _digitPattern.hasMatch(text[i])) {
         seen++;
-        if (seen == digitCount) return i + 1;
+        if (seen == contentCount) return i + 1;
       }
     }
     return text.length;
