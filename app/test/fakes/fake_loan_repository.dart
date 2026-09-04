@@ -11,6 +11,7 @@ import 'package:umoja/features/loans/domain/loan_opening_position.dart';
 import 'package:umoja/features/loans/domain/loan_penalty_charge.dart';
 import 'package:umoja/features/loans/domain/loan_product.dart';
 import 'package:umoja/features/loans/domain/loan_schedule_preview.dart';
+import 'package:umoja/features/loans/domain/loan_servicing.dart';
 
 LoanAccountEvent fakeLoanAccountEvent({
   String id = 'event-1',
@@ -848,6 +849,251 @@ class FakeLoanRepository implements LoanRepository {
     _maybeThrow();
     return nextMigrationPreview ?? fakeLoanMigrationPreview();
   }
+
+  // -- Loan servicing (Prompt 09E) ----------------------------------------
+
+  LoanEarlySettlementQuote? nextEarlySettlementQuote;
+  final List<({String groupId, String loanAccountId})>
+  previewLoanEarlySettlementCalls = [];
+
+  @override
+  Future<LoanEarlySettlementQuote> previewLoanEarlySettlement({
+    required String groupId,
+    required String loanAccountId,
+    DateTime? effectiveDate,
+  }) async {
+    previewLoanEarlySettlementCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+    ));
+    _maybeThrow();
+    return nextEarlySettlementQuote ?? fakeLoanEarlySettlementQuote();
+  }
+
+  LoanServicingPaymentResult? nextEarlySettlementResult;
+  final List<
+    ({String groupId, String loanAccountId, String financialAccountId})
+  >
+  settleLoanEarlyCalls = [];
+
+  @override
+  Future<LoanServicingPaymentResult> settleLoanEarly({
+    required String groupId,
+    required String loanAccountId,
+    required String financialAccountId,
+    required String paymentMethod,
+    DateTime? effectiveDate,
+    String? externalReference,
+    String? notes,
+    String? idempotencyKey,
+  }) async {
+    settleLoanEarlyCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      financialAccountId: financialAccountId,
+    ));
+    _maybeThrow();
+    return nextEarlySettlementResult ?? fakeLoanServicingPaymentResult();
+  }
+
+  LoanPrepaymentPreview? nextPrepaymentPreview;
+  final List<
+    ({String groupId, String loanAccountId, double amount, String treatment})
+  >
+  previewLoanPrepaymentCalls = [];
+
+  @override
+  Future<LoanPrepaymentPreview> previewLoanPrepayment({
+    required String groupId,
+    required String loanAccountId,
+    required double amount,
+    required String treatment,
+    DateTime? effectiveDate,
+  }) async {
+    previewLoanPrepaymentCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      amount: amount,
+      treatment: treatment,
+    ));
+    _maybeThrow();
+    return nextPrepaymentPreview ??
+        fakeLoanPrepaymentPreview(amount: amount, treatment: treatment);
+  }
+
+  LoanServicingPaymentResult? nextPrepaymentResult;
+  final List<
+    ({String groupId, String loanAccountId, double amount, String treatment})
+  >
+  prepayLoanPrincipalCalls = [];
+
+  @override
+  Future<LoanServicingPaymentResult> prepayLoanPrincipal({
+    required String groupId,
+    required String loanAccountId,
+    required double amount,
+    required String treatment,
+    required String financialAccountId,
+    required String paymentMethod,
+    DateTime? effectiveDate,
+    String? externalReference,
+    String? notes,
+    String? idempotencyKey,
+  }) async {
+    prepayLoanPrincipalCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      amount: amount,
+      treatment: treatment,
+    ));
+    _maybeThrow();
+    return nextPrepaymentResult ?? fakeLoanServicingPaymentResult();
+  }
+
+  LoanRestructurePreview? nextRestructurePreview;
+  final List<({String groupId, String loanAccountId, int newTerm})>
+  previewLoanRestructureCalls = [];
+
+  @override
+  Future<LoanRestructurePreview> previewLoanRestructure({
+    required String groupId,
+    required String loanAccountId,
+    required int newTerm,
+    required DateTime newFirstInstallmentDate,
+    double? newInterestRate,
+    DateTime? effectiveDate,
+  }) async {
+    previewLoanRestructureCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      newTerm: newTerm,
+    ));
+    _maybeThrow();
+    return nextRestructurePreview ??
+        fakeLoanRestructurePreview(
+          newTerm: newTerm,
+          newFirstInstallmentDate: newFirstInstallmentDate,
+        );
+  }
+
+  final List<
+    ({String groupId, String loanAccountId, String reason, int newTerm})
+  >
+  restructureLoanCalls = [];
+
+  @override
+  Future<LoanAccount> restructureLoan({
+    required String groupId,
+    required String loanAccountId,
+    required String reason,
+    required int newTerm,
+    required DateTime newFirstInstallmentDate,
+    double? newInterestRate,
+    DateTime? effectiveDate,
+  }) async {
+    restructureLoanCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      reason: reason,
+      newTerm: newTerm,
+    ));
+    _maybeThrow();
+    return nextAccount;
+  }
+}
+
+LoanEarlySettlementQuote fakeLoanEarlySettlementQuote({
+  DateTime? effectiveDate,
+  double overduePenaltyOutstanding = 0,
+  double overdueInterestOutstanding = 0,
+  double overduePrincipalOutstanding = 0,
+  double currentPayablePenalty = 0,
+  double currentPayableInterest = 0,
+  double currentPayablePrincipal = 0,
+  double futurePrincipalOutstanding = 100000,
+  double futureUnearnedInterest = 12000,
+  double settlementAdjustmentAmount = 0,
+  double totalSettlementAmount = 100000,
+}) {
+  return LoanEarlySettlementQuote(
+    effectiveDate: effectiveDate ?? DateTime.utc(2026, 1, 1),
+    overduePenaltyOutstanding: overduePenaltyOutstanding,
+    overdueInterestOutstanding: overdueInterestOutstanding,
+    overduePrincipalOutstanding: overduePrincipalOutstanding,
+    currentPayablePenalty: currentPayablePenalty,
+    currentPayableInterest: currentPayableInterest,
+    currentPayablePrincipal: currentPayablePrincipal,
+    futurePrincipalOutstanding: futurePrincipalOutstanding,
+    futureUnearnedInterest: futureUnearnedInterest,
+    settlementAdjustmentAmount: settlementAdjustmentAmount,
+    totalSettlementAmount: totalSettlementAmount,
+  );
+}
+
+LoanServicingPaymentResult fakeLoanServicingPaymentResult({
+  String paymentId = 'payment-1',
+  String receiptNumber = 'RCT-0001',
+  double amount = 100000,
+}) {
+  return LoanServicingPaymentResult(
+    paymentId: paymentId,
+    receiptNumber: receiptNumber,
+    amount: amount,
+  );
+}
+
+LoanServicingScheduleRow fakeLoanServicingScheduleRow({
+  int installmentNumber = 1,
+  DateTime? dueDate,
+  double principalDue = 50000,
+  double interestDue = 5000,
+}) {
+  return LoanServicingScheduleRow(
+    installmentNumber: installmentNumber,
+    dueDate: dueDate ?? DateTime.utc(2026, 2, 1),
+    principalDue: principalDue,
+    interestDue: interestDue,
+  );
+}
+
+LoanPrepaymentPreview fakeLoanPrepaymentPreview({
+  double amount = 50000,
+  String treatment = 'REDUCE_TERM',
+  double futurePrincipalOutstandingBefore = 150000,
+  double futurePrincipalOutstandingAfter = 100000,
+  List<LoanServicingScheduleRow>? oldFutureInstallments,
+  List<LoanServicingScheduleRow>? newFutureInstallments,
+}) {
+  return LoanPrepaymentPreview(
+    amount: amount,
+    treatment: treatment,
+    futurePrincipalOutstandingBefore: futurePrincipalOutstandingBefore,
+    futurePrincipalOutstandingAfter: futurePrincipalOutstandingAfter,
+    oldFutureInstallments:
+        oldFutureInstallments ?? [fakeLoanServicingScheduleRow()],
+    newFutureInstallments:
+        newFutureInstallments ?? [fakeLoanServicingScheduleRow()],
+  );
+}
+
+LoanRestructurePreview fakeLoanRestructurePreview({
+  double remainingPrincipalOutstanding = 100000,
+  double newInterestRate = 12,
+  int newTerm = 6,
+  DateTime? newFirstInstallmentDate,
+  List<LoanServicingScheduleRow>? oldRemainingInstallments,
+  List<LoanServicingScheduleRow>? newInstallments,
+}) {
+  return LoanRestructurePreview(
+    remainingPrincipalOutstanding: remainingPrincipalOutstanding,
+    newInterestRate: newInterestRate,
+    newTerm: newTerm,
+    newFirstInstallmentDate:
+        newFirstInstallmentDate ?? DateTime.utc(2026, 2, 1),
+    oldRemainingInstallments:
+        oldRemainingInstallments ?? [fakeLoanServicingScheduleRow()],
+    newInstallments: newInstallments ?? [fakeLoanServicingScheduleRow()],
+  );
 }
 
 LoanMigrationPreview fakeLoanMigrationPreview({

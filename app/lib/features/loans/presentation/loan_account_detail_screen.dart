@@ -147,6 +147,12 @@ class LoanAccountDetailScreen extends ConsumerWidget {
     final canReject = membership?.hasPermission('loan.reject') ?? false;
     final canCancel = membership?.hasPermission('loan.cancel') ?? false;
     final canDisburse = membership?.hasPermission('loan.disburse') ?? false;
+    final canSettleEarly =
+        membership?.hasPermission('loan.settle_early') ?? false;
+    final canPrepayPrincipal =
+        membership?.hasPermission('loan.prepay_principal') ?? false;
+    final canRestructure =
+        membership?.hasPermission('loan.restructure') ?? false;
 
     return UmojaPage(
       title: l10n.loanAccountDetailTitle,
@@ -741,6 +747,37 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                       ),
                     ),
                   ],
+                ],
+                if (loan.isActive) ...[
+                  if (canSettleEarly) ...[
+                    UmojaPrimaryButton(
+                      key: const Key('loanEarlySettlementAction'),
+                      label: l10n.loanEarlySettlementAction,
+                      expand: true,
+                      onPressed: () => context.push(
+                        AppRoutes.loanAccountEarlySettlementPath(loanAccountId),
+                      ),
+                    ),
+                    const SizedBox(height: UmojaSpacing.md),
+                  ],
+                  if (canPrepayPrincipal) ...[
+                    UmojaSecondaryButton(
+                      key: const Key('loanPrepayPrincipalAction'),
+                      label: l10n.loanPrepayPrincipalAction,
+                      onPressed: () => context.push(
+                        AppRoutes.loanAccountPrepayPath(loanAccountId),
+                      ),
+                    ),
+                    const SizedBox(height: UmojaSpacing.md),
+                  ],
+                  if (canRestructure)
+                    UmojaSecondaryButton(
+                      key: const Key('loanRestructureAction'),
+                      label: l10n.loanRestructureAction,
+                      onPressed: () => context.push(
+                        AppRoutes.loanAccountRestructurePath(loanAccountId),
+                      ),
+                    ),
                 ],
               ],
             ],

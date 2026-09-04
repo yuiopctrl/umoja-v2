@@ -4,6 +4,7 @@ import '../domain/loan_migration_preview.dart';
 import '../domain/loan_penalty_charge.dart';
 import '../domain/loan_product.dart';
 import '../domain/loan_schedule_preview.dart';
+import '../domain/loan_servicing.dart';
 
 /// Server-authoritative access to the Loans module (Prompt 09A —
 /// products, draft loan accounts, and repayment schedules only; no
@@ -228,5 +229,83 @@ abstract class LoanRepository {
     int? historicalUnpaidCount,
     double? totalHistoricalArrears,
     int? originalTerm,
+  });
+
+  // -- Loan servicing: Early Settlement, Principal Prepayment,
+  // Restructure (Prompt 09E) ----------------------------------------------
+
+  /// Server-authoritative, non-persisting quote (Prompt 09E section 1).
+  /// [settleLoanEarly] always recomputes the total itself; this quote
+  /// is never submitted back as authoritative input.
+  Future<LoanEarlySettlementQuote> previewLoanEarlySettlement({
+    required String groupId,
+    required String loanAccountId,
+    DateTime? effectiveDate,
+  });
+
+  /// Explicit full early settlement — pays every outstanding penalty,
+  /// every currently-payable interest, and every outstanding principal
+  /// (including not-yet-due), and closes the loan once every component
+  /// reaches zero.
+  Future<LoanServicingPaymentResult> settleLoanEarly({
+    required String groupId,
+    required String loanAccountId,
+    required String financialAccountId,
+    required String paymentMethod,
+    DateTime? effectiveDate,
+    String? externalReference,
+    String? notes,
+    String? idempotencyKey,
+  });
+
+  /// Server-authoritative, non-persisting preview (Prompt 09E section
+  /// 3/4). [prepayLoanPrincipal] always re-validates and recomputes
+  /// independently.
+  Future<LoanPrepaymentPreview> previewLoanPrepayment({
+    required String groupId,
+    required String loanAccountId,
+    required double amount,
+    required String treatment,
+    DateTime? effectiveDate,
+  });
+
+  /// Explicit partial principal prepayment. Blocked while any overdue/
+  /// currently-payable penalty or interest remains outstanding.
+  Future<LoanServicingPaymentResult> prepayLoanPrincipal({
+    required String groupId,
+    required String loanAccountId,
+    required double amount,
+    required String treatment,
+    required String financialAccountId,
+    required String paymentMethod,
+    DateTime? effectiveDate,
+    String? externalReference,
+    String? notes,
+    String? idempotencyKey,
+  });
+
+  /// Server-authoritative, non-persisting preview (Prompt 09E section
+  /// 6). [restructureLoan] always re-validates and recomputes
+  /// independently. Blocked while any overdue balance of any kind
+  /// remains outstanding.
+  Future<LoanRestructurePreview> previewLoanRestructure({
+    required String groupId,
+    required String loanAccountId,
+    required int newTerm,
+    required DateTime newFirstInstallmentDate,
+    double? newInterestRate,
+    DateTime? effectiveDate,
+  });
+
+  /// Explicit, permissioned restructure — changes the future
+  /// contractual schedule only; already-paid history is never touched.
+  Future<LoanAccount> restructureLoan({
+    required String groupId,
+    required String loanAccountId,
+    required String reason,
+    required int newTerm,
+    required DateTime newFirstInstallmentDate,
+    double? newInterestRate,
+    DateTime? effectiveDate,
   });
 }

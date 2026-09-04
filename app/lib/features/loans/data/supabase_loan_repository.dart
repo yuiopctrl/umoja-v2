@@ -7,6 +7,7 @@ import '../domain/loan_migration_preview.dart';
 import '../domain/loan_penalty_charge.dart';
 import '../domain/loan_product.dart';
 import '../domain/loan_schedule_preview.dart';
+import '../domain/loan_servicing.dart';
 import 'loan_failure.dart';
 import 'loan_repository.dart';
 
@@ -575,6 +576,180 @@ class SupabaseLoanRepository implements LoanRepository {
       throw _mapError(error, stackTrace);
     }
   }
+
+  // -- Loan servicing (Prompt 09E) ----------------------------------------
+
+  @override
+  Future<LoanEarlySettlementQuote> previewLoanEarlySettlement({
+    required String groupId,
+    required String loanAccountId,
+    DateTime? effectiveDate,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_preview_loan_early_settlement',
+        params: {
+          'p_group_id': groupId,
+          'p_loan_account_id': loanAccountId,
+          'p_effective_date': _dateOnlyOrNull(effectiveDate),
+        },
+      );
+      return LoanEarlySettlementQuote.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanServicingPaymentResult> settleLoanEarly({
+    required String groupId,
+    required String loanAccountId,
+    required String financialAccountId,
+    required String paymentMethod,
+    DateTime? effectiveDate,
+    String? externalReference,
+    String? notes,
+    String? idempotencyKey,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_settle_loan_early',
+        params: {
+          'p_group_id': groupId,
+          'p_loan_account_id': loanAccountId,
+          'p_financial_account_id': financialAccountId,
+          'p_payment_method': paymentMethod,
+          'p_effective_date': _dateOnlyOrNull(effectiveDate),
+          'p_external_reference': externalReference,
+          'p_notes': notes,
+          'p_idempotency_key': idempotencyKey,
+        },
+      );
+      return LoanServicingPaymentResult.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanPrepaymentPreview> previewLoanPrepayment({
+    required String groupId,
+    required String loanAccountId,
+    required double amount,
+    required String treatment,
+    DateTime? effectiveDate,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_preview_loan_prepayment',
+        params: {
+          'p_group_id': groupId,
+          'p_loan_account_id': loanAccountId,
+          'p_amount': amount,
+          'p_treatment': treatment,
+          'p_effective_date': _dateOnlyOrNull(effectiveDate),
+        },
+      );
+      return LoanPrepaymentPreview.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanServicingPaymentResult> prepayLoanPrincipal({
+    required String groupId,
+    required String loanAccountId,
+    required double amount,
+    required String treatment,
+    required String financialAccountId,
+    required String paymentMethod,
+    DateTime? effectiveDate,
+    String? externalReference,
+    String? notes,
+    String? idempotencyKey,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_prepay_loan_principal',
+        params: {
+          'p_group_id': groupId,
+          'p_loan_account_id': loanAccountId,
+          'p_amount': amount,
+          'p_treatment': treatment,
+          'p_financial_account_id': financialAccountId,
+          'p_payment_method': paymentMethod,
+          'p_effective_date': _dateOnlyOrNull(effectiveDate),
+          'p_external_reference': externalReference,
+          'p_notes': notes,
+          'p_idempotency_key': idempotencyKey,
+        },
+      );
+      return LoanServicingPaymentResult.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanRestructurePreview> previewLoanRestructure({
+    required String groupId,
+    required String loanAccountId,
+    required int newTerm,
+    required DateTime newFirstInstallmentDate,
+    double? newInterestRate,
+    DateTime? effectiveDate,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_preview_loan_restructure',
+        params: {
+          'p_group_id': groupId,
+          'p_loan_account_id': loanAccountId,
+          'p_new_term': newTerm,
+          'p_new_first_installment_date': _dateOnly(newFirstInstallmentDate),
+          'p_new_interest_rate': newInterestRate,
+          'p_effective_date': _dateOnlyOrNull(effectiveDate),
+        },
+      );
+      return LoanRestructurePreview.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanAccount> restructureLoan({
+    required String groupId,
+    required String loanAccountId,
+    required String reason,
+    required int newTerm,
+    required DateTime newFirstInstallmentDate,
+    double? newInterestRate,
+    DateTime? effectiveDate,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_restructure_loan',
+        params: {
+          'p_group_id': groupId,
+          'p_loan_account_id': loanAccountId,
+          'p_reason': reason,
+          'p_new_term': newTerm,
+          'p_new_first_installment_date': _dateOnly(newFirstInstallmentDate),
+          'p_new_interest_rate': newInterestRate,
+          'p_effective_date': _dateOnlyOrNull(effectiveDate),
+        },
+      );
+      return LoanAccount.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
 }
 
 List<Map<String, dynamic>> _arrearsJson(
@@ -830,6 +1005,81 @@ LoanFailure _mapError(Object error, StackTrace stackTrace) {
       return const LoanFailure(
         LoanFailureType.penaltyConfigInvalid,
         'Complete the penalty type, frequency, and grace days.',
+      );
+    }
+    if (message.contains('LOAN_NOT_ACTIVE')) {
+      return const LoanFailure(
+        LoanFailureType.loanNotActive,
+        'This loan is not active.',
+      );
+    }
+    if (message.contains('LOAN_ALREADY_FULLY_SETTLED')) {
+      return const LoanFailure(
+        LoanFailureType.alreadyFullySettled,
+        'This loan is already fully settled.',
+      );
+    }
+    if (message.contains('LOAN_PREPAYMENT_AMOUNT_MUST_BE_POSITIVE') ||
+        message.contains('LOAN_PREPAYMENT_EXCEEDS_FUTURE_PRINCIPAL')) {
+      return const LoanFailure(
+        LoanFailureType.prepaymentAmountInvalid,
+        'Enter a prepayment amount that does not exceed the remaining '
+        'future principal.',
+      );
+    }
+    if (message.contains('LOAN_PREPAYMENT_BLOCKED_OVERDUE_PENALTY')) {
+      return const LoanFailure(
+        LoanFailureType.prepaymentBlockedOverduePenalty,
+        'Clear the outstanding overdue penalty with a normal payment '
+        'before prepaying principal.',
+      );
+    }
+    if (message.contains('LOAN_PREPAYMENT_BLOCKED_OVERDUE_INTEREST')) {
+      return const LoanFailure(
+        LoanFailureType.prepaymentBlockedOverdueInterest,
+        'Clear the outstanding overdue interest with a normal payment '
+        'before prepaying principal.',
+      );
+    }
+    if (message.contains(
+      'LOAN_PREPAYMENT_REVERSAL_BLOCKED_SUBSEQUENT_ACTIVITY',
+    )) {
+      return const LoanFailure(
+        LoanFailureType.prepaymentReversalBlockedSubsequentActivity,
+        'This prepayment cannot be reversed because later activity has '
+        'already been recorded against its recomputed schedule.',
+      );
+    }
+    if (message.contains('LOAN_RESTRUCTURE_REASON_REQUIRED')) {
+      return const LoanFailure(
+        LoanFailureType.restructureReasonRequired,
+        'A restructure reason is required.',
+      );
+    }
+    if (message.contains('LOAN_RESTRUCTURE_TERM_MUST_BE_POSITIVE') ||
+        message.contains(
+          'LOAN_RESTRUCTURE_FIRST_INSTALLMENT_DATE_MUST_BE_AFTER_EFFECTIVE_DATE',
+        ) ||
+        message.contains(
+          'LOAN_RESTRUCTURE_INTEREST_RATE_MUST_BE_NON_NEGATIVE',
+        )) {
+      return const LoanFailure(
+        LoanFailureType.restructureInputInvalid,
+        'Check the proposed term, first installment date, and interest '
+        'rate.',
+      );
+    }
+    if (message.contains('LOAN_RESTRUCTURE_BLOCKED_OVERDUE_BALANCE')) {
+      return const LoanFailure(
+        LoanFailureType.restructureBlockedOverdueBalance,
+        'Clear every overdue balance with a normal payment before '
+        'restructuring this loan.',
+      );
+    }
+    if (message.contains('LOAN_RESTRUCTURE_NOTHING_REMAINING')) {
+      return const LoanFailure(
+        LoanFailureType.restructureNothingRemaining,
+        'There is nothing remaining on this loan to restructure.',
       );
     }
     if (message.contains('name is required') ||

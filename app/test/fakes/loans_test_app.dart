@@ -42,6 +42,9 @@ const loanAdminPermissions = [
   'loan_penalty.view',
   'loan_penalty.assess',
   'loan_opening.create',
+  'loan.settle_early',
+  'loan.prepay_principal',
+  'loan.restructure',
 ];
 
 /// CHAIRPERSON/SECRETARY's view-only grants — no `.manage`/`.create`/
@@ -58,6 +61,9 @@ const loanViewOnlyPermissions = [
 /// TREASURER's 09B grants (section 23) — submit/disburse/cancel, but
 /// deliberately NOT approve/reject (separation of duties: the actor
 /// who submits/disburses is never the same one who decides approval).
+/// Also holds all three 09E loan-servicing permissions — matches the
+/// DB's actual role_permissions grant (ADMIN + TREASURER only; see
+/// 20260913092000_create_loan_servicing_schema.sql).
 const loanTreasurerPermissions = [
   'group.view',
   'loan_product.view',
@@ -73,6 +79,9 @@ const loanTreasurerPermissions = [
   'financial_account.view',
   'loan_penalty.view',
   'loan_penalty.assess',
+  'loan.settle_early',
+  'loan.prepay_principal',
+  'loan.restructure',
 ];
 
 /// CHAIRPERSON's 09B grants (section 23) — approve/reject/cancel, but

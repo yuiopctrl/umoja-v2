@@ -127,6 +127,45 @@ enum LoanFailureType {
   /// 09D-UAT-BLOCKER-01) — nothing left to migrate.
   openingNoOutstandingPosition,
 
+  /// `LOAN_NOT_ACTIVE` (Prompt 09E) — early settlement/prepayment/
+  /// restructure all require an ACTIVE loan.
+  loanNotActive,
+
+  /// `LOAN_ALREADY_FULLY_SETTLED` (Prompt 09E).
+  alreadyFullySettled,
+
+  /// `LOAN_PREPAYMENT_AMOUNT_MUST_BE_POSITIVE` /
+  /// `LOAN_PREPAYMENT_EXCEEDS_FUTURE_PRINCIPAL` (Prompt 09E).
+  prepaymentAmountInvalid,
+
+  /// `LOAN_PREPAYMENT_BLOCKED_OVERDUE_PENALTY` (Prompt 09E section 3
+  /// v1 lock).
+  prepaymentBlockedOverduePenalty,
+
+  /// `LOAN_PREPAYMENT_BLOCKED_OVERDUE_INTEREST` (Prompt 09E section 3
+  /// v1 lock).
+  prepaymentBlockedOverdueInterest,
+
+  /// `LOAN_PREPAYMENT_REVERSAL_BLOCKED_SUBSEQUENT_ACTIVITY` (Prompt
+  /// 09E section 9).
+  prepaymentReversalBlockedSubsequentActivity,
+
+  /// `LOAN_RESTRUCTURE_REASON_REQUIRED` (Prompt 09E).
+  restructureReasonRequired,
+
+  /// `LOAN_RESTRUCTURE_TERM_MUST_BE_POSITIVE` /
+  /// `LOAN_RESTRUCTURE_FIRST_INSTALLMENT_DATE_MUST_BE_AFTER_EFFECTIVE_DATE`
+  /// / `LOAN_RESTRUCTURE_INTEREST_RATE_MUST_BE_NON_NEGATIVE` (Prompt
+  /// 09E).
+  restructureInputInvalid,
+
+  /// `LOAN_RESTRUCTURE_BLOCKED_OVERDUE_BALANCE` (Prompt 09E section 6
+  /// v1 lock).
+  restructureBlockedOverdueBalance,
+
+  /// `LOAN_RESTRUCTURE_NOTHING_REMAINING` (Prompt 09E).
+  restructureNothingRemaining,
+
   /// Not found (product, membership, or loan account not in group).
   notFound,
 

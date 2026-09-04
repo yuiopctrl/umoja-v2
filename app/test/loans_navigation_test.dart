@@ -74,6 +74,14 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('loanProductNewFab')), findsNothing);
 
+      // Pop the pushed products screen before jumping to a different
+      // declarative route — calling router.go() while a context.push
+      // route still sits on the Navigator leaves that pushed route's
+      // transition unable to ever fully settle, hanging pumpAndSettle
+      // for its full default timeout instead of erroring.
+      router.pop();
+      await tester.pumpAndSettle();
+
       router.go(AppRoutes.loanAccountsList);
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('newLoanAccountFab')), findsNothing);
