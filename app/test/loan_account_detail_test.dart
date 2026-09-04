@@ -67,6 +67,9 @@ void main() {
     router.push(AppRoutes.loanAccountDetailPath('loan-1'));
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(
+      find.byKey(const Key('loanRegenerateScheduleAction')),
+    );
     await tester.tap(find.byKey(const Key('loanRegenerateScheduleAction')));
     await tester.pumpAndSettle();
 

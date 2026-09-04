@@ -134,11 +134,15 @@ void main() {
       navBar = tester.widget(find.byType(NavigationBar));
       expect(navBar.selectedIndex, 1);
 
+      // "Zaidi" (More) opens a modal instead of navigating — the bar's
+      // own selection never moves off whatever screen was already
+      // showing underneath (see more_sheet.dart).
       await tester.tap(find.text('Zaidi'));
       await tester.pumpAndSettle();
 
+      expect(find.byType(BottomSheet), findsOneWidget);
       navBar = tester.widget(find.byType(NavigationBar));
-      expect(navBar.selectedIndex, 2);
+      expect(navBar.selectedIndex, 1);
     },
   );
 }

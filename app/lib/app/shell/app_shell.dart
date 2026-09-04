@@ -7,19 +7,35 @@ import '../../core/localization/app_localizations_x.dart';
 import '../../core/theme/umoja_breakpoints.dart';
 import '../../core/theme/umoja_spacing.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
+import '../routing/app_routes.dart';
+import 'app_top_bar.dart';
+import 'more_sheet.dart';
 import 'shell_destination.dart';
 
 /// The authenticated application shell. Wraps every operational route
 /// (`/home`, `/members`, `/more`, ...) with responsive navigation
 /// chrome:
-/// - < 700px: a bottom [NavigationBar].
-/// - 700–1199px: a compact [NavigationRail].
-/// - >= 1200px: an extended [NavigationRail].
+/// - Every breakpoint: a persistent [AppTopBar] (current group name on
+///   the left, profile menu on the right).
+/// - < 700px: a bottom [NavigationBar] below the top bar.
+/// - 700–1199px: a compact [NavigationRail] below the top bar.
+/// - >= 1200px: an extended [NavigationRail] below the top bar.
 ///
 /// [child] is the routed screen for the current location — each screen
 /// remains a self-contained [Scaffold] (via `UmojaPage`); this shell
 /// only adds the surrounding navigation, so it never needs to know
-/// anything about an individual screen's content.
+/// anything about an individual screen's content. A shell-root screen
+/// (Home/Members/...) relies on this top bar for its persistent chrome
+/// and renders its own title inline instead of in a second app bar —
+/// see `UmojaPage`.
+///
+/// On mobile, tapping "More" never navigates — it opens a modal
+/// listing the demoted modules (Contributions/Loans/Finance) plus a
+/// single account-settings entry instead, so the bottom bar itself
+/// never leaves whatever screen it was tapped from (see
+/// `more_sheet.dart`). Desktop/tablet's [NavigationRail] already shows
+/// every destination directly, so "More" there still navigates to the
+/// full account page as before.
 class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.location, required this.child});
 
@@ -55,17 +71,37 @@ class AppShell extends ConsumerWidget {
       context.l10n,
       membership: membership,
     );
-    final selectedIndex = _selectedIndex(destinations);
 
     if (UmojaBreakpoints.isMobile(width)) {
+      // Material Design caps a bottom bar at 3-5 destinations before it
+      // reads as congested — this app can have up to 7. The curated
+      // mobile subset (Home/Members/Payments/More) never loses the
+      // remaining destinations; they surface as quick-link cards inside
+      // the More screen instead (see shell_destination.dart).
+      final mobileDestinations = mobilePrimaryDestinations(destinations);
+      final selectedIndex = _selectedIndex(mobileDestinations);
       return Scaffold(
+        appBar: const AppTopBar(),
         body: child,
         bottomNavigationBar: NavigationBar(
           selectedIndex: selectedIndex,
-          onDestinationSelected: (index) =>
-              _onSelect(context, destinations, index),
+          onDestinationSelected: (index) {
+            final destination = mobileDestinations[index];
+            // More never navigates on mobile — it opens a modal
+            // listing the demoted modules plus account settings
+            // instead, so the bar never leaves whatever screen was
+            // already showing underneath (see more_sheet.dart).
+            if (destination.path == AppRoutes.more) {
+              showMoreSheet(
+                context,
+                overflowDestinations: mobileOverflowDestinations(destinations),
+              );
+              return;
+            }
+            _onSelect(context, mobileDestinations, index);
+          },
           destinations: [
-            for (final destination in destinations)
+            for (final destination in mobileDestinations)
               NavigationDestination(
                 icon: Icon(destination.icon),
                 selectedIcon: Icon(destination.selectedIcon),
@@ -76,9 +112,11 @@ class AppShell extends ConsumerWidget {
       );
     }
 
+    final selectedIndex = _selectedIndex(destinations);
     final extended = UmojaBreakpoints.isDesktop(width);
 
     return Scaffold(
+      appBar: const AppTopBar(),
       body: Row(
         children: [
           NavigationRail(

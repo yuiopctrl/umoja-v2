@@ -200,6 +200,7 @@ void main() {
       await tester.tap(find.text('Amina Juma'));
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.text('Rudisha kwenye Kikundi'));
       await tester.tap(find.text('Rudisha kwenye Kikundi'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Rudisha kwenye Kikundi').last);
@@ -249,6 +250,13 @@ void main() {
         find.byType(ListView),
         const Offset(0, -200),
       );
+      await tester.pumpAndSettle();
+      // The shorter body height under the persistent top bar can leave
+      // this row only just barely scrolled into view (its geometric
+      // center still outside the ListView's visible/clipped area) —
+      // scroll a little further so the tap lands well inside it.
+      await tester.drag(find.byType(ListView), const Offset(0, -150));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Onyesha Zaidi'));
       await tester.pumpAndSettle();
 

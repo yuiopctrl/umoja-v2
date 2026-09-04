@@ -167,6 +167,11 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      // "Zaidi" opens a modal listing modules plus an "Akaunti" entry
+      // — Sign Out now lives inside that account sheet, not directly
+      // in the top-level More sheet.
+      await tester.tap(find.byKey(const Key('moreSheetAccount')));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Toka'));
       await tester.pumpAndSettle();
 

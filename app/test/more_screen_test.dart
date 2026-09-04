@@ -71,6 +71,12 @@ Future<void> _pumpMoreScreen(
     ),
   );
   await tester.pumpAndSettle();
+
+  // "Zaidi" opens a modal listing modules plus an "Akaunti" entry —
+  // account info/current group/language/Sign Out now live inside that
+  // account sheet, not directly in the top-level More sheet.
+  await tester.tap(find.byKey(const Key('moreSheetAccount')));
+  await tester.pumpAndSettle();
 }
 
 void main() {
@@ -81,7 +87,8 @@ void main() {
 
     expect(find.text('Fredrick Mrema'), findsWidgets);
     expect(find.text('+255712345678'), findsOneWidget);
-    expect(find.text('Umoja Wamama'), findsOneWidget);
+    // Also shown in the persistent top bar's title behind the sheet.
+    expect(find.text('Umoja Wamama'), findsWidgets);
     // Prompt 05C §2: exactly one normal exit action, labeled "Toka" —
     // never "Funga programu"/"Toka kabisa" terminology.
     expect(find.text('Toka'), findsOneWidget);

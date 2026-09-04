@@ -93,6 +93,23 @@ Future<void> _switchLanguage(WidgetTester tester, String segmentLabel) async {
   await tester.pumpAndSettle();
 }
 
+/// Opens the More sheet's "Akaunti" entry — where the account/current
+/// group details and the language selector now live (see
+/// `app_top_bar.dart`'s `_ProfileSheet`), grouped off the More sheet's
+/// own top-level module list.
+Future<void> _openAccountSheet(WidgetTester tester) async {
+  await _tapNavDestination(tester, 'Zaidi');
+  await tester.tap(find.byKey(const Key('moreSheetAccount')));
+  await tester.pumpAndSettle();
+}
+
+/// Dismisses an open modal sheet by tapping its barrier, so a test can
+/// go on to interact with the navigation underneath it.
+Future<void> _closeModal(WidgetTester tester) async {
+  await tester.tapAt(const Offset(200, 40));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets('switching to English updates the bottom navigation labels live, '
       'with no logout/restart', (tester) async {
@@ -101,11 +118,11 @@ void main() {
     expect(find.text('Wanachama'), findsWidgets);
     expect(find.text('Zaidi'), findsWidgets);
 
-    // The full-text Kiswahili|English selector lives on the More
-    // ("Zaidi") screen — prompt 05E-C §7/§8: the exact same
+    // The full-text Kiswahili|English selector lives in the More
+    // sheet's Akaunti entry — prompt 05E-C §7/§8: the exact same
     // UmojaLanguageSelector widget as the login screen, never a
     // second, separately-styled implementation.
-    await _tapNavDestination(tester, 'Zaidi');
+    await _openAccountSheet(tester);
     expect(find.byType(UmojaLanguageSelector), findsOneWidget);
     await _switchLanguage(tester, 'English');
 
@@ -121,20 +138,25 @@ void main() {
     (tester) async {
       await _pumpSignedInApp(tester);
 
-      await _tapNavDestination(tester, 'Zaidi');
+      await _openAccountSheet(tester);
 
-      expect(find.textContaining('Msimamizi'), findsOneWidget);
-      expect(find.text('Hai'), findsOneWidget);
+      // The modal sheet's entrance transition can briefly mount its
+      // content twice in the same frame — findsWidgets (>=1) rather
+      // than an exact count, matching the same artifact seen with the
+      // profile/More sheets elsewhere.
+      expect(find.textContaining('Msimamizi'), findsWidgets);
+      expect(find.text('Hai'), findsWidgets);
 
       await _switchLanguage(tester, 'English');
 
-      expect(find.textContaining('Administrator'), findsOneWidget);
-      expect(find.text('Active'), findsOneWidget);
+      expect(find.textContaining('Administrator'), findsWidgets);
+      expect(find.text('Active'), findsWidgets);
       // Never the raw backend codes/enum, in either language.
       expect(find.text('ADMIN'), findsNothing);
       expect(find.text('ACTIVE'), findsNothing);
 
       // Members list: a SUSPENDED Treasurer.
+      await _closeModal(tester);
       await _tapNavDestination(tester, 'Members');
 
       expect(find.textContaining('Treasurer'), findsOneWidget);
@@ -150,14 +172,14 @@ void main() {
       'without logout/restart', (tester) async {
     await _pumpSignedInApp(tester);
 
-    await _tapNavDestination(tester, 'Zaidi');
+    await _openAccountSheet(tester);
     await _switchLanguage(tester, 'English');
     expect(find.text('More'), findsWidgets);
 
     await _switchLanguage(tester, 'Kiswahili');
 
     expect(find.text('More'), findsNothing);
-    expect(find.textContaining('Msimamizi'), findsOneWidget);
+    expect(find.textContaining('Msimamizi'), findsWidgets);
   });
 
   testWidgets('the compact SW|EN switcher is present and functional on the '

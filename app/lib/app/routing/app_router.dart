@@ -48,9 +48,12 @@ import '../../features/loans/presentation/disburse_loan_screen.dart';
 import '../../features/loans/presentation/edit_loan_terms_screen.dart';
 import '../../features/loans/presentation/loan_account_detail_screen.dart';
 import '../../features/loans/presentation/loan_accounts_list_screen.dart';
+import '../../features/loans/presentation/loan_early_settlement_screen.dart';
 import '../../features/loans/presentation/loan_penalties_screen.dart';
+import '../../features/loans/presentation/loan_prepayment_screen.dart';
 import '../../features/loans/presentation/loan_product_form_screen.dart';
 import '../../features/loans/presentation/loan_products_list_screen.dart';
+import '../../features/loans/presentation/loan_restructure_screen.dart';
 import '../../features/loans/presentation/loans_home_screen.dart';
 import '../../features/loans/presentation/new_existing_loan_screen.dart';
 import '../../features/loans/presentation/new_loan_screen.dart';
@@ -490,6 +493,24 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.loanAccountDisburse,
             builder: (context, state) => DisburseLoanScreen(
+              loanAccountId: state.pathParameters['loanAccountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.loanAccountEarlySettlement,
+            builder: (context, state) => LoanEarlySettlementScreen(
+              loanAccountId: state.pathParameters['loanAccountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.loanAccountPrepay,
+            builder: (context, state) => LoanPrepaymentScreen(
+              loanAccountId: state.pathParameters['loanAccountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.loanAccountRestructure,
+            builder: (context, state) => LoanRestructureScreen(
               loanAccountId: state.pathParameters['loanAccountId']!,
             ),
           ),

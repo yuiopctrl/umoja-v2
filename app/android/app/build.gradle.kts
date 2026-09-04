@@ -42,6 +42,17 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    // Output "Umoja-<buildType>.apk" instead of Flutter/AGP's generic
+    // "app-<buildType>.apk" default, matching the app's actual name.
+    applicationVariants.all {
+        val variant = this
+        variant.outputs
+            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+            .forEach { output ->
+                output.outputFileName = "Umoja-${variant.buildType.name}.apk"
+            }
+    }
 }
 
 kotlin {

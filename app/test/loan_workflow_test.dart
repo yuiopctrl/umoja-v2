@@ -127,6 +127,7 @@ void main() {
       router.push(AppRoutes.loanAccountDetailPath('loan-1'));
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(find.byKey(const Key('loanRejectAction')));
       await tester.tap(find.byKey(const Key('loanRejectAction')));
       await tester.pumpAndSettle();
 
@@ -159,6 +160,7 @@ void main() {
 
       expect(find.byKey(const Key('loanCancelAction')), findsOneWidget);
 
+      await tester.ensureVisible(find.byKey(const Key('loanCancelAction')));
       await tester.tap(find.byKey(const Key('loanCancelAction')));
       await tester.pumpAndSettle();
 

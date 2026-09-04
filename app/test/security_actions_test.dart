@@ -93,6 +93,11 @@ _pumpMoreScreen(WidgetTester tester) async {
   );
   await tester.pumpAndSettle();
 
+  // "Zaidi" opens a modal listing modules plus an "Akaunti" entry —
+  // Sign Out ("Toka") now lives inside that account sheet.
+  await tester.tap(find.byKey(const Key('moreSheetAccount')));
+  await tester.pumpAndSettle();
+
   return (auth: fakeAuth, container: container);
 }
 

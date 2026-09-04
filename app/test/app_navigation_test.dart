@@ -132,7 +132,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Umoja Wamama'), findsOneWidget);
+    // Shown both in the persistent top bar's title and in Home's own
+    // content — at least one is what matters here.
+    expect(find.text('Umoja Wamama'), findsWidgets);
     expect(find.text('Application foundation ready'), findsNothing);
     expect(find.textContaining('Permissions:'), findsNothing);
     // No fabricated financial data — those modules do not exist yet.

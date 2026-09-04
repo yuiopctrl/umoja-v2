@@ -232,6 +232,12 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    // Account/current group/language/security now live under the More
+    // sheet's own "Akaunti" entry, rather than as sections on a
+    // dedicated page reached directly from the bottom bar.
+    await tester.tap(find.byKey(const Key('moreSheetAccount')));
+    await tester.pumpAndSettle();
+
     expect(find.text('Akaunti'), findsOneWidget);
     expect(find.text('Kikundi cha Sasa'), findsOneWidget);
     expect(find.text('Usalama'), findsOneWidget);

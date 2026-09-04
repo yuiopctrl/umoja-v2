@@ -365,4 +365,24 @@ class AppRoutes {
   static const loanAccountDisburse = '/loans/accounts/:loanAccountId/disburse';
   static String loanAccountDisbursePath(String loanAccountId) =>
       '/loans/accounts/$loanAccountId/disburse';
+
+  /// Path template; use [loanAccountEarlySettlementPath] for a concrete
+  /// URL (Prompt 09E).
+  static const loanAccountEarlySettlement =
+      '/loans/accounts/:loanAccountId/early-settlement';
+  static String loanAccountEarlySettlementPath(String loanAccountId) =>
+      '/loans/accounts/$loanAccountId/early-settlement';
+
+  /// Path template; use [loanAccountPrepayPath] for a concrete URL
+  /// (Prompt 09E).
+  static const loanAccountPrepay = '/loans/accounts/:loanAccountId/prepay';
+  static String loanAccountPrepayPath(String loanAccountId) =>
+      '/loans/accounts/$loanAccountId/prepay';
+
+  /// Path template; use [loanAccountRestructurePath] for a concrete URL
+  /// (Prompt 09E).
+  static const loanAccountRestructure =
+      '/loans/accounts/:loanAccountId/restructure';
+  static String loanAccountRestructurePath(String loanAccountId) =>
+      '/loans/accounts/$loanAccountId/restructure';
 }

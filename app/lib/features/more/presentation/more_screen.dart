@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/shell/shell_destination.dart';
 import '../../../core/localization/app_localizations_x.dart';
+import '../../../core/theme/umoja_breakpoints.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/utils/title_case.dart';
 import '../../../core/widgets/umoja_card.dart';
@@ -43,12 +46,48 @@ class MoreScreen extends ConsumerWidget {
         .toList(growable: false);
     final canSwitchGroup = eligibleMemberships.length > 1;
 
+    // Mobile's bottom bar only has room for Home/Members/Payments/More
+    // (Material Design caps a bottom bar at 3-5 destinations) — every
+    // other module stays one tap away here instead of disappearing.
+    // Desktop/tablet's NavigationRail already shows every destination
+    // directly, so this section would just duplicate it there.
+    final width = MediaQuery.sizeOf(context).width;
+    final overflowDestinations = UmojaBreakpoints.isMobile(width)
+        ? mobileOverflowDestinations(
+            shellDestinations(l10n, membership: membership),
+          )
+        : const <ShellDestination>[];
+
     return UmojaPage(
       title: l10n.moreTitle,
       scrollable: true,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (overflowDestinations.isNotEmpty) ...[
+            UmojaSection(
+              title: l10n.modulesSectionTitle,
+              child: UmojaCard(
+                padding: EdgeInsets.zero,
+                child: Column(
+                  children: [
+                    for (final (i, destination)
+                        in overflowDestinations.indexed) ...[
+                      if (i > 0) const Divider(height: 1),
+                      ListTile(
+                        key: Key('moreModuleLink_${destination.path}'),
+                        leading: Icon(destination.icon),
+                        title: Text(destination.label),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => context.push(destination.path),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: UmojaSpacing.xxl),
+          ],
           UmojaSection(
             title: l10n.accountSectionTitle,
             child: UmojaCard(
