@@ -427,6 +427,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moreTitle => 'More';
 
   @override
+  String get modulesSectionTitle => 'Modules';
+
+  @override
   String get accountSectionTitle => 'Account';
 
   @override
@@ -2094,6 +2097,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'This payment cannot be reversed: the wallet credit it created has already been used.';
 
   @override
+  String get paymentErrorReversalBlockedSubsequentActivity =>
+      'This payment cannot be reversed. Later loan activity exists after this payment — reversing it would conflict with the loan\'s current repayment schedule.';
+
+  @override
   String get paymentErrorReversalReasonRequired =>
       'A reversal reason is required.';
 
@@ -3062,4 +3069,184 @@ class AppLocalizationsEn extends AppLocalizations {
   ) {
     return 'Loan Disbursement — $loanNumber ($borrower)';
   }
+
+  @override
+  String get loanErrorLoanNotActive => 'This loan is not active.';
+
+  @override
+  String get loanErrorAlreadyFullySettled =>
+      'This loan is already fully settled.';
+
+  @override
+  String get loanErrorPrepaymentAmountInvalid =>
+      'Enter a prepayment amount that does not exceed the remaining future principal.';
+
+  @override
+  String get loanErrorPrepaymentBlockedOverduePenalty =>
+      'Clear the outstanding overdue penalty with a normal payment before prepaying principal.';
+
+  @override
+  String get loanErrorPrepaymentBlockedOverdueInterest =>
+      'Clear the outstanding overdue interest with a normal payment before prepaying principal.';
+
+  @override
+  String get loanErrorPrepaymentReversalBlockedSubsequentActivity =>
+      'This prepayment cannot be reversed because later activity has already been recorded against its recomputed schedule.';
+
+  @override
+  String get loanErrorRestructureReasonRequired =>
+      'A restructure reason is required.';
+
+  @override
+  String get loanErrorRestructureInputInvalid =>
+      'Check the proposed term, first installment date, and interest rate.';
+
+  @override
+  String get loanErrorRestructureBlockedOverdueBalance =>
+      'Clear every overdue balance with a normal payment before restructuring this loan.';
+
+  @override
+  String get loanErrorRestructureNothingRemaining =>
+      'There is nothing remaining on this loan to restructure.';
+
+  @override
+  String get loanEarlySettlementAction => 'Early Settlement';
+
+  @override
+  String get loanPrepayPrincipalAction => 'Principal Prepayment';
+
+  @override
+  String get loanRestructureAction => 'Restructure';
+
+  @override
+  String get loanEarlySettlementTitle => 'Early Settlement';
+
+  @override
+  String get loanEarlySettlementQuoteTitle => 'Settlement Quote';
+
+  @override
+  String get loanEarlySettlementOverduePenaltyLabel => 'Overdue Penalty';
+
+  @override
+  String get loanEarlySettlementOverdueInterestLabel => 'Overdue Interest';
+
+  @override
+  String get loanEarlySettlementOverduePrincipalLabel => 'Overdue Principal';
+
+  @override
+  String get loanEarlySettlementCurrentPenaltyLabel =>
+      'Current Payable Penalty';
+
+  @override
+  String get loanEarlySettlementCurrentInterestLabel =>
+      'Current Payable Interest';
+
+  @override
+  String get loanEarlySettlementCurrentPrincipalLabel =>
+      'Current Payable Principal';
+
+  @override
+  String get loanEarlySettlementFuturePrincipalLabel =>
+      'Future Principal (paid off early)';
+
+  @override
+  String get loanEarlySettlementFutureUnearnedInterestLabel =>
+      'Future Unearned Interest (never charged)';
+
+  @override
+  String get loanEarlySettlementTotalLabel => 'Total Settlement Amount';
+
+  @override
+  String get loanEarlySettlementFinancialAccountFieldLabel => 'Funding Source';
+
+  @override
+  String get loanEarlySettlementPaymentMethodFieldLabel => 'Payment Method';
+
+  @override
+  String get loanEarlySettlementConfirmAction => 'Settle Loan Early';
+
+  @override
+  String get loanEarlySettlementSuccessMessage =>
+      'The loan has been settled early.';
+
+  @override
+  String get loanEarlySettlementSafetyMessage =>
+      'This pays off every outstanding penalty, currently-payable interest, and all remaining principal (including not-yet-due). Future interest is never charged.';
+
+  @override
+  String get loanPrepaymentTitle => 'Principal Prepayment';
+
+  @override
+  String get loanPrepaymentAmountFieldLabel => 'Prepayment Amount';
+
+  @override
+  String get loanPrepaymentTreatmentFieldLabel => 'Schedule Treatment';
+
+  @override
+  String get loanPrepaymentReduceTermLabel =>
+      'Reduce Term (keep installment amount)';
+
+  @override
+  String get loanPrepaymentReduceInstallmentLabel =>
+      'Reduce Installment (keep term)';
+
+  @override
+  String get loanPrepaymentPreviewAction => 'Preview';
+
+  @override
+  String get loanPrepaymentNewScheduleTitle => 'Recomputed Future Schedule';
+
+  @override
+  String get loanPrepaymentConfirmAction => 'Confirm Prepayment';
+
+  @override
+  String get loanPrepaymentSuccessMessage =>
+      'The principal prepayment has been recorded.';
+
+  @override
+  String get loanPrepaymentFinancialAccountFieldLabel => 'Funding Source';
+
+  @override
+  String get loanPrepaymentPaymentMethodFieldLabel => 'Payment Method';
+
+  @override
+  String get loanPrepaymentFuturePrincipalBeforeLabel =>
+      'Future Principal Before';
+
+  @override
+  String get loanPrepaymentFuturePrincipalAfterLabel =>
+      'Future Principal After';
+
+  @override
+  String get loanRestructureTitle => 'Restructure Loan';
+
+  @override
+  String get loanRestructureReasonFieldLabel => 'Reason';
+
+  @override
+  String get loanRestructureNewTermFieldLabel => 'New Term (installments)';
+
+  @override
+  String get loanRestructureNewFirstInstallmentDateFieldLabel =>
+      'New First Installment Date';
+
+  @override
+  String get loanRestructureNewInterestRateFieldLabel =>
+      'New Interest Rate (leave blank to keep current)';
+
+  @override
+  String get loanRestructurePreviewAction => 'Preview Proposed Schedule';
+
+  @override
+  String get loanRestructureNewScheduleTitle => 'Proposed New Schedule';
+
+  @override
+  String get loanRestructureConfirmAction => 'Confirm Restructure';
+
+  @override
+  String get loanRestructureSuccessMessage => 'The loan has been restructured.';
+
+  @override
+  String get loanRestructureSafetyMessage =>
+      'This changes only the future contractual schedule. Already-paid history is never changed, and this is blocked while any overdue balance remains.';
 }

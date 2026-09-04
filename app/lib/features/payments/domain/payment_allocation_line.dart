@@ -36,13 +36,20 @@ class PaymentAllocationLine {
 
   /// `rpc_get_payment_detail` shape (charge_id/component_id present for
   /// a contribution row; loan_account_id/loan_installment_id present
-  /// for a loan row instead) — key `amount`.
+  /// for a loan row instead) — key `amount`. `due_date` is null for a
+  /// LOAN_PRINCIPAL_PREPAYMENT row: that allocation is deliberately not
+  /// tied to any single installment (a lump-sum prepayment against the
+  /// loan's whole future principal, never impersonating an ordinary
+  /// installment allocation — see the 09E locked invariant), so there
+  /// is no natural due date to report.
   factory PaymentAllocationLine.fromJson(Map<String, dynamic> json) {
     return PaymentAllocationLine(
       chargeId: json['charge_id'] as String?,
       componentId: json['component_id'] as String?,
       componentType: json['component_type'] as String,
-      dueDate: DateTime.parse(json['due_date'] as String),
+      dueDate: json['due_date'] == null
+          ? null
+          : DateTime.parse(json['due_date'] as String),
       amount: (json['amount'] as num).toDouble(),
       contributionTypeName: json['contribution_type_name'] as String?,
       periodLabel: json['period_label'] as String?,
@@ -84,10 +91,14 @@ class PaymentAllocationLine {
   }
 
   /// `rpc_get_receipt` shape (no charge_id/component_id) — key `amount`.
+  /// `due_date` is null for a LOAN_PRINCIPAL_PREPAYMENT row — see
+  /// [fromJson]'s doc.
   factory PaymentAllocationLine.fromReceiptJson(Map<String, dynamic> json) {
     return PaymentAllocationLine(
       componentType: json['component_type'] as String,
-      dueDate: DateTime.parse(json['due_date'] as String),
+      dueDate: json['due_date'] == null
+          ? null
+          : DateTime.parse(json['due_date'] as String),
       amount: (json['amount'] as num).toDouble(),
       contributionTypeName: json['contribution_type_name'] as String?,
       periodLabel: json['period_label'] as String?,
@@ -123,7 +134,11 @@ class PaymentAllocationLine {
   /// row) or INTEREST / PRINCIPAL (loan row) — see [obligationKind] to
   /// distinguish which.
   final String componentType;
-  final DateTime dueDate;
+
+  /// Null only for a LOAN_PRINCIPAL_PREPAYMENT row — that allocation is
+  /// deliberately not tied to any single installment, so it has no
+  /// natural due date. Populated for every other obligation kind.
+  final DateTime? dueDate;
   final double amount;
 
   /// Null only for a row posted before UAT-FIX-01 shipped — callers
@@ -166,10 +181,23 @@ class PaymentAllocationLine {
   final String? loanPenaltyChargeId;
 
   bool get isOpeningBalance => periodPurpose == 'OPENING_BALANCE';
+
+  /// True for a line tied to a specific loan installment (interest/
+  /// principal/penalty). Deliberately excludes
+  /// [isPrincipalPrepayment] — a prepayment is loan-related but never
+  /// tied to one installment, so it never has a [dueDate]/
+  /// [installmentNumber] to group by the way these three do.
   bool get isLoan =>
       obligationKind == 'LOAN_INTEREST' ||
       obligationKind == 'LOAN_PRINCIPAL' ||
       obligationKind == 'LOAN_PENALTY';
   bool get isLoanInterest => obligationKind == 'LOAN_INTEREST';
   bool get isLoanPenalty => obligationKind == 'LOAN_PENALTY';
+
+  /// A 09E lump-sum principal prepayment (Prompt 09E) — structurally
+  /// never tied to a specific installment (see the class doc on
+  /// [dueDate]), so it must never be grouped/labeled as an ordinary
+  /// per-installment loan line.
+  bool get isPrincipalPrepayment =>
+      obligationKind == 'LOAN_PRINCIPAL_PREPAYMENT';
 }

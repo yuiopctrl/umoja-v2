@@ -131,4 +131,32 @@ void main() {
     expect(fakeRepo.reversePaymentCalls.single.groupId, 'g1');
     expect(find.text('Payment Detail'), findsOneWidget);
   });
+
+  testWidgets('renders with no crash at desktop/tablet width, showing the '
+      '"← Payment Detail" back link (regression: backTo was set without '
+      'the required backLabel, throwing a null-check error building '
+      'UmojaPage on any non-mobile width)', (tester) async {
+    final fakeRepo = FakePaymentRepository()
+      ..nextPaymentDetail = fakePaymentDetail(paymentId: 'p1');
+
+    final router = await pumpPaymentsApp(
+      tester,
+      fakeRepo: fakeRepo,
+      language: AppLanguage.english,
+    );
+    // pumpPaymentsApp defaults to a mobile viewport — widen it to
+    // exercise UmojaPage's desktop/tablet "← [backLabel]" link path.
+    tester.view.physicalSize = const Size(1400, 900);
+    addTearDown(tester.view.reset);
+    router.go(AppRoutes.paymentReversePath('p1'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    final backLink = find.byKey(const Key('umojaPageDesktopBackLink'));
+    expect(backLink, findsOneWidget);
+    expect(
+      find.descendant(of: backLink, matching: find.text('Payment Detail')),
+      findsOneWidget,
+    );
+  });
 }

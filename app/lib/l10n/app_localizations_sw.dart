@@ -430,6 +430,9 @@ class AppLocalizationsSw extends AppLocalizations {
   String get moreTitle => 'Zaidi';
 
   @override
+  String get modulesSectionTitle => 'Huduma';
+
+  @override
   String get accountSectionTitle => 'Akaunti';
 
   @override
@@ -2105,6 +2108,10 @@ class AppLocalizationsSw extends AppLocalizations {
       'Malipo haya hayawezi kubatilishwa: salio la mwanachama lililoongezwa tayari limetumika.';
 
   @override
+  String get paymentErrorReversalBlockedSubsequentActivity =>
+      'Haiwezekani kubatilisha malipo haya. Kuna shughuli nyingine ya mkopo iliyofanyika baada ya malipo haya — kuyabatilisha kunaweza kuharibu ratiba ya sasa ya malipo ya mkopo.';
+
+  @override
   String get paymentErrorReversalReasonRequired =>
       'Sababu ya kubatilisha inahitajika.';
 
@@ -3070,4 +3077,186 @@ class AppLocalizationsSw extends AppLocalizations {
   ) {
     return 'Utoaji wa Mkopo — $loanNumber ($borrower)';
   }
+
+  @override
+  String get loanErrorLoanNotActive =>
+      'Mkopo huu haupo katika hali ya kutumika.';
+
+  @override
+  String get loanErrorAlreadyFullySettled =>
+      'Mkopo huu tayari umelipwa kikamilifu.';
+
+  @override
+  String get loanErrorPrepaymentAmountInvalid =>
+      'Weka kiasi cha malipo ya awali ambacho hakizidi salio la awamu zijazo.';
+
+  @override
+  String get loanErrorPrepaymentBlockedOverduePenalty =>
+      'Futa faini iliyochelewa kwa malipo ya kawaida kabla ya kulipa awali sehemu ya mtaji.';
+
+  @override
+  String get loanErrorPrepaymentBlockedOverdueInterest =>
+      'Futa riba iliyochelewa kwa malipo ya kawaida kabla ya kulipa awali sehemu ya mtaji.';
+
+  @override
+  String get loanErrorPrepaymentReversalBlockedSubsequentActivity =>
+      'Malipo haya ya awali hayawezi kufutwa kwa sababu shughuli nyingine tayari zimerekodiwa dhidi ya ratiba yake iliyohesabiwa upya.';
+
+  @override
+  String get loanErrorRestructureReasonRequired =>
+      'Sababu ya kurekebisha mkopo inahitajika.';
+
+  @override
+  String get loanErrorRestructureInputInvalid =>
+      'Angalia idadi ya awamu inayopendekezwa, tarehe ya awamu ya kwanza, na kiwango cha riba.';
+
+  @override
+  String get loanErrorRestructureBlockedOverdueBalance =>
+      'Futa kila salio lililochelewa kwa malipo ya kawaida kabla ya kurekebisha mkopo huu.';
+
+  @override
+  String get loanErrorRestructureNothingRemaining =>
+      'Hakuna kilichobaki kwenye mkopo huu cha kurekebisha.';
+
+  @override
+  String get loanEarlySettlementAction => 'Ulipaji wa Awali Kamili';
+
+  @override
+  String get loanPrepayPrincipalAction => 'Malipo ya Awali ya Mtaji';
+
+  @override
+  String get loanRestructureAction => 'Rekebisha Mkopo';
+
+  @override
+  String get loanEarlySettlementTitle => 'Ulipaji wa Awali Kamili';
+
+  @override
+  String get loanEarlySettlementQuoteTitle => 'Makadirio ya Ulipaji';
+
+  @override
+  String get loanEarlySettlementOverduePenaltyLabel => 'Faini Iliyochelewa';
+
+  @override
+  String get loanEarlySettlementOverdueInterestLabel => 'Riba Iliyochelewa';
+
+  @override
+  String get loanEarlySettlementOverduePrincipalLabel => 'Mtaji Uliochelewa';
+
+  @override
+  String get loanEarlySettlementCurrentPenaltyLabel => 'Faini Inayolipika Sasa';
+
+  @override
+  String get loanEarlySettlementCurrentInterestLabel => 'Riba Inayolipika Sasa';
+
+  @override
+  String get loanEarlySettlementCurrentPrincipalLabel =>
+      'Mtaji Unaolipika Sasa';
+
+  @override
+  String get loanEarlySettlementFuturePrincipalLabel =>
+      'Mtaji wa Baadaye (unaolipwa mapema)';
+
+  @override
+  String get loanEarlySettlementFutureUnearnedInterestLabel =>
+      'Riba ya Baadaye Isiyopatikana (haitatozwa)';
+
+  @override
+  String get loanEarlySettlementTotalLabel => 'Jumla ya Kiasi cha Ulipaji';
+
+  @override
+  String get loanEarlySettlementFinancialAccountFieldLabel =>
+      'Chanzo cha Fedha';
+
+  @override
+  String get loanEarlySettlementPaymentMethodFieldLabel => 'Njia ya Malipo';
+
+  @override
+  String get loanEarlySettlementConfirmAction => 'Lipa Mkopo Mapema';
+
+  @override
+  String get loanEarlySettlementSuccessMessage =>
+      'Mkopo umelipwa mapema kikamilifu.';
+
+  @override
+  String get loanEarlySettlementSafetyMessage =>
+      'Hii inalipa faini yoyote iliyobaki, riba inayolipika sasa, na mtaji wote uliobaki (hata usiopaswa kulipwa bado). Riba ya baadaye haitatozwa kamwe.';
+
+  @override
+  String get loanPrepaymentTitle => 'Malipo ya Awali ya Mtaji';
+
+  @override
+  String get loanPrepaymentAmountFieldLabel => 'Kiasi cha Malipo ya Awali';
+
+  @override
+  String get loanPrepaymentTreatmentFieldLabel =>
+      'Aina ya Urekebishaji wa Ratiba';
+
+  @override
+  String get loanPrepaymentReduceTermLabel =>
+      'Punguza Muda (dumisha kiasi cha awamu)';
+
+  @override
+  String get loanPrepaymentReduceInstallmentLabel =>
+      'Punguza Awamu (dumisha muda)';
+
+  @override
+  String get loanPrepaymentPreviewAction => 'Onyesho la Awali';
+
+  @override
+  String get loanPrepaymentNewScheduleTitle =>
+      'Ratiba Ijayo Iliyohesabiwa Upya';
+
+  @override
+  String get loanPrepaymentConfirmAction => 'Thibitisha Malipo ya Awali';
+
+  @override
+  String get loanPrepaymentSuccessMessage =>
+      'Malipo ya awali ya mtaji yamerekodiwa.';
+
+  @override
+  String get loanPrepaymentFinancialAccountFieldLabel => 'Chanzo cha Fedha';
+
+  @override
+  String get loanPrepaymentPaymentMethodFieldLabel => 'Njia ya Malipo';
+
+  @override
+  String get loanPrepaymentFuturePrincipalBeforeLabel =>
+      'Mtaji wa Baadaye Kabla';
+
+  @override
+  String get loanPrepaymentFuturePrincipalAfterLabel =>
+      'Mtaji wa Baadaye Baada';
+
+  @override
+  String get loanRestructureTitle => 'Rekebisha Mkopo';
+
+  @override
+  String get loanRestructureReasonFieldLabel => 'Sababu';
+
+  @override
+  String get loanRestructureNewTermFieldLabel => 'Muda Mpya (idadi ya awamu)';
+
+  @override
+  String get loanRestructureNewFirstInstallmentDateFieldLabel =>
+      'Tarehe Mpya ya Awamu ya Kwanza';
+
+  @override
+  String get loanRestructureNewInterestRateFieldLabel =>
+      'Kiwango Kipya cha Riba (acha wazi kudumisha cha sasa)';
+
+  @override
+  String get loanRestructurePreviewAction => 'Onyesha Ratiba Inayopendekezwa';
+
+  @override
+  String get loanRestructureNewScheduleTitle => 'Ratiba Mpya Inayopendekezwa';
+
+  @override
+  String get loanRestructureConfirmAction => 'Thibitisha Urekebishaji';
+
+  @override
+  String get loanRestructureSuccessMessage => 'Mkopo umerekebishwa.';
+
+  @override
+  String get loanRestructureSafetyMessage =>
+      'Hii inabadilisha ratiba ya mkataba ijayo pekee. Historia iliyokwisha lipwa haibadiliki kamwe, na hii imezuiwa iwapo salio lolote lililochelewa lipo.';
 }

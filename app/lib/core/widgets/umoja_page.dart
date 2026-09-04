@@ -8,21 +8,22 @@ import 'umoja_responsive_content.dart';
 
 /// Standard page scaffold for redesigned screens.
 ///
-/// Mobile: the title lives in the [AppBar] (with a back arrow where
-/// there's somewhere to go back to). Desktop/tablet: the [AppBar]
-/// title is omitted and the heading is rendered inline via
-/// [UmojaPageHeader] instead — see prompt 05 §12, "avoid duplicating
+/// A shell-root screen (nothing to pop, no [backTo]) relies on the
+/// shell's own persistent `AppTopBar` for its chrome, so its title is
+/// always rendered inline via [UmojaPageHeader] instead of in a
+/// second, redundant app bar — on every breakpoint, mobile included.
+/// A nested/detail screen (reached via [backTo] or an ordinary
+/// `Navigator` push) keeps its own [AppBar] with a back arrow and
+/// title on mobile; desktop/tablet keeps its small "← [backLabel]"
+/// link above the inline header instead, since that breakpoint never
+/// shows a per-screen [AppBar] — see prompt 05 §12, "avoid duplicating
 /// titles unnecessarily".
 ///
 /// [backTo]/[backLabel] give a nested route (member detail, member
 /// form) an explicit, deep-link-safe way back to its parent — rather
 /// than relying on `Navigator.canPop`, which is false when the route
 /// was reached directly (a deep link, a fresh web load) even though a
-/// parent conceptually exists. When set: mobile gets an explicit
-/// back arrow in the `AppBar` (instead of the auto-implied one);
-/// desktop/tablet gets a small "← [backLabel]" link above the inline
-/// page header, since that breakpoint has no `AppBar` title at all to
-/// carry a back arrow.
+/// parent conceptually exists.
 class UmojaPage extends StatelessWidget {
   const UmojaPage({
     super.key,
@@ -37,7 +38,13 @@ class UmojaPage extends StatelessWidget {
     this.automaticallyImplyLeading = true,
     this.backTo,
     this.backLabel,
-  });
+  }) : assert(
+         backTo == null || backLabel != null,
+         'backLabel is required whenever backTo is set (used for the '
+         'desktop/tablet "← [backLabel]" link) — a screen that sets '
+         'backTo without it crashes at build time on desktop/tablet '
+         'width. See the class doc.',
+       );
 
   final String title;
   final String? subtitle;
@@ -66,20 +73,38 @@ class UmojaPage extends StatelessWidget {
       MediaQuery.sizeOf(context).width,
     );
     final backTo = this.backTo;
+    final canPop = Navigator.canPop(context);
+
+    // A shell-root screen (Home/Members/More — nothing to pop, no
+    // explicit back target) relies on the shell's persistent
+    // AppTopBar for its chrome on every breakpoint, so it never grows
+    // its own second app bar — its title always lives inline instead.
+    final isShellRoot =
+        backTo == null && !(automaticallyImplyLeading && canPop);
+    final showInlineHeader = !isMobile || isShellRoot;
+
+    // The FAB is a mobile affordance only — wide viewports get the
+    // equivalent action via [headerTrailing] in the inline page header
+    // instead, so the two are never shown at once. Now that a
+    // shell-root screen's inline header also renders on mobile, the
+    // same trailing action would otherwise duplicate that screen's own
+    // FAB there — suppressed whenever both are present on mobile.
+    final showHeaderTrailing =
+        headerTrailing != null && !(isMobile && floatingActionButton != null);
 
     final inner = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: scrollable ? MainAxisSize.min : MainAxisSize.max,
       children: [
-        if (!isMobile) ...[
-          if (backTo != null) ...[
+        if (showInlineHeader) ...[
+          if (backTo != null && !isMobile) ...[
             _DesktopBackLink(to: backTo, label: backLabel!),
             const SizedBox(height: UmojaSpacing.sm),
           ],
           UmojaPageHeader(
             title: title,
             subtitle: subtitle,
-            trailing: headerTrailing,
+            trailing: showHeaderTrailing ? headerTrailing : null,
           ),
           const SizedBox(height: UmojaSpacing.lg),
         ],
@@ -89,14 +114,14 @@ class UmojaPage extends StatelessWidget {
 
     final content = UmojaResponsiveContent(maxWidth: maxWidth, child: inner);
 
-    // On desktop/tablet, a shell-root page (Home/Members/More — nothing
-    // to pop, no actions) renders no AppBar at all rather than an empty
-    // strip: the heading already lives inline via UmojaPageHeader above.
-    final canPop = Navigator.canPop(context);
+    // A shell-root page renders no per-screen AppBar at all — on
+    // desktop/tablet the heading already lives inline above; on mobile
+    // the shell's own AppTopBar now carries that chrome instead.
     final showAppBar =
-        isMobile ||
-        appBarActions.isNotEmpty ||
-        (automaticallyImplyLeading && canPop);
+        !isShellRoot &&
+        (isMobile ||
+            appBarActions.isNotEmpty ||
+            (automaticallyImplyLeading && canPop));
 
     return Scaffold(
       appBar: showAppBar
@@ -113,9 +138,6 @@ class UmojaPage extends StatelessWidget {
                   : null,
             )
           : null,
-      // The FAB is a mobile affordance only — wide viewports get the
-      // equivalent action via [headerTrailing] in the inline page
-      // header instead, so the two are never shown at once.
       floatingActionButton: isMobile ? floatingActionButton : null,
       body: SafeArea(
         child: scrollable ? SingleChildScrollView(child: content) : content,

@@ -21,6 +21,13 @@ enum PaymentFailureType {
   /// never silently reverses unrelated wallet value.
   reversalBlockedWalletCreditConsumed,
 
+  /// `LOAN_PREPAYMENT_REVERSAL_BLOCKED_SUBSEQUENT_ACTIVITY` (Prompt
+  /// 09E-UAT-BLOCKER-04): reversing this principal prepayment would
+  /// resurrect a schedule that a later prepayment, restructure, or
+  /// early settlement has already superseded — an expected domain
+  /// rejection, never an unexpected system failure.
+  reversalBlockedSubsequentActivity,
+
   reversalReasonRequired,
 
   /// `WALLET_INSUFFICIENT_BALANCE`.

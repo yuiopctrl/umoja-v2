@@ -55,7 +55,7 @@ class SupabasePaymentRepository implements PaymentRepository {
       );
       return PaymentPage.fromJson(result as Map<String, dynamic>);
     } catch (error, stackTrace) {
-      throw _mapError(error, stackTrace);
+      throw mapPaymentRepositoryError(error, stackTrace);
     }
   }
 
@@ -71,7 +71,7 @@ class SupabasePaymentRepository implements PaymentRepository {
       );
       return PaymentDetail.fromJson(result as Map<String, dynamic>);
     } catch (error, stackTrace) {
-      throw _mapError(error, stackTrace);
+      throw mapPaymentRepositoryError(error, stackTrace);
     }
   }
 
@@ -87,7 +87,7 @@ class SupabasePaymentRepository implements PaymentRepository {
       );
       return Receipt.fromJson(result as Map<String, dynamic>);
     } catch (error, stackTrace) {
-      throw _mapError(error, stackTrace);
+      throw mapPaymentRepositoryError(error, stackTrace);
     }
   }
 
@@ -105,7 +105,7 @@ class SupabasePaymentRepository implements PaymentRepository {
         result as Map<String, dynamic>,
       );
     } catch (error, stackTrace) {
-      throw _mapError(error, stackTrace);
+      throw mapPaymentRepositoryError(error, stackTrace);
     }
   }
 
@@ -130,7 +130,7 @@ class SupabasePaymentRepository implements PaymentRepository {
       );
       return MemberChargesPage.fromJson(result as Map<String, dynamic>);
     } catch (error, stackTrace) {
-      throw _mapError(error, stackTrace);
+      throw mapPaymentRepositoryError(error, stackTrace);
     }
   }
 
@@ -155,7 +155,7 @@ class SupabasePaymentRepository implements PaymentRepository {
       );
       return PaymentAllocationPreview.fromJson(result as Map<String, dynamic>);
     } catch (error, stackTrace) {
-      throw _mapError(error, stackTrace);
+      throw mapPaymentRepositoryError(error, stackTrace);
     }
   }
 
@@ -192,7 +192,7 @@ class SupabasePaymentRepository implements PaymentRepository {
       );
       return PaymentPostResult.fromJson(result as Map<String, dynamic>);
     } catch (error, stackTrace) {
-      throw _mapError(error, stackTrace);
+      throw mapPaymentRepositoryError(error, stackTrace);
     }
   }
 
@@ -212,7 +212,7 @@ class SupabasePaymentRepository implements PaymentRepository {
         },
       );
     } catch (error, stackTrace) {
-      throw _mapError(error, stackTrace);
+      throw mapPaymentRepositoryError(error, stackTrace);
     }
   }
 
@@ -228,7 +228,7 @@ class SupabasePaymentRepository implements PaymentRepository {
       );
       return MemberWallet.fromJson(result as Map<String, dynamic>);
     } catch (error, stackTrace) {
-      throw _mapError(error, stackTrace);
+      throw mapPaymentRepositoryError(error, stackTrace);
     }
   }
 
@@ -251,7 +251,7 @@ class SupabasePaymentRepository implements PaymentRepository {
       );
       return WalletEntryPage.fromJson(result as Map<String, dynamic>);
     } catch (error, stackTrace) {
-      throw _mapError(error, stackTrace);
+      throw mapPaymentRepositoryError(error, stackTrace);
     }
   }
 
@@ -272,7 +272,7 @@ class SupabasePaymentRepository implements PaymentRepository {
       );
       return WalletAllocationPreview.fromJson(result as Map<String, dynamic>);
     } catch (error, stackTrace) {
-      throw _mapError(error, stackTrace);
+      throw mapPaymentRepositoryError(error, stackTrace);
     }
   }
 
@@ -294,7 +294,7 @@ class SupabasePaymentRepository implements PaymentRepository {
         },
       );
     } catch (error, stackTrace) {
-      throw _mapError(error, stackTrace);
+      throw mapPaymentRepositoryError(error, stackTrace);
     }
   }
 }
@@ -308,8 +308,12 @@ String? _dateOnlyOrNull(DateTime? date) {
 }
 
 /// Maps a backend failure to a safe, user-presentable [PaymentFailure].
-/// Technical details are logged, never shown to the user.
-PaymentFailure _mapError(Object error, StackTrace stackTrace) {
+/// Technical details are logged, never shown to the user. Top-level
+/// (not private) so a test can construct a realistic
+/// [PostgrestException] for a known domain error code and assert it
+/// maps to the correct [PaymentFailureType] directly, without needing
+/// a full Supabase client.
+PaymentFailure mapPaymentRepositoryError(Object error, StackTrace stackTrace) {
   if (error is PostgrestException) {
     _log.warning('Payment RPC error (code=${error.code})', error, stackTrace);
 
@@ -348,6 +352,16 @@ PaymentFailure _mapError(Object error, StackTrace stackTrace) {
         'This payment cannot be reversed: the wallet credit it created has already been used.',
       );
     }
+    if (message.contains(
+      'LOAN_PREPAYMENT_REVERSAL_BLOCKED_SUBSEQUENT_ACTIVITY',
+    )) {
+      return const PaymentFailure(
+        PaymentFailureType.reversalBlockedSubsequentActivity,
+        'This payment cannot be reversed: later loan activity exists on '
+        'this loan, and reversing it would conflict with the loan\'s '
+        'current repayment schedule.',
+      );
+    }
     if (message.contains('PAYMENT_REVERSAL_REASON_REQUIRED')) {
       return const PaymentFailure(
         PaymentFailureType.reversalReasonRequired,
@@ -376,6 +390,27 @@ PaymentFailure _mapError(Object error, StackTrace stackTrace) {
       );
     }
 
+    return const PaymentFailure(
+      PaymentFailureType.unexpected,
+      'Something went wrong. Please try again.',
+    );
+  }
+
+  // A TypeError here is never a real "unexpected" runtime condition —
+  // it means a JSON payload didn't match what a domain model's
+  // fromJson assumed (e.g. a field the model treats as required came
+  // back null), a programming/contract bug rather than a transient
+  // failure. Logged distinctly so it's never mistaken for a flaky
+  // network blip in development, while the user still only ever sees
+  // the same safe generic message — never a raw type/database detail.
+  if (error is TypeError) {
+    _log.severe(
+      'Payment repository JSON/domain-model contract mismatch '
+      '(a field assumed non-null was null, or similar) — this is a '
+      'parsing bug, not a network/server error',
+      error,
+      stackTrace,
+    );
     return const PaymentFailure(
       PaymentFailureType.unexpected,
       'Something went wrong. Please try again.',

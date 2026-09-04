@@ -225,6 +225,24 @@ String loanFailureMessage(AppLocalizations l10n, LoanFailureType type) {
       l10n.loanErrorOpeningRemainingScheduleInvalid,
     LoanFailureType.openingNoOutstandingPosition =>
       l10n.loanErrorOpeningNoOutstandingPosition,
+    LoanFailureType.loanNotActive => l10n.loanErrorLoanNotActive,
+    LoanFailureType.alreadyFullySettled => l10n.loanErrorAlreadyFullySettled,
+    LoanFailureType.prepaymentAmountInvalid =>
+      l10n.loanErrorPrepaymentAmountInvalid,
+    LoanFailureType.prepaymentBlockedOverduePenalty =>
+      l10n.loanErrorPrepaymentBlockedOverduePenalty,
+    LoanFailureType.prepaymentBlockedOverdueInterest =>
+      l10n.loanErrorPrepaymentBlockedOverdueInterest,
+    LoanFailureType.prepaymentReversalBlockedSubsequentActivity =>
+      l10n.loanErrorPrepaymentReversalBlockedSubsequentActivity,
+    LoanFailureType.restructureReasonRequired =>
+      l10n.loanErrorRestructureReasonRequired,
+    LoanFailureType.restructureInputInvalid =>
+      l10n.loanErrorRestructureInputInvalid,
+    LoanFailureType.restructureBlockedOverdueBalance =>
+      l10n.loanErrorRestructureBlockedOverdueBalance,
+    LoanFailureType.restructureNothingRemaining =>
+      l10n.loanErrorRestructureNothingRemaining,
     LoanFailureType.notFound => l10n.loanErrorNotFound,
     LoanFailureType.permissionDenied => l10n.loanErrorPermissionDenied,
     LoanFailureType.network => l10n.loanErrorNetwork,
@@ -247,6 +265,8 @@ String paymentFailureMessage(AppLocalizations l10n, PaymentFailureType type) {
       l10n.paymentErrorAlreadyReversed,
     PaymentFailureType.reversalBlockedWalletCreditConsumed =>
       l10n.paymentErrorReversalBlockedWalletCreditConsumed,
+    PaymentFailureType.reversalBlockedSubsequentActivity =>
+      l10n.paymentErrorReversalBlockedSubsequentActivity,
     PaymentFailureType.reversalReasonRequired =>
       l10n.paymentErrorReversalReasonRequired,
     PaymentFailureType.walletInsufficientBalance =>

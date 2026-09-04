@@ -878,6 +878,12 @@ abstract class AppLocalizations {
   /// **'Zaidi'**
   String get moreTitle;
 
+  /// No description provided for @modulesSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Huduma'**
+  String get modulesSectionTitle;
+
   /// No description provided for @accountSectionTitle.
   ///
   /// In sw, this message translates to:
@@ -3920,6 +3926,12 @@ abstract class AppLocalizations {
   /// **'Malipo haya hayawezi kubatilishwa: salio la mwanachama lililoongezwa tayari limetumika.'**
   String get paymentErrorReversalBlockedWalletCreditConsumed;
 
+  /// No description provided for @paymentErrorReversalBlockedSubsequentActivity.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haiwezekani kubatilisha malipo haya. Kuna shughuli nyingine ya mkopo iliyofanyika baada ya malipo haya — kuyabatilisha kunaweza kuharibu ratiba ya sasa ya malipo ya mkopo.'**
+  String get paymentErrorReversalBlockedSubsequentActivity;
+
   /// No description provided for @paymentErrorReversalReasonRequired.
   ///
   /// In sw, this message translates to:
@@ -5653,6 +5665,318 @@ abstract class AppLocalizations {
     String loanNumber,
     String borrower,
   );
+
+  /// No description provided for @loanErrorLoanNotActive.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo huu haupo katika hali ya kutumika.'**
+  String get loanErrorLoanNotActive;
+
+  /// No description provided for @loanErrorAlreadyFullySettled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo huu tayari umelipwa kikamilifu.'**
+  String get loanErrorAlreadyFullySettled;
+
+  /// No description provided for @loanErrorPrepaymentAmountInvalid.
+  ///
+  /// In sw, this message translates to:
+  /// **'Weka kiasi cha malipo ya awali ambacho hakizidi salio la awamu zijazo.'**
+  String get loanErrorPrepaymentAmountInvalid;
+
+  /// No description provided for @loanErrorPrepaymentBlockedOverduePenalty.
+  ///
+  /// In sw, this message translates to:
+  /// **'Futa faini iliyochelewa kwa malipo ya kawaida kabla ya kulipa awali sehemu ya mtaji.'**
+  String get loanErrorPrepaymentBlockedOverduePenalty;
+
+  /// No description provided for @loanErrorPrepaymentBlockedOverdueInterest.
+  ///
+  /// In sw, this message translates to:
+  /// **'Futa riba iliyochelewa kwa malipo ya kawaida kabla ya kulipa awali sehemu ya mtaji.'**
+  String get loanErrorPrepaymentBlockedOverdueInterest;
+
+  /// No description provided for @loanErrorPrepaymentReversalBlockedSubsequentActivity.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo haya ya awali hayawezi kufutwa kwa sababu shughuli nyingine tayari zimerekodiwa dhidi ya ratiba yake iliyohesabiwa upya.'**
+  String get loanErrorPrepaymentReversalBlockedSubsequentActivity;
+
+  /// No description provided for @loanErrorRestructureReasonRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu ya kurekebisha mkopo inahitajika.'**
+  String get loanErrorRestructureReasonRequired;
+
+  /// No description provided for @loanErrorRestructureInputInvalid.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia idadi ya awamu inayopendekezwa, tarehe ya awamu ya kwanza, na kiwango cha riba.'**
+  String get loanErrorRestructureInputInvalid;
+
+  /// No description provided for @loanErrorRestructureBlockedOverdueBalance.
+  ///
+  /// In sw, this message translates to:
+  /// **'Futa kila salio lililochelewa kwa malipo ya kawaida kabla ya kurekebisha mkopo huu.'**
+  String get loanErrorRestructureBlockedOverdueBalance;
+
+  /// No description provided for @loanErrorRestructureNothingRemaining.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna kilichobaki kwenye mkopo huu cha kurekebisha.'**
+  String get loanErrorRestructureNothingRemaining;
+
+  /// No description provided for @loanEarlySettlementAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ulipaji wa Awali Kamili'**
+  String get loanEarlySettlementAction;
+
+  /// No description provided for @loanPrepayPrincipalAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo ya Awali ya Mtaji'**
+  String get loanPrepayPrincipalAction;
+
+  /// No description provided for @loanRestructureAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rekebisha Mkopo'**
+  String get loanRestructureAction;
+
+  /// No description provided for @loanEarlySettlementTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ulipaji wa Awali Kamili'**
+  String get loanEarlySettlementTitle;
+
+  /// No description provided for @loanEarlySettlementQuoteTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Makadirio ya Ulipaji'**
+  String get loanEarlySettlementQuoteTitle;
+
+  /// No description provided for @loanEarlySettlementOverduePenaltyLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Faini Iliyochelewa'**
+  String get loanEarlySettlementOverduePenaltyLabel;
+
+  /// No description provided for @loanEarlySettlementOverdueInterestLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba Iliyochelewa'**
+  String get loanEarlySettlementOverdueInterestLabel;
+
+  /// No description provided for @loanEarlySettlementOverduePrincipalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji Uliochelewa'**
+  String get loanEarlySettlementOverduePrincipalLabel;
+
+  /// No description provided for @loanEarlySettlementCurrentPenaltyLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Faini Inayolipika Sasa'**
+  String get loanEarlySettlementCurrentPenaltyLabel;
+
+  /// No description provided for @loanEarlySettlementCurrentInterestLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba Inayolipika Sasa'**
+  String get loanEarlySettlementCurrentInterestLabel;
+
+  /// No description provided for @loanEarlySettlementCurrentPrincipalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji Unaolipika Sasa'**
+  String get loanEarlySettlementCurrentPrincipalLabel;
+
+  /// No description provided for @loanEarlySettlementFuturePrincipalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji wa Baadaye (unaolipwa mapema)'**
+  String get loanEarlySettlementFuturePrincipalLabel;
+
+  /// No description provided for @loanEarlySettlementFutureUnearnedInterestLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba ya Baadaye Isiyopatikana (haitatozwa)'**
+  String get loanEarlySettlementFutureUnearnedInterestLabel;
+
+  /// No description provided for @loanEarlySettlementTotalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Kiasi cha Ulipaji'**
+  String get loanEarlySettlementTotalLabel;
+
+  /// No description provided for @loanEarlySettlementFinancialAccountFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Chanzo cha Fedha'**
+  String get loanEarlySettlementFinancialAccountFieldLabel;
+
+  /// No description provided for @loanEarlySettlementPaymentMethodFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Njia ya Malipo'**
+  String get loanEarlySettlementPaymentMethodFieldLabel;
+
+  /// No description provided for @loanEarlySettlementConfirmAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Lipa Mkopo Mapema'**
+  String get loanEarlySettlementConfirmAction;
+
+  /// No description provided for @loanEarlySettlementSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umelipwa mapema kikamilifu.'**
+  String get loanEarlySettlementSuccessMessage;
+
+  /// No description provided for @loanEarlySettlementSafetyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hii inalipa faini yoyote iliyobaki, riba inayolipika sasa, na mtaji wote uliobaki (hata usiopaswa kulipwa bado). Riba ya baadaye haitatozwa kamwe.'**
+  String get loanEarlySettlementSafetyMessage;
+
+  /// No description provided for @loanPrepaymentTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo ya Awali ya Mtaji'**
+  String get loanPrepaymentTitle;
+
+  /// No description provided for @loanPrepaymentAmountFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi cha Malipo ya Awali'**
+  String get loanPrepaymentAmountFieldLabel;
+
+  /// No description provided for @loanPrepaymentTreatmentFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina ya Urekebishaji wa Ratiba'**
+  String get loanPrepaymentTreatmentFieldLabel;
+
+  /// No description provided for @loanPrepaymentReduceTermLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Punguza Muda (dumisha kiasi cha awamu)'**
+  String get loanPrepaymentReduceTermLabel;
+
+  /// No description provided for @loanPrepaymentReduceInstallmentLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Punguza Awamu (dumisha muda)'**
+  String get loanPrepaymentReduceInstallmentLabel;
+
+  /// No description provided for @loanPrepaymentPreviewAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Onyesho la Awali'**
+  String get loanPrepaymentPreviewAction;
+
+  /// No description provided for @loanPrepaymentNewScheduleTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ratiba Ijayo Iliyohesabiwa Upya'**
+  String get loanPrepaymentNewScheduleTitle;
+
+  /// No description provided for @loanPrepaymentConfirmAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha Malipo ya Awali'**
+  String get loanPrepaymentConfirmAction;
+
+  /// No description provided for @loanPrepaymentSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo ya awali ya mtaji yamerekodiwa.'**
+  String get loanPrepaymentSuccessMessage;
+
+  /// No description provided for @loanPrepaymentFinancialAccountFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Chanzo cha Fedha'**
+  String get loanPrepaymentFinancialAccountFieldLabel;
+
+  /// No description provided for @loanPrepaymentPaymentMethodFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Njia ya Malipo'**
+  String get loanPrepaymentPaymentMethodFieldLabel;
+
+  /// No description provided for @loanPrepaymentFuturePrincipalBeforeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji wa Baadaye Kabla'**
+  String get loanPrepaymentFuturePrincipalBeforeLabel;
+
+  /// No description provided for @loanPrepaymentFuturePrincipalAfterLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji wa Baadaye Baada'**
+  String get loanPrepaymentFuturePrincipalAfterLabel;
+
+  /// No description provided for @loanRestructureTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rekebisha Mkopo'**
+  String get loanRestructureTitle;
+
+  /// No description provided for @loanRestructureReasonFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu'**
+  String get loanRestructureReasonFieldLabel;
+
+  /// No description provided for @loanRestructureNewTermFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Muda Mpya (idadi ya awamu)'**
+  String get loanRestructureNewTermFieldLabel;
+
+  /// No description provided for @loanRestructureNewFirstInstallmentDateFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe Mpya ya Awamu ya Kwanza'**
+  String get loanRestructureNewFirstInstallmentDateFieldLabel;
+
+  /// No description provided for @loanRestructureNewInterestRateFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiwango Kipya cha Riba (acha wazi kudumisha cha sasa)'**
+  String get loanRestructureNewInterestRateFieldLabel;
+
+  /// No description provided for @loanRestructurePreviewAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Onyesha Ratiba Inayopendekezwa'**
+  String get loanRestructurePreviewAction;
+
+  /// No description provided for @loanRestructureNewScheduleTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ratiba Mpya Inayopendekezwa'**
+  String get loanRestructureNewScheduleTitle;
+
+  /// No description provided for @loanRestructureConfirmAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha Urekebishaji'**
+  String get loanRestructureConfirmAction;
+
+  /// No description provided for @loanRestructureSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umerekebishwa.'**
+  String get loanRestructureSuccessMessage;
+
+  /// No description provided for @loanRestructureSafetyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hii inabadilisha ratiba ya mkataba ijayo pekee. Historia iliyokwisha lipwa haibadiliki kamwe, na hii imezuiwa iwapo salio lolote lililochelewa lipo.'**
+  String get loanRestructureSafetyMessage;
 }
 
 class _AppLocalizationsDelegate

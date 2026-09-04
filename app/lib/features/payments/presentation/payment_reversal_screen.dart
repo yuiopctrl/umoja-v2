@@ -72,6 +72,7 @@ class _PaymentReversalScreenState extends ConsumerState<PaymentReversalScreen> {
       title: l10n.reversePaymentTitle,
       maxWidth: 600,
       backTo: AppRoutes.paymentDetailPath(widget.paymentId),
+      backLabel: l10n.paymentDetailTitle,
       body: detailAsync.when(
         loading: () => const Padding(
           padding: EdgeInsets.symmetric(vertical: 64),

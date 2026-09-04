@@ -64,8 +64,17 @@ class _LoanInstallmentGroup extends _AllocationGroup {
   final String? loanNumber;
   final String? loanProductName;
   final int? installmentNumber;
-  final DateTime dueDate;
+  final DateTime? dueDate;
   final List<PaymentAllocationLine> componentLines;
+}
+
+/// A 09E lump-sum principal prepayment — never tied to a specific
+/// installment (no due date/installment number to group by), so it
+/// gets its own dedicated group rather than being folded into either
+/// [_ContributionLineGroup] or [_LoanInstallmentGroup].
+class _PrincipalPrepaymentGroup extends _AllocationGroup {
+  _PrincipalPrepaymentGroup(this.line);
+  final PaymentAllocationLine line;
 }
 
 /// Interest and principal for the same loan installment are always
@@ -79,6 +88,11 @@ List<_AllocationGroup> _groupAllocationLines(
   var i = 0;
   while (i < lines.length) {
     final line = lines[i];
+    if (line.isPrincipalPrepayment) {
+      groups.add(_PrincipalPrepaymentGroup(line));
+      i++;
+      continue;
+    }
     if (!line.isLoan) {
       groups.add(_ContributionLineGroup(line));
       i++;
@@ -152,7 +166,37 @@ class _AllocationGroupTile extends StatelessWidget {
       );
     }
 
+    if (group is _PrincipalPrepaymentGroup) {
+      final line = group.line;
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.loanPrepaymentTitle,
+                  style: Theme.of(context).textTheme.bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                if (line.loanProductName != null) Text(line.loanProductName!),
+                if (line.loanNumber != null)
+                  Text(
+                    line.loanNumber!,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(width: UmojaSpacing.sm),
+          Text(formatAmount(line.amount)),
+        ],
+      );
+    }
+
     group as _LoanInstallmentGroup;
+    final dueDate = group.dueDate;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -168,7 +212,8 @@ class _AllocationGroupTile extends StatelessWidget {
           [
             if (group.installmentNumber != null)
               l10n.loanInstallmentNumberLabel(group.installmentNumber!),
-            '${l10n.loanAllocationDueDateLabel} ${formatKiswahiliDate(group.dueDate)}',
+            if (dueDate != null)
+              '${l10n.loanAllocationDueDateLabel} ${formatKiswahiliDate(dueDate)}',
           ].join(' • '),
           style: Theme.of(context).textTheme.bodySmall,
         ),
