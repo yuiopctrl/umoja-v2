@@ -7,6 +7,7 @@ import 'package:umoja/features/loans/domain/loan_disbursement.dart';
 import 'package:umoja/features/loans/domain/loan_historical_arrears_installment.dart';
 import 'package:umoja/features/loans/domain/loan_installment.dart';
 import 'package:umoja/features/loans/domain/loan_migration_preview.dart';
+import 'package:umoja/features/loans/domain/loan_obligation_adjustment.dart';
 import 'package:umoja/features/loans/domain/loan_opening_position.dart';
 import 'package:umoja/features/loans/domain/loan_penalty_charge.dart';
 import 'package:umoja/features/loans/domain/loan_product.dart';
@@ -1000,6 +1001,349 @@ class FakeLoanRepository implements LoanRepository {
     _maybeThrow();
     return nextAccount;
   }
+
+  // -- Waivers & Corrections (Prompt 09F-A) -------------------------------
+
+  LoanObligationWaiverPreview? nextWaiverPreview;
+  final List<
+    ({
+      String groupId,
+      String loanAccountId,
+      String targetType,
+      String targetId,
+      double amount,
+      String reasonCode,
+    })
+  >
+  previewLoanObligationWaiverCalls = [];
+
+  @override
+  Future<LoanObligationWaiverPreview> previewLoanObligationWaiver({
+    required String groupId,
+    required String loanAccountId,
+    required String targetType,
+    required String targetId,
+    required double amount,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+  }) async {
+    previewLoanObligationWaiverCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      targetType: targetType,
+      targetId: targetId,
+      amount: amount,
+      reasonCode: reasonCode,
+    ));
+    _maybeThrow();
+    return nextWaiverPreview ??
+        fakeLoanObligationWaiverPreview(
+          targetType: targetType,
+          targetId: targetId,
+          waiverAmount: amount,
+        );
+  }
+
+  LoanObligationAdjustmentPostResult? nextWaiverResult;
+  final List<
+    ({
+      String groupId,
+      String loanAccountId,
+      String targetType,
+      String targetId,
+      double amount,
+      String reasonCode,
+    })
+  >
+  postLoanObligationWaiverCalls = [];
+
+  @override
+  Future<LoanObligationAdjustmentPostResult> postLoanObligationWaiver({
+    required String groupId,
+    required String loanAccountId,
+    required String targetType,
+    required String targetId,
+    required double amount,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+    String? idempotencyKey,
+  }) async {
+    postLoanObligationWaiverCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      targetType: targetType,
+      targetId: targetId,
+      amount: amount,
+      reasonCode: reasonCode,
+    ));
+    _maybeThrow();
+    return nextWaiverResult ??
+        fakeLoanObligationAdjustmentPostResult(
+          targetType: targetType,
+          adjustmentType: 'WAIVER',
+          amount: -amount,
+        );
+  }
+
+  LoanObligationCorrectionPreview? nextCorrectionPreview;
+  final List<
+    ({
+      String groupId,
+      String loanAccountId,
+      String targetType,
+      String targetId,
+      String adjustmentType,
+      double amount,
+      String reasonCode,
+    })
+  >
+  previewLoanObligationCorrectionCalls = [];
+
+  @override
+  Future<LoanObligationCorrectionPreview> previewLoanObligationCorrection({
+    required String groupId,
+    required String loanAccountId,
+    required String targetType,
+    required String targetId,
+    required String adjustmentType,
+    required double amount,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+  }) async {
+    previewLoanObligationCorrectionCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      targetType: targetType,
+      targetId: targetId,
+      adjustmentType: adjustmentType,
+      amount: amount,
+      reasonCode: reasonCode,
+    ));
+    _maybeThrow();
+    return nextCorrectionPreview ??
+        fakeLoanObligationCorrectionPreview(
+          targetType: targetType,
+          targetId: targetId,
+          adjustmentType: adjustmentType,
+          proposedCorrection: adjustmentType == 'CORRECTION_INCREASE'
+              ? amount
+              : -amount,
+        );
+  }
+
+  LoanObligationAdjustmentPostResult? nextCorrectionResult;
+  final List<
+    ({
+      String groupId,
+      String loanAccountId,
+      String targetType,
+      String targetId,
+      String adjustmentType,
+      double amount,
+      String reasonCode,
+    })
+  >
+  postLoanObligationCorrectionCalls = [];
+
+  @override
+  Future<LoanObligationAdjustmentPostResult> postLoanObligationCorrection({
+    required String groupId,
+    required String loanAccountId,
+    required String targetType,
+    required String targetId,
+    required String adjustmentType,
+    required double amount,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+    String? idempotencyKey,
+  }) async {
+    postLoanObligationCorrectionCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      targetType: targetType,
+      targetId: targetId,
+      adjustmentType: adjustmentType,
+      amount: amount,
+      reasonCode: reasonCode,
+    ));
+    _maybeThrow();
+    return nextCorrectionResult ??
+        fakeLoanObligationAdjustmentPostResult(
+          targetType: targetType,
+          adjustmentType: adjustmentType,
+          amount: adjustmentType == 'CORRECTION_INCREASE' ? amount : -amount,
+        );
+  }
+
+  LoanObligationAdjustmentReversalResult? nextReversalResult;
+  final List<({String groupId, String adjustmentId, String reversalReason})>
+  reverseLoanObligationAdjustmentCalls = [];
+
+  @override
+  Future<LoanObligationAdjustmentReversalResult>
+  reverseLoanObligationAdjustment({
+    required String groupId,
+    required String adjustmentId,
+    required String reversalReason,
+  }) async {
+    reverseLoanObligationAdjustmentCalls.add((
+      groupId: groupId,
+      adjustmentId: adjustmentId,
+      reversalReason: reversalReason,
+    ));
+    _maybeThrow();
+    return nextReversalResult ??
+        fakeLoanObligationAdjustmentReversalResult(
+          reversedAdjustmentId: adjustmentId,
+        );
+  }
+
+  LoanObligationAdjustmentPage nextAdjustmentsPage =
+      const LoanObligationAdjustmentPage(totalCount: 0, items: []);
+  final List<({String groupId, String loanAccountId, int limit, int offset})>
+  listLoanObligationAdjustmentsCalls = [];
+
+  @override
+  Future<LoanObligationAdjustmentPage> listLoanObligationAdjustments({
+    required String groupId,
+    required String loanAccountId,
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    listLoanObligationAdjustmentsCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      limit: limit,
+      offset: offset,
+    ));
+    _maybeThrow();
+    return nextAdjustmentsPage;
+  }
+}
+
+LoanObligationWaiverPreview fakeLoanObligationWaiverPreview({
+  String targetType = 'LOAN_PENALTY',
+  String targetId = 'target-1',
+  double currentOutstanding = 40000,
+  double waiverAmount = 15000,
+  double? remainingOutstanding,
+}) {
+  return LoanObligationWaiverPreview(
+    targetType: targetType,
+    targetId: targetId,
+    currentOutstanding: currentOutstanding,
+    waiverAmount: waiverAmount,
+    remainingOutstanding:
+        remainingOutstanding ?? (currentOutstanding - waiverAmount),
+    cashImpact: 0,
+    paymentCreated: false,
+    receiptCreated: false,
+  );
+}
+
+LoanObligationCorrectionPreview fakeLoanObligationCorrectionPreview({
+  String targetType = 'LOAN_PENALTY',
+  String targetId = 'target-1',
+  String adjustmentType = 'CORRECTION_DECREASE',
+  double sourceOriginalAmount = 50000,
+  double priorNetCorrections = 0,
+  double proposedCorrection = -10000,
+}) {
+  final currentEffectiveAmount = sourceOriginalAmount + priorNetCorrections;
+  return LoanObligationCorrectionPreview(
+    targetType: targetType,
+    targetId: targetId,
+    adjustmentType: adjustmentType,
+    sourceOriginalAmount: sourceOriginalAmount,
+    priorNetCorrections: priorNetCorrections,
+    currentEffectiveAmount: currentEffectiveAmount,
+    proposedCorrection: proposedCorrection,
+    newEffectiveAmount: currentEffectiveAmount + proposedCorrection,
+    outstandingBefore: currentEffectiveAmount,
+    outstandingAfter: currentEffectiveAmount + proposedCorrection,
+    cashImpact: 0,
+    paymentCreated: false,
+    receiptCreated: false,
+  );
+}
+
+LoanObligationAdjustmentPostResult fakeLoanObligationAdjustmentPostResult({
+  String adjustmentId = 'adjustment-1',
+  String targetType = 'LOAN_PENALTY',
+  String adjustmentType = 'WAIVER',
+  double amount = -15000,
+  double? outstandingAfter = 25000,
+  bool alreadyPosted = false,
+  String loanStatus = 'ACTIVE',
+}) {
+  return LoanObligationAdjustmentPostResult(
+    adjustmentId: adjustmentId,
+    targetType: targetType,
+    adjustmentType: adjustmentType,
+    amount: amount,
+    outstandingAfter: outstandingAfter,
+    alreadyPosted: alreadyPosted,
+    loanStatus: loanStatus,
+  );
+}
+
+LoanObligationAdjustmentReversalResult
+fakeLoanObligationAdjustmentReversalResult({
+  String reversalId = 'reversal-1',
+  String reversedAdjustmentId = 'adjustment-1',
+  String targetType = 'LOAN_PENALTY',
+  double reversedAmount = -15000,
+  double outstandingAfter = 40000,
+  String loanStatus = 'ACTIVE',
+}) {
+  return LoanObligationAdjustmentReversalResult(
+    reversalId: reversalId,
+    reversedAdjustmentId: reversedAdjustmentId,
+    targetType: targetType,
+    reversedAmount: reversedAmount,
+    outstandingAfter: outstandingAfter,
+    loanStatus: loanStatus,
+  );
+}
+
+LoanObligationAdjustment fakeLoanObligationAdjustment({
+  String id = 'adjustment-1',
+  String targetType = 'LOAN_PENALTY',
+  String? loanPenaltyChargeId = 'charge-1',
+  String? loanInstallmentId,
+  int? installmentNumber,
+  String adjustmentType = 'WAIVER',
+  double amount = -15000,
+  String reasonCode = 'HARDSHIP',
+  String? note,
+  DateTime? effectiveDate,
+  DateTime? createdAt,
+  String? createdBy = 'u1',
+  String? reversesAdjustmentId,
+  bool isReversed = false,
+  String? reversedByAdjustmentId,
+}) {
+  return LoanObligationAdjustment(
+    id: id,
+    targetType: targetType,
+    loanPenaltyChargeId: loanPenaltyChargeId,
+    loanInstallmentId: loanInstallmentId,
+    installmentNumber: installmentNumber,
+    adjustmentType: adjustmentType,
+    amount: amount,
+    reasonCode: reasonCode,
+    note: note,
+    effectiveDate: effectiveDate ?? DateTime.utc(2026, 1, 1),
+    createdAt: createdAt ?? DateTime.utc(2026, 1, 1),
+    createdBy: createdBy,
+    reversesAdjustmentId: reversesAdjustmentId,
+    isReversed: isReversed,
+    reversedByAdjustmentId: reversedByAdjustmentId,
+  );
 }
 
 LoanEarlySettlementQuote fakeLoanEarlySettlementQuote({

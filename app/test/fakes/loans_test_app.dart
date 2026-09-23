@@ -45,6 +45,9 @@ const loanAdminPermissions = [
   'loan.settle_early',
   'loan.prepay_principal',
   'loan.restructure',
+  'loan.waive',
+  'loan.correct',
+  'loan.correct_increase',
 ];
 
 /// CHAIRPERSON/SECRETARY's view-only grants — no `.manage`/`.create`/
@@ -63,7 +66,10 @@ const loanViewOnlyPermissions = [
 /// who submits/disburses is never the same one who decides approval).
 /// Also holds all three 09E loan-servicing permissions — matches the
 /// DB's actual role_permissions grant (ADMIN + TREASURER only; see
-/// 20260913092000_create_loan_servicing_schema.sql).
+/// 20260913092000_create_loan_servicing_schema.sql). Prompt 09F-A:
+/// TREASURER receives `loan.waive` ONLY — `loan.correct`/
+/// `loan.correct_increase` are deliberately withheld (ADMIN-only,
+/// section 3).
 const loanTreasurerPermissions = [
   'group.view',
   'loan_product.view',
@@ -82,6 +88,7 @@ const loanTreasurerPermissions = [
   'loan.settle_early',
   'loan.prepay_principal',
   'loan.restructure',
+  'loan.waive',
 ];
 
 /// CHAIRPERSON's 09B grants (section 23) — approve/reject/cancel, but
