@@ -2376,6 +2376,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loanStatusClosed => 'Closed';
 
   @override
+  String get loanStatusWrittenOff => 'Written Off';
+
+  @override
   String get newLoanAction => 'New Loan';
 
   @override
@@ -3314,6 +3317,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'A reversal cannot itself be reversed.';
 
   @override
+  String get loanErrorWriteOffNothingOutstanding =>
+      'There is nothing outstanding on this loan to write off.';
+
+  @override
+  String get loanErrorRecoveryTargetNotWrittenOff =>
+      'This loan is not written off.';
+
+  @override
+  String get loanErrorRecoveryExceedsRemainingBalance =>
+      'This recovery amount exceeds the remaining recoverable balance.';
+
+  @override
   String get loanWaiveObligationAction => 'Waive Obligation';
 
   @override
@@ -3450,4 +3465,138 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get loanObligationReverseSuccessMessage =>
       'The adjustment has been reversed.';
+
+  @override
+  String get loanWriteOffAction => 'Write Off';
+
+  @override
+  String get loanWriteOffTitle => 'Write Off Loan';
+
+  @override
+  String get loanWriteOffReasonProlongedDefault => 'Prolonged Default';
+
+  @override
+  String get loanWriteOffReasonBorrowerDeceased => 'Borrower Deceased';
+
+  @override
+  String get loanWriteOffReasonBorrowerUntraceable => 'Borrower Untraceable';
+
+  @override
+  String get loanWriteOffReasonUncollectibleCost =>
+      'Uncollectible / Cost of Recovery Too High';
+
+  @override
+  String get loanWriteOffReasonGroupDecision => 'Group Decision';
+
+  @override
+  String get loanWriteOffReasonOther => 'Other';
+
+  @override
+  String get loanWriteOffPrincipalLabel => 'Principal Outstanding to Write Off';
+
+  @override
+  String get loanWriteOffInterestLabel => 'Earned Interest to Write Off';
+
+  @override
+  String get loanWriteOffPenaltyLabel => 'Penalty to Write Off';
+
+  @override
+  String get loanWriteOffTotalLabel => 'Total Write-Off';
+
+  @override
+  String get loanWriteOffWarningMessage =>
+      'This writes off the remaining collectible loan balance. It is not a payment and no cash is received.';
+
+  @override
+  String get loanWriteOffConfirmAction => 'Confirm Write-Off';
+
+  @override
+  String get loanWriteOffSuccessMessage => 'The loan has been written off.';
+
+  @override
+  String get loanWriteOffSummaryTitle => 'Write-Off Summary';
+
+  @override
+  String get loanWriteOffDateLabel => 'Write-Off Date';
+
+  @override
+  String get loanWriteOffReasonLabel => 'Reason';
+
+  @override
+  String get loanWriteOffRecoveredToDateLabel => 'Recovered to Date';
+
+  @override
+  String get loanWriteOffRemainingRecoverableLabel => 'Remaining Recoverable';
+
+  @override
+  String get loanReverseWriteOffAction => 'Reverse Write-Off';
+
+  @override
+  String get loanReverseWriteOffConfirmTitle => 'Reverse this write-off?';
+
+  @override
+  String get loanReverseWriteOffReasonFieldLabel => 'Reversal Reason';
+
+  @override
+  String get loanReverseWriteOffSuccessMessage =>
+      'The write-off has been reversed.';
+
+  @override
+  String get loanRecordRecoveryAction => 'Record Recovery';
+
+  @override
+  String get loanRecoveryTitle => 'Record Recovery';
+
+  @override
+  String get loanRecoveryAmountFieldLabel => 'Amount';
+
+  @override
+  String get loanRecoveryFinancialAccountFieldLabel => 'Financial Account';
+
+  @override
+  String get loanRecoveryPaymentMethodFieldLabel => 'Payment Method';
+
+  @override
+  String get loanRecoveryExternalReferenceFieldLabel => 'External Reference';
+
+  @override
+  String get loanRecoveryNotesFieldLabel => 'Notes';
+
+  @override
+  String get loanRecoveryOriginalWrittenOffLabel =>
+      'Original Written-Off Amount';
+
+  @override
+  String get loanRecoveryPreviouslyRecoveredLabel => 'Previously Recovered';
+
+  @override
+  String get loanRecoveryRemainingBeforeLabel => 'Remaining Recoverable Before';
+
+  @override
+  String get loanRecoveryThisRecoveryLabel => 'This Recovery';
+
+  @override
+  String get loanRecoveryAllocationTitle => 'Recovery Allocation';
+
+  @override
+  String get loanRecoveryRemainingAfterLabel => 'Remaining Recoverable After';
+
+  @override
+  String get loanRecoveryConfirmAction => 'Confirm Recovery';
+
+  @override
+  String get loanRecoverySuccessMessage => 'The recovery has been recorded.';
+
+  @override
+  String get loanRecoveryAllocationHeading => 'Loan Recovery';
+
+  @override
+  String get loanRecoveryHistoryTitle => 'Recovery History';
+
+  @override
+  String get loanRecoveryHistoryEmptyMessage =>
+      'No recoveries have been recorded against this write-off.';
+
+  @override
+  String get loanRecoveryHistoryReversedLabel => 'Reversed';
 }

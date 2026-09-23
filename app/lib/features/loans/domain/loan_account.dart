@@ -188,9 +188,12 @@ class LoanAccount {
   final DateTime firstRepaymentDate;
 
   /// 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' | 'CANCELLED' |
-  /// 'DISBURSED' | 'ACTIVE' | 'CLOSED'. DISBURSED is transactional and
-  /// never observed at rest in Prompt 09B — disbursement moves a loan
-  /// straight from APPROVED to ACTIVE (see docs/product/loans.md).
+  /// 'DISBURSED' | 'ACTIVE' | 'CLOSED' | 'WRITTEN_OFF' (Prompt 09F-B).
+  /// DISBURSED is transactional and never observed at rest in Prompt
+  /// 09B — disbursement moves a loan straight from APPROVED to ACTIVE
+  /// (see docs/product/loans.md). WRITTEN_OFF is reached only from
+  /// ACTIVE and can be reversed back to ACTIVE while no dependent
+  /// recovery activity exists.
   final String status;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -245,6 +248,12 @@ class LoanAccount {
   bool get isFunded => status == 'DISBURSED' || status == 'ACTIVE';
   bool get isActive => status == 'ACTIVE';
   bool get isClosed => status == 'CLOSED';
+
+  /// Prompt 09F-B — reached only from ACTIVE, distinct from
+  /// CANCELLED/CLOSED. The full write-off/recovery detail is a separate
+  /// read model (`rpc_get_loan_write_off_summary`), not part of this
+  /// class.
+  bool get isWrittenOff => status == 'WRITTEN_OFF';
 
   /// Sum of every installment's interest — rendered directly from
   /// server-provided installment rows, never independently computed.

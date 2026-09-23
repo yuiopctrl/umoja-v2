@@ -230,6 +230,22 @@ enum LoanFailureType {
   /// reversal of a reversal is not supported.
   adjustmentReversalNotSupported,
 
+  /// `LOAN_WRITE_OFF_NOTHING_OUTSTANDING` (Prompt 09F-B) — an ACTIVE
+  /// loan with nothing outstanding to write off. In practice
+  /// unreachable through normal flows (a zero-outstanding ACTIVE loan
+  /// auto-closes first via `loan_account_recheck_closure`), but kept as
+  /// a defensive server-side guard.
+  writeOffNothingOutstanding,
+
+  /// `LOAN_RECOVERY_TARGET_NOT_WRITTEN_OFF` (Prompt 09F-B) — a recovery
+  /// was attempted against a loan that is not (or no longer) WRITTEN_OFF.
+  recoveryTargetNotWrittenOff,
+
+  /// `LOAN_RECOVERY_EXCEEDS_REMAINING_BALANCE` (Prompt 09F-B) — the
+  /// proposed recovery amount exceeds the write-off's remaining
+  /// recoverable balance; never a partial silent clamp.
+  recoveryExceedsRemainingBalance,
+
   /// Not found (product, membership, or loan account not in group).
   notFound,
 

@@ -2387,6 +2387,9 @@ class AppLocalizationsSw extends AppLocalizations {
   String get loanStatusClosed => 'Imefungwa';
 
   @override
+  String get loanStatusWrittenOff => 'Deni Potevu';
+
+  @override
   String get newLoanAction => 'Mkopo Mpya';
 
   @override
@@ -3324,6 +3327,18 @@ class AppLocalizationsSw extends AppLocalizations {
       'Kubatilisha hakiwezi kubatilishwa tena.';
 
   @override
+  String get loanErrorWriteOffNothingOutstanding =>
+      'Hakuna deni linalodaiwa kwenye mkopo huu la kufuta.';
+
+  @override
+  String get loanErrorRecoveryTargetNotWrittenOff =>
+      'Mkopo huu haujafutwa kama deni potevu.';
+
+  @override
+  String get loanErrorRecoveryExceedsRemainingBalance =>
+      'Kiasi hiki cha urejeshaji kinazidi salio linalobaki kurejeshwa.';
+
+  @override
   String get loanWaiveObligationAction => 'Samehe Deni';
 
   @override
@@ -3459,4 +3474,137 @@ class AppLocalizationsSw extends AppLocalizations {
   @override
   String get loanObligationReverseSuccessMessage =>
       'Marekebisho yamebatilishwa.';
+
+  @override
+  String get loanWriteOffAction => 'Futa kama Deni Potevu';
+
+  @override
+  String get loanWriteOffTitle => 'Futa Mkopo kama Deni Potevu';
+
+  @override
+  String get loanWriteOffReasonProlongedDefault => 'Kutolipa kwa Muda Mrefu';
+
+  @override
+  String get loanWriteOffReasonBorrowerDeceased => 'Mkopaji Amefariki';
+
+  @override
+  String get loanWriteOffReasonBorrowerUntraceable => 'Mkopaji Hapatikani';
+
+  @override
+  String get loanWriteOffReasonUncollectibleCost =>
+      'Haiwezekani Kukusanywa / Gharama ya Kukusanya ni Kubwa Mno';
+
+  @override
+  String get loanWriteOffReasonGroupDecision => 'Uamuzi wa Kikundi';
+
+  @override
+  String get loanWriteOffReasonOther => 'Nyingine';
+
+  @override
+  String get loanWriteOffPrincipalLabel => 'Mtaji Unaodaiwa Kufutwa';
+
+  @override
+  String get loanWriteOffInterestLabel => 'Riba Iliyopatikana Kufutwa';
+
+  @override
+  String get loanWriteOffPenaltyLabel => 'Faini Kufutwa';
+
+  @override
+  String get loanWriteOffTotalLabel => 'Jumla ya Deni Potevu';
+
+  @override
+  String get loanWriteOffWarningMessage =>
+      'Hii inaondoa salio la mkopo linalodaiwa kwenye madai hai. Si malipo na hakuna fedha inayopokelewa.';
+
+  @override
+  String get loanWriteOffConfirmAction => 'Thibitisha Kufuta Deni';
+
+  @override
+  String get loanWriteOffSuccessMessage => 'Mkopo umefutwa kama deni potevu.';
+
+  @override
+  String get loanWriteOffSummaryTitle => 'Muhtasari wa Deni Potevu';
+
+  @override
+  String get loanWriteOffDateLabel => 'Tarehe ya Kufuta Deni';
+
+  @override
+  String get loanWriteOffReasonLabel => 'Sababu';
+
+  @override
+  String get loanWriteOffRecoveredToDateLabel => 'Kilichorejeshwa Hadi Sasa';
+
+  @override
+  String get loanWriteOffRemainingRecoverableLabel =>
+      'Salio Linalobaki Kurejeshwa';
+
+  @override
+  String get loanReverseWriteOffAction => 'Batilisha Kufuta Deni';
+
+  @override
+  String get loanReverseWriteOffConfirmTitle => 'Batilisha kufuta deni hili?';
+
+  @override
+  String get loanReverseWriteOffReasonFieldLabel => 'Sababu ya Kubatilisha';
+
+  @override
+  String get loanReverseWriteOffSuccessMessage => 'Kufuta deni kumebatilishwa.';
+
+  @override
+  String get loanRecordRecoveryAction => 'Rekodi Urejeshaji';
+
+  @override
+  String get loanRecoveryTitle => 'Rekodi Urejeshaji';
+
+  @override
+  String get loanRecoveryAmountFieldLabel => 'Kiasi';
+
+  @override
+  String get loanRecoveryFinancialAccountFieldLabel => 'Akaunti ya Fedha';
+
+  @override
+  String get loanRecoveryPaymentMethodFieldLabel => 'Njia ya Malipo';
+
+  @override
+  String get loanRecoveryExternalReferenceFieldLabel => 'Kumbukumbu ya Nje';
+
+  @override
+  String get loanRecoveryNotesFieldLabel => 'Maelezo';
+
+  @override
+  String get loanRecoveryOriginalWrittenOffLabel => 'Kiasi Asili Kilichofutwa';
+
+  @override
+  String get loanRecoveryPreviouslyRecoveredLabel => 'Kilichorejeshwa Awali';
+
+  @override
+  String get loanRecoveryRemainingBeforeLabel => 'Salio Linalobaki Kabla';
+
+  @override
+  String get loanRecoveryThisRecoveryLabel => 'Urejeshaji Huu';
+
+  @override
+  String get loanRecoveryAllocationTitle => 'Mgao wa Urejeshaji';
+
+  @override
+  String get loanRecoveryRemainingAfterLabel => 'Salio Linalobaki Baada';
+
+  @override
+  String get loanRecoveryConfirmAction => 'Thibitisha Urejeshaji';
+
+  @override
+  String get loanRecoverySuccessMessage => 'Urejeshaji umerekodiwa.';
+
+  @override
+  String get loanRecoveryAllocationHeading => 'Urejeshaji wa Mkopo';
+
+  @override
+  String get loanRecoveryHistoryTitle => 'Historia ya Urejeshaji';
+
+  @override
+  String get loanRecoveryHistoryEmptyMessage =>
+      'Hakuna urejeshaji uliorekodiwa dhidi ya deni hili potevu.';
+
+  @override
+  String get loanRecoveryHistoryReversedLabel => 'Imebatilishwa';
 }

@@ -9,6 +9,7 @@ import '../domain/loan_penalty_charge.dart';
 import '../domain/loan_product.dart';
 import '../domain/loan_schedule_preview.dart';
 import '../domain/loan_servicing.dart';
+import '../domain/loan_write_off_recovery.dart';
 import 'loan_failure.dart';
 import 'loan_repository.dart';
 
@@ -956,6 +957,169 @@ class SupabaseLoanRepository implements LoanRepository {
       throw _mapError(error, stackTrace);
     }
   }
+
+  @override
+  Future<LoanWriteOffPreview> previewLoanWriteOff({
+    required String groupId,
+    required String loanAccountId,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+  }) async {
+    try {
+      final params = <String, dynamic>{
+        'p_group_id': groupId,
+        'p_loan_account_id': loanAccountId,
+        'p_reason_code': reasonCode,
+        'p_note': note,
+      };
+      final effectiveDateOnly = _dateOnlyOrNull(effectiveDate);
+      if (effectiveDateOnly != null) {
+        params['p_effective_date'] = effectiveDateOnly;
+      }
+      final result = await _client.rpc(
+        'rpc_preview_loan_write_off',
+        params: params,
+      );
+      return LoanWriteOffPreview.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanWriteOffPostResult> postLoanWriteOff({
+    required String groupId,
+    required String loanAccountId,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+    String? idempotencyKey,
+  }) async {
+    try {
+      final params = <String, dynamic>{
+        'p_group_id': groupId,
+        'p_loan_account_id': loanAccountId,
+        'p_reason_code': reasonCode,
+        'p_note': note,
+        'p_idempotency_key': idempotencyKey,
+      };
+      final effectiveDateOnly = _dateOnlyOrNull(effectiveDate);
+      if (effectiveDateOnly != null) {
+        params['p_effective_date'] = effectiveDateOnly;
+      }
+      final result = await _client.rpc(
+        'rpc_post_loan_write_off',
+        params: params,
+      );
+      return LoanWriteOffPostResult.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanWriteOffReversalResult> reverseLoanWriteOff({
+    required String groupId,
+    required String writeOffEventId,
+    required String reversalReason,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_reverse_loan_write_off',
+        params: {
+          'p_group_id': groupId,
+          'p_write_off_event_id': writeOffEventId,
+          'p_reversal_reason': reversalReason,
+        },
+      );
+      return LoanWriteOffReversalResult.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanRecoveryPreview> previewLoanRecovery({
+    required String groupId,
+    required String loanAccountId,
+    required double amount,
+    DateTime? effectiveDate,
+  }) async {
+    try {
+      final params = <String, dynamic>{
+        'p_group_id': groupId,
+        'p_loan_account_id': loanAccountId,
+        'p_amount': amount,
+      };
+      final effectiveDateOnly = _dateOnlyOrNull(effectiveDate);
+      if (effectiveDateOnly != null) {
+        params['p_effective_date'] = effectiveDateOnly;
+      }
+      final result = await _client.rpc(
+        'rpc_preview_loan_recovery',
+        params: params,
+      );
+      return LoanRecoveryPreview.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanRecoveryPostResult> postLoanRecovery({
+    required String groupId,
+    required String loanAccountId,
+    required double amount,
+    required String financialAccountId,
+    required String paymentMethod,
+    DateTime? effectiveDate,
+    String? externalReference,
+    String? notes,
+    String? idempotencyKey,
+  }) async {
+    try {
+      final params = <String, dynamic>{
+        'p_group_id': groupId,
+        'p_loan_account_id': loanAccountId,
+        'p_amount': amount,
+        'p_financial_account_id': financialAccountId,
+        'p_payment_method': paymentMethod,
+        'p_external_reference': externalReference,
+        'p_notes': notes,
+        'p_idempotency_key': idempotencyKey,
+      };
+      final effectiveDateOnly = _dateOnlyOrNull(effectiveDate);
+      if (effectiveDateOnly != null) {
+        params['p_effective_date'] = effectiveDateOnly;
+      }
+      final result = await _client.rpc(
+        'rpc_post_loan_recovery',
+        params: params,
+      );
+      return LoanRecoveryPostResult.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanWriteOffSummary> getLoanWriteOffSummary({
+    required String groupId,
+    required String loanAccountId,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_get_loan_write_off_summary',
+        params: {'p_group_id': groupId, 'p_loan_account_id': loanAccountId},
+      );
+      return LoanWriteOffSummary.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
 }
 
 List<Map<String, dynamic>> _arrearsJson(
@@ -1385,6 +1549,24 @@ LoanFailure _mapError(Object error, StackTrace stackTrace) {
       return const LoanFailure(
         LoanFailureType.adjustmentReversalNotSupported,
         'A reversal cannot itself be reversed.',
+      );
+    }
+    if (message.contains('LOAN_WRITE_OFF_NOTHING_OUTSTANDING')) {
+      return const LoanFailure(
+        LoanFailureType.writeOffNothingOutstanding,
+        'There is nothing outstanding on this loan to write off.',
+      );
+    }
+    if (message.contains('LOAN_RECOVERY_TARGET_NOT_WRITTEN_OFF')) {
+      return const LoanFailure(
+        LoanFailureType.recoveryTargetNotWrittenOff,
+        'This loan is not written off.',
+      );
+    }
+    if (message.contains('LOAN_RECOVERY_EXCEEDS_REMAINING_BALANCE')) {
+      return const LoanFailure(
+        LoanFailureType.recoveryExceedsRemainingBalance,
+        'This recovery amount exceeds the remaining recoverable balance.',
       );
     }
     if (message.contains('name is required') ||

@@ -184,8 +184,8 @@ class PaymentAllocationLine {
 
   /// True for a line tied to a specific loan installment (interest/
   /// principal/penalty). Deliberately excludes
-  /// [isPrincipalPrepayment] — a prepayment is loan-related but never
-  /// tied to one installment, so it never has a [dueDate]/
+  /// [isPrincipalPrepayment] and [isRecoveryAllocation] — neither is
+  /// tied to one installment, so neither has a [dueDate]/
   /// [installmentNumber] to group by the way these three do.
   bool get isLoan =>
       obligationKind == 'LOAN_INTEREST' ||
@@ -200,4 +200,14 @@ class PaymentAllocationLine {
   /// per-installment loan line.
   bool get isPrincipalPrepayment =>
       obligationKind == 'LOAN_PRINCIPAL_PREPAYMENT';
+
+  /// A 09F-B recovery component against a written-off loan's remaining
+  /// recoverable balance — structurally never tied to a specific
+  /// installment (a written-off loan's own installments are no longer
+  /// serviced), so, like [isPrincipalPrepayment], it must never be
+  /// grouped/labeled as an ordinary per-installment loan line.
+  bool get isRecoveryAllocation =>
+      obligationKind == 'LOAN_RECOVERY_PRINCIPAL' ||
+      obligationKind == 'LOAN_RECOVERY_INTEREST' ||
+      obligationKind == 'LOAN_RECOVERY_PENALTY';
 }

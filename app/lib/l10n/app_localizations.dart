@@ -4430,6 +4430,12 @@ abstract class AppLocalizations {
   /// **'Imefungwa'**
   String get loanStatusClosed;
 
+  /// No description provided for @loanStatusWrittenOff.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni Potevu'**
+  String get loanStatusWrittenOff;
+
   /// No description provided for @newLoanAction.
   ///
   /// In sw, this message translates to:
@@ -6074,6 +6080,24 @@ abstract class AppLocalizations {
   /// **'Kubatilisha hakiwezi kubatilishwa tena.'**
   String get loanErrorAdjustmentReversalNotSupported;
 
+  /// No description provided for @loanErrorWriteOffNothingOutstanding.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna deni linalodaiwa kwenye mkopo huu la kufuta.'**
+  String get loanErrorWriteOffNothingOutstanding;
+
+  /// No description provided for @loanErrorRecoveryTargetNotWrittenOff.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo huu haujafutwa kama deni potevu.'**
+  String get loanErrorRecoveryTargetNotWrittenOff;
+
+  /// No description provided for @loanErrorRecoveryExceedsRemainingBalance.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi hiki cha urejeshaji kinazidi salio linalobaki kurejeshwa.'**
+  String get loanErrorRecoveryExceedsRemainingBalance;
+
   /// No description provided for @loanWaiveObligationAction.
   ///
   /// In sw, this message translates to:
@@ -6337,6 +6361,264 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Marekebisho yamebatilishwa.'**
   String get loanObligationReverseSuccessMessage;
+
+  /// No description provided for @loanWriteOffAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Futa kama Deni Potevu'**
+  String get loanWriteOffAction;
+
+  /// No description provided for @loanWriteOffTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Futa Mkopo kama Deni Potevu'**
+  String get loanWriteOffTitle;
+
+  /// No description provided for @loanWriteOffReasonProlongedDefault.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kutolipa kwa Muda Mrefu'**
+  String get loanWriteOffReasonProlongedDefault;
+
+  /// No description provided for @loanWriteOffReasonBorrowerDeceased.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopaji Amefariki'**
+  String get loanWriteOffReasonBorrowerDeceased;
+
+  /// No description provided for @loanWriteOffReasonBorrowerUntraceable.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopaji Hapatikani'**
+  String get loanWriteOffReasonBorrowerUntraceable;
+
+  /// No description provided for @loanWriteOffReasonUncollectibleCost.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haiwezekani Kukusanywa / Gharama ya Kukusanya ni Kubwa Mno'**
+  String get loanWriteOffReasonUncollectibleCost;
+
+  /// No description provided for @loanWriteOffReasonGroupDecision.
+  ///
+  /// In sw, this message translates to:
+  /// **'Uamuzi wa Kikundi'**
+  String get loanWriteOffReasonGroupDecision;
+
+  /// No description provided for @loanWriteOffReasonOther.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nyingine'**
+  String get loanWriteOffReasonOther;
+
+  /// No description provided for @loanWriteOffPrincipalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji Unaodaiwa Kufutwa'**
+  String get loanWriteOffPrincipalLabel;
+
+  /// No description provided for @loanWriteOffInterestLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba Iliyopatikana Kufutwa'**
+  String get loanWriteOffInterestLabel;
+
+  /// No description provided for @loanWriteOffPenaltyLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Faini Kufutwa'**
+  String get loanWriteOffPenaltyLabel;
+
+  /// No description provided for @loanWriteOffTotalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Deni Potevu'**
+  String get loanWriteOffTotalLabel;
+
+  /// No description provided for @loanWriteOffWarningMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hii inaondoa salio la mkopo linalodaiwa kwenye madai hai. Si malipo na hakuna fedha inayopokelewa.'**
+  String get loanWriteOffWarningMessage;
+
+  /// No description provided for @loanWriteOffConfirmAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha Kufuta Deni'**
+  String get loanWriteOffConfirmAction;
+
+  /// No description provided for @loanWriteOffSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umefutwa kama deni potevu.'**
+  String get loanWriteOffSuccessMessage;
+
+  /// No description provided for @loanWriteOffSummaryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Muhtasari wa Deni Potevu'**
+  String get loanWriteOffSummaryTitle;
+
+  /// No description provided for @loanWriteOffDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Kufuta Deni'**
+  String get loanWriteOffDateLabel;
+
+  /// No description provided for @loanWriteOffReasonLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu'**
+  String get loanWriteOffReasonLabel;
+
+  /// No description provided for @loanWriteOffRecoveredToDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kilichorejeshwa Hadi Sasa'**
+  String get loanWriteOffRecoveredToDateLabel;
+
+  /// No description provided for @loanWriteOffRemainingRecoverableLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio Linalobaki Kurejeshwa'**
+  String get loanWriteOffRemainingRecoverableLabel;
+
+  /// No description provided for @loanReverseWriteOffAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Batilisha Kufuta Deni'**
+  String get loanReverseWriteOffAction;
+
+  /// No description provided for @loanReverseWriteOffConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Batilisha kufuta deni hili?'**
+  String get loanReverseWriteOffConfirmTitle;
+
+  /// No description provided for @loanReverseWriteOffReasonFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu ya Kubatilisha'**
+  String get loanReverseWriteOffReasonFieldLabel;
+
+  /// No description provided for @loanReverseWriteOffSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kufuta deni kumebatilishwa.'**
+  String get loanReverseWriteOffSuccessMessage;
+
+  /// No description provided for @loanRecordRecoveryAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rekodi Urejeshaji'**
+  String get loanRecordRecoveryAction;
+
+  /// No description provided for @loanRecoveryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rekodi Urejeshaji'**
+  String get loanRecoveryTitle;
+
+  /// No description provided for @loanRecoveryAmountFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi'**
+  String get loanRecoveryAmountFieldLabel;
+
+  /// No description provided for @loanRecoveryFinancialAccountFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Akaunti ya Fedha'**
+  String get loanRecoveryFinancialAccountFieldLabel;
+
+  /// No description provided for @loanRecoveryPaymentMethodFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Njia ya Malipo'**
+  String get loanRecoveryPaymentMethodFieldLabel;
+
+  /// No description provided for @loanRecoveryExternalReferenceFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kumbukumbu ya Nje'**
+  String get loanRecoveryExternalReferenceFieldLabel;
+
+  /// No description provided for @loanRecoveryNotesFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo'**
+  String get loanRecoveryNotesFieldLabel;
+
+  /// No description provided for @loanRecoveryOriginalWrittenOffLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Asili Kilichofutwa'**
+  String get loanRecoveryOriginalWrittenOffLabel;
+
+  /// No description provided for @loanRecoveryPreviouslyRecoveredLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kilichorejeshwa Awali'**
+  String get loanRecoveryPreviouslyRecoveredLabel;
+
+  /// No description provided for @loanRecoveryRemainingBeforeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio Linalobaki Kabla'**
+  String get loanRecoveryRemainingBeforeLabel;
+
+  /// No description provided for @loanRecoveryThisRecoveryLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Urejeshaji Huu'**
+  String get loanRecoveryThisRecoveryLabel;
+
+  /// No description provided for @loanRecoveryAllocationTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mgao wa Urejeshaji'**
+  String get loanRecoveryAllocationTitle;
+
+  /// No description provided for @loanRecoveryRemainingAfterLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio Linalobaki Baada'**
+  String get loanRecoveryRemainingAfterLabel;
+
+  /// No description provided for @loanRecoveryConfirmAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha Urejeshaji'**
+  String get loanRecoveryConfirmAction;
+
+  /// No description provided for @loanRecoverySuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Urejeshaji umerekodiwa.'**
+  String get loanRecoverySuccessMessage;
+
+  /// No description provided for @loanRecoveryAllocationHeading.
+  ///
+  /// In sw, this message translates to:
+  /// **'Urejeshaji wa Mkopo'**
+  String get loanRecoveryAllocationHeading;
+
+  /// No description provided for @loanRecoveryHistoryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Historia ya Urejeshaji'**
+  String get loanRecoveryHistoryTitle;
+
+  /// No description provided for @loanRecoveryHistoryEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna urejeshaji uliorekodiwa dhidi ya deni hili potevu.'**
+  String get loanRecoveryHistoryEmptyMessage;
+
+  /// No description provided for @loanRecoveryHistoryReversedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imebatilishwa'**
+  String get loanRecoveryHistoryReversedLabel;
 }
 
 class _AppLocalizationsDelegate

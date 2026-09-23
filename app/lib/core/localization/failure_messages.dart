@@ -275,6 +275,12 @@ String loanFailureMessage(AppLocalizations l10n, LoanFailureType type) {
       l10n.loanErrorAdjustmentReversalBlockedSubsequentActivity,
     LoanFailureType.adjustmentReversalNotSupported =>
       l10n.loanErrorAdjustmentReversalNotSupported,
+    LoanFailureType.writeOffNothingOutstanding =>
+      l10n.loanErrorWriteOffNothingOutstanding,
+    LoanFailureType.recoveryTargetNotWrittenOff =>
+      l10n.loanErrorRecoveryTargetNotWrittenOff,
+    LoanFailureType.recoveryExceedsRemainingBalance =>
+      l10n.loanErrorRecoveryExceedsRemainingBalance,
     LoanFailureType.notFound => l10n.loanErrorNotFound,
     LoanFailureType.permissionDenied => l10n.loanErrorPermissionDenied,
     LoanFailureType.network => l10n.loanErrorNetwork,

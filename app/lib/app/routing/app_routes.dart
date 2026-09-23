@@ -405,4 +405,17 @@ class AppRoutes {
     String targetType,
     String targetId,
   ) => '/loans/accounts/$loanAccountId/correct/$targetType/$targetId';
+
+  // -- Write-off & Recovery (Prompt 09F-B) ---------------------------------
+
+  /// Path template; use [loanWriteOffPath] for a concrete URL.
+  static const loanWriteOff = '/loans/accounts/:loanAccountId/write-off';
+  static String loanWriteOffPath(String loanAccountId) =>
+      '/loans/accounts/$loanAccountId/write-off';
+
+  /// Path template; use [loanRecordRecoveryPath] for a concrete URL.
+  static const loanRecordRecovery =
+      '/loans/accounts/:loanAccountId/record-recovery';
+  static String loanRecordRecoveryPath(String loanAccountId) =>
+      '/loans/accounts/$loanAccountId/record-recovery';
 }

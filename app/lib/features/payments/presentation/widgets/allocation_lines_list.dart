@@ -77,6 +77,25 @@ class _PrincipalPrepaymentGroup extends _AllocationGroup {
   final PaymentAllocationLine line;
 }
 
+/// A 09F-B loan recovery — one to three component lines (PENALTY,
+/// INTEREST, PRINCIPAL, in that order) all belonging to the SAME
+/// recovery payment against the SAME written-off loan, always emitted
+/// contiguously by `rpc_post_loan_recovery`'s allocation insert order.
+/// Never tied to a specific installment (a written-off loan's
+/// installments are no longer serviced), so — like
+/// [_PrincipalPrepaymentGroup] — it gets its own dedicated group.
+class _RecoveryAllocationGroup extends _AllocationGroup {
+  _RecoveryAllocationGroup({
+    required this.loanNumber,
+    required this.loanProductName,
+    required this.componentLines,
+  });
+
+  final String? loanNumber;
+  final String? loanProductName;
+  final List<PaymentAllocationLine> componentLines;
+}
+
 /// Interest and principal for the same loan installment are always
 /// emitted contiguously by the server's allocation walk, so a simple
 /// adjacent-run grouping is correct and complete — never a client-side
@@ -91,6 +110,26 @@ List<_AllocationGroup> _groupAllocationLines(
     if (line.isPrincipalPrepayment) {
       groups.add(_PrincipalPrepaymentGroup(line));
       i++;
+      continue;
+    }
+    if (line.isRecoveryAllocation) {
+      final loanNumber = line.loanNumber;
+      final component = <PaymentAllocationLine>[line];
+      var j = i + 1;
+      while (j < lines.length &&
+          lines[j].isRecoveryAllocation &&
+          lines[j].loanNumber == loanNumber) {
+        component.add(lines[j]);
+        j++;
+      }
+      groups.add(
+        _RecoveryAllocationGroup(
+          loanNumber: line.loanNumber,
+          loanProductName: line.loanProductName,
+          componentLines: component,
+        ),
+      );
+      i = j;
       continue;
     }
     if (!line.isLoan) {
@@ -191,6 +230,42 @@ class _AllocationGroupTile extends StatelessWidget {
           ),
           const SizedBox(width: UmojaSpacing.sm),
           Text(formatAmount(line.amount)),
+        ],
+      );
+    }
+
+    if (group is _RecoveryAllocationGroup) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.loanRecoveryAllocationHeading,
+            style: Theme.of(context).textTheme.bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          if (group.loanProductName != null) Text(group.loanProductName!),
+          if (group.loanNumber != null)
+            Text(
+              group.loanNumber!,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          const SizedBox(height: UmojaSpacing.xs),
+          for (final componentLine in group.componentLines)
+            Padding(
+              padding: const EdgeInsets.only(bottom: UmojaSpacing.xs),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      loanComponentTypeLabel(l10n, componentLine.componentType),
+                    ),
+                  ),
+                  const SizedBox(width: UmojaSpacing.sm),
+                  Text(formatAmount(componentLine.amount)),
+                ],
+              ),
+            ),
         ],
       );
     }

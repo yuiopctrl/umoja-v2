@@ -52,6 +52,17 @@ class FinancialPosition {
     this.recognizedLoanInterestIncome = 0,
     this.loanPenaltiesOutstanding = 0,
     this.recognizedLoanPenaltyIncome = 0,
+    this.writtenOffPrincipal = 0,
+    this.writtenOffInterest = 0,
+    this.writtenOffPenalty = 0,
+    this.writtenOffTotal = 0,
+    this.recoveredPrincipal = 0,
+    this.recoveredInterest = 0,
+    this.recoveredPenalty = 0,
+    this.recoveredTotal = 0,
+    this.remainingRecoverableTotal = 0,
+    this.recognizedLoanRecoveryInterestIncome = 0,
+    this.recognizedLoanRecoveryPenaltyIncome = 0,
   });
 
   factory FinancialPosition.fromJson(Map<String, dynamic> json) {
@@ -90,6 +101,27 @@ class FinancialPosition {
           (json['loan_penalties_outstanding'] as num?)?.toDouble() ?? 0,
       recognizedLoanPenaltyIncome:
           (json['recognized_loan_penalty_income'] as num?)?.toDouble() ?? 0,
+      writtenOffPrincipal:
+          (json['written_off_principal'] as num?)?.toDouble() ?? 0,
+      writtenOffInterest:
+          (json['written_off_interest'] as num?)?.toDouble() ?? 0,
+      writtenOffPenalty: (json['written_off_penalty'] as num?)?.toDouble() ?? 0,
+      writtenOffTotal: (json['written_off_total'] as num?)?.toDouble() ?? 0,
+      recoveredPrincipal:
+          (json['recovered_principal'] as num?)?.toDouble() ?? 0,
+      recoveredInterest: (json['recovered_interest'] as num?)?.toDouble() ?? 0,
+      recoveredPenalty: (json['recovered_penalty'] as num?)?.toDouble() ?? 0,
+      recoveredTotal: (json['recovered_total'] as num?)?.toDouble() ?? 0,
+      remainingRecoverableTotal:
+          (json['remaining_recoverable_total'] as num?)?.toDouble() ?? 0,
+      recognizedLoanRecoveryInterestIncome:
+          (json['recognized_loan_recovery_interest_income'] as num?)
+              ?.toDouble() ??
+          0,
+      recognizedLoanRecoveryPenaltyIncome:
+          (json['recognized_loan_recovery_penalty_income'] as num?)
+              ?.toDouble() ??
+          0,
     );
   }
 
@@ -167,4 +199,36 @@ class FinancialPosition {
   /// LOAN_PENALTY, never merely because a penalty was assessed;
   /// already included inside [groupIncome], never double-counted.
   final double recognizedLoanPenaltyIncome;
+
+  /// Balance AS OF [asOf] (Prompt 09F-B) — sum of every non-reversed
+  /// write-off event's frozen principal across the group. Already
+  /// excluded from [fundedLoanPrincipalReceivable] (a written-off loan
+  /// drops out of the active receivable aggregate entirely).
+  final double writtenOffPrincipal;
+
+  /// Balance AS OF [asOf] (Prompt 09F-B) — earned/payable interest
+  /// frozen at write-off time only; future/unearned interest is never
+  /// included here or anywhere else as a loss.
+  final double writtenOffInterest;
+  final double writtenOffPenalty;
+  final double writtenOffTotal;
+
+  /// Balance AS OF [asOf] (Prompt 09F-B) — every non-reversed recovery's
+  /// principal across the group. Never treated as income, matching the
+  /// existing rule that ordinary principal repayment is never income.
+  final double recoveredPrincipal;
+  final double recoveredInterest;
+  final double recoveredPenalty;
+  final double recoveredTotal;
+
+  /// [writtenOffTotal] minus [recoveredTotal] — the group-wide
+  /// outstanding recoverable balance across every written-off loan.
+  final double remainingRecoverableTotal;
+
+  /// Movement DURING the period (Prompt 09F-B) — recovered interest
+  /// recognized as its own distinct income field, never merged into
+  /// [recognizedLoanInterestIncome] (which stays ordinary-servicing
+  /// only); already included inside [groupIncome], never double-counted.
+  final double recognizedLoanRecoveryInterestIncome;
+  final double recognizedLoanRecoveryPenaltyIncome;
 }

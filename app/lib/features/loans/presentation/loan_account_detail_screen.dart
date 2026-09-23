@@ -19,12 +19,16 @@ import '../../auth/providers/selected_group_provider.dart';
 import '../controllers/loan_account_draft_controller.dart';
 import '../controllers/loan_obligation_adjustment_controller.dart';
 import '../controllers/loan_workflow_controller.dart';
+import '../controllers/loan_write_off_recovery_controller.dart';
 import '../domain/loan_account.dart';
 import '../domain/loan_installment.dart';
 import '../domain/loan_obligation_adjustment.dart';
+import '../domain/loan_write_off_recovery.dart';
 import '../providers/loan_account_detail_provider.dart';
 import '../providers/loan_obligation_adjustments_provider.dart';
 import '../providers/loan_penalty_charges_provider.dart';
+import '../providers/loan_write_off_summary_provider.dart';
+import 'loan_write_off_screen.dart' show loanWriteOffReasonLabel;
 import 'widgets/loan_labels.dart';
 
 /// `/loans/accounts/:loanAccountId`: a single loan account, its
@@ -161,6 +165,11 @@ class LoanAccountDetailScreen extends ConsumerWidget {
     final canCorrect = membership?.hasPermission('loan.correct') ?? false;
     final canCorrectIncrease =
         membership?.hasPermission('loan.correct_increase') ?? false;
+    final canWriteOff = membership?.hasPermission('loan.write_off') ?? false;
+    final canReverseWriteOff =
+        membership?.hasPermission('loan.write_off.reverse') ?? false;
+    final canRecordRecovery =
+        membership?.hasPermission('loan.recovery.create') ?? false;
 
     return UmojaPage(
       title: l10n.loanAccountDetailTitle,
@@ -195,6 +204,7 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                           ),
                         ),
                         UmojaStatusBadge(
+                          key: const Key('loanAccountStatusBadge'),
                           label: loanAccountStatusLabel(l10n, loan.status),
                           semantic: loanAccountStatusSemantic(loan.status),
                         ),
@@ -392,7 +402,7 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                   ),
                 ],
               ],
-              if (loan.isActive || loan.isClosed) ...[
+              if (loan.isActive || loan.isClosed || loan.isWrittenOff) ...[
                 const SizedBox(height: UmojaSpacing.xxl),
                 Text(
                   l10n.loanScheduleTitle,
@@ -718,7 +728,7 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                   },
                 ),
               ],
-              if (loan.isActive || loan.isClosed) ...[
+              if (loan.isActive || loan.isClosed || loan.isWrittenOff) ...[
                 const SizedBox(height: UmojaSpacing.xxl),
                 Text(
                   l10n.loanObligationHistoryTitle,
@@ -882,7 +892,7 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: UmojaSpacing.md),
                   ],
-                  if (canRestructure)
+                  if (canRestructure) ...[
                     UmojaSecondaryButton(
                       key: const Key('loanRestructureAction'),
                       label: l10n.loanRestructureAction,
@@ -890,6 +900,26 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                         AppRoutes.loanAccountRestructurePath(loanAccountId),
                       ),
                     ),
+                    const SizedBox(height: UmojaSpacing.md),
+                  ],
+                  if (canWriteOff)
+                    UmojaDangerButton(
+                      key: const Key('loanWriteOffAction'),
+                      label: l10n.loanWriteOffAction,
+                      onPressed: () => context.push(
+                        AppRoutes.loanWriteOffPath(loanAccountId),
+                      ),
+                    ),
+                ],
+                if (loan.isWrittenOff) ...[
+                  const SizedBox(height: UmojaSpacing.lg),
+                  _LoanWriteOffSummarySection(
+                    key: const Key('loanWriteOffSummarySection'),
+                    loanAccountId: loanAccountId,
+                    groupId: groupId,
+                    canReverseWriteOff: canReverseWriteOff,
+                    canRecordRecovery: canRecordRecovery,
+                  ),
                 ],
               ],
             ],
@@ -1126,6 +1156,256 @@ class _LoanObligationAdjustmentHistorySection extends ConsumerWidget {
                 ),
             ],
           ),
+        );
+      },
+    );
+  }
+}
+
+/// Prompt 09F-B section F: a WRITTEN_OFF loan's write-off summary,
+/// remaining recoverable balance, recovery history, and (when
+/// permissioned/eligible) Record Recovery / Reverse Write-Off actions.
+/// Every figure is rendered exactly as `rpc_get_loan_write_off_summary`
+/// returns it — never recomputed client-side. [canReverseWriteOff]/
+/// [canRecordRecovery] only gate whether an action is even shown; the
+/// server still makes the final decision on every attempt (same
+/// "server still authoritative" discipline as the 09F-A adjustment
+/// history section above).
+class _LoanWriteOffSummarySection extends ConsumerWidget {
+  const _LoanWriteOffSummarySection({
+    super.key,
+    required this.loanAccountId,
+    required this.groupId,
+    required this.canReverseWriteOff,
+    required this.canRecordRecovery,
+  });
+
+  final String loanAccountId;
+  final String groupId;
+  final bool canReverseWriteOff;
+  final bool canRecordRecovery;
+
+  Future<void> _reverseWriteOff(
+    BuildContext context,
+    WidgetRef ref,
+    LoanWriteOffEvent writeOff,
+  ) async {
+    final l10n = context.l10n;
+    final reasonController = TextEditingController();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.loanReverseWriteOffConfirmTitle),
+        content: TextField(
+          key: const Key('loanReverseWriteOffReasonField'),
+          controller: reasonController,
+          autofocus: true,
+          maxLines: 3,
+          decoration: InputDecoration(
+            labelText: l10n.loanReverseWriteOffReasonFieldLabel,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.cancelButton),
+          ),
+          TextButton(
+            key: const Key('loanReverseWriteOffConfirmAction'),
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.loanReverseWriteOffAction),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final success = await ref
+        .read(loanWriteOffReversalControllerProvider.notifier)
+        .reverse(
+          groupId: groupId,
+          loanAccountId: loanAccountId,
+          writeOffEventId: writeOff.id,
+          reversalReason: reasonController.text.trim(),
+        );
+    if (success && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.loanReverseWriteOffSuccessMessage)),
+      );
+    } else if (context.mounted) {
+      final errorType = ref
+          .read(loanWriteOffReversalControllerProvider)
+          .errorType;
+      if (errorType != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(loanFailureMessage(l10n, errorType))),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final summaryAsync = ref.watch(loanWriteOffSummaryProvider(loanAccountId));
+    final reversalState = ref.watch(loanWriteOffReversalControllerProvider);
+
+    return summaryAsync.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: UmojaSpacing.lg),
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, stackTrace) => UmojaErrorState(
+        message: l10n.refreshFailedMessage,
+        retryLabel: l10n.retryButton,
+        onRetry: () =>
+            ref.invalidate(loanWriteOffSummaryProvider(loanAccountId)),
+      ),
+      data: (summary) {
+        final writeOff = summary.writeOff;
+        final remaining = summary.remainingRecoverable;
+        if (writeOff == null || remaining == null) {
+          return const SizedBox.shrink();
+        }
+        final recoveredToDate = writeOff.totalAmount - remaining.total;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.loanWriteOffSummaryTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: UmojaSpacing.sm),
+            UmojaCard(
+              key: const Key('loanWriteOffSummaryCard'),
+              padding: const EdgeInsets.all(UmojaSpacing.lg),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _DetailRow(
+                    label: l10n.loanWriteOffDateLabel,
+                    value: formatKiswahiliDate(writeOff.effectiveDate),
+                  ),
+                  _DetailRow(
+                    label: l10n.loanWriteOffReasonLabel,
+                    value: loanWriteOffReasonLabel(
+                      context,
+                      writeOff.reasonCode,
+                    ),
+                  ),
+                  _DetailRow(
+                    label: l10n.loanWriteOffPrincipalLabel,
+                    value: formatAmount(writeOff.principalAmount),
+                  ),
+                  _DetailRow(
+                    label: l10n.loanWriteOffInterestLabel,
+                    value: formatAmount(writeOff.interestAmount),
+                  ),
+                  _DetailRow(
+                    label: l10n.loanWriteOffPenaltyLabel,
+                    value: formatAmount(writeOff.penaltyAmount),
+                  ),
+                  const Divider(),
+                  _DetailRow(
+                    label: l10n.loanWriteOffTotalLabel,
+                    value: formatAmount(writeOff.totalAmount),
+                  ),
+                  const Divider(),
+                  _DetailRow(
+                    label: l10n.loanWriteOffRecoveredToDateLabel,
+                    value: formatAmount(recoveredToDate),
+                  ),
+                  _DetailRow(
+                    label: l10n.loanWriteOffRemainingRecoverableLabel,
+                    value: formatAmount(remaining.total),
+                  ),
+                  if (writeOff.isReversed) ...[
+                    const SizedBox(height: UmojaSpacing.sm),
+                    Text(
+                      l10n.loanObligationHistoryReversedLabel,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: UmojaSpacing.md),
+            if (canRecordRecovery)
+              UmojaSecondaryButton(
+                key: const Key('loanRecordRecoveryAction'),
+                label: l10n.loanRecordRecoveryAction,
+                onPressed: () => context.push(
+                  AppRoutes.loanRecordRecoveryPath(loanAccountId),
+                ),
+              ),
+            if (canReverseWriteOff && summary.isReversalCandidate) ...[
+              const SizedBox(height: UmojaSpacing.md),
+              UmojaSecondaryButton(
+                key: const Key('loanReverseWriteOffAction'),
+                label: l10n.loanReverseWriteOffAction,
+                isLoading: reversalState.isSubmitting,
+                onPressed: () => _reverseWriteOff(context, ref, writeOff),
+              ),
+            ],
+            const SizedBox(height: UmojaSpacing.xxl),
+            Text(
+              l10n.loanRecoveryHistoryTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: UmojaSpacing.sm),
+            if (summary.recoveries.isEmpty)
+              UmojaEmptyState(
+                icon: Icons.receipt_long_outlined,
+                title: l10n.loanRecoveryHistoryTitle,
+                message: l10n.loanRecoveryHistoryEmptyMessage,
+              )
+            else
+              UmojaCard(
+                key: const Key('loanRecoveryHistoryCard'),
+                padding: const EdgeInsets.all(UmojaSpacing.lg),
+                child: Column(
+                  children: [
+                    for (final recovery in summary.recoveries)
+                      Padding(
+                        key: Key('loanRecoveryHistoryRow_${recovery.id}'),
+                        padding: const EdgeInsets.only(bottom: UmojaSpacing.sm),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(recovery.receiptNumber),
+                                  Text(
+                                    formatKiswahiliDate(recovery.effectiveAt),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall,
+                                  ),
+                                  if (recovery.isReversed)
+                                    Text(
+                                      l10n.loanRecoveryHistoryReversedLabel,
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .error,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            Text(formatAmount(recovery.totalRecovered)),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+          ],
         );
       },
     );

@@ -39,6 +39,7 @@ String loanAccountStatusLabel(AppLocalizations l10n, String status) {
     'DISBURSED' => l10n.loanStatusDisbursed,
     'ACTIVE' => l10n.loanStatusActive,
     'CLOSED' => l10n.loanStatusClosed,
+    'WRITTEN_OFF' => l10n.loanStatusWrittenOff,
     _ => status,
   };
 }
@@ -64,15 +65,20 @@ String loanAccountStatusLabel(AppLocalizations l10n, String status) {
 ///   value is never actually observed as a resting `loan_accounts.status`
 ///   (disbursement moves a loan straight to ACTIVE — see
 ///   docs/product/loans.md), so this case is defensive, not reachable.
+/// - `WRITTEN_OFF` (Prompt 09F-B): danger — a definitively negative
+///   outcome (uncollectible bad debt), distinct from CLOSED/CANCELLED's
+///   neutral "nothing more to see here" treatment; unlike REJECTED
+///   (also danger), a written-off loan can still gain a "Reverse
+///   Write-Off" action, so the color alone never implies finality here.
 ///
-/// Every one of these five colors already exists in [UmojaStatusSemantic]
+/// Every one of these six colors already exists in [UmojaStatusSemantic]
 /// — no new tokens/hex values were added for this mapping.
 UmojaStatusSemantic loanAccountStatusSemantic(String status) {
   return switch (status) {
     'SUBMITTED' => UmojaStatusSemantic.info,
     'APPROVED' => UmojaStatusSemantic.warning,
     'ACTIVE' || 'DISBURSED' => UmojaStatusSemantic.success,
-    'REJECTED' => UmojaStatusSemantic.danger,
+    'REJECTED' || 'WRITTEN_OFF' => UmojaStatusSemantic.danger,
     'CLOSED' || 'CANCELLED' => UmojaStatusSemantic.neutral,
     _ => UmojaStatusSemantic.neutral, // DRAFT and any future/unknown value.
   };
@@ -84,9 +90,16 @@ UmojaStatusSemantic loanAccountStatusSemantic(String status) {
 /// allocation/receipt line that targets a loan.
 String loanComponentTypeLabel(AppLocalizations l10n, String componentType) {
   return switch (componentType) {
-    'INTEREST' || 'LOAN_INTEREST' => l10n.loanComponentInterest,
-    'PRINCIPAL' || 'LOAN_PRINCIPAL' => l10n.loanComponentPrincipal,
-    'PENALTY' || 'LOAN_PENALTY' => l10n.loanComponentPenalty,
+    'INTEREST' ||
+    'LOAN_INTEREST' ||
+    'LOAN_RECOVERY_INTEREST' => l10n.loanComponentInterest,
+    'PRINCIPAL' ||
+    'LOAN_PRINCIPAL' ||
+    'LOAN_PRINCIPAL_PREPAYMENT' ||
+    'LOAN_RECOVERY_PRINCIPAL' => l10n.loanComponentPrincipal,
+    'PENALTY' ||
+    'LOAN_PENALTY' ||
+    'LOAN_RECOVERY_PENALTY' => l10n.loanComponentPenalty,
     _ => componentType,
   };
 }

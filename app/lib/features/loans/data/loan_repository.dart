@@ -6,6 +6,7 @@ import '../domain/loan_penalty_charge.dart';
 import '../domain/loan_product.dart';
 import '../domain/loan_schedule_preview.dart';
 import '../domain/loan_servicing.dart';
+import '../domain/loan_write_off_recovery.dart';
 
 /// Server-authoritative access to the Loans module (Prompt 09A —
 /// products, draft loan accounts, and repayment schedules only; no
@@ -388,5 +389,75 @@ abstract class LoanRepository {
     required String loanAccountId,
     int limit = 50,
     int offset = 0,
+  });
+
+  // -- Write-off & Recovery (Prompt 09F-B) -------------------------------
+
+  /// Server-authoritative, non-persisting preview of a FULL loan
+  /// write-off (v1 — no arbitrary partial write-off). Future/unearned
+  /// interest is never included. [postLoanWriteOff] always
+  /// re-validates and recomputes independently, never trusting this
+  /// preview.
+  Future<LoanWriteOffPreview> previewLoanWriteOff({
+    required String groupId,
+    required String loanAccountId,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+  });
+
+  /// Posts exactly one immutable WRITE_OFF row and flips the loan to
+  /// WRITTEN_OFF. Zero payment/receipt/wallet/cashbook/income.
+  Future<LoanWriteOffPostResult> postLoanWriteOff({
+    required String groupId,
+    required String loanAccountId,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+    String? idempotencyKey,
+  });
+
+  /// Append-only reversal — the original WRITE_OFF row is never edited.
+  /// Blocked server-side once any non-reversed recovery exists against
+  /// it.
+  Future<LoanWriteOffReversalResult> reverseLoanWriteOff({
+    required String groupId,
+    required String writeOffEventId,
+    required String reversalReason,
+  });
+
+  /// Server-authoritative, non-persisting preview of a recovery against
+  /// a written-off loan's remaining recoverable balance. Allocation is
+  /// always PENALTY -> INTEREST -> PRINCIPAL, computed server-side.
+  /// [postLoanRecovery] always re-validates and recomputes
+  /// independently after locking the loan/write-off rows.
+  Future<LoanRecoveryPreview> previewLoanRecovery({
+    required String groupId,
+    required String loanAccountId,
+    required double amount,
+    DateTime? effectiveDate,
+  });
+
+  /// Records a real cash recovery, reusing the existing Payment Engine
+  /// (payments/financial_account_post_entry/payment_allocations) —
+  /// never a parallel cash mechanism. The loan is NEVER automatically
+  /// reactivated by a recovery.
+  Future<LoanRecoveryPostResult> postLoanRecovery({
+    required String groupId,
+    required String loanAccountId,
+    required double amount,
+    required String financialAccountId,
+    required String paymentMethod,
+    DateTime? effectiveDate,
+    String? externalReference,
+    String? notes,
+    String? idempotencyKey,
+  });
+
+  /// The most recent write-off event (if any), its live remaining
+  /// recoverable balance, and full recovery history for Loan Detail.
+  Future<LoanWriteOffSummary> getLoanWriteOffSummary({
+    required String groupId,
+    required String loanAccountId,
   });
 }
