@@ -194,6 +194,78 @@ void main() {
     expect(line.amount, 200000.0);
   });
 
+  test('3b (Prompt 09F-B): a loan recovery payment parses its three '
+      'PENALTY/INTEREST/PRINCIPAL component rows with null due_date/'
+      'installment fields — never tied to an installment, exactly like a '
+      'prepayment (09E-UAT-BLOCKER-03'
+      's precedent), and never grouped as '
+      'an ordinary per-installment loan line', () {
+    final json = _basePaymentJson(
+      paymentId: 'p3b',
+      amount: 15000,
+      allocations: [
+        {
+          'allocation_id': 'a1',
+          'allocation_target_type': 'LOAN_RECOVERY_PENALTY',
+          'charge_id': null,
+          'component_id': null,
+          'component_type': 'LOAN_RECOVERY_PENALTY',
+          'due_date': null,
+          'amount': 5000,
+          'contribution_type_name': null,
+          'period_label': null,
+          'period_purpose': null,
+          'loan_account_id': 'loan-1',
+          'loan_number': 'STD-LN-2026-0001',
+          'loan_product_name': 'Standard Loan',
+          'loan_installment_id': null,
+          'installment_number': null,
+          'loan_penalty_charge_id': null,
+        },
+        {
+          'allocation_id': 'a2',
+          'allocation_target_type': 'LOAN_RECOVERY_INTEREST',
+          'charge_id': null,
+          'component_id': null,
+          'component_type': 'LOAN_RECOVERY_INTEREST',
+          'due_date': null,
+          'amount': 10000,
+          'contribution_type_name': null,
+          'period_label': null,
+          'period_purpose': null,
+          'loan_account_id': 'loan-1',
+          'loan_number': 'STD-LN-2026-0001',
+          'loan_product_name': 'Standard Loan',
+          'loan_installment_id': null,
+          'installment_number': null,
+          'loan_penalty_charge_id': null,
+        },
+      ],
+    );
+
+    // The actual regression this guards against: this must not throw
+    // "type 'Null' is not a subtype of type 'String'".
+    final detail = PaymentDetail.fromJson(json);
+
+    expect(detail.allocations, hasLength(2));
+    final penalty = detail.allocations[0];
+    final interest = detail.allocations[1];
+
+    expect(penalty.obligationKind, 'LOAN_RECOVERY_PENALTY');
+    expect(penalty.isRecoveryAllocation, isTrue);
+    expect(penalty.isLoan, isFalse);
+    expect(penalty.dueDate, isNull);
+    expect(penalty.installmentNumber, isNull);
+    expect(penalty.loanInstallmentId, isNull);
+    expect(penalty.amount, 5000.0);
+
+    expect(interest.obligationKind, 'LOAN_RECOVERY_INTEREST');
+    expect(interest.isRecoveryAllocation, isTrue);
+    expect(interest.isLoan, isFalse);
+    expect(interest.dueDate, isNull);
+    expect(interest.amount, 10000.0);
+  });
+
   test('4: early settlement parses principal/interest/penalty distinctly', () {
     final json = _basePaymentJson(
       paymentId: 'p4',
@@ -373,6 +445,77 @@ void main() {
     expect(find.text('STD-LN-2026-0001'), findsOneWidget);
     // Never a fabricated "Installment 1" / due-date line for a
     // payment that was never tied to a specific installment.
+    expect(find.textContaining('Installment'), findsNothing);
+  });
+
+  testWidgets('Payment Details (Prompt 09F-B) renders a loan recovery payment'
+      's PENALTY/INTEREST/PRINCIPAL components grouped under one Loan '
+      'Recovery heading — no fake installment reference, no crash', (
+    tester,
+  ) async {
+    final json = _basePaymentJson(
+      paymentId: 'p-recovery',
+      amount: 15000,
+      allocations: [
+        {
+          'allocation_id': 'a1',
+          'allocation_target_type': 'LOAN_RECOVERY_PENALTY',
+          'charge_id': null,
+          'component_id': null,
+          'component_type': 'LOAN_RECOVERY_PENALTY',
+          'due_date': null,
+          'amount': 5000,
+          'contribution_type_name': null,
+          'period_label': null,
+          'period_purpose': null,
+          'loan_account_id': 'loan-1',
+          'loan_number': 'STD-LN-2026-0001',
+          'loan_product_name': 'Standard Loan',
+          'loan_installment_id': null,
+          'installment_number': null,
+          'loan_penalty_charge_id': null,
+        },
+        {
+          'allocation_id': 'a2',
+          'allocation_target_type': 'LOAN_RECOVERY_INTEREST',
+          'charge_id': null,
+          'component_id': null,
+          'component_type': 'LOAN_RECOVERY_INTEREST',
+          'due_date': null,
+          'amount': 10000,
+          'contribution_type_name': null,
+          'period_label': null,
+          'period_purpose': null,
+          'loan_account_id': 'loan-1',
+          'loan_number': 'STD-LN-2026-0001',
+          'loan_product_name': 'Standard Loan',
+          'loan_installment_id': null,
+          'installment_number': null,
+          'loan_penalty_charge_id': null,
+        },
+      ],
+    );
+
+    final fakeRepo = FakePaymentRepository()
+      ..nextPaymentDetail = PaymentDetail.fromJson(json);
+
+    final router = await pumpPaymentsApp(
+      tester,
+      fakeRepo: fakeRepo,
+      language: AppLanguage.english,
+    );
+    router.go(AppRoutes.paymentDetailPath('p-recovery'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Loan Recovery'), findsOneWidget);
+    expect(find.text('STD-LN-2026-0001'), findsOneWidget);
+    // Both components rendered, grouped under the one heading — not
+    // fabricated as separate per-installment lines.
+    expect(find.text('5,000'), findsOneWidget);
+    expect(find.text('10,000'), findsOneWidget);
+    // Never a fabricated "Installment 1" / due-date line for a
+    // recovery payment that was never tied to a specific installment.
     expect(find.textContaining('Installment'), findsNothing);
   });
 }

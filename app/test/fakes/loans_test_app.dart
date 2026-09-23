@@ -24,6 +24,9 @@ import 'pin_bypass_overrides.dart';
 /// Default full-access loans permission set (Prompt 09A section X,
 /// extended 09B with the lifecycle permissions — matches ADMIN's full
 /// grants from `20260903090000_create_loan_lifecycle_events.sql`).
+/// Prompt 09F-B: ADMIN also holds all three write-off/recovery
+/// permissions (`loan.write_off`, `loan.write_off.reverse`,
+/// `loan.recovery.create`).
 const loanAdminPermissions = [
   'group.view',
   'loan_product.view',
@@ -48,6 +51,9 @@ const loanAdminPermissions = [
   'loan.waive',
   'loan.correct',
   'loan.correct_increase',
+  'loan.write_off',
+  'loan.write_off.reverse',
+  'loan.recovery.create',
 ];
 
 /// CHAIRPERSON/SECRETARY's view-only grants — no `.manage`/`.create`/
@@ -69,7 +75,10 @@ const loanViewOnlyPermissions = [
 /// 20260913092000_create_loan_servicing_schema.sql). Prompt 09F-A:
 /// TREASURER receives `loan.waive` ONLY — `loan.correct`/
 /// `loan.correct_increase` are deliberately withheld (ADMIN-only,
-/// section 3).
+/// section 3). Prompt 09F-B: TREASURER receives `loan.recovery.create`
+/// ONLY — `loan.write_off`/`loan.write_off.reverse` are deliberately
+/// withheld (ADMIN-only, matching
+/// `20260919091000_create_loan_write_off_recovery_permissions.sql`).
 const loanTreasurerPermissions = [
   'group.view',
   'loan_product.view',
@@ -89,6 +98,7 @@ const loanTreasurerPermissions = [
   'loan.prepay_principal',
   'loan.restructure',
   'loan.waive',
+  'loan.recovery.create',
 ];
 
 /// CHAIRPERSON's 09B grants (section 23) — approve/reject/cancel, but

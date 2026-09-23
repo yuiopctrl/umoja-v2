@@ -13,6 +13,7 @@ import 'package:umoja/features/loans/domain/loan_penalty_charge.dart';
 import 'package:umoja/features/loans/domain/loan_product.dart';
 import 'package:umoja/features/loans/domain/loan_schedule_preview.dart';
 import 'package:umoja/features/loans/domain/loan_servicing.dart';
+import 'package:umoja/features/loans/domain/loan_write_off_recovery.dart';
 
 LoanAccountEvent fakeLoanAccountEvent({
   String id = 'event-1',
@@ -1223,6 +1224,172 @@ class FakeLoanRepository implements LoanRepository {
     _maybeThrow();
     return nextAdjustmentsPage;
   }
+
+  // -- Write-off & Recovery (Prompt 09F-B) -------------------------------
+
+  LoanWriteOffPreview? nextWriteOffPreview;
+  final List<({String groupId, String loanAccountId, String reasonCode})>
+  previewLoanWriteOffCalls = [];
+
+  @override
+  Future<LoanWriteOffPreview> previewLoanWriteOff({
+    required String groupId,
+    required String loanAccountId,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+  }) async {
+    previewLoanWriteOffCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      reasonCode: reasonCode,
+    ));
+    _maybeThrow();
+    return nextWriteOffPreview ??
+        fakeLoanWriteOffPreview(
+          loanAccountId: loanAccountId,
+          reasonCode: reasonCode,
+        );
+  }
+
+  LoanWriteOffPostResult? nextWriteOffResult;
+  final List<({String groupId, String loanAccountId, String reasonCode})>
+  postLoanWriteOffCalls = [];
+
+  /// When set, `postLoanWriteOff` awaits this before returning — used to
+  /// hold a call "in flight" for double-submit-prevention tests.
+  Completer<void>? postLoanWriteOffGate;
+
+  @override
+  Future<LoanWriteOffPostResult> postLoanWriteOff({
+    required String groupId,
+    required String loanAccountId,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+    String? idempotencyKey,
+  }) async {
+    postLoanWriteOffCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      reasonCode: reasonCode,
+    ));
+    _maybeThrow();
+    final gate = postLoanWriteOffGate;
+    if (gate != null) await gate.future;
+    return nextWriteOffResult ??
+        fakeLoanWriteOffPostResult(loanAccountId: loanAccountId);
+  }
+
+  LoanWriteOffReversalResult? nextWriteOffReversalResult;
+  final List<({String groupId, String writeOffEventId, String reversalReason})>
+  reverseLoanWriteOffCalls = [];
+
+  /// When set, `reverseLoanWriteOff` awaits this before returning.
+  Completer<void>? reverseLoanWriteOffGate;
+
+  @override
+  Future<LoanWriteOffReversalResult> reverseLoanWriteOff({
+    required String groupId,
+    required String writeOffEventId,
+    required String reversalReason,
+  }) async {
+    reverseLoanWriteOffCalls.add((
+      groupId: groupId,
+      writeOffEventId: writeOffEventId,
+      reversalReason: reversalReason,
+    ));
+    _maybeThrow();
+    final gate = reverseLoanWriteOffGate;
+    if (gate != null) await gate.future;
+    return nextWriteOffReversalResult ??
+        fakeLoanWriteOffReversalResult(
+          reversedWriteOffEventId: writeOffEventId,
+        );
+  }
+
+  LoanRecoveryPreview? nextRecoveryPreview;
+  final List<({String groupId, String loanAccountId, double amount})>
+  previewLoanRecoveryCalls = [];
+
+  @override
+  Future<LoanRecoveryPreview> previewLoanRecovery({
+    required String groupId,
+    required String loanAccountId,
+    required double amount,
+    DateTime? effectiveDate,
+  }) async {
+    previewLoanRecoveryCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      amount: amount,
+    ));
+    _maybeThrow();
+    return nextRecoveryPreview ??
+        fakeLoanRecoveryPreview(loanAccountId: loanAccountId, amount: amount);
+  }
+
+  LoanRecoveryPostResult? nextRecoveryResult;
+  final List<
+    ({
+      String groupId,
+      String loanAccountId,
+      double amount,
+      String financialAccountId,
+      String paymentMethod,
+    })
+  >
+  postLoanRecoveryCalls = [];
+
+  /// When set, `postLoanRecovery` awaits this before returning.
+  Completer<void>? postLoanRecoveryGate;
+
+  @override
+  Future<LoanRecoveryPostResult> postLoanRecovery({
+    required String groupId,
+    required String loanAccountId,
+    required double amount,
+    required String financialAccountId,
+    required String paymentMethod,
+    DateTime? effectiveDate,
+    String? externalReference,
+    String? notes,
+    String? idempotencyKey,
+  }) async {
+    postLoanRecoveryCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+      amount: amount,
+      financialAccountId: financialAccountId,
+      paymentMethod: paymentMethod,
+    ));
+    _maybeThrow();
+    final gate = postLoanRecoveryGate;
+    if (gate != null) await gate.future;
+    return nextRecoveryResult ??
+        fakeLoanRecoveryPostResult(
+          loanAccountId: loanAccountId,
+          amount: amount,
+        );
+  }
+
+  LoanWriteOffSummary? nextWriteOffSummary;
+  final List<({String groupId, String loanAccountId})>
+  getLoanWriteOffSummaryCalls = [];
+
+  @override
+  Future<LoanWriteOffSummary> getLoanWriteOffSummary({
+    required String groupId,
+    required String loanAccountId,
+  }) async {
+    getLoanWriteOffSummaryCalls.add((
+      groupId: groupId,
+      loanAccountId: loanAccountId,
+    ));
+    _maybeThrow();
+    return nextWriteOffSummary ??
+        fakeLoanWriteOffSummary(loanAccountId: loanAccountId);
+  }
 }
 
 LoanObligationWaiverPreview fakeLoanObligationWaiverPreview({
@@ -1509,5 +1676,225 @@ LoanPenaltyCharge fakeLoanPenaltyCharge({
     paidAmount: paidAmount,
     outstandingAmount: outstandingAmount,
     createdAt: createdAt ?? DateTime.utc(2026, 9, 1),
+  );
+}
+
+LoanWriteOffPreview fakeLoanWriteOffPreview({
+  String loanAccountId = 'loan-1',
+  String reasonCode = 'PROLONGED_DEFAULT',
+  DateTime? effectiveDate,
+  double principalAmount = 200000,
+  double interestAmount = 15000,
+  double penaltyAmount = 5000,
+}) {
+  return LoanWriteOffPreview(
+    loanAccountId: loanAccountId,
+    reasonCode: reasonCode,
+    effectiveDate: effectiveDate ?? DateTime.utc(2026, 9, 1),
+    principalAmount: principalAmount,
+    interestAmount: interestAmount,
+    penaltyAmount: penaltyAmount,
+    totalAmount: principalAmount + interestAmount + penaltyAmount,
+    cashImpact: 0,
+    paymentCreated: false,
+    receiptCreated: false,
+  );
+}
+
+LoanWriteOffPostResult fakeLoanWriteOffPostResult({
+  String writeOffEventId = 'write-off-1',
+  String loanAccountId = 'loan-1',
+  double principalAmount = 200000,
+  double interestAmount = 15000,
+  double penaltyAmount = 5000,
+  bool alreadyPosted = false,
+  String loanStatus = 'WRITTEN_OFF',
+}) {
+  return LoanWriteOffPostResult(
+    writeOffEventId: writeOffEventId,
+    loanAccountId: loanAccountId,
+    principalAmount: principalAmount,
+    interestAmount: interestAmount,
+    penaltyAmount: penaltyAmount,
+    totalAmount: principalAmount + interestAmount + penaltyAmount,
+    cashImpact: 0,
+    paymentCreated: false,
+    receiptCreated: false,
+    alreadyPosted: alreadyPosted,
+    loanStatus: loanStatus,
+  );
+}
+
+LoanWriteOffReversalResult fakeLoanWriteOffReversalResult({
+  String reversalId = 'write-off-reversal-1',
+  String reversedWriteOffEventId = 'write-off-1',
+  String loanAccountId = 'loan-1',
+  String loanStatus = 'ACTIVE',
+}) {
+  return LoanWriteOffReversalResult(
+    reversalId: reversalId,
+    reversedWriteOffEventId: reversedWriteOffEventId,
+    loanAccountId: loanAccountId,
+    loanStatus: loanStatus,
+  );
+}
+
+LoanRecoveryPreview fakeLoanRecoveryPreview({
+  String loanAccountId = 'loan-1',
+  String writeOffEventId = 'write-off-1',
+  double writeOffTotalAmount = 220000,
+  double amount = 50000,
+  double penaltyRemainingBefore = 5000,
+  double interestRemainingBefore = 15000,
+  double principalRemainingBefore = 200000,
+}) {
+  final remainingBefore = LoanRecoveryComponentAmounts(
+    principal: principalRemainingBefore,
+    interest: interestRemainingBefore,
+    penalty: penaltyRemainingBefore,
+    total:
+        principalRemainingBefore +
+        interestRemainingBefore +
+        penaltyRemainingBefore,
+  );
+  var left = amount;
+  final penaltyAllocate = left < penaltyRemainingBefore
+      ? left
+      : penaltyRemainingBefore;
+  left -= penaltyAllocate;
+  final interestAllocate = left < interestRemainingBefore
+      ? left
+      : interestRemainingBefore;
+  left -= interestAllocate;
+  final principalAllocate = left < principalRemainingBefore
+      ? left
+      : principalRemainingBefore;
+  return LoanRecoveryPreview(
+    loanAccountId: loanAccountId,
+    writeOffEventId: writeOffEventId,
+    writeOffTotalAmount: writeOffTotalAmount,
+    remainingBefore: remainingBefore,
+    recoveryAmount: amount,
+    allocation: LoanRecoveryAllocation(
+      penalty: penaltyAllocate,
+      interest: interestAllocate,
+      principal: principalAllocate,
+    ),
+    remainingAfter: LoanRecoveryComponentAmounts(
+      principal: principalRemainingBefore - principalAllocate,
+      interest: interestRemainingBefore - interestAllocate,
+      penalty: penaltyRemainingBefore - penaltyAllocate,
+      total: remainingBefore.total - amount,
+    ),
+    cashImpact: amount,
+    paymentCreated: true,
+    receiptCreated: true,
+  );
+}
+
+LoanRecoveryPostResult fakeLoanRecoveryPostResult({
+  String recoveryEventId = 'recovery-1',
+  String paymentId = 'payment-1',
+  String receiptNumber = 'RCT-0001',
+  String loanAccountId = 'loan-1',
+  String writeOffEventId = 'write-off-1',
+  double amount = 50000,
+  double penaltyAllocate = 5000,
+  double interestAllocate = 15000,
+  double principalAllocate = 30000,
+  bool alreadyPosted = false,
+  String loanStatus = 'WRITTEN_OFF',
+}) {
+  return LoanRecoveryPostResult(
+    recoveryEventId: recoveryEventId,
+    paymentId: paymentId,
+    receiptNumber: receiptNumber,
+    loanAccountId: loanAccountId,
+    writeOffEventId: writeOffEventId,
+    amount: amount,
+    allocation: LoanRecoveryAllocation(
+      penalty: penaltyAllocate,
+      interest: interestAllocate,
+      principal: principalAllocate,
+    ),
+    alreadyPosted: alreadyPosted,
+    loanStatus: loanStatus,
+  );
+}
+
+LoanWriteOffEvent fakeLoanWriteOffEvent({
+  String id = 'write-off-1',
+  double principalAmount = 200000,
+  double interestAmount = 15000,
+  double penaltyAmount = 5000,
+  String reasonCode = 'PROLONGED_DEFAULT',
+  String? note,
+  DateTime? effectiveDate,
+  String? createdBy = 'u1',
+  DateTime? createdAt,
+  bool isReversed = false,
+}) {
+  return LoanWriteOffEvent(
+    id: id,
+    principalAmount: principalAmount,
+    interestAmount: interestAmount,
+    penaltyAmount: penaltyAmount,
+    totalAmount: principalAmount + interestAmount + penaltyAmount,
+    reasonCode: reasonCode,
+    note: note,
+    effectiveDate: effectiveDate ?? DateTime.utc(2026, 9, 1),
+    createdBy: createdBy,
+    createdAt: createdAt ?? DateTime.utc(2026, 9, 1),
+    isReversed: isReversed,
+  );
+}
+
+LoanRecoveryHistoryEntry fakeLoanRecoveryHistoryEntry({
+  String id = 'recovery-1',
+  String paymentId = 'payment-1',
+  String receiptNumber = 'RCT-0001',
+  double principalRecovered = 30000,
+  double interestRecovered = 15000,
+  double penaltyRecovered = 5000,
+  DateTime? effectiveAt,
+  String paymentStatus = 'POSTED',
+  String? createdBy = 'u1',
+  DateTime? createdAt,
+}) {
+  return LoanRecoveryHistoryEntry(
+    id: id,
+    paymentId: paymentId,
+    receiptNumber: receiptNumber,
+    principalRecovered: principalRecovered,
+    interestRecovered: interestRecovered,
+    penaltyRecovered: penaltyRecovered,
+    totalRecovered: principalRecovered + interestRecovered + penaltyRecovered,
+    effectiveAt: effectiveAt ?? DateTime.utc(2026, 9, 5),
+    paymentStatus: paymentStatus,
+    createdBy: createdBy,
+    createdAt: createdAt ?? DateTime.utc(2026, 9, 5),
+  );
+}
+
+LoanWriteOffSummary fakeLoanWriteOffSummary({
+  String loanAccountId = 'loan-1',
+  String loanStatus = 'WRITTEN_OFF',
+  LoanWriteOffEvent? writeOff,
+  LoanRecoveryComponentAmounts? remainingRecoverable,
+  List<LoanRecoveryHistoryEntry> recoveries = const [],
+}) {
+  return LoanWriteOffSummary(
+    loanAccountId: loanAccountId,
+    loanStatus: loanStatus,
+    writeOff: writeOff ?? fakeLoanWriteOffEvent(),
+    remainingRecoverable:
+        remainingRecoverable ??
+        const LoanRecoveryComponentAmounts(
+          principal: 200000,
+          interest: 15000,
+          penalty: 5000,
+          total: 220000,
+        ),
+    recoveries: recoveries,
   );
 }
