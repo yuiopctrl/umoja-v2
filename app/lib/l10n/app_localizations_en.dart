@@ -3249,4 +3249,205 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get loanRestructureSafetyMessage =>
       'This changes only the future contractual schedule. Already-paid history is never changed, and this is blocked while any overdue balance remains.';
+
+  @override
+  String get loanErrorWaiverExceedsOutstanding =>
+      'The waiver amount exceeds the current outstanding amount.';
+
+  @override
+  String get loanErrorAdjustmentTargetInvalid =>
+      'This obligation could not be found on this loan.';
+
+  @override
+  String get loanErrorFutureInterestNotWaivable =>
+      'Future interest that is not yet due cannot be waived or corrected.';
+
+  @override
+  String get loanErrorPrincipalAdjustmentProhibited =>
+      'Principal cannot be waived or corrected.';
+
+  @override
+  String get loanErrorCorrectionIncreaseNotAllowed =>
+      'Interest correction increases are not allowed.';
+
+  @override
+  String get loanErrorCorrectionIncreaseExceedsBound =>
+      'This increase exceeds the maximum allowed for this penalty.';
+
+  @override
+  String get loanErrorCorrectionIncreasePolicyUnavailable =>
+      'This penalty has no recorded policy to base an increase on.';
+
+  @override
+  String get loanErrorCorrectionDecreaseExceedsOutstanding =>
+      'The correction amount exceeds the current outstanding amount.';
+
+  @override
+  String get loanErrorFutureInterestNotCorrectable =>
+      'Future interest that is not yet due cannot be corrected.';
+
+  @override
+  String get loanErrorAdjustmentEffectiveDateRequired =>
+      'An effective date is required for this action.';
+
+  @override
+  String get loanErrorAdjustmentAmountInvalid =>
+      'Enter an amount greater than zero.';
+
+  @override
+  String get loanErrorAdjustmentReasonRequired => 'Select a valid reason.';
+
+  @override
+  String get loanErrorAdjustmentOtherNoteRequired =>
+      'Enter a note explaining \"Other\".';
+
+  @override
+  String get loanErrorAdjustmentAlreadyReversed =>
+      'This adjustment has already been reversed.';
+
+  @override
+  String get loanErrorAdjustmentReversalBlockedSubsequentActivity =>
+      'This cannot be reversed because later activity has already been recorded against it.';
+
+  @override
+  String get loanErrorAdjustmentReversalNotSupported =>
+      'A reversal cannot itself be reversed.';
+
+  @override
+  String get loanWaiveObligationAction => 'Waive Obligation';
+
+  @override
+  String get loanCorrectObligationAction => 'Correct Obligation';
+
+  @override
+  String get loanObligationWaiveTitle => 'Waive Obligation';
+
+  @override
+  String get loanObligationCorrectTitle => 'Correct Obligation';
+
+  @override
+  String get loanObligationTargetPenaltyLabel => 'Penalty';
+
+  @override
+  String get loanObligationTargetInterestLabel => 'Interest';
+
+  @override
+  String get loanObligationAmountFieldLabel => 'Amount';
+
+  @override
+  String get loanObligationReasonFieldLabel => 'Reason';
+
+  @override
+  String get loanObligationNoteFieldLabel => 'Note';
+
+  @override
+  String get loanObligationPreviewAction => 'Preview';
+
+  @override
+  String get loanObligationCurrentOutstandingLabel => 'Current Outstanding';
+
+  @override
+  String get loanObligationWaiverAmountLabel => 'Waiver Amount';
+
+  @override
+  String get loanObligationRemainingOutstandingLabel => 'Remaining Outstanding';
+
+  @override
+  String get loanObligationCashImpactLabel => 'Cash Impact';
+
+  @override
+  String get loanObligationPaymentCreatedLabel => 'Payment Created';
+
+  @override
+  String get loanObligationReceiptCreatedLabel => 'Receipt Created';
+
+  @override
+  String get loanObligationNoLabel => 'No';
+
+  @override
+  String get loanObligationConfirmWaiverAction => 'Confirm Waiver';
+
+  @override
+  String get loanObligationWaiverSuccessMessage =>
+      'The obligation has been waived.';
+
+  @override
+  String get loanObligationCorrectionTypeFieldLabel => 'Correction Type';
+
+  @override
+  String get loanObligationCorrectionDecreaseLabel => 'Decrease';
+
+  @override
+  String get loanObligationCorrectionIncreaseLabel => 'Increase';
+
+  @override
+  String get loanObligationSourceOriginalAmountLabel => 'Original Assessment';
+
+  @override
+  String get loanObligationPriorNetCorrectionsLabel => 'Prior Corrections';
+
+  @override
+  String get loanObligationCurrentEffectiveAmountLabel =>
+      'Current Effective Amount';
+
+  @override
+  String get loanObligationProposedCorrectionLabel => 'Proposed Correction';
+
+  @override
+  String get loanObligationNewEffectiveAmountLabel => 'New Effective Amount';
+
+  @override
+  String get loanObligationConfirmCorrectionAction => 'Confirm Correction';
+
+  @override
+  String get loanObligationCorrectionSuccessMessage =>
+      'The correction has been posted.';
+
+  @override
+  String get loanObligationReasonHardship => 'Hardship';
+
+  @override
+  String get loanObligationReasonCommitteeDecision => 'Committee Decision';
+
+  @override
+  String get loanObligationReasonGoodwill => 'Goodwill';
+
+  @override
+  String get loanObligationReasonSettlementConcession =>
+      'Settlement Concession';
+
+  @override
+  String get loanObligationReasonAssessmentError => 'Assessment Error';
+
+  @override
+  String get loanObligationReasonDataEntryError => 'Data Entry Error';
+
+  @override
+  String get loanObligationReasonMigrationError => 'Migration Error';
+
+  @override
+  String get loanObligationReasonOther => 'Other';
+
+  @override
+  String get loanObligationHistoryTitle => 'Adjustments & Waivers';
+
+  @override
+  String get loanObligationHistoryEmptyMessage =>
+      'No waivers or corrections have been recorded for this loan.';
+
+  @override
+  String get loanObligationHistoryReversedLabel => 'Reversed';
+
+  @override
+  String get loanObligationReverseAction => 'Reverse';
+
+  @override
+  String get loanObligationReverseConfirmTitle => 'Reverse this adjustment?';
+
+  @override
+  String get loanObligationReverseReasonFieldLabel => 'Reversal Reason';
+
+  @override
+  String get loanObligationReverseSuccessMessage =>
+      'The adjustment has been reversed.';
 }

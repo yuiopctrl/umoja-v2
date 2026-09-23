@@ -55,6 +55,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  http: ^1.2.0
 
 # Prompt 05C §15-16 / 05E-C §11-13: native launcher icons, generated
 # from the official flat Umoja symbol (umbrella + community mark only —

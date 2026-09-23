@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../domain/loan_account.dart';
 import '../domain/loan_historical_arrears_installment.dart';
 import '../domain/loan_migration_preview.dart';
+import '../domain/loan_obligation_adjustment.dart';
 import '../domain/loan_penalty_charge.dart';
 import '../domain/loan_product.dart';
 import '../domain/loan_schedule_preview.dart';
@@ -750,6 +751,211 @@ class SupabaseLoanRepository implements LoanRepository {
       throw _mapError(error, stackTrace);
     }
   }
+
+  @override
+  Future<LoanObligationWaiverPreview> previewLoanObligationWaiver({
+    required String groupId,
+    required String loanAccountId,
+    required String targetType,
+    required String targetId,
+    required double amount,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+  }) async {
+    try {
+      final params = <String, dynamic>{
+        'p_group_id': groupId,
+        'p_loan_account_id': loanAccountId,
+        'p_target_type': targetType,
+        'p_target_id': targetId,
+        'p_amount': amount,
+        'p_reason_code': reasonCode,
+        'p_note': note,
+      };
+      final effectiveDateOnly = _dateOnlyOrNull(effectiveDate);
+      if (effectiveDateOnly != null) {
+        params['p_effective_date'] = effectiveDateOnly;
+      }
+      final result = await _client.rpc(
+        'rpc_preview_loan_obligation_waiver',
+        params: params,
+      );
+      return LoanObligationWaiverPreview.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanObligationAdjustmentPostResult> postLoanObligationWaiver({
+    required String groupId,
+    required String loanAccountId,
+    required String targetType,
+    required String targetId,
+    required double amount,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+    String? idempotencyKey,
+  }) async {
+    try {
+      final params = <String, dynamic>{
+        'p_group_id': groupId,
+        'p_loan_account_id': loanAccountId,
+        'p_target_type': targetType,
+        'p_target_id': targetId,
+        'p_amount': amount,
+        'p_reason_code': reasonCode,
+        'p_note': note,
+        'p_idempotency_key': idempotencyKey,
+      };
+      final effectiveDateOnly = _dateOnlyOrNull(effectiveDate);
+      if (effectiveDateOnly != null) {
+        params['p_effective_date'] = effectiveDateOnly;
+      }
+      final result = await _client.rpc(
+        'rpc_post_loan_obligation_waiver',
+        params: params,
+      );
+      return LoanObligationAdjustmentPostResult.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanObligationCorrectionPreview> previewLoanObligationCorrection({
+    required String groupId,
+    required String loanAccountId,
+    required String targetType,
+    required String targetId,
+    required String adjustmentType,
+    required double amount,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+  }) async {
+    try {
+      final params = <String, dynamic>{
+        'p_group_id': groupId,
+        'p_loan_account_id': loanAccountId,
+        'p_target_type': targetType,
+        'p_target_id': targetId,
+        'p_adjustment_type': adjustmentType,
+        'p_amount': amount,
+        'p_reason_code': reasonCode,
+        'p_note': note,
+      };
+      final effectiveDateOnly = _dateOnlyOrNull(effectiveDate);
+      if (effectiveDateOnly != null) {
+        params['p_effective_date'] = effectiveDateOnly;
+      }
+      final result = await _client.rpc(
+        'rpc_preview_loan_obligation_correction',
+        params: params,
+      );
+      return LoanObligationCorrectionPreview.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanObligationAdjustmentPostResult> postLoanObligationCorrection({
+    required String groupId,
+    required String loanAccountId,
+    required String targetType,
+    required String targetId,
+    required String adjustmentType,
+    required double amount,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+    String? idempotencyKey,
+  }) async {
+    try {
+      final params = <String, dynamic>{
+        'p_group_id': groupId,
+        'p_loan_account_id': loanAccountId,
+        'p_target_type': targetType,
+        'p_target_id': targetId,
+        'p_adjustment_type': adjustmentType,
+        'p_amount': amount,
+        'p_reason_code': reasonCode,
+        'p_note': note,
+        'p_idempotency_key': idempotencyKey,
+      };
+      final effectiveDateOnly = _dateOnlyOrNull(effectiveDate);
+      if (effectiveDateOnly != null) {
+        params['p_effective_date'] = effectiveDateOnly;
+      }
+      final result = await _client.rpc(
+        'rpc_post_loan_obligation_correction',
+        params: params,
+      );
+      return LoanObligationAdjustmentPostResult.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanObligationAdjustmentReversalResult>
+  reverseLoanObligationAdjustment({
+    required String groupId,
+    required String adjustmentId,
+    required String reversalReason,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_reverse_loan_obligation_adjustment',
+        params: {
+          'p_group_id': groupId,
+          'p_adjustment_id': adjustmentId,
+          'p_reversal_reason': reversalReason,
+        },
+      );
+      return LoanObligationAdjustmentReversalResult.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanObligationAdjustmentPage> listLoanObligationAdjustments({
+    required String groupId,
+    required String loanAccountId,
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_list_loan_obligation_adjustments',
+        params: {
+          'p_group_id': groupId,
+          'p_loan_account_id': loanAccountId,
+          'p_limit': limit,
+          'p_offset': offset,
+        },
+      );
+      return LoanObligationAdjustmentPage.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
 }
 
 List<Map<String, dynamic>> _arrearsJson(
@@ -1080,6 +1286,105 @@ LoanFailure _mapError(Object error, StackTrace stackTrace) {
       return const LoanFailure(
         LoanFailureType.restructureNothingRemaining,
         'There is nothing remaining on this loan to restructure.',
+      );
+    }
+    if (message.contains('LOAN_WAIVER_EXCEEDS_OUTSTANDING')) {
+      return const LoanFailure(
+        LoanFailureType.waiverExceedsOutstanding,
+        'The waiver amount exceeds the current outstanding amount.',
+      );
+    }
+    if (message.contains('LOAN_ADJUSTMENT_TARGET_INVALID')) {
+      return const LoanFailure(
+        LoanFailureType.adjustmentTargetInvalid,
+        'This obligation could not be found on this loan.',
+      );
+    }
+    if (message.contains('LOAN_FUTURE_INTEREST_NOT_WAIVABLE')) {
+      return const LoanFailure(
+        LoanFailureType.futureInterestNotWaivable,
+        'Future interest that is not yet due cannot be waived or corrected.',
+      );
+    }
+    if (message.contains('LOAN_PRINCIPAL_ADJUSTMENT_PROHIBITED')) {
+      return const LoanFailure(
+        LoanFailureType.principalAdjustmentProhibited,
+        'Principal cannot be waived or corrected.',
+      );
+    }
+    if (message.contains('LOAN_CORRECTION_INCREASE_NOT_ALLOWED')) {
+      return const LoanFailure(
+        LoanFailureType.correctionIncreaseNotAllowed,
+        'Interest correction increases are not allowed.',
+      );
+    }
+    if (message.contains('LOAN_CORRECTION_INCREASE_EXCEEDS_BOUND')) {
+      return const LoanFailure(
+        LoanFailureType.correctionIncreaseExceedsBound,
+        'This increase exceeds the maximum allowed for this penalty.',
+      );
+    }
+    if (message.contains('LOAN_CORRECTION_INCREASE_POLICY_UNAVAILABLE')) {
+      return const LoanFailure(
+        LoanFailureType.correctionIncreasePolicyUnavailable,
+        'This penalty has no recorded policy to base an increase on.',
+      );
+    }
+    if (message.contains('LOAN_CORRECTION_DECREASE_EXCEEDS_OUTSTANDING')) {
+      return const LoanFailure(
+        LoanFailureType.correctionDecreaseExceedsOutstanding,
+        'The correction amount exceeds the current outstanding amount.',
+      );
+    }
+    if (message.contains('LOAN_FUTURE_INTEREST_NOT_CORRECTABLE')) {
+      return const LoanFailure(
+        LoanFailureType.futureInterestNotCorrectable,
+        'Future interest that is not yet due cannot be corrected.',
+      );
+    }
+    if (message.contains('Effective date is required')) {
+      return const LoanFailure(
+        LoanFailureType.adjustmentEffectiveDateRequired,
+        'An effective date is required for this action.',
+      );
+    }
+    if (message.contains('LOAN_ADJUSTMENT_AMOUNT_MUST_BE_POSITIVE')) {
+      return const LoanFailure(
+        LoanFailureType.adjustmentAmountInvalid,
+        'Enter an amount greater than zero.',
+      );
+    }
+    if (message.contains('LOAN_ADJUSTMENT_REASON_REQUIRED')) {
+      return const LoanFailure(
+        LoanFailureType.adjustmentReasonRequired,
+        'Select a valid reason.',
+      );
+    }
+    if (message.contains('LOAN_ADJUSTMENT_OTHER_NOTE_REQUIRED')) {
+      return const LoanFailure(
+        LoanFailureType.adjustmentOtherNoteRequired,
+        'Enter a note explaining "Other".',
+      );
+    }
+    if (message.contains('LOAN_ADJUSTMENT_ALREADY_REVERSED')) {
+      return const LoanFailure(
+        LoanFailureType.adjustmentAlreadyReversed,
+        'This adjustment has already been reversed.',
+      );
+    }
+    if (message.contains(
+      'LOAN_ADJUSTMENT_REVERSAL_BLOCKED_SUBSEQUENT_ACTIVITY',
+    )) {
+      return const LoanFailure(
+        LoanFailureType.adjustmentReversalBlockedSubsequentActivity,
+        'This cannot be reversed because later activity has already been '
+        'recorded against it.',
+      );
+    }
+    if (message.contains('LOAN_ADJUSTMENT_REVERSAL_NOT_SUPPORTED')) {
+      return const LoanFailure(
+        LoanFailureType.adjustmentReversalNotSupported,
+        'A reversal cannot itself be reversed.',
       );
     }
     if (message.contains('name is required') ||

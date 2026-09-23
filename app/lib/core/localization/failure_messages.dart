@@ -243,6 +243,38 @@ String loanFailureMessage(AppLocalizations l10n, LoanFailureType type) {
       l10n.loanErrorRestructureBlockedOverdueBalance,
     LoanFailureType.restructureNothingRemaining =>
       l10n.loanErrorRestructureNothingRemaining,
+    LoanFailureType.waiverExceedsOutstanding =>
+      l10n.loanErrorWaiverExceedsOutstanding,
+    LoanFailureType.adjustmentTargetInvalid =>
+      l10n.loanErrorAdjustmentTargetInvalid,
+    LoanFailureType.futureInterestNotWaivable =>
+      l10n.loanErrorFutureInterestNotWaivable,
+    LoanFailureType.principalAdjustmentProhibited =>
+      l10n.loanErrorPrincipalAdjustmentProhibited,
+    LoanFailureType.correctionIncreaseNotAllowed =>
+      l10n.loanErrorCorrectionIncreaseNotAllowed,
+    LoanFailureType.correctionIncreaseExceedsBound =>
+      l10n.loanErrorCorrectionIncreaseExceedsBound,
+    LoanFailureType.correctionIncreasePolicyUnavailable =>
+      l10n.loanErrorCorrectionIncreasePolicyUnavailable,
+    LoanFailureType.correctionDecreaseExceedsOutstanding =>
+      l10n.loanErrorCorrectionDecreaseExceedsOutstanding,
+    LoanFailureType.futureInterestNotCorrectable =>
+      l10n.loanErrorFutureInterestNotCorrectable,
+    LoanFailureType.adjustmentEffectiveDateRequired =>
+      l10n.loanErrorAdjustmentEffectiveDateRequired,
+    LoanFailureType.adjustmentAmountInvalid =>
+      l10n.loanErrorAdjustmentAmountInvalid,
+    LoanFailureType.adjustmentReasonRequired =>
+      l10n.loanErrorAdjustmentReasonRequired,
+    LoanFailureType.adjustmentOtherNoteRequired =>
+      l10n.loanErrorAdjustmentOtherNoteRequired,
+    LoanFailureType.adjustmentAlreadyReversed =>
+      l10n.loanErrorAdjustmentAlreadyReversed,
+    LoanFailureType.adjustmentReversalBlockedSubsequentActivity =>
+      l10n.loanErrorAdjustmentReversalBlockedSubsequentActivity,
+    LoanFailureType.adjustmentReversalNotSupported =>
+      l10n.loanErrorAdjustmentReversalNotSupported,
     LoanFailureType.notFound => l10n.loanErrorNotFound,
     LoanFailureType.permissionDenied => l10n.loanErrorPermissionDenied,
     LoanFailureType.network => l10n.loanErrorNetwork,

@@ -5977,6 +5977,366 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Hii inabadilisha ratiba ya mkataba ijayo pekee. Historia iliyokwisha lipwa haibadiliki kamwe, na hii imezuiwa iwapo salio lolote lililochelewa lipo.'**
   String get loanRestructureSafetyMessage;
+
+  /// No description provided for @loanErrorWaiverExceedsOutstanding.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi cha msamaha kinazidi kiasi kinachodaiwa sasa.'**
+  String get loanErrorWaiverExceedsOutstanding;
+
+  /// No description provided for @loanErrorAdjustmentTargetInvalid.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni hili halikupatikana kwenye mkopo huu.'**
+  String get loanErrorAdjustmentTargetInvalid;
+
+  /// No description provided for @loanErrorFutureInterestNotWaivable.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba ya siku zijazo isiyofikia wakati wake haiwezi kusamehewa au kurekebishwa.'**
+  String get loanErrorFutureInterestNotWaivable;
+
+  /// No description provided for @loanErrorPrincipalAdjustmentProhibited.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi cha mtaji hakiwezi kusamehewa au kurekebishwa.'**
+  String get loanErrorPrincipalAdjustmentProhibited;
+
+  /// No description provided for @loanErrorCorrectionIncreaseNotAllowed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kuongeza riba kwa njia ya urekebishaji hairuhusiwi.'**
+  String get loanErrorCorrectionIncreaseNotAllowed;
+
+  /// No description provided for @loanErrorCorrectionIncreaseExceedsBound.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ongezeko hili linazidi kiwango cha juu kinachoruhusiwa kwa adhabu hii.'**
+  String get loanErrorCorrectionIncreaseExceedsBound;
+
+  /// No description provided for @loanErrorCorrectionIncreasePolicyUnavailable.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu hii haina sera iliyorekodiwa ya kutegemeza ongezeko.'**
+  String get loanErrorCorrectionIncreasePolicyUnavailable;
+
+  /// No description provided for @loanErrorCorrectionDecreaseExceedsOutstanding.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi cha urekebishaji kinazidi kiasi kinachodaiwa sasa.'**
+  String get loanErrorCorrectionDecreaseExceedsOutstanding;
+
+  /// No description provided for @loanErrorFutureInterestNotCorrectable.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba ya siku zijazo isiyofikia wakati wake haiwezi kurekebishwa.'**
+  String get loanErrorFutureInterestNotCorrectable;
+
+  /// No description provided for @loanErrorAdjustmentEffectiveDateRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya kutekeleza inahitajika kwa hatua hii.'**
+  String get loanErrorAdjustmentEffectiveDateRequired;
+
+  /// No description provided for @loanErrorAdjustmentAmountInvalid.
+  ///
+  /// In sw, this message translates to:
+  /// **'Weka kiasi kikubwa zaidi ya sifuri.'**
+  String get loanErrorAdjustmentAmountInvalid;
+
+  /// No description provided for @loanErrorAdjustmentReasonRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Chagua sababu sahihi.'**
+  String get loanErrorAdjustmentReasonRequired;
+
+  /// No description provided for @loanErrorAdjustmentOtherNoteRequired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Weka maelezo yanayoeleza \"Nyingine\".'**
+  String get loanErrorAdjustmentOtherNoteRequired;
+
+  /// No description provided for @loanErrorAdjustmentAlreadyReversed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho haya tayari yamebatilishwa.'**
+  String get loanErrorAdjustmentAlreadyReversed;
+
+  /// No description provided for @loanErrorAdjustmentReversalBlockedSubsequentActivity.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haiwezi kubatilishwa kwa sababu shughuli nyingine tayari imerekodiwa dhidi yake.'**
+  String get loanErrorAdjustmentReversalBlockedSubsequentActivity;
+
+  /// No description provided for @loanErrorAdjustmentReversalNotSupported.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kubatilisha hakiwezi kubatilishwa tena.'**
+  String get loanErrorAdjustmentReversalNotSupported;
+
+  /// No description provided for @loanWaiveObligationAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Samehe Deni'**
+  String get loanWaiveObligationAction;
+
+  /// No description provided for @loanCorrectObligationAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rekebisha Deni'**
+  String get loanCorrectObligationAction;
+
+  /// No description provided for @loanObligationWaiveTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Samehe Deni'**
+  String get loanObligationWaiveTitle;
+
+  /// No description provided for @loanObligationCorrectTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Rekebisha Deni'**
+  String get loanObligationCorrectTitle;
+
+  /// No description provided for @loanObligationTargetPenaltyLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu'**
+  String get loanObligationTargetPenaltyLabel;
+
+  /// No description provided for @loanObligationTargetInterestLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba'**
+  String get loanObligationTargetInterestLabel;
+
+  /// No description provided for @loanObligationAmountFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi'**
+  String get loanObligationAmountFieldLabel;
+
+  /// No description provided for @loanObligationReasonFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu'**
+  String get loanObligationReasonFieldLabel;
+
+  /// No description provided for @loanObligationNoteFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo'**
+  String get loanObligationNoteFieldLabel;
+
+  /// No description provided for @loanObligationPreviewAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Onyesho la Awali'**
+  String get loanObligationPreviewAction;
+
+  /// No description provided for @loanObligationCurrentOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kinachodaiwa Sasa'**
+  String get loanObligationCurrentOutstandingLabel;
+
+  /// No description provided for @loanObligationWaiverAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi cha Msamaha'**
+  String get loanObligationWaiverAmountLabel;
+
+  /// No description provided for @loanObligationRemainingOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kinachodaiwa Kilichobaki'**
+  String get loanObligationRemainingOutstandingLabel;
+
+  /// No description provided for @loanObligationCashImpactLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Athari ya Fedha'**
+  String get loanObligationCashImpactLabel;
+
+  /// No description provided for @loanObligationPaymentCreatedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo Yameundwa'**
+  String get loanObligationPaymentCreatedLabel;
+
+  /// No description provided for @loanObligationReceiptCreatedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Risiti Imeundwa'**
+  String get loanObligationReceiptCreatedLabel;
+
+  /// No description provided for @loanObligationNoLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hapana'**
+  String get loanObligationNoLabel;
+
+  /// No description provided for @loanObligationConfirmWaiverAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha Msamaha'**
+  String get loanObligationConfirmWaiverAction;
+
+  /// No description provided for @loanObligationWaiverSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni limesamehewa.'**
+  String get loanObligationWaiverSuccessMessage;
+
+  /// No description provided for @loanObligationCorrectionTypeFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina ya Urekebishaji'**
+  String get loanObligationCorrectionTypeFieldLabel;
+
+  /// No description provided for @loanObligationCorrectionDecreaseLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Punguza'**
+  String get loanObligationCorrectionDecreaseLabel;
+
+  /// No description provided for @loanObligationCorrectionIncreaseLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ongeza'**
+  String get loanObligationCorrectionIncreaseLabel;
+
+  /// No description provided for @loanObligationSourceOriginalAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tathmini Halisi'**
+  String get loanObligationSourceOriginalAmountLabel;
+
+  /// No description provided for @loanObligationPriorNetCorrectionsLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho ya Awali'**
+  String get loanObligationPriorNetCorrectionsLabel;
+
+  /// No description provided for @loanObligationCurrentEffectiveAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Halisi cha Sasa'**
+  String get loanObligationCurrentEffectiveAmountLabel;
+
+  /// No description provided for @loanObligationProposedCorrectionLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Urekebishaji Unaopendekezwa'**
+  String get loanObligationProposedCorrectionLabel;
+
+  /// No description provided for @loanObligationNewEffectiveAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Halisi Kipya'**
+  String get loanObligationNewEffectiveAmountLabel;
+
+  /// No description provided for @loanObligationConfirmCorrectionAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Thibitisha Urekebishaji'**
+  String get loanObligationConfirmCorrectionAction;
+
+  /// No description provided for @loanObligationCorrectionSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Urekebishaji umewekwa.'**
+  String get loanObligationCorrectionSuccessMessage;
+
+  /// No description provided for @loanObligationReasonHardship.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ugumu wa Kimaisha'**
+  String get loanObligationReasonHardship;
+
+  /// No description provided for @loanObligationReasonCommitteeDecision.
+  ///
+  /// In sw, this message translates to:
+  /// **'Uamuzi wa Kamati'**
+  String get loanObligationReasonCommitteeDecision;
+
+  /// No description provided for @loanObligationReasonGoodwill.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nia Njema'**
+  String get loanObligationReasonGoodwill;
+
+  /// No description provided for @loanObligationReasonSettlementConcession.
+  ///
+  /// In sw, this message translates to:
+  /// **'Punguzo la Malipo'**
+  String get loanObligationReasonSettlementConcession;
+
+  /// No description provided for @loanObligationReasonAssessmentError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hitilafu ya Tathmini'**
+  String get loanObligationReasonAssessmentError;
+
+  /// No description provided for @loanObligationReasonDataEntryError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hitilafu ya Kuingiza Data'**
+  String get loanObligationReasonDataEntryError;
+
+  /// No description provided for @loanObligationReasonMigrationError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hitilafu ya Uhamishaji'**
+  String get loanObligationReasonMigrationError;
+
+  /// No description provided for @loanObligationReasonOther.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nyingine'**
+  String get loanObligationReasonOther;
+
+  /// No description provided for @loanObligationHistoryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho na Misamaha'**
+  String get loanObligationHistoryTitle;
+
+  /// No description provided for @loanObligationHistoryEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna msamaha au urekebishaji uliorekodiwa kwa mkopo huu.'**
+  String get loanObligationHistoryEmptyMessage;
+
+  /// No description provided for @loanObligationHistoryReversedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imebatilishwa'**
+  String get loanObligationHistoryReversedLabel;
+
+  /// No description provided for @loanObligationReverseAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Batilisha'**
+  String get loanObligationReverseAction;
+
+  /// No description provided for @loanObligationReverseConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Batilisha marekebisho haya?'**
+  String get loanObligationReverseConfirmTitle;
+
+  /// No description provided for @loanObligationReverseReasonFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu ya Kubatilisha'**
+  String get loanObligationReverseReasonFieldLabel;
+
+  /// No description provided for @loanObligationReverseSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho yamebatilishwa.'**
+  String get loanObligationReverseSuccessMessage;
 }
 
 class _AppLocalizationsDelegate

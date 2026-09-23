@@ -3259,4 +3259,204 @@ class AppLocalizationsSw extends AppLocalizations {
   @override
   String get loanRestructureSafetyMessage =>
       'Hii inabadilisha ratiba ya mkataba ijayo pekee. Historia iliyokwisha lipwa haibadiliki kamwe, na hii imezuiwa iwapo salio lolote lililochelewa lipo.';
+
+  @override
+  String get loanErrorWaiverExceedsOutstanding =>
+      'Kiasi cha msamaha kinazidi kiasi kinachodaiwa sasa.';
+
+  @override
+  String get loanErrorAdjustmentTargetInvalid =>
+      'Deni hili halikupatikana kwenye mkopo huu.';
+
+  @override
+  String get loanErrorFutureInterestNotWaivable =>
+      'Riba ya siku zijazo isiyofikia wakati wake haiwezi kusamehewa au kurekebishwa.';
+
+  @override
+  String get loanErrorPrincipalAdjustmentProhibited =>
+      'Kiasi cha mtaji hakiwezi kusamehewa au kurekebishwa.';
+
+  @override
+  String get loanErrorCorrectionIncreaseNotAllowed =>
+      'Kuongeza riba kwa njia ya urekebishaji hairuhusiwi.';
+
+  @override
+  String get loanErrorCorrectionIncreaseExceedsBound =>
+      'Ongezeko hili linazidi kiwango cha juu kinachoruhusiwa kwa adhabu hii.';
+
+  @override
+  String get loanErrorCorrectionIncreasePolicyUnavailable =>
+      'Adhabu hii haina sera iliyorekodiwa ya kutegemeza ongezeko.';
+
+  @override
+  String get loanErrorCorrectionDecreaseExceedsOutstanding =>
+      'Kiasi cha urekebishaji kinazidi kiasi kinachodaiwa sasa.';
+
+  @override
+  String get loanErrorFutureInterestNotCorrectable =>
+      'Riba ya siku zijazo isiyofikia wakati wake haiwezi kurekebishwa.';
+
+  @override
+  String get loanErrorAdjustmentEffectiveDateRequired =>
+      'Tarehe ya kutekeleza inahitajika kwa hatua hii.';
+
+  @override
+  String get loanErrorAdjustmentAmountInvalid =>
+      'Weka kiasi kikubwa zaidi ya sifuri.';
+
+  @override
+  String get loanErrorAdjustmentReasonRequired => 'Chagua sababu sahihi.';
+
+  @override
+  String get loanErrorAdjustmentOtherNoteRequired =>
+      'Weka maelezo yanayoeleza \"Nyingine\".';
+
+  @override
+  String get loanErrorAdjustmentAlreadyReversed =>
+      'Marekebisho haya tayari yamebatilishwa.';
+
+  @override
+  String get loanErrorAdjustmentReversalBlockedSubsequentActivity =>
+      'Haiwezi kubatilishwa kwa sababu shughuli nyingine tayari imerekodiwa dhidi yake.';
+
+  @override
+  String get loanErrorAdjustmentReversalNotSupported =>
+      'Kubatilisha hakiwezi kubatilishwa tena.';
+
+  @override
+  String get loanWaiveObligationAction => 'Samehe Deni';
+
+  @override
+  String get loanCorrectObligationAction => 'Rekebisha Deni';
+
+  @override
+  String get loanObligationWaiveTitle => 'Samehe Deni';
+
+  @override
+  String get loanObligationCorrectTitle => 'Rekebisha Deni';
+
+  @override
+  String get loanObligationTargetPenaltyLabel => 'Adhabu';
+
+  @override
+  String get loanObligationTargetInterestLabel => 'Riba';
+
+  @override
+  String get loanObligationAmountFieldLabel => 'Kiasi';
+
+  @override
+  String get loanObligationReasonFieldLabel => 'Sababu';
+
+  @override
+  String get loanObligationNoteFieldLabel => 'Maelezo';
+
+  @override
+  String get loanObligationPreviewAction => 'Onyesho la Awali';
+
+  @override
+  String get loanObligationCurrentOutstandingLabel => 'Kinachodaiwa Sasa';
+
+  @override
+  String get loanObligationWaiverAmountLabel => 'Kiasi cha Msamaha';
+
+  @override
+  String get loanObligationRemainingOutstandingLabel =>
+      'Kinachodaiwa Kilichobaki';
+
+  @override
+  String get loanObligationCashImpactLabel => 'Athari ya Fedha';
+
+  @override
+  String get loanObligationPaymentCreatedLabel => 'Malipo Yameundwa';
+
+  @override
+  String get loanObligationReceiptCreatedLabel => 'Risiti Imeundwa';
+
+  @override
+  String get loanObligationNoLabel => 'Hapana';
+
+  @override
+  String get loanObligationConfirmWaiverAction => 'Thibitisha Msamaha';
+
+  @override
+  String get loanObligationWaiverSuccessMessage => 'Deni limesamehewa.';
+
+  @override
+  String get loanObligationCorrectionTypeFieldLabel => 'Aina ya Urekebishaji';
+
+  @override
+  String get loanObligationCorrectionDecreaseLabel => 'Punguza';
+
+  @override
+  String get loanObligationCorrectionIncreaseLabel => 'Ongeza';
+
+  @override
+  String get loanObligationSourceOriginalAmountLabel => 'Tathmini Halisi';
+
+  @override
+  String get loanObligationPriorNetCorrectionsLabel => 'Marekebisho ya Awali';
+
+  @override
+  String get loanObligationCurrentEffectiveAmountLabel =>
+      'Kiasi Halisi cha Sasa';
+
+  @override
+  String get loanObligationProposedCorrectionLabel =>
+      'Urekebishaji Unaopendekezwa';
+
+  @override
+  String get loanObligationNewEffectiveAmountLabel => 'Kiasi Halisi Kipya';
+
+  @override
+  String get loanObligationConfirmCorrectionAction => 'Thibitisha Urekebishaji';
+
+  @override
+  String get loanObligationCorrectionSuccessMessage => 'Urekebishaji umewekwa.';
+
+  @override
+  String get loanObligationReasonHardship => 'Ugumu wa Kimaisha';
+
+  @override
+  String get loanObligationReasonCommitteeDecision => 'Uamuzi wa Kamati';
+
+  @override
+  String get loanObligationReasonGoodwill => 'Nia Njema';
+
+  @override
+  String get loanObligationReasonSettlementConcession => 'Punguzo la Malipo';
+
+  @override
+  String get loanObligationReasonAssessmentError => 'Hitilafu ya Tathmini';
+
+  @override
+  String get loanObligationReasonDataEntryError => 'Hitilafu ya Kuingiza Data';
+
+  @override
+  String get loanObligationReasonMigrationError => 'Hitilafu ya Uhamishaji';
+
+  @override
+  String get loanObligationReasonOther => 'Nyingine';
+
+  @override
+  String get loanObligationHistoryTitle => 'Marekebisho na Misamaha';
+
+  @override
+  String get loanObligationHistoryEmptyMessage =>
+      'Hakuna msamaha au urekebishaji uliorekodiwa kwa mkopo huu.';
+
+  @override
+  String get loanObligationHistoryReversedLabel => 'Imebatilishwa';
+
+  @override
+  String get loanObligationReverseAction => 'Batilisha';
+
+  @override
+  String get loanObligationReverseConfirmTitle => 'Batilisha marekebisho haya?';
+
+  @override
+  String get loanObligationReverseReasonFieldLabel => 'Sababu ya Kubatilisha';
+
+  @override
+  String get loanObligationReverseSuccessMessage =>
+      'Marekebisho yamebatilishwa.';
 }

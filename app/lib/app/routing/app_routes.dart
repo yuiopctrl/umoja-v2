@@ -385,4 +385,24 @@ class AppRoutes {
       '/loans/accounts/:loanAccountId/restructure';
   static String loanAccountRestructurePath(String loanAccountId) =>
       '/loans/accounts/$loanAccountId/restructure';
+
+  // -- Waivers & Corrections (Prompt 09F-A) -------------------------------
+
+  /// Path template; use [loanObligationWaivePath] for a concrete URL.
+  static const loanObligationWaive =
+      '/loans/accounts/:loanAccountId/waive/:targetType/:targetId';
+  static String loanObligationWaivePath(
+    String loanAccountId,
+    String targetType,
+    String targetId,
+  ) => '/loans/accounts/$loanAccountId/waive/$targetType/$targetId';
+
+  /// Path template; use [loanObligationCorrectPath] for a concrete URL.
+  static const loanObligationCorrect =
+      '/loans/accounts/:loanAccountId/correct/:targetType/:targetId';
+  static String loanObligationCorrectPath(
+    String loanAccountId,
+    String targetType,
+    String targetId,
+  ) => '/loans/accounts/$loanAccountId/correct/$targetType/$targetId';
 }

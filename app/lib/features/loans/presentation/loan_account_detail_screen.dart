@@ -11,15 +11,19 @@ import '../../../core/utils/money_format.dart';
 import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_card.dart';
 import '../../../core/widgets/umoja_confirmation_sheet.dart';
+import '../../../core/widgets/umoja_empty_state.dart';
 import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_page.dart';
 import '../../../core/widgets/umoja_status_badge.dart';
 import '../../auth/providers/selected_group_provider.dart';
 import '../controllers/loan_account_draft_controller.dart';
+import '../controllers/loan_obligation_adjustment_controller.dart';
 import '../controllers/loan_workflow_controller.dart';
 import '../domain/loan_account.dart';
 import '../domain/loan_installment.dart';
+import '../domain/loan_obligation_adjustment.dart';
 import '../providers/loan_account_detail_provider.dart';
+import '../providers/loan_obligation_adjustments_provider.dart';
 import '../providers/loan_penalty_charges_provider.dart';
 import 'widgets/loan_labels.dart';
 
@@ -153,6 +157,10 @@ class LoanAccountDetailScreen extends ConsumerWidget {
         membership?.hasPermission('loan.prepay_principal') ?? false;
     final canRestructure =
         membership?.hasPermission('loan.restructure') ?? false;
+    final canWaive = membership?.hasPermission('loan.waive') ?? false;
+    final canCorrect = membership?.hasPermission('loan.correct') ?? false;
+    final canCorrectIncrease =
+        membership?.hasPermission('loan.correct_increase') ?? false;
 
     return UmojaPage(
       title: l10n.loanAccountDetailTitle,
@@ -485,6 +493,55 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                                             .error,
                                       ),
                                     ),
+                                  if (installment.id != null &&
+                                      (installment.interestOutstanding ?? 0) >
+                                          0 &&
+                                      _isInterestAdjustmentEligibleByDate(
+                                        installment,
+                                      ) &&
+                                      (canWaive || canCorrect))
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: UmojaSpacing.xs,
+                                      ),
+                                      child: Wrap(
+                                        spacing: UmojaSpacing.sm,
+                                        children: [
+                                          if (canWaive)
+                                            TextButton(
+                                              key: Key(
+                                                'loanWaiveInterestAction_${installment.id}',
+                                              ),
+                                              onPressed: () => context.push(
+                                                AppRoutes.loanObligationWaivePath(
+                                                  loanAccountId,
+                                                  'LOAN_INTEREST',
+                                                  installment.id!,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                l10n.loanWaiveObligationAction,
+                                              ),
+                                            ),
+                                          if (canCorrect)
+                                            TextButton(
+                                              key: Key(
+                                                'loanCorrectInterestAction_${installment.id}',
+                                              ),
+                                              onPressed: () => context.push(
+                                                AppRoutes.loanObligationCorrectPath(
+                                                  loanAccountId,
+                                                  'LOAN_INTEREST',
+                                                  installment.id!,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                l10n.loanCorrectObligationAction,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
@@ -607,6 +664,45 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                                                   .textTheme
                                                   .bodySmall,
                                             ),
+                                            if (charge.outstandingAmount > 0 &&
+                                                (canWaive || canCorrect))
+                                              Wrap(
+                                                spacing: UmojaSpacing.sm,
+                                                children: [
+                                                  if (canWaive)
+                                                    TextButton(
+                                                      key: Key(
+                                                        'loanWaivePenaltyAction_${charge.id}',
+                                                      ),
+                                                      onPressed: () => context.push(
+                                                        AppRoutes.loanObligationWaivePath(
+                                                          loanAccountId,
+                                                          'LOAN_PENALTY',
+                                                          charge.id,
+                                                        ),
+                                                      ),
+                                                      child: Text(
+                                                        l10n.loanWaiveObligationAction,
+                                                      ),
+                                                    ),
+                                                  if (canCorrect)
+                                                    TextButton(
+                                                      key: Key(
+                                                        'loanCorrectPenaltyAction_${charge.id}',
+                                                      ),
+                                                      onPressed: () => context.push(
+                                                        AppRoutes.loanObligationCorrectPath(
+                                                          loanAccountId,
+                                                          'LOAN_PENALTY',
+                                                          charge.id,
+                                                        ),
+                                                      ),
+                                                      child: Text(
+                                                        l10n.loanCorrectObligationAction,
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
                                           ],
                                         ),
                                       ),
@@ -620,6 +716,22 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                       },
                     );
                   },
+                ),
+              ],
+              if (loan.isActive || loan.isClosed) ...[
+                const SizedBox(height: UmojaSpacing.xxl),
+                Text(
+                  l10n.loanObligationHistoryTitle,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: UmojaSpacing.sm),
+                _LoanObligationAdjustmentHistorySection(
+                  key: const Key('loanObligationHistorySection'),
+                  loanAccountId: loanAccountId,
+                  groupId: groupId,
+                  canReverseWaiver: canWaive,
+                  canReverseCorrection: canCorrect,
+                  canReverseCorrectionIncrease: canCorrectIncrease,
                 ),
               ],
               if (loan.isRejected || loan.isCancelled) ...[
@@ -799,6 +911,225 @@ List<LoanInstallment> _historicalArrearsInstallments(LoanAccount loan) {
   return loan.installments
       .where((installment) => !installment.dueDate.isAfter(openingAsOfDate))
       .toList(growable: false);
+}
+
+/// Prompt 09F-A-12: whether an installment's interest is far enough
+/// along to even offer Waive/Correct — mirrors the server's own
+/// `due_date <= effective_date` gate (`rpc_preview/post_loan_obligation_
+/// waiver`/`..._correction`, which unconditionally reject
+/// LOAN_FUTURE_INTEREST_NOT_WAIVABLE/_NOT_CORRECTABLE otherwise). This
+/// is a UX-only convenience so the action is never offered somewhere
+/// the server is guaranteed to reject it (09F-A-11 Blocker-03) — it is
+/// never itself the accounting authority, which remains entirely
+/// server-side regardless of what this returns.
+///
+/// The loan read model has no top-level "as of"/server-generated-at
+/// date to compare against (only a per-installment `status` string,
+/// which collapses due-date ordering together with payment state —
+/// e.g. `PARTIALLY_PAID` can occur for an on-time-or-future installment
+/// just as easily as an overdue one, so it can't disambiguate
+/// "future" on its own). In the absence of a server-supplied reference
+/// date, this deliberately falls back to the device's local clock
+/// ([DateTime.now]) purely to decide whether to show the button —
+/// documented limitation: a device with a badly wrong clock could show
+/// (or hide) the action inconsistently with the server's own
+/// evaluation, but can never make the server accept an actually-future
+/// waiver/correction, since the server re-evaluates its own
+/// `current_date` independently on every preview and post.
+bool _isInterestAdjustmentEligibleByDate(LoanInstallment installment) {
+  final today = DateTime.now();
+  final referenceDate = DateTime(today.year, today.month, today.day);
+  return !installment.dueDate.isAfter(referenceDate);
+}
+
+/// Prompt 09F-A section 26: "Adjustments & Waivers" — the authoritative,
+/// immutable history for one loan. No edit/delete is ever offered;
+/// [_LoanObligationAdjustmentHistorySection.canReverseWaiver]/etc. only
+/// gate whether the Reverse action is even shown — the server still
+/// makes the final decision (permission + dependency-guard) on every
+/// reversal attempt.
+class _LoanObligationAdjustmentHistorySection extends ConsumerWidget {
+  const _LoanObligationAdjustmentHistorySection({
+    super.key,
+    required this.loanAccountId,
+    required this.groupId,
+    required this.canReverseWaiver,
+    required this.canReverseCorrection,
+    required this.canReverseCorrectionIncrease,
+  });
+
+  final String loanAccountId;
+  final String? groupId;
+  final bool canReverseWaiver;
+  final bool canReverseCorrection;
+  final bool canReverseCorrectionIncrease;
+
+  bool _canReverse(LoanObligationAdjustment adjustment) {
+    switch (adjustment.adjustmentType) {
+      case 'WAIVER':
+        return canReverseWaiver;
+      case 'CORRECTION_INCREASE':
+        return canReverseCorrection && canReverseCorrectionIncrease;
+      case 'CORRECTION_DECREASE':
+        return canReverseCorrection;
+      default:
+        return false;
+    }
+  }
+
+  Future<void> _reverse(
+    BuildContext context,
+    WidgetRef ref,
+    String groupId,
+    LoanObligationAdjustment adjustment,
+  ) async {
+    final l10n = context.l10n;
+    final reasonController = TextEditingController();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.loanObligationReverseConfirmTitle),
+        content: TextField(
+          key: const Key('loanObligationReverseReasonField'),
+          controller: reasonController,
+          autofocus: true,
+          maxLines: 3,
+          decoration: InputDecoration(
+            labelText: l10n.loanObligationReverseReasonFieldLabel,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.cancelButton),
+          ),
+          TextButton(
+            key: const Key('loanObligationReverseConfirmAction'),
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.loanObligationReverseAction),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final success = await ref
+        .read(loanObligationAdjustmentReversalControllerProvider.notifier)
+        .reverse(
+          groupId: groupId,
+          loanAccountId: loanAccountId,
+          adjustmentId: adjustment.id,
+          reversalReason: reasonController.text.trim(),
+        );
+    if (success && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.loanObligationReverseSuccessMessage)),
+      );
+    } else if (context.mounted) {
+      final errorType = ref
+          .read(loanObligationAdjustmentReversalControllerProvider)
+          .errorType;
+      if (errorType != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(loanFailureMessage(l10n, errorType))),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final pageAsync = ref.watch(
+      loanObligationAdjustmentsProvider(loanAccountId),
+    );
+    final reversalState = ref.watch(
+      loanObligationAdjustmentReversalControllerProvider,
+    );
+
+    return pageAsync.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: UmojaSpacing.lg),
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, stackTrace) => UmojaErrorState(
+        message: l10n.refreshFailedMessage,
+        retryLabel: l10n.retryButton,
+        onRetry: () =>
+            ref.invalidate(loanObligationAdjustmentsProvider(loanAccountId)),
+      ),
+      data: (page) {
+        if (page.items.isEmpty) {
+          return UmojaEmptyState(
+            icon: Icons.receipt_long_outlined,
+            title: l10n.loanObligationHistoryTitle,
+            message: l10n.loanObligationHistoryEmptyMessage,
+          );
+        }
+        return UmojaCard(
+          padding: const EdgeInsets.all(UmojaSpacing.lg),
+          child: Column(
+            children: [
+              for (final adjustment in page.items)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: UmojaSpacing.sm),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${adjustment.adjustmentType} · '
+                              '${adjustment.targetType}',
+                            ),
+                            Text(
+                              formatKiswahiliDate(adjustment.effectiveDate),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            if (adjustment.reasonCode.isNotEmpty)
+                              Text(
+                                adjustment.reasonCode,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            if (adjustment.isReversed)
+                              Text(
+                                l10n.loanObligationHistoryReversedLabel,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.error,
+                                ),
+                              )
+                            else if (groupId != null &&
+                                adjustment.isReversalCandidate &&
+                                _canReverse(adjustment))
+                              TextButton(
+                                key: Key(
+                                  'loanObligationReverseAction_${adjustment.id}',
+                                ),
+                                onPressed: reversalState.isSubmitting
+                                    ? null
+                                    : () => _reverse(
+                                        context,
+                                        ref,
+                                        groupId!,
+                                        adjustment,
+                                      ),
+                                child: Text(l10n.loanObligationReverseAction),
+                              ),
+                          ],
+                        ),
+                      ),
+                      Text(formatAmount(adjustment.amount)),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
 
 class _DetailRow extends StatelessWidget {

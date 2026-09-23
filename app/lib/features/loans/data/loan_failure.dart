@@ -166,6 +166,70 @@ enum LoanFailureType {
   /// `LOAN_RESTRUCTURE_NOTHING_REMAINING` (Prompt 09E).
   restructureNothingRemaining,
 
+  /// `LOAN_WAIVER_EXCEEDS_OUTSTANDING` (Prompt 09F-A).
+  waiverExceedsOutstanding,
+
+  /// `LOAN_ADJUSTMENT_TARGET_INVALID` (Prompt 09F-A).
+  adjustmentTargetInvalid,
+
+  /// `LOAN_FUTURE_INTEREST_NOT_WAIVABLE` (Prompt 09F-A).
+  futureInterestNotWaivable,
+
+  /// `LOAN_PRINCIPAL_ADJUSTMENT_PROHIBITED` (Prompt 09F-A).
+  principalAdjustmentProhibited,
+
+  /// `LOAN_CORRECTION_INCREASE_NOT_ALLOWED` (Prompt 09F-A) — interest
+  /// correction increases are always rejected.
+  correctionIncreaseNotAllowed,
+
+  /// `LOAN_CORRECTION_INCREASE_EXCEEDS_BOUND` (Prompt 09F-A) — the
+  /// corrected gross would exceed the charge's frozen-policy expected
+  /// amount (09F-A-BLOCKER-01: no multiplier/tolerance/override).
+  correctionIncreaseExceedsBound,
+
+  /// `LOAN_CORRECTION_INCREASE_POLICY_UNAVAILABLE` (Prompt
+  /// 09F-A-BLOCKER-01) — the target (e.g. a MIGRATED loan's OPENING
+  /// penalty charge) has no frozen policy snapshot to reconcile a
+  /// correction increase against.
+  correctionIncreasePolicyUnavailable,
+
+  /// `LOAN_CORRECTION_DECREASE_EXCEEDS_OUTSTANDING` (Prompt 09F-A).
+  correctionDecreaseExceedsOutstanding,
+
+  /// `LOAN_FUTURE_INTEREST_NOT_CORRECTABLE` (Prompt 09F-A-09, Defect C)
+  /// — only earned/payable interest (due_date <= effective_date) may be
+  /// CORRECTION_DECREASE-d; a not-yet-due installment is rejected. A
+  /// dedicated code, distinct from [futureInterestNotWaivable], because
+  /// that name is specific to waiver semantics.
+  futureInterestNotCorrectable,
+
+  /// The backend rejected a request for lacking an effective date
+  /// (Prompt 09F-A-09, Defect B) — defense in depth: after Defect A's
+  /// fix the client never sends an explicit null for this, but an
+  /// explicit backend rejection must never degrade to a generic
+  /// "unexpected" failure.
+  adjustmentEffectiveDateRequired,
+
+  /// `LOAN_ADJUSTMENT_AMOUNT_MUST_BE_POSITIVE` (Prompt 09F-A).
+  adjustmentAmountInvalid,
+
+  /// `LOAN_ADJUSTMENT_REASON_REQUIRED` (Prompt 09F-A).
+  adjustmentReasonRequired,
+
+  /// `LOAN_ADJUSTMENT_OTHER_NOTE_REQUIRED` (Prompt 09F-A).
+  adjustmentOtherNoteRequired,
+
+  /// `LOAN_ADJUSTMENT_ALREADY_REVERSED` (Prompt 09F-A).
+  adjustmentAlreadyReversed,
+
+  /// `LOAN_ADJUSTMENT_REVERSAL_BLOCKED_SUBSEQUENT_ACTIVITY` (Prompt
+  /// 09F-A).
+  adjustmentReversalBlockedSubsequentActivity,
+
+  /// `LOAN_ADJUSTMENT_REVERSAL_NOT_SUPPORTED` (Prompt 09F-A) — a
+  /// reversal of a reversal is not supported.
+  adjustmentReversalNotSupported,
+
   /// Not found (product, membership, or loan account not in group).
   notFound,
 

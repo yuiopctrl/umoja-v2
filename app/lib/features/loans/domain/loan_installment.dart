@@ -8,6 +8,7 @@
 /// counter, and never computed here.
 class LoanInstallment {
   const LoanInstallment({
+    this.id,
     required this.installmentNumber,
     required this.dueDate,
     required this.principalDue,
@@ -27,6 +28,7 @@ class LoanInstallment {
     final principalDue = (json['principal_due'] as num).toDouble();
     final interestDue = (json['interest_due'] as num).toDouble();
     return LoanInstallment(
+      id: json['id'] as String?,
       installmentNumber: json['installment_number'] as int,
       dueDate: DateTime.parse(json['due_date'] as String),
       principalDue: principalDue,
@@ -59,6 +61,10 @@ class LoanInstallment {
     );
   }
 
+  /// Prompt 09F-A: the stable anchor a LOAN_INTEREST waiver/correction
+  /// targets. Null only for pre-09F-A construction sites that never
+  /// needed it (planned/unpersisted schedule previews).
+  final String? id;
   final int installmentNumber;
   final DateTime dueDate;
   final double principalDue;

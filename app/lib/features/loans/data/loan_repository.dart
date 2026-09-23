@@ -1,6 +1,7 @@
 import '../domain/loan_account.dart';
 import '../domain/loan_historical_arrears_installment.dart';
 import '../domain/loan_migration_preview.dart';
+import '../domain/loan_obligation_adjustment.dart';
 import '../domain/loan_penalty_charge.dart';
 import '../domain/loan_product.dart';
 import '../domain/loan_schedule_preview.dart';
@@ -307,5 +308,85 @@ abstract class LoanRepository {
     required DateTime newFirstInstallmentDate,
     double? newInterestRate,
     DateTime? effectiveDate,
+  });
+
+  // -- Waivers & Corrections (Prompt 09F-A) -------------------------------
+
+  /// Server-authoritative, non-persisting preview (section 9/10).
+  /// [postLoanObligationWaiver] always re-validates and recomputes the
+  /// current effective outstanding independently, never trusting this
+  /// preview.
+  Future<LoanObligationWaiverPreview> previewLoanObligationWaiver({
+    required String groupId,
+    required String loanAccountId,
+    required String targetType,
+    required String targetId,
+    required double amount,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+  });
+
+  /// Posts exactly one immutable WAIVER row. Zero payment/receipt/
+  /// wallet/cashbook/income.
+  Future<LoanObligationAdjustmentPostResult> postLoanObligationWaiver({
+    required String groupId,
+    required String loanAccountId,
+    required String targetType,
+    required String targetId,
+    required double amount,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+    String? idempotencyKey,
+  });
+
+  /// Server-authoritative, non-persisting preview (section 11/12/13).
+  /// [postLoanObligationCorrection] always re-validates and recomputes
+  /// independently.
+  Future<LoanObligationCorrectionPreview> previewLoanObligationCorrection({
+    required String groupId,
+    required String loanAccountId,
+    required String targetType,
+    required String targetId,
+    required String adjustmentType,
+    required double amount,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+  });
+
+  /// Posts exactly one immutable CORRECTION_DECREASE/CORRECTION_INCREASE
+  /// row. The original assessment/installment is never edited.
+  Future<LoanObligationAdjustmentPostResult> postLoanObligationCorrection({
+    required String groupId,
+    required String loanAccountId,
+    required String targetType,
+    required String targetId,
+    required String adjustmentType,
+    required double amount,
+    required String reasonCode,
+    String? note,
+    DateTime? effectiveDate,
+    String? idempotencyKey,
+  });
+
+  /// Append-only reversal — the original adjustment is never edited.
+  /// Blocked server-side if later dependent activity exists on the same
+  /// target (section 17).
+  Future<LoanObligationAdjustmentReversalResult>
+  reverseLoanObligationAdjustment({
+    required String groupId,
+    required String adjustmentId,
+    required String reversalReason,
+  });
+
+  /// Paginated, authoritative adjustment/waiver history for one loan,
+  /// newest first (section 23).
+  Future<LoanObligationAdjustmentPage> listLoanObligationAdjustments({
+    required String groupId,
+    required String loanAccountId,
+    int limit = 50,
+    int offset = 0,
   });
 }

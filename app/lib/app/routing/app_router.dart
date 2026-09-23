@@ -49,6 +49,8 @@ import '../../features/loans/presentation/edit_loan_terms_screen.dart';
 import '../../features/loans/presentation/loan_account_detail_screen.dart';
 import '../../features/loans/presentation/loan_accounts_list_screen.dart';
 import '../../features/loans/presentation/loan_early_settlement_screen.dart';
+import '../../features/loans/presentation/loan_obligation_correction_screen.dart';
+import '../../features/loans/presentation/loan_obligation_waiver_screen.dart';
 import '../../features/loans/presentation/loan_penalties_screen.dart';
 import '../../features/loans/presentation/loan_prepayment_screen.dart';
 import '../../features/loans/presentation/loan_product_form_screen.dart';
@@ -513,6 +515,31 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => LoanRestructureScreen(
               loanAccountId: state.pathParameters['loanAccountId']!,
             ),
+          ),
+          GoRoute(
+            path: AppRoutes.loanObligationWaive,
+            builder: (context, state) => LoanObligationWaiverScreen(
+              loanAccountId: state.pathParameters['loanAccountId']!,
+              targetType: state.pathParameters['targetType']!,
+              targetId: state.pathParameters['targetId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.loanObligationCorrect,
+            builder: (context, state) {
+              final selectedGroup = ref.read(selectedGroupProvider);
+              final canIncrease = selectedGroup is SelectedGroupResolved
+                  ? selectedGroup.membership.hasPermission(
+                      'loan.correct_increase',
+                    )
+                  : false;
+              return LoanObligationCorrectionScreen(
+                loanAccountId: state.pathParameters['loanAccountId']!,
+                targetType: state.pathParameters['targetType']!,
+                targetId: state.pathParameters['targetId']!,
+                canIncrease: canIncrease,
+              );
+            },
           ),
         ],
       ),
