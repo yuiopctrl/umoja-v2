@@ -184,13 +184,14 @@ select ok(
   (select count(*) from public.role_permissions rp
    join public.roles r on r.id = rp.role_id
    join public.permissions p on p.id = rp.permission_id
-   where r.code = 'ADMIN' and p.code like 'loan%') = 21,
-  '14: ADMIN holds all 21 loan-module permissions (7 from Prompt 09A, '
+   where r.code = 'ADMIN' and p.code like 'loan%') = 24,
+  '14: ADMIN holds all 24 loan-module permissions (7 from Prompt 09A, '
   || '5 lifecycle permissions added in Prompt 09B, '
   || 'loan_penalty.view/loan_penalty.assess added in Prompt 09D, '
   || 'loan_opening.create added in 09D-UAT-BLOCKER-01, '
-  || 'loan.settle_early/loan.prepay_principal/loan.restructure added in Prompt 09E, plus '
-  || 'loan.waive/loan.correct/loan.correct_increase added in Prompt 09F-A)'
+  || 'loan.settle_early/loan.prepay_principal/loan.restructure added in Prompt 09E, '
+  || 'loan.waive/loan.correct/loan.correct_increase added in Prompt 09F-A, plus '
+  || 'loan.write_off/loan.write_off.reverse/loan.recovery.create added in Prompt 09F-B)'
 );
 select ok(
   (select count(*) from public.role_permissions rp
