@@ -13,6 +13,7 @@ import 'package:umoja/features/loans/domain/loan_penalty_charge.dart';
 import 'package:umoja/features/loans/domain/loan_product.dart';
 import 'package:umoja/features/loans/domain/loan_schedule_preview.dart';
 import 'package:umoja/features/loans/domain/loan_servicing.dart';
+import 'package:umoja/features/loans/domain/loan_statement.dart';
 import 'package:umoja/features/loans/domain/loan_write_off_recovery.dart';
 
 LoanAccountEvent fakeLoanAccountEvent({
@@ -216,6 +217,11 @@ LoanAccount fakeLoanAccount({
   double? penaltyFixedAmount,
   double? penaltyRate,
   String? penaltyBasis,
+  double? writtenOffTotal,
+  double? remainingRecoverableTotal,
+  double? remainingRecoverablePrincipal,
+  double? remainingRecoverableInterest,
+  double? remainingRecoverablePenalty,
 }) {
   return LoanAccount(
     id: id,
@@ -262,6 +268,11 @@ LoanAccount fakeLoanAccount({
     penaltyFixedAmount: penaltyFixedAmount,
     penaltyRate: penaltyRate,
     penaltyBasis: penaltyBasis,
+    writtenOffTotal: writtenOffTotal,
+    remainingRecoverableTotal: remainingRecoverableTotal,
+    remainingRecoverablePrincipal: remainingRecoverablePrincipal,
+    remainingRecoverableInterest: remainingRecoverableInterest,
+    remainingRecoverablePenalty: remainingRecoverablePenalty,
   );
 }
 
@@ -1390,6 +1401,20 @@ class FakeLoanRepository implements LoanRepository {
     return nextWriteOffSummary ??
         fakeLoanWriteOffSummary(loanAccountId: loanAccountId);
   }
+
+  LoanStatement? nextStatement;
+  final List<({String groupId, String loanAccountId})> getLoanStatementCalls =
+      [];
+
+  @override
+  Future<LoanStatement> getLoanStatement({
+    required String groupId,
+    required String loanAccountId,
+  }) async {
+    getLoanStatementCalls.add((groupId: groupId, loanAccountId: loanAccountId));
+    _maybeThrow();
+    return nextStatement ?? fakeLoanStatement(loanAccountId: loanAccountId);
+  }
 }
 
 LoanObligationWaiverPreview fakeLoanObligationWaiverPreview({
@@ -1896,5 +1921,241 @@ LoanWriteOffSummary fakeLoanWriteOffSummary({
           total: 220000,
         ),
     recoveries: recoveries,
+  );
+}
+
+// -- Loan Statement (Prompt 09G) -------------------------------------------
+
+LoanStatementHeader fakeLoanStatementHeader({
+  String loanAccountId = 'loan-1',
+  String loanNumber = 'STD-LN-2026-0001',
+  String loanProductId = 'product-1',
+  String loanProductName = 'Standard Loan',
+  String membershipId = 'm1',
+  String borrowerDisplayName = 'Test Member',
+  String? borrowerMemberNumber,
+  String loanOrigin = 'NEW',
+  double principalAmount = 300000,
+  double interestRate = 5.0,
+  String interestRateBasis = 'MONTHLY',
+  String interestMethod = 'FLAT',
+  int term = 3,
+  String termUnit = 'MONTH',
+  DateTime? firstRepaymentDate,
+  DateTime? applicationDate,
+  String status = 'ACTIVE',
+}) {
+  return LoanStatementHeader(
+    loanAccountId: loanAccountId,
+    loanNumber: loanNumber,
+    loanProductId: loanProductId,
+    loanProductName: loanProductName,
+    membershipId: membershipId,
+    borrowerDisplayName: borrowerDisplayName,
+    borrowerMemberNumber: borrowerMemberNumber,
+    loanOrigin: loanOrigin,
+    principalAmount: principalAmount,
+    interestRate: interestRate,
+    interestRateBasis: interestRateBasis,
+    interestMethod: interestMethod,
+    term: term,
+    termUnit: termUnit,
+    firstRepaymentDate: firstRepaymentDate ?? DateTime.utc(2026, 4, 15),
+    applicationDate: applicationDate ?? DateTime.utc(2026, 4, 1),
+    status: status,
+  );
+}
+
+LoanStatementWriteOffState fakeLoanStatementWriteOffState({
+  bool isActive = true,
+  String writeOffEventId = 'wo-1',
+  DateTime? effectiveDate,
+  String reasonCode = 'PROLONGED_DEFAULT',
+  String? note,
+  double principalWrittenOff = 200000,
+  double interestWrittenOff = 15000,
+  double penaltyWrittenOff = 5000,
+  double? amountWrittenOff,
+  double recoveredPrincipal = 0,
+  double recoveredInterest = 0,
+  double recoveredPenalty = 0,
+  double? totalRecovered,
+  double? remainingRecoverablePrincipal,
+  double? remainingRecoverableInterest,
+  double? remainingRecoverablePenalty,
+  double? remainingRecoverable,
+}) {
+  final total =
+      amountWrittenOff ??
+      (principalWrittenOff + interestWrittenOff + penaltyWrittenOff);
+  final recovered =
+      totalRecovered ??
+      (recoveredPrincipal + recoveredInterest + recoveredPenalty);
+  final remPrincipal =
+      remainingRecoverablePrincipal ??
+      (principalWrittenOff - recoveredPrincipal);
+  final remInterest =
+      remainingRecoverableInterest ?? (interestWrittenOff - recoveredInterest);
+  final remPenalty =
+      remainingRecoverablePenalty ?? (penaltyWrittenOff - recoveredPenalty);
+  return LoanStatementWriteOffState(
+    isActive: isActive,
+    writeOffEventId: writeOffEventId,
+    effectiveDate: effectiveDate ?? DateTime.utc(2026, 6, 1),
+    reasonCode: reasonCode,
+    note: note,
+    principalWrittenOff: principalWrittenOff,
+    interestWrittenOff: interestWrittenOff,
+    penaltyWrittenOff: penaltyWrittenOff,
+    amountWrittenOff: total,
+    recoveredPrincipal: recoveredPrincipal,
+    recoveredInterest: recoveredInterest,
+    recoveredPenalty: recoveredPenalty,
+    totalRecovered: recovered,
+    remainingRecoverablePrincipal: remPrincipal,
+    remainingRecoverableInterest: remInterest,
+    remainingRecoverablePenalty: remPenalty,
+    remainingRecoverable: remainingRecoverable ?? (total - recovered),
+  );
+}
+
+LoanStatementCurrentState fakeLoanStatementCurrentState({
+  String status = 'ACTIVE',
+  double principalOutstanding = 200000,
+  double earnedInterestOutstanding = 10000,
+  double penaltyOutstanding = 0,
+  double? totalOutstanding,
+  double scheduledUnearnedInterest = 5000,
+  double overduePrincipal = 0,
+  double overdueInterest = 0,
+  double overduePenalty = 0,
+  double totalOverdue = 0,
+  LoanStatementWriteOffState? writeOff,
+}) {
+  return LoanStatementCurrentState(
+    status: status,
+    principalOutstanding: principalOutstanding,
+    earnedInterestOutstanding: earnedInterestOutstanding,
+    penaltyOutstanding: penaltyOutstanding,
+    totalOutstanding:
+        totalOutstanding ??
+        (principalOutstanding + earnedInterestOutstanding + penaltyOutstanding),
+    scheduledUnearnedInterest: scheduledUnearnedInterest,
+    overduePrincipal: overduePrincipal,
+    overdueInterest: overdueInterest,
+    overduePenalty: overduePenalty,
+    totalOverdue: totalOverdue,
+    writeOff: writeOff,
+  );
+}
+
+LoanStatementEvent fakeLoanStatementEvent({
+  String eventId = '0:e1',
+  String eventType = 'LOAN_CREATED',
+  String? eventSubtype,
+  DateTime? effectiveAt,
+  DateTime? createdAt,
+  String? sequenceKey,
+  String? titleCode,
+  String? actorUserId = 'u1',
+  bool isReversed = false,
+  String? reversedByEventId,
+  double? amount,
+  LoanStatementComponentBreakdown? components,
+  Map<String, dynamic> references = const {},
+  Map<String, dynamic> metadata = const {},
+}) {
+  return LoanStatementEvent(
+    eventId: eventId,
+    eventType: LoanStatementEventType.fromRaw(eventType),
+    rawEventType: eventType,
+    eventSubtype: eventSubtype,
+    effectiveAt: effectiveAt ?? DateTime.utc(2026, 4, 15),
+    createdAt: createdAt ?? DateTime.utc(2026, 4, 15),
+    sequenceKey: sequenceKey ?? '0:$eventId',
+    titleCode: titleCode ?? eventType,
+    actorUserId: actorUserId,
+    isReversed: isReversed,
+    reversedByEventId: reversedByEventId,
+    amount: amount,
+    components: components,
+    references: references,
+    metadata: metadata,
+  );
+}
+
+LoanStatementScheduleEntry fakeLoanStatementScheduleEntry({
+  String id = 'inst-1',
+  int installmentNumber = 1,
+  DateTime? dueDate,
+  double principalDue = 100000,
+  double interestDue = 5000,
+  double? totalDue,
+  double principalOutstanding = 100000,
+  double interestOutstanding = 5000,
+  double penaltyOutstanding = 0,
+}) {
+  return LoanStatementScheduleEntry(
+    id: id,
+    installmentNumber: installmentNumber,
+    dueDate: dueDate ?? DateTime.utc(2026, 4, 15),
+    principalDue: principalDue,
+    interestDue: interestDue,
+    totalDue: totalDue ?? (principalDue + interestDue),
+    principalOutstanding: principalOutstanding,
+    interestOutstanding: interestOutstanding,
+    penaltyOutstanding: penaltyOutstanding,
+  );
+}
+
+LoanStatementScheduleHistoryEntry fakeLoanStatementScheduleHistoryEntry({
+  String id = 'inst-old-1',
+  int installmentNumber = 1,
+  DateTime? dueDate,
+  double principalDue = 100000,
+  double interestDue = 5000,
+  DateTime? cancelledAt,
+  String? cancellationReason = 'Superseded by restructure',
+  String? cancelledByPaymentId,
+  String? createdByPaymentId,
+}) {
+  return LoanStatementScheduleHistoryEntry(
+    id: id,
+    installmentNumber: installmentNumber,
+    dueDate: dueDate ?? DateTime.utc(2026, 4, 15),
+    principalDue: principalDue,
+    interestDue: interestDue,
+    cancelledAt: cancelledAt ?? DateTime.utc(2026, 5, 1),
+    cancellationReason: cancellationReason,
+    cancelledByPaymentId: cancelledByPaymentId,
+    createdByPaymentId: createdByPaymentId,
+  );
+}
+
+LoanStatement fakeLoanStatement({
+  String loanAccountId = 'loan-1',
+  LoanStatementHeader? header,
+  LoanStatementCurrentState? currentState,
+  List<LoanStatementEvent>? timeline,
+  List<LoanStatementScheduleEntry> scheduleCurrent = const [],
+  List<LoanStatementScheduleHistoryEntry> scheduleHistory = const [],
+}) {
+  return LoanStatement(
+    header: header ?? fakeLoanStatementHeader(loanAccountId: loanAccountId),
+    currentState: currentState ?? fakeLoanStatementCurrentState(),
+    timeline:
+        timeline ??
+        [
+          fakeLoanStatementEvent(
+            eventId: '0:created',
+            eventType: 'LOAN_CREATED',
+          ),
+        ],
+    schedule: LoanStatementSchedule(
+      current: scheduleCurrent.isEmpty
+          ? [fakeLoanStatementScheduleEntry()]
+          : scheduleCurrent,
+      history: scheduleHistory,
+    ),
   );
 }

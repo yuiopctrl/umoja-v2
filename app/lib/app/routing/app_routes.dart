@@ -418,4 +418,14 @@ class AppRoutes {
       '/loans/accounts/:loanAccountId/record-recovery';
   static String loanRecordRecoveryPath(String loanAccountId) =>
       '/loans/accounts/$loanAccountId/record-recovery';
+
+  // -- Loan Statement (Prompt 09G) -----------------------------------------
+
+  /// Path template; use [loanStatementPath] for a concrete URL. The
+  /// statement screen fetches its own authoritative state from
+  /// `rpc_get_loan_statement` — no financial data is ever passed
+  /// through route arguments.
+  static const loanStatement = '/loans/accounts/:loanAccountId/statement';
+  static String loanStatementPath(String loanAccountId) =>
+      '/loans/accounts/$loanAccountId/statement';
 }

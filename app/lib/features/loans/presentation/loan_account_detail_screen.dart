@@ -402,7 +402,7 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                   ),
                 ],
               ],
-              if (loan.isActive || loan.isClosed || loan.isWrittenOff) ...[
+              if (loan.isActive || loan.isClosed) ...[
                 const SizedBox(height: UmojaSpacing.xxl),
                 Text(
                   l10n.loanScheduleTitle,
@@ -921,6 +921,14 @@ class LoanAccountDetailScreen extends ConsumerWidget {
                     canRecordRecovery: canRecordRecovery,
                   ),
                 ],
+                const SizedBox(height: UmojaSpacing.xxl),
+                UmojaSecondaryButton(
+                  key: const Key('loanStatementAction'),
+                  label: l10n.loanStatementAction,
+                  expand: true,
+                  onPressed: () =>
+                      context.push(AppRoutes.loanStatementPath(loanAccountId)),
+                ),
               ],
             ],
           );

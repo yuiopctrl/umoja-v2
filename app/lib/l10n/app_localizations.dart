@@ -5342,13 +5342,13 @@ abstract class AppLocalizations {
   /// No description provided for @loanOriginMigratedLabel.
   ///
   /// In sw, this message translates to:
-  /// **'Umehamishwa / Salio la Awali'**
+  /// **'Imehamishwa'**
   String get loanOriginMigratedLabel;
 
   /// No description provided for @loanOriginNewLabel.
   ///
   /// In sw, this message translates to:
-  /// **'Mpya'**
+  /// **'Ilianzishwa Umoja'**
   String get loanOriginNewLabel;
 
   /// No description provided for @accountingImpactTitle.
@@ -6619,6 +6619,282 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Imebatilishwa'**
   String get loanRecoveryHistoryReversedLabel;
+
+  /// No description provided for @loanStatementAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Taarifa ya Mkopo'**
+  String get loanStatementAction;
+
+  /// No description provided for @loanStatementTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Taarifa ya Mkopo'**
+  String get loanStatementTitle;
+
+  /// No description provided for @loanOriginFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Chanzo cha Mkopo'**
+  String get loanOriginFieldLabel;
+
+  /// No description provided for @loanBorrowerMemberNumberLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Namba ya Mwanachama'**
+  String get loanBorrowerMemberNumberLabel;
+
+  /// No description provided for @statementCurrentPositionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali ya Sasa'**
+  String get statementCurrentPositionTitle;
+
+  /// No description provided for @statementPrincipalOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji Unaodaiwa'**
+  String get statementPrincipalOutstandingLabel;
+
+  /// No description provided for @statementEarnedInterestOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba Iliyopatikana Inayodaiwa'**
+  String get statementEarnedInterestOutstandingLabel;
+
+  /// No description provided for @statementPenaltyOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Faini Inayodaiwa'**
+  String get statementPenaltyOutstandingLabel;
+
+  /// No description provided for @statementTotalOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla Inayodaiwa'**
+  String get statementTotalOutstandingLabel;
+
+  /// No description provided for @statementScheduledUnearnedInterestLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba Ijayo Isiyopatikana Bado'**
+  String get statementScheduledUnearnedInterestLabel;
+
+  /// No description provided for @statementScheduledUnearnedInterestHint.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hii si sehemu ya kiasi kinachodaiwa sasa — ni riba ya siku zijazo kulingana na ratiba.'**
+  String get statementScheduledUnearnedInterestHint;
+
+  /// No description provided for @statementOverduePositionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Kilichochelewa'**
+  String get statementOverduePositionTitle;
+
+  /// No description provided for @statementOverduePrincipalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji Uliochelewa'**
+  String get statementOverduePrincipalLabel;
+
+  /// No description provided for @statementOverdueInterestLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba Iliyochelewa'**
+  String get statementOverdueInterestLabel;
+
+  /// No description provided for @statementOverduePenaltyLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Faini Iliyochelewa'**
+  String get statementOverduePenaltyLabel;
+
+  /// No description provided for @statementTotalOverdueLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla Iliyochelewa'**
+  String get statementTotalOverdueLabel;
+
+  /// No description provided for @statementWriteOffPositionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali ya Deni Potevu'**
+  String get statementWriteOffPositionTitle;
+
+  /// No description provided for @statementOriginalWrittenOffTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Asili Kilichofutwa'**
+  String get statementOriginalWrittenOffTitle;
+
+  /// No description provided for @statementRecoveredTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kilichorejeshwa'**
+  String get statementRecoveredTitle;
+
+  /// No description provided for @statementRemainingRecoverableTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio Linalobaki Kurejeshwa'**
+  String get statementRemainingRecoverableTitle;
+
+  /// No description provided for @statementWriteOffHistoricalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni hili potevu lilibatilishwa — takwimu hapa ni za kihistoria.'**
+  String get statementWriteOffHistoricalLabel;
+
+  /// No description provided for @statementTotalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla'**
+  String get statementTotalLabel;
+
+  /// No description provided for @statementTimelineTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Matukio ya Mkopo'**
+  String get statementTimelineTitle;
+
+  /// No description provided for @statementActivityRecordedFallback.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tukio Limerekodiwa'**
+  String get statementActivityRecordedFallback;
+
+  /// No description provided for @statementScheduleHistoryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Historia ya Ratiba'**
+  String get statementScheduleHistoryTitle;
+
+  /// No description provided for @statementEventLoanCreated.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo Umeundwa'**
+  String get statementEventLoanCreated;
+
+  /// No description provided for @statementEventLoanSubmitted.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo Umewasilishwa'**
+  String get statementEventLoanSubmitted;
+
+  /// No description provided for @statementEventLoanApproved.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo Umeidhinishwa'**
+  String get statementEventLoanApproved;
+
+  /// No description provided for @statementEventLoanRejected.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo Umekataliwa'**
+  String get statementEventLoanRejected;
+
+  /// No description provided for @statementEventLoanCancelled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo Umeghairiwa'**
+  String get statementEventLoanCancelled;
+
+  /// No description provided for @statementEventLoanDisbursed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo Umetolewa'**
+  String get statementEventLoanDisbursed;
+
+  /// No description provided for @statementEventLoanClosed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo Umefungwa'**
+  String get statementEventLoanClosed;
+
+  /// No description provided for @statementEventLoanReopened.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo Umefunguliwa Tena'**
+  String get statementEventLoanReopened;
+
+  /// No description provided for @statementEventLoanMigrated.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali ya Ufunguzi Imeingizwa'**
+  String get statementEventLoanMigrated;
+
+  /// No description provided for @statementEventEarlySettlement.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo Umekamilishwa Mapema'**
+  String get statementEventEarlySettlement;
+
+  /// No description provided for @statementEventPaymentPosted.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo Yamerekodiwa'**
+  String get statementEventPaymentPosted;
+
+  /// No description provided for @statementEventPenaltyAssessed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Faini Imetozwa'**
+  String get statementEventPenaltyAssessed;
+
+  /// No description provided for @statementEventObligationWaiver.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni Limesamehewa'**
+  String get statementEventObligationWaiver;
+
+  /// No description provided for @statementEventObligationCorrectionIncrease.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho ya Kuongeza'**
+  String get statementEventObligationCorrectionIncrease;
+
+  /// No description provided for @statementEventObligationCorrectionDecrease.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho ya Kupunguza'**
+  String get statementEventObligationCorrectionDecrease;
+
+  /// No description provided for @statementEventObligationAdjustmentReversed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho Yamebatilishwa'**
+  String get statementEventObligationAdjustmentReversed;
+
+  /// No description provided for @statementEventPrincipalPrepayment.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo ya Mtaji Kabla ya Wakati'**
+  String get statementEventPrincipalPrepayment;
+
+  /// No description provided for @statementEventLoanRestructured.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo Umepangwa Upya'**
+  String get statementEventLoanRestructured;
+
+  /// No description provided for @statementEventWriteOff.
+  ///
+  /// In sw, this message translates to:
+  /// **'Umefutwa kama Deni Potevu'**
+  String get statementEventWriteOff;
+
+  /// No description provided for @statementEventWriteOffReversed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kufuta Deni Kumebatilishwa'**
+  String get statementEventWriteOffReversed;
+
+  /// No description provided for @statementEventRecoveryPosted.
+  ///
+  /// In sw, this message translates to:
+  /// **'Urejeshaji Umerekodiwa'**
+  String get statementEventRecoveryPosted;
 }
 
 class _AppLocalizationsDelegate

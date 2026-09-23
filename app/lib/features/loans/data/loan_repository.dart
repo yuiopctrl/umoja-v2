@@ -6,6 +6,7 @@ import '../domain/loan_penalty_charge.dart';
 import '../domain/loan_product.dart';
 import '../domain/loan_schedule_preview.dart';
 import '../domain/loan_servicing.dart';
+import '../domain/loan_statement.dart';
 import '../domain/loan_write_off_recovery.dart';
 
 /// Server-authoritative access to the Loans module (Prompt 09A —
@@ -457,6 +458,17 @@ abstract class LoanRepository {
   /// The most recent write-off event (if any), its live remaining
   /// recoverable balance, and full recovery history for Loan Detail.
   Future<LoanWriteOffSummary> getLoanWriteOffSummary({
+    required String groupId,
+    required String loanAccountId,
+  });
+
+  // -- Loan Statement (Prompt 09G) ----------------------------------------
+
+  /// The single authoritative chronological statement for one loan —
+  /// current position, full ordered timeline, and current/historical
+  /// schedule. Read-only; calls `rpc_get_loan_statement` only, no
+  /// direct table reads and no client-side financial reconstruction.
+  Future<LoanStatement> getLoanStatement({
     required String groupId,
     required String loanAccountId,
   });

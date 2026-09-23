@@ -9,6 +9,7 @@ import '../domain/loan_penalty_charge.dart';
 import '../domain/loan_product.dart';
 import '../domain/loan_schedule_preview.dart';
 import '../domain/loan_servicing.dart';
+import '../domain/loan_statement.dart';
 import '../domain/loan_write_off_recovery.dart';
 import 'loan_failure.dart';
 import 'loan_repository.dart';
@@ -1116,6 +1117,22 @@ class SupabaseLoanRepository implements LoanRepository {
         params: {'p_group_id': groupId, 'p_loan_account_id': loanAccountId},
       );
       return LoanWriteOffSummary.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<LoanStatement> getLoanStatement({
+    required String groupId,
+    required String loanAccountId,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_get_loan_statement',
+        params: {'p_group_id': groupId, 'p_loan_account_id': loanAccountId},
+      );
+      return LoanStatement.fromJson(result as Map<String, dynamic>);
     } catch (error, stackTrace) {
       throw _mapError(error, stackTrace);
     }

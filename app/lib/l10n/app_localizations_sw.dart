@@ -2902,10 +2902,10 @@ class AppLocalizationsSw extends AppLocalizations {
   String get loanOriginLabel => 'Chanzo cha Mkopo';
 
   @override
-  String get loanOriginMigratedLabel => 'Umehamishwa / Salio la Awali';
+  String get loanOriginMigratedLabel => 'Imehamishwa';
 
   @override
-  String get loanOriginNewLabel => 'Mpya';
+  String get loanOriginNewLabel => 'Ilianzishwa Umoja';
 
   @override
   String get accountingImpactTitle => 'Athari za Kihasibu';
@@ -3607,4 +3607,151 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get loanRecoveryHistoryReversedLabel => 'Imebatilishwa';
+
+  @override
+  String get loanStatementAction => 'Taarifa ya Mkopo';
+
+  @override
+  String get loanStatementTitle => 'Taarifa ya Mkopo';
+
+  @override
+  String get loanOriginFieldLabel => 'Chanzo cha Mkopo';
+
+  @override
+  String get loanBorrowerMemberNumberLabel => 'Namba ya Mwanachama';
+
+  @override
+  String get statementCurrentPositionTitle => 'Hali ya Sasa';
+
+  @override
+  String get statementPrincipalOutstandingLabel => 'Mtaji Unaodaiwa';
+
+  @override
+  String get statementEarnedInterestOutstandingLabel =>
+      'Riba Iliyopatikana Inayodaiwa';
+
+  @override
+  String get statementPenaltyOutstandingLabel => 'Faini Inayodaiwa';
+
+  @override
+  String get statementTotalOutstandingLabel => 'Jumla Inayodaiwa';
+
+  @override
+  String get statementScheduledUnearnedInterestLabel =>
+      'Riba Ijayo Isiyopatikana Bado';
+
+  @override
+  String get statementScheduledUnearnedInterestHint =>
+      'Hii si sehemu ya kiasi kinachodaiwa sasa — ni riba ya siku zijazo kulingana na ratiba.';
+
+  @override
+  String get statementOverduePositionTitle => 'Kiasi Kilichochelewa';
+
+  @override
+  String get statementOverduePrincipalLabel => 'Mtaji Uliochelewa';
+
+  @override
+  String get statementOverdueInterestLabel => 'Riba Iliyochelewa';
+
+  @override
+  String get statementOverduePenaltyLabel => 'Faini Iliyochelewa';
+
+  @override
+  String get statementTotalOverdueLabel => 'Jumla Iliyochelewa';
+
+  @override
+  String get statementWriteOffPositionTitle => 'Hali ya Deni Potevu';
+
+  @override
+  String get statementOriginalWrittenOffTitle => 'Kiasi Asili Kilichofutwa';
+
+  @override
+  String get statementRecoveredTitle => 'Kilichorejeshwa';
+
+  @override
+  String get statementRemainingRecoverableTitle =>
+      'Salio Linalobaki Kurejeshwa';
+
+  @override
+  String get statementWriteOffHistoricalLabel =>
+      'Deni hili potevu lilibatilishwa — takwimu hapa ni za kihistoria.';
+
+  @override
+  String get statementTotalLabel => 'Jumla';
+
+  @override
+  String get statementTimelineTitle => 'Matukio ya Mkopo';
+
+  @override
+  String get statementActivityRecordedFallback => 'Tukio Limerekodiwa';
+
+  @override
+  String get statementScheduleHistoryTitle => 'Historia ya Ratiba';
+
+  @override
+  String get statementEventLoanCreated => 'Mkopo Umeundwa';
+
+  @override
+  String get statementEventLoanSubmitted => 'Mkopo Umewasilishwa';
+
+  @override
+  String get statementEventLoanApproved => 'Mkopo Umeidhinishwa';
+
+  @override
+  String get statementEventLoanRejected => 'Mkopo Umekataliwa';
+
+  @override
+  String get statementEventLoanCancelled => 'Mkopo Umeghairiwa';
+
+  @override
+  String get statementEventLoanDisbursed => 'Mkopo Umetolewa';
+
+  @override
+  String get statementEventLoanClosed => 'Mkopo Umefungwa';
+
+  @override
+  String get statementEventLoanReopened => 'Mkopo Umefunguliwa Tena';
+
+  @override
+  String get statementEventLoanMigrated => 'Hali ya Ufunguzi Imeingizwa';
+
+  @override
+  String get statementEventEarlySettlement => 'Mkopo Umekamilishwa Mapema';
+
+  @override
+  String get statementEventPaymentPosted => 'Malipo Yamerekodiwa';
+
+  @override
+  String get statementEventPenaltyAssessed => 'Faini Imetozwa';
+
+  @override
+  String get statementEventObligationWaiver => 'Deni Limesamehewa';
+
+  @override
+  String get statementEventObligationCorrectionIncrease =>
+      'Marekebisho ya Kuongeza';
+
+  @override
+  String get statementEventObligationCorrectionDecrease =>
+      'Marekebisho ya Kupunguza';
+
+  @override
+  String get statementEventObligationAdjustmentReversed =>
+      'Marekebisho Yamebatilishwa';
+
+  @override
+  String get statementEventPrincipalPrepayment =>
+      'Malipo ya Mtaji Kabla ya Wakati';
+
+  @override
+  String get statementEventLoanRestructured => 'Mkopo Umepangwa Upya';
+
+  @override
+  String get statementEventWriteOff => 'Umefutwa kama Deni Potevu';
+
+  @override
+  String get statementEventWriteOffReversed => 'Kufuta Deni Kumebatilishwa';
+
+  @override
+  String get statementEventRecoveryPosted => 'Urejeshaji Umerekodiwa';
 }

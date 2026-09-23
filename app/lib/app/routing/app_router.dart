@@ -58,6 +58,7 @@ import '../../features/loans/presentation/loan_prepayment_screen.dart';
 import '../../features/loans/presentation/loan_product_form_screen.dart';
 import '../../features/loans/presentation/loan_products_list_screen.dart';
 import '../../features/loans/presentation/loan_restructure_screen.dart';
+import '../../features/loans/presentation/loan_statement_screen.dart';
 import '../../features/loans/presentation/loans_home_screen.dart';
 import '../../features/loans/presentation/new_existing_loan_screen.dart';
 import '../../features/loans/presentation/new_loan_screen.dart';
@@ -552,6 +553,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.loanRecordRecovery,
             builder: (context, state) => LoanRecoveryScreen(
+              loanAccountId: state.pathParameters['loanAccountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.loanStatement,
+            builder: (context, state) => LoanStatementScreen(
               loanAccountId: state.pathParameters['loanAccountId']!,
             ),
           ),

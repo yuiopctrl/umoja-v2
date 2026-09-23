@@ -1,5 +1,6 @@
 import '../../../../core/widgets/umoja_status_badge.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/loan_statement.dart';
 
 /// Centralized mapping from a `loan_products.interest_rate_basis`
 /// value to its localized display label.
@@ -177,5 +178,60 @@ UmojaStatusSemantic loanInstallmentStatusSemantic(String status) {
     'OVERDUE' => UmojaStatusSemantic.danger,
     'PAID' => UmojaStatusSemantic.success,
     _ => UmojaStatusSemantic.neutral,
+  };
+}
+
+/// Centralized mapping from `loan_accounts.loan_origin` to its
+/// localized display label (Prompt 09G).
+String loanOriginLabel(AppLocalizations l10n, String origin) {
+  return switch (origin) {
+    'MIGRATED' => l10n.loanOriginMigratedLabel,
+    _ => l10n.loanOriginNewLabel,
+  };
+}
+
+/// Centralized mapping from a Loan Statement `timeline[].event_type`
+/// to its localized title (Prompt 09G). An event type this client
+/// build doesn't recognize ([LoanStatementEventType.unknown]) NEVER
+/// crashes or drops the event — it renders a generic, honest fallback
+/// title instead (section C/O's forward-safety requirement), while the
+/// event's own date/amount/reversed state are still rendered normally
+/// by the caller from the event's other fields.
+String loanStatementEventTitle(
+  AppLocalizations l10n,
+  LoanStatementEventType eventType,
+) {
+  return switch (eventType) {
+    LoanStatementEventType.loanCreated => l10n.statementEventLoanCreated,
+    LoanStatementEventType.loanSubmitted => l10n.statementEventLoanSubmitted,
+    LoanStatementEventType.loanApproved => l10n.statementEventLoanApproved,
+    LoanStatementEventType.loanRejected => l10n.statementEventLoanRejected,
+    LoanStatementEventType.loanCancelled => l10n.statementEventLoanCancelled,
+    LoanStatementEventType.loanDisbursed => l10n.statementEventLoanDisbursed,
+    LoanStatementEventType.loanClosed => l10n.statementEventLoanClosed,
+    LoanStatementEventType.loanReopened => l10n.statementEventLoanReopened,
+    LoanStatementEventType.loanMigrated => l10n.statementEventLoanMigrated,
+    LoanStatementEventType.earlySettlement =>
+      l10n.statementEventEarlySettlement,
+    LoanStatementEventType.paymentPosted => l10n.statementEventPaymentPosted,
+    LoanStatementEventType.penaltyAssessed =>
+      l10n.statementEventPenaltyAssessed,
+    LoanStatementEventType.obligationWaiver =>
+      l10n.statementEventObligationWaiver,
+    LoanStatementEventType.obligationCorrectionIncrease =>
+      l10n.statementEventObligationCorrectionIncrease,
+    LoanStatementEventType.obligationCorrectionDecrease =>
+      l10n.statementEventObligationCorrectionDecrease,
+    LoanStatementEventType.obligationAdjustmentReversed =>
+      l10n.statementEventObligationAdjustmentReversed,
+    LoanStatementEventType.principalPrepayment =>
+      l10n.statementEventPrincipalPrepayment,
+    LoanStatementEventType.loanRestructured =>
+      l10n.statementEventLoanRestructured,
+    LoanStatementEventType.writeOff => l10n.statementEventWriteOff,
+    LoanStatementEventType.writeOffReversed =>
+      l10n.statementEventWriteOffReversed,
+    LoanStatementEventType.recoveryPosted => l10n.statementEventRecoveryPosted,
+    LoanStatementEventType.unknown => l10n.statementActivityRecordedFallback,
   };
 }

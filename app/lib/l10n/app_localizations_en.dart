@@ -2893,10 +2893,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loanOriginLabel => 'Loan Origin';
 
   @override
-  String get loanOriginMigratedLabel => 'Migrated / Brought Forward';
+  String get loanOriginMigratedLabel => 'Migrated';
 
   @override
-  String get loanOriginNewLabel => 'New';
+  String get loanOriginNewLabel => 'Originated in Umoja';
 
   @override
   String get accountingImpactTitle => 'Accounting Impact';
@@ -3599,4 +3599,149 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loanRecoveryHistoryReversedLabel => 'Reversed';
+
+  @override
+  String get loanStatementAction => 'Statement';
+
+  @override
+  String get loanStatementTitle => 'Loan Statement';
+
+  @override
+  String get loanOriginFieldLabel => 'Loan Origin';
+
+  @override
+  String get loanBorrowerMemberNumberLabel => 'Member Number';
+
+  @override
+  String get statementCurrentPositionTitle => 'Current Position';
+
+  @override
+  String get statementPrincipalOutstandingLabel => 'Principal Outstanding';
+
+  @override
+  String get statementEarnedInterestOutstandingLabel =>
+      'Earned Interest Outstanding';
+
+  @override
+  String get statementPenaltyOutstandingLabel => 'Penalty Outstanding';
+
+  @override
+  String get statementTotalOutstandingLabel => 'Total Outstanding';
+
+  @override
+  String get statementScheduledUnearnedInterestLabel =>
+      'Scheduled Unearned Interest';
+
+  @override
+  String get statementScheduledUnearnedInterestHint =>
+      'Not part of the current amount owed — future interest per the schedule.';
+
+  @override
+  String get statementOverduePositionTitle => 'Overdue Position';
+
+  @override
+  String get statementOverduePrincipalLabel => 'Overdue Principal';
+
+  @override
+  String get statementOverdueInterestLabel => 'Overdue Interest';
+
+  @override
+  String get statementOverduePenaltyLabel => 'Overdue Penalty';
+
+  @override
+  String get statementTotalOverdueLabel => 'Total Overdue';
+
+  @override
+  String get statementWriteOffPositionTitle => 'Write-Off Position';
+
+  @override
+  String get statementOriginalWrittenOffTitle => 'Original Written Off';
+
+  @override
+  String get statementRecoveredTitle => 'Recovered';
+
+  @override
+  String get statementRemainingRecoverableTitle => 'Remaining Recoverable';
+
+  @override
+  String get statementWriteOffHistoricalLabel =>
+      'This write-off was reversed — figures below are historical.';
+
+  @override
+  String get statementTotalLabel => 'Total';
+
+  @override
+  String get statementTimelineTitle => 'Timeline';
+
+  @override
+  String get statementActivityRecordedFallback => 'Activity Recorded';
+
+  @override
+  String get statementScheduleHistoryTitle => 'Schedule History';
+
+  @override
+  String get statementEventLoanCreated => 'Loan Created';
+
+  @override
+  String get statementEventLoanSubmitted => 'Loan Submitted';
+
+  @override
+  String get statementEventLoanApproved => 'Loan Approved';
+
+  @override
+  String get statementEventLoanRejected => 'Loan Rejected';
+
+  @override
+  String get statementEventLoanCancelled => 'Loan Cancelled';
+
+  @override
+  String get statementEventLoanDisbursed => 'Loan Disbursed';
+
+  @override
+  String get statementEventLoanClosed => 'Loan Closed';
+
+  @override
+  String get statementEventLoanReopened => 'Loan Reopened';
+
+  @override
+  String get statementEventLoanMigrated => 'Opening Position Imported';
+
+  @override
+  String get statementEventEarlySettlement => 'Loan Early Settled';
+
+  @override
+  String get statementEventPaymentPosted => 'Payment Posted';
+
+  @override
+  String get statementEventPenaltyAssessed => 'Penalty Assessed';
+
+  @override
+  String get statementEventObligationWaiver => 'Obligation Waived';
+
+  @override
+  String get statementEventObligationCorrectionIncrease =>
+      'Correction (Increase)';
+
+  @override
+  String get statementEventObligationCorrectionDecrease =>
+      'Correction (Decrease)';
+
+  @override
+  String get statementEventObligationAdjustmentReversed =>
+      'Adjustment Reversed';
+
+  @override
+  String get statementEventPrincipalPrepayment => 'Principal Prepayment';
+
+  @override
+  String get statementEventLoanRestructured => 'Loan Restructured';
+
+  @override
+  String get statementEventWriteOff => 'Write-Off';
+
+  @override
+  String get statementEventWriteOffReversed => 'Write-Off Reversed';
+
+  @override
+  String get statementEventRecoveryPosted => 'Recovery Posted';
 }

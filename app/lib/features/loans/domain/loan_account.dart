@@ -57,6 +57,11 @@ class LoanAccount {
     this.penaltyFixedAmount,
     this.penaltyRate,
     this.penaltyBasis,
+    this.writtenOffTotal,
+    this.remainingRecoverableTotal,
+    this.remainingRecoverablePrincipal,
+    this.remainingRecoverableInterest,
+    this.remainingRecoverablePenalty,
   });
 
   factory LoanAccount.fromJson(Map<String, dynamic> json) {
@@ -148,6 +153,15 @@ class LoanAccount {
       penaltyFixedAmount: (json['penalty_fixed_amount'] as num?)?.toDouble(),
       penaltyRate: (json['penalty_rate'] as num?)?.toDouble(),
       penaltyBasis: json['penalty_basis'] as String?,
+      writtenOffTotal: (json['written_off_total'] as num?)?.toDouble(),
+      remainingRecoverableTotal: (json['remaining_recoverable_total'] as num?)
+          ?.toDouble(),
+      remainingRecoverablePrincipal:
+          (json['remaining_recoverable_principal'] as num?)?.toDouble(),
+      remainingRecoverableInterest:
+          (json['remaining_recoverable_interest'] as num?)?.toDouble(),
+      remainingRecoverablePenalty:
+          (json['remaining_recoverable_penalty'] as num?)?.toDouble(),
     );
   }
 
@@ -237,6 +251,26 @@ class LoanAccount {
   final double? penaltyFixedAmount;
   final double? penaltyRate;
   final String? penaltyBasis;
+
+  /// Prompt 09G-02, additive: the most recent write-off's frozen total
+  /// (principal+interest+penalty) — `null` unless this loan has ever
+  /// been written off, regardless of current [status] (a reversed
+  /// write-off still leaves this non-null, matching
+  /// `loan_write_off_recovery_state`'s own "history is never hidden"
+  /// contract).
+  final double? writtenOffTotal;
+
+  /// Live remaining recoverable balance (frozen write-off amount minus
+  /// non-reversed recoveries) — `null` unless ever written off. For a
+  /// WRITTEN_OFF loan this is the loan's real current exposure; the
+  /// ordinary [principalOutstanding]/[interestOutstanding]/
+  /// [penaltyOutstanding]/[totalOutstanding] fields above are always 0
+  /// for WRITTEN_OFF instead (server-corrected, Prompt 09G-02) and must
+  /// never be shown as if they were the primary balance.
+  final double? remainingRecoverableTotal;
+  final double? remainingRecoverablePrincipal;
+  final double? remainingRecoverableInterest;
+  final double? remainingRecoverablePenalty;
 
   bool get isMigrated => loanOrigin == 'MIGRATED';
 
