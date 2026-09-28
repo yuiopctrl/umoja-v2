@@ -7,7 +7,7 @@
 -- nothing about has_group_permission() itself.
 begin;
 
-select plan(25);
+select plan(28);
 
 insert into auth.users (id, email) values
   ('10100000-0000-0000-0000-000000000011', 'p09gb1a-admin@example.com'),
@@ -283,6 +283,41 @@ select is(
   3,
   '18b: exactly one EXECUTE grant to authenticated exists for each of the three new ownership helpers'
 );
+
+-- =====================================================================
+-- 09G-DEPLOY-03: behavioral proof that anon cannot execute the three
+-- helpers at all, independent of `information_schema.routine_
+-- privileges` (which only reflects explicit GRANT/REVOKE statements —
+-- it never captures a hosted-project default-privilege grant recorded
+-- directly against a named role in pg_proc.proacl, which is exactly
+-- how production carried a live anon EXECUTE grant despite 18a passing
+-- locally). This calls each function AS anon and asserts PostgreSQL
+-- itself raises 42501 permission-denied before the function body ever
+-- runs, the same pattern already used for the claim-workflow RPCs in
+-- 102/103.
+reset role;
+set local role anon;
+
+select throws_ok(
+  $$ select public.current_membership_id('10100000-0000-0000-0000-000000000001'::uuid) $$,
+  '42501',
+  null,
+  '20a: anon cannot invoke current_membership_id'
+);
+select throws_ok(
+  $$ select public.is_own_membership('10100000-0000-0000-0000-000000000001'::uuid, '10100000-0000-0000-0000-000000000104'::uuid) $$,
+  '42501',
+  null,
+  '20b: anon cannot invoke is_own_membership'
+);
+select throws_ok(
+  $$ select public.assert_self_or_permission('10100000-0000-0000-0000-000000000001'::uuid, '10100000-0000-0000-0000-000000000104'::uuid, 'member.view') $$,
+  '42501',
+  null,
+  '20c: anon cannot invoke assert_self_or_permission'
+);
+
+reset role;
 
 select * from finish();
 rollback;
