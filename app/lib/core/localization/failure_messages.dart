@@ -3,8 +3,43 @@ import '../../features/contributions/data/contribution_failure.dart';
 import '../../features/financial_accounts/data/financial_account_failure.dart';
 import '../../features/loans/data/loan_failure.dart';
 import '../../features/members/data/member_failure.dart';
+import '../../features/membership_claim/data/membership_claim_failure.dart';
 import '../../features/payments/data/payment_failure.dart';
 import '../../l10n/app_localizations.dart';
+
+/// Localizes a [MembershipClaimFailureType] for display — the single
+/// place this mapping happens. `referenceNotVerified` is deliberately
+/// ONE generic message covering every possible reference-resolution
+/// failure — never split further, matching the backend's own
+/// anti-enumeration contract (09G-B1-D1).
+String membershipClaimFailureMessage(
+  AppLocalizations l10n,
+  MembershipClaimFailureType type,
+) {
+  return switch (type) {
+    MembershipClaimFailureType.referenceNotVerified =>
+      l10n.membershipClaimReferenceNotVerifiedError,
+    MembershipClaimFailureType.notPending =>
+      l10n.membershipClaimNotPendingError,
+    MembershipClaimFailureType.accountDisabled =>
+      l10n.memberErrorAccountDisabled,
+    MembershipClaimFailureType.notFound => l10n.membershipClaimNotFoundError,
+    MembershipClaimFailureType.permissionDenied =>
+      l10n.memberErrorPermissionDenied,
+    MembershipClaimFailureType.rejectionReasonRequired =>
+      l10n.membershipClaimRejectionReasonRequiredError,
+    MembershipClaimFailureType.alreadyLinked =>
+      l10n.membershipClaimAlreadyLinkedError,
+    MembershipClaimFailureType.membershipNotActive =>
+      l10n.membershipClaimMembershipNotActiveError,
+    MembershipClaimFailureType.groupNotActive =>
+      l10n.membershipClaimGroupNotActiveError,
+    MembershipClaimFailureType.claimantAlreadyActiveInGroup =>
+      l10n.membershipClaimClaimantAlreadyActiveError,
+    MembershipClaimFailureType.network => l10n.memberErrorNetwork,
+    MembershipClaimFailureType.unexpected => l10n.memberErrorUnexpected,
+  };
+}
 
 /// Localizes an [AuthFailureType] for display — the single place this
 /// mapping happens, so no screen pattern-matches [AuthFailure.message]

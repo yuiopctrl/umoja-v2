@@ -178,7 +178,7 @@ void main() {
           currentLocation: AppRoutes.splash,
           hasPinCredential: const AsyncValue.data(true),
         ),
-        AppRoutes.onboardingGroup,
+        AppRoutes.onboardingMembershipEntry,
       );
     });
 
@@ -307,22 +307,25 @@ void main() {
   });
 
   group('group eligibility routing', () {
-    test('a complete profile with no group routes to /onboarding/group', () {
-      final context = AppContext(
-        userId: 'u1',
-        profile: _complete,
-        memberships: const [],
-      );
-      expect(
-        _redirect(
-          sessionStatus: AuthSessionStatus.signedIn,
-          appContext: AsyncValue.data(context),
-          selectedGroup: const SelectedGroupNone(),
-          currentLocation: AppRoutes.splash,
-        ),
-        AppRoutes.onboardingGroup,
-      );
-    });
+    test(
+      'a complete profile with no group routes to /onboarding/membership',
+      () {
+        final context = AppContext(
+          userId: 'u1',
+          profile: _complete,
+          memberships: const [],
+        );
+        expect(
+          _redirect(
+            sessionStatus: AuthSessionStatus.signedIn,
+            appContext: AsyncValue.data(context),
+            selectedGroup: const SelectedGroupNone(),
+            currentLocation: AppRoutes.splash,
+          ),
+          AppRoutes.onboardingMembershipEntry,
+        );
+      },
+    );
 
     test('a resolved single group routes to /home', () {
       final membership = _membership(id: 'm1');
@@ -378,7 +381,7 @@ void main() {
       );
     });
 
-    test('an EXITED-only membership routes to onboarding/group', () {
+    test('an EXITED-only membership routes to onboarding/membership', () {
       final membership = _membership(id: 'm1', membershipStatus: 'EXITED');
       final context = AppContext(
         userId: 'u1',
@@ -392,7 +395,7 @@ void main() {
           selectedGroup: const SelectedGroupNone(),
           currentLocation: AppRoutes.splash,
         ),
-        AppRoutes.onboardingGroup,
+        AppRoutes.onboardingMembershipEntry,
       );
     });
 
@@ -483,6 +486,73 @@ void main() {
           reason: '$location should be treated as operational',
         );
       }
+    });
+  });
+
+  group('membership-claim flow routing (Prompt 09G-B1-D2)', () {
+    test('a claimant with no eligible group is never bounced away from '
+        'the link/claims/create-group sub-routes back to the entry screen', () {
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: const [],
+      );
+      for (final location in [
+        AppRoutes.membershipLink,
+        AppRoutes.membershipClaims,
+        AppRoutes.onboardingGroup,
+      ]) {
+        expect(
+          _redirect(
+            sessionStatus: AuthSessionStatus.signedIn,
+            appContext: AsyncValue.data(context),
+            selectedGroup: const SelectedGroupNone(),
+            currentLocation: location,
+          ),
+          isNull,
+          reason: '$location should be left alone while SelectedGroupNone',
+        );
+      }
+    });
+
+    test('once a claim resolves into an eligible group, the claims screen '
+        'remains reachable as secondary claim history (Prompt 09G-B1-D4 §J) '
+        '— never bounced away while the user is looking at it', () {
+      final membership = _membership(id: 'm1');
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: [membership],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: SelectedGroupResolved(membership),
+          currentLocation: AppRoutes.membershipClaims,
+        ),
+        isNull,
+      );
+    });
+
+    test('once a claim resolves into multiple eligible groups, the claims '
+        'screen redirects to /select-group', () {
+      final membershipA = _membership(id: 'm1');
+      final membershipB = _membership(id: 'm2');
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: [membershipA, membershipB],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: SelectedGroupPending([membershipA, membershipB]),
+          currentLocation: AppRoutes.membershipClaims,
+        ),
+        AppRoutes.selectGroup,
+      );
     });
   });
 }

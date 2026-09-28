@@ -164,6 +164,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeTitle => 'Home';
 
   @override
+  String get memberHomeTitle => 'Member Home';
+
+  @override
+  String get membershipClaimHistoryQuickAccessTitle =>
+      'Membership Claim History';
+
+  @override
+  String get membershipClaimHistoryQuickAccessSubtitle =>
+      'View the status of your membership requests';
+
+  @override
   String get roleAdmin => 'Administrator';
 
   @override
@@ -233,6 +244,190 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noRolesShort => 'No roles';
+
+  @override
+  String get membershipEntryTitle => 'No Membership Linked Yet';
+
+  @override
+  String get membershipEntrySubtitle =>
+      'If you\'re already a registered member of a group, you can request to link your membership. Otherwise, you can create a new group.';
+
+  @override
+  String get linkMyMembershipAction => 'Link My Membership';
+
+  @override
+  String get viewMyClaimStatusAction => 'View My Claim Status';
+
+  @override
+  String get createNewGroupInsteadAction => 'Create a new group instead';
+
+  @override
+  String get membershipLinkTitle => 'Link Membership';
+
+  @override
+  String get membershipLinkExplanation =>
+      'Enter the Group Code and Member Number you were given by your group. Your request will be reviewed by an authorized group officer. Entering correct details does not grant access immediately.';
+
+  @override
+  String get groupCodeLabel => 'Group Code';
+
+  @override
+  String get requestAccessAction => 'Request Access';
+
+  @override
+  String get membershipClaimStatusPending => 'Pending Approval';
+
+  @override
+  String get membershipClaimStatusApproved => 'Approved';
+
+  @override
+  String get membershipClaimStatusRejected => 'Rejected';
+
+  @override
+  String get membershipClaimStatusCancelled => 'Cancelled';
+
+  @override
+  String get membershipClaimStatusUnknown => 'Unknown';
+
+  @override
+  String get membershipClaimsTitle => 'My Membership Claims';
+
+  @override
+  String get membershipClaimsEmptyTitle => 'No Claims Yet';
+
+  @override
+  String get membershipClaimsEmptyMessage =>
+      'You haven\'t requested to link a membership yet.';
+
+  @override
+  String get linkAnotherMembershipAction => 'Request Another Membership';
+
+  @override
+  String get cancelMembershipClaimConfirmTitle => 'Cancel Membership Claim?';
+
+  @override
+  String get cancelMembershipClaimConfirmMessage =>
+      'Are you sure you want to cancel this claim? You can request again later.';
+
+  @override
+  String get cancelMembershipClaimAction => 'Cancel Request';
+
+  @override
+  String get submittedOnLabel => 'Submitted on';
+
+  @override
+  String get membershipClaimReferenceNotVerifiedError =>
+      'We couldn\'t verify those membership details. Check the group code and member number and try again.';
+
+  @override
+  String get membershipClaimNotPendingError =>
+      'This request is no longer pending, so it can\'t be changed.';
+
+  @override
+  String get membershipClaimNotFoundError => 'We couldn\'t find that request.';
+
+  @override
+  String get membershipClaimRejectionReasonRequiredError =>
+      'A rejection reason is required.';
+
+  @override
+  String get membershipClaimAlreadyLinkedError =>
+      'This membership is already linked to another account.';
+
+  @override
+  String get membershipClaimMembershipNotActiveError =>
+      'This membership is no longer active.';
+
+  @override
+  String get membershipClaimGroupNotActiveError =>
+      'This group is no longer active.';
+
+  @override
+  String get membershipClaimClaimantAlreadyActiveError =>
+      'This claimant already has an active membership in this group.';
+
+  @override
+  String get membershipRequestsTitle => 'Membership Requests';
+
+  @override
+  String get membershipRequestsPendingTab => 'Pending';
+
+  @override
+  String get membershipRequestsHistoryTab => 'History';
+
+  @override
+  String get membershipRequestsEmptyPendingTitle => 'No Pending Requests';
+
+  @override
+  String get membershipRequestsEmptyPendingMessage =>
+      'No membership requests are waiting for review.';
+
+  @override
+  String get membershipRequestsEmptyHistoryTitle => 'No History Yet';
+
+  @override
+  String get membershipRequestsUnknownClaimant => 'Unknown claimant';
+
+  @override
+  String get reviewMembershipRequestTitle => 'Review Request';
+
+  @override
+  String get membershipRequestInaccessibleMessage =>
+      'We couldn\'t find that request, or you don\'t have permission to view it.';
+
+  @override
+  String get claimSectionTitle => 'Claim';
+
+  @override
+  String get statusLabel => 'Status';
+
+  @override
+  String get resolvedOnLabel => 'Resolved on';
+
+  @override
+  String get rejectionReasonLabel => 'Rejection Reason';
+
+  @override
+  String get memberRecordSectionTitle => 'Member Record';
+
+  @override
+  String get memberLabel => 'Member';
+
+  @override
+  String get claimantAccountSectionTitle => 'Claimant Account';
+
+  @override
+  String get claimantLabel => 'Claimant';
+
+  @override
+  String get approveMembershipClaimConfirmTitle => 'Approve Request?';
+
+  @override
+  String approveMembershipClaimTarget(String claimantName, String memberName) {
+    return 'You are approving $claimantName to be linked to $memberName.';
+  }
+
+  @override
+  String get approveMembershipClaimWarning =>
+      'Approving links this app account to the selected membership and gives that account access to the member\'s self-service information.';
+
+  @override
+  String get approveMembershipClaimAction => 'Approve';
+
+  @override
+  String get approveMembershipClaimSuccessMessage => 'Request approved.';
+
+  @override
+  String get rejectMembershipClaimConfirmTitle => 'Reject Request?';
+
+  @override
+  String get rejectMembershipClaimReasonFieldLabel => 'Rejection reason';
+
+  @override
+  String get rejectMembershipClaimAction => 'Reject';
+
+  @override
+  String get rejectMembershipClaimSuccessMessage => 'Request rejected.';
 
   @override
   String get homeGreetingPlain => 'Hi';

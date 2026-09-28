@@ -67,6 +67,11 @@ import '../../features/members/presentation/member_charges_screen.dart';
 import '../../features/members/presentation/member_detail_screen.dart';
 import '../../features/members/presentation/member_form_screen.dart';
 import '../../features/members/presentation/members_list_screen.dart';
+import '../../features/membership_claim/presentation/membership_claim_review_screen.dart';
+import '../../features/membership_claim/presentation/membership_claims_queue_screen.dart';
+import '../../features/membership_claim/presentation/membership_claims_screen.dart';
+import '../../features/membership_claim/presentation/membership_entry_screen.dart';
+import '../../features/membership_claim/presentation/membership_link_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/onboarding/presentation/group_onboarding_screen.dart';
 import '../../features/onboarding/presentation/profile_onboarding_screen.dart';
@@ -148,6 +153,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const GroupOnboardingScreen(),
       ),
       GoRoute(
+        path: AppRoutes.onboardingMembershipEntry,
+        builder: (context, state) => const MembershipEntryScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.membershipLink,
+        builder: (context, state) => const MembershipLinkScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.membershipClaims,
+        builder: (context, state) => const MembershipClaimsScreen(),
+      ),
+      GoRoute(
         path: AppRoutes.selectGroup,
         builder: (context, state) => const SelectGroupScreen(),
       ),
@@ -186,6 +203,22 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.memberNew,
             builder: (context, state) => const MemberFormScreen(),
+          ),
+          // Prompt 09G-B1-D3: registered BEFORE AppRoutes.memberDetail
+          // (`/members/:membershipId`) — go_router matches sibling
+          // routes in declaration order, so a static `/members/requests`
+          // segment must precede the dynamic `:membershipId` sibling or
+          // it gets shadowed (matched as membershipId == "requests"
+          // instead), exactly like memberNew above it.
+          GoRoute(
+            path: AppRoutes.membershipRequestsList,
+            builder: (context, state) => const MembershipClaimsQueueScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.membershipRequestDetail,
+            builder: (context, state) => MembershipClaimReviewScreen(
+              claimId: state.pathParameters['claimId']!,
+            ),
           ),
           GoRoute(
             path: AppRoutes.memberDetail,

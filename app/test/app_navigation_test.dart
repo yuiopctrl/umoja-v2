@@ -85,31 +85,34 @@ void main() {
     expect(find.text('Kamilisha Wasifu Wako'), findsOneWidget);
   });
 
-  testWidgets('a complete profile with no group routes to group onboarding', (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          ...pinBypassOverrides(),
-          authSessionStatusProvider.overrideWithValue(
-            AuthSessionStatus.signedIn,
-          ),
-          appContextProvider.overrideWith(
-            (ref) async => const AppContext(
-              userId: 'u1',
-              profile: AppUserProfile(id: 'u1', fullName: 'Amina'),
-              memberships: [],
+  testWidgets(
+    'a complete profile with no group routes to the membership-linking '
+    'entry screen (Prompt 09G-B1-D2 — no longer straight to group '
+    'onboarding, which is now a secondary path from there)',
+    (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            ...pinBypassOverrides(),
+            authSessionStatusProvider.overrideWithValue(
+              AuthSessionStatus.signedIn,
             ),
-          ),
-        ],
-        child: const UmojaApp(),
-      ),
-    );
-    await tester.pumpAndSettle();
+            appContextProvider.overrideWith(
+              (ref) async => const AppContext(
+                userId: 'u1',
+                profile: AppUserProfile(id: 'u1', fullName: 'Amina'),
+                memberships: [],
+              ),
+            ),
+          ],
+          child: const UmojaApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.text('Tengeneza Kikundi Chako'), findsOneWidget);
-  });
+      expect(find.text('Hujaunganishwa na Uanachama Bado'), findsOneWidget);
+    },
+  );
 
   testWidgets('one eligible group routes straight to home', (tester) async {
     await tester.pumpWidget(

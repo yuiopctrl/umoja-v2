@@ -386,6 +386,24 @@ abstract class AppLocalizations {
   /// **'Nyumbani'**
   String get homeTitle;
 
+  /// No description provided for @memberHomeTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nyumbani kwa Mwanachama'**
+  String get memberHomeTitle;
+
+  /// No description provided for @membershipClaimHistoryQuickAccessTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Historia ya Maombi ya Uanachama'**
+  String get membershipClaimHistoryQuickAccessTitle;
+
+  /// No description provided for @membershipClaimHistoryQuickAccessSubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia hali ya maombi yako ya uanachama'**
+  String get membershipClaimHistoryQuickAccessSubtitle;
+
   /// No description provided for @roleAdmin.
   ///
   /// In sw, this message translates to:
@@ -517,6 +535,342 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Hakuna majukumu'**
   String get noRolesShort;
+
+  /// No description provided for @membershipEntryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hujaunganishwa na Uanachama Bado'**
+  String get membershipEntryTitle;
+
+  /// No description provided for @membershipEntrySubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kama wewe ni mwanachama aliyesajiliwa wa kikundi tayari, unaweza kuomba kuunganishwa na uanachama wako. Vinginevyo, unaweza kutengeneza kikundi kipya.'**
+  String get membershipEntrySubtitle;
+
+  /// No description provided for @linkMyMembershipAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Unganisha Uanachama Wangu'**
+  String get linkMyMembershipAction;
+
+  /// No description provided for @viewMyClaimStatusAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia Hali ya Ombi Langu'**
+  String get viewMyClaimStatusAction;
+
+  /// No description provided for @createNewGroupInsteadAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tengeneza kikundi kipya badala yake'**
+  String get createNewGroupInsteadAction;
+
+  /// No description provided for @membershipLinkTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Unganisha Uanachama'**
+  String get membershipLinkTitle;
+
+  /// No description provided for @membershipLinkExplanation.
+  ///
+  /// In sw, this message translates to:
+  /// **'Weka Msimbo wa Kikundi na Namba ya Mwanachama uliyopewa na kikundi chako. Ombi lako litakaguliwa na afisa aliyeidhinishwa wa kikundi. Kuweka taarifa sahihi hakukupi ufikiaji papo hapo.'**
+  String get membershipLinkExplanation;
+
+  /// No description provided for @groupCodeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Msimbo wa Kikundi'**
+  String get groupCodeLabel;
+
+  /// No description provided for @requestAccessAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Omba Ufikiaji'**
+  String get requestAccessAction;
+
+  /// No description provided for @membershipClaimStatusPending.
+  ///
+  /// In sw, this message translates to:
+  /// **'Inasubiri Idhini'**
+  String get membershipClaimStatusPending;
+
+  /// No description provided for @membershipClaimStatusApproved.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imeidhinishwa'**
+  String get membershipClaimStatusApproved;
+
+  /// No description provided for @membershipClaimStatusRejected.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imekataliwa'**
+  String get membershipClaimStatusRejected;
+
+  /// No description provided for @membershipClaimStatusCancelled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imeghairiwa'**
+  String get membershipClaimStatusCancelled;
+
+  /// No description provided for @membershipClaimStatusUnknown.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haijulikani'**
+  String get membershipClaimStatusUnknown;
+
+  /// No description provided for @membershipClaimsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maombi Yangu ya Uanachama'**
+  String get membershipClaimsTitle;
+
+  /// No description provided for @membershipClaimsEmptyTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna Maombi Bado'**
+  String get membershipClaimsEmptyTitle;
+
+  /// No description provided for @membershipClaimsEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Bado hujaomba kuunganishwa na uanachama wowote.'**
+  String get membershipClaimsEmptyMessage;
+
+  /// No description provided for @linkAnotherMembershipAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Omba Uanachama Mwingine'**
+  String get linkAnotherMembershipAction;
+
+  /// No description provided for @cancelMembershipClaimConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ghairi Ombi la Uanachama?'**
+  String get cancelMembershipClaimConfirmTitle;
+
+  /// No description provided for @cancelMembershipClaimConfirmMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Je, una uhakika unataka kughairi ombi hili? Unaweza kuomba tena baadaye.'**
+  String get cancelMembershipClaimConfirmMessage;
+
+  /// No description provided for @cancelMembershipClaimAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ghairi Ombi'**
+  String get cancelMembershipClaimAction;
+
+  /// No description provided for @submittedOnLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ilitumwa tarehe'**
+  String get submittedOnLabel;
+
+  /// No description provided for @membershipClaimReferenceNotVerifiedError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kuthibitisha taarifa hizo za uanachama. Hakikisha msimbo wa kikundi na namba ya mwanachama kisha ujaribu tena.'**
+  String get membershipClaimReferenceNotVerifiedError;
+
+  /// No description provided for @membershipClaimNotPendingError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ombi hili si la kusubiri idhini tena, hivyo haliwezi kubadilishwa.'**
+  String get membershipClaimNotPendingError;
+
+  /// No description provided for @membershipClaimNotFoundError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupata ombi hilo.'**
+  String get membershipClaimNotFoundError;
+
+  /// No description provided for @membershipClaimRejectionReasonRequiredError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu ya kukataa inahitajika.'**
+  String get membershipClaimRejectionReasonRequiredError;
+
+  /// No description provided for @membershipClaimAlreadyLinkedError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Uanachama huu tayari umeunganishwa na akaunti nyingine.'**
+  String get membershipClaimAlreadyLinkedError;
+
+  /// No description provided for @membershipClaimMembershipNotActiveError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Uanachama huu si hai tena.'**
+  String get membershipClaimMembershipNotActiveError;
+
+  /// No description provided for @membershipClaimGroupNotActiveError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kikundi hiki si hai tena.'**
+  String get membershipClaimGroupNotActiveError;
+
+  /// No description provided for @membershipClaimClaimantAlreadyActiveError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwombaji huyu tayari ana uanachama hai kwenye kikundi hiki.'**
+  String get membershipClaimClaimantAlreadyActiveError;
+
+  /// No description provided for @membershipRequestsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maombi ya Uanachama'**
+  String get membershipRequestsTitle;
+
+  /// No description provided for @membershipRequestsPendingTab.
+  ///
+  /// In sw, this message translates to:
+  /// **'Yanayosubiri'**
+  String get membershipRequestsPendingTab;
+
+  /// No description provided for @membershipRequestsHistoryTab.
+  ///
+  /// In sw, this message translates to:
+  /// **'Historia'**
+  String get membershipRequestsHistoryTab;
+
+  /// No description provided for @membershipRequestsEmptyPendingTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna Maombi Yanayosubiri'**
+  String get membershipRequestsEmptyPendingTitle;
+
+  /// No description provided for @membershipRequestsEmptyPendingMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna maombi ya uanachama yanayosubiri ukaguzi.'**
+  String get membershipRequestsEmptyPendingMessage;
+
+  /// No description provided for @membershipRequestsEmptyHistoryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna Historia Bado'**
+  String get membershipRequestsEmptyHistoryTitle;
+
+  /// No description provided for @membershipRequestsUnknownClaimant.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwombaji Hajulikani'**
+  String get membershipRequestsUnknownClaimant;
+
+  /// No description provided for @reviewMembershipRequestTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kagua Ombi'**
+  String get reviewMembershipRequestTitle;
+
+  /// No description provided for @membershipRequestInaccessibleMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupata ombi hili au huna ruhusa ya kuliona.'**
+  String get membershipRequestInaccessibleMessage;
+
+  /// No description provided for @claimSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ombi'**
+  String get claimSectionTitle;
+
+  /// No description provided for @statusLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali'**
+  String get statusLabel;
+
+  /// No description provided for @resolvedOnLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ilihitimishwa tarehe'**
+  String get resolvedOnLabel;
+
+  /// No description provided for @rejectionReasonLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu ya Kukataa'**
+  String get rejectionReasonLabel;
+
+  /// No description provided for @memberRecordSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Taarifa za Mwanachama'**
+  String get memberRecordSectionTitle;
+
+  /// No description provided for @memberLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwanachama'**
+  String get memberLabel;
+
+  /// No description provided for @claimantAccountSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Akaunti ya Mwombaji'**
+  String get claimantAccountSectionTitle;
+
+  /// No description provided for @claimantLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwombaji'**
+  String get claimantLabel;
+
+  /// No description provided for @approveMembershipClaimConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Idhinisha Ombi?'**
+  String get approveMembershipClaimConfirmTitle;
+
+  /// No description provided for @approveMembershipClaimTarget.
+  ///
+  /// In sw, this message translates to:
+  /// **'Unaidhinisha {claimantName} kuunganishwa na {memberName}.'**
+  String approveMembershipClaimTarget(String claimantName, String memberName);
+
+  /// No description provided for @approveMembershipClaimWarning.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kuidhinisha kutaunganisha akaunti hii ya programu na uanachama uliochaguliwa na kuipa akaunti hiyo ufikiaji wa taarifa za huduma binafsi za mwanachama.'**
+  String get approveMembershipClaimWarning;
+
+  /// No description provided for @approveMembershipClaimAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Idhinisha'**
+  String get approveMembershipClaimAction;
+
+  /// No description provided for @approveMembershipClaimSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ombi limeidhinishwa.'**
+  String get approveMembershipClaimSuccessMessage;
+
+  /// No description provided for @rejectMembershipClaimConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kataa Ombi?'**
+  String get rejectMembershipClaimConfirmTitle;
+
+  /// No description provided for @rejectMembershipClaimReasonFieldLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Sababu ya kukataa'**
+  String get rejectMembershipClaimReasonFieldLabel;
+
+  /// No description provided for @rejectMembershipClaimAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kataa'**
+  String get rejectMembershipClaimAction;
+
+  /// No description provided for @rejectMembershipClaimSuccessMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ombi limekataliwa.'**
+  String get rejectMembershipClaimSuccessMessage;
 
   /// No description provided for @homeGreetingPlain.
   ///

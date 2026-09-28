@@ -68,6 +68,9 @@
   "groupSaveError": "Imeshindikana kutengeneza kikundi. Jaribu tena.",
 
   "homeTitle": "Nyumbani",
+  "memberHomeTitle": "Nyumbani kwa Mwanachama",
+  "membershipClaimHistoryQuickAccessTitle": "Historia ya Maombi ya Uanachama",
+  "membershipClaimHistoryQuickAccessSubtitle": "Angalia hali ya maombi yako ya uanachama",
 
   "roleAdmin": "Msimamizi",
   "roleTreasurer": "Mweka Hazina",
@@ -99,6 +102,76 @@
 
   "selectGroupTitle": "Chagua Kikundi",
   "noRolesShort": "Hakuna majukumu",
+
+  "membershipEntryTitle": "Hujaunganishwa na Uanachama Bado",
+  "membershipEntrySubtitle": "Kama wewe ni mwanachama aliyesajiliwa wa kikundi tayari, unaweza kuomba kuunganishwa na uanachama wako. Vinginevyo, unaweza kutengeneza kikundi kipya.",
+  "linkMyMembershipAction": "Unganisha Uanachama Wangu",
+  "viewMyClaimStatusAction": "Angalia Hali ya Ombi Langu",
+  "createNewGroupInsteadAction": "Tengeneza kikundi kipya badala yake",
+
+  "membershipLinkTitle": "Unganisha Uanachama",
+  "membershipLinkExplanation": "Weka Msimbo wa Kikundi na Namba ya Mwanachama uliyopewa na kikundi chako. Ombi lako litakaguliwa na afisa aliyeidhinishwa wa kikundi. Kuweka taarifa sahihi hakukupi ufikiaji papo hapo.",
+  "groupCodeLabel": "Msimbo wa Kikundi",
+  "requestAccessAction": "Omba Ufikiaji",
+
+  "membershipClaimStatusPending": "Inasubiri Idhini",
+  "membershipClaimStatusApproved": "Imeidhinishwa",
+  "membershipClaimStatusRejected": "Imekataliwa",
+  "membershipClaimStatusCancelled": "Imeghairiwa",
+  "membershipClaimStatusUnknown": "Haijulikani",
+
+  "membershipClaimsTitle": "Maombi Yangu ya Uanachama",
+  "membershipClaimsEmptyTitle": "Hakuna Maombi Bado",
+  "membershipClaimsEmptyMessage": "Bado hujaomba kuunganishwa na uanachama wowote.",
+  "linkAnotherMembershipAction": "Omba Uanachama Mwingine",
+  "cancelMembershipClaimConfirmTitle": "Ghairi Ombi la Uanachama?",
+  "cancelMembershipClaimConfirmMessage": "Je, una uhakika unataka kughairi ombi hili? Unaweza kuomba tena baadaye.",
+  "cancelMembershipClaimAction": "Ghairi Ombi",
+  "submittedOnLabel": "Ilitumwa tarehe",
+
+  "membershipClaimReferenceNotVerifiedError": "Hatukuweza kuthibitisha taarifa hizo za uanachama. Hakikisha msimbo wa kikundi na namba ya mwanachama kisha ujaribu tena.",
+  "membershipClaimNotPendingError": "Ombi hili si la kusubiri idhini tena, hivyo haliwezi kubadilishwa.",
+  "membershipClaimNotFoundError": "Hatukuweza kupata ombi hilo.",
+  "membershipClaimRejectionReasonRequiredError": "Sababu ya kukataa inahitajika.",
+  "membershipClaimAlreadyLinkedError": "Uanachama huu tayari umeunganishwa na akaunti nyingine.",
+  "membershipClaimMembershipNotActiveError": "Uanachama huu si hai tena.",
+  "membershipClaimGroupNotActiveError": "Kikundi hiki si hai tena.",
+  "membershipClaimClaimantAlreadyActiveError": "Mwombaji huyu tayari ana uanachama hai kwenye kikundi hiki.",
+
+  "membershipRequestsTitle": "Maombi ya Uanachama",
+  "membershipRequestsPendingTab": "Yanayosubiri",
+  "membershipRequestsHistoryTab": "Historia",
+  "membershipRequestsEmptyPendingTitle": "Hakuna Maombi Yanayosubiri",
+  "membershipRequestsEmptyPendingMessage": "Hakuna maombi ya uanachama yanayosubiri ukaguzi.",
+  "membershipRequestsEmptyHistoryTitle": "Hakuna Historia Bado",
+  "membershipRequestsUnknownClaimant": "Mwombaji Hajulikani",
+
+  "reviewMembershipRequestTitle": "Kagua Ombi",
+  "membershipRequestInaccessibleMessage": "Hatukuweza kupata ombi hili au huna ruhusa ya kuliona.",
+  "claimSectionTitle": "Ombi",
+  "statusLabel": "Hali",
+  "resolvedOnLabel": "Ilihitimishwa tarehe",
+  "rejectionReasonLabel": "Sababu ya Kukataa",
+  "memberRecordSectionTitle": "Taarifa za Mwanachama",
+  "memberLabel": "Mwanachama",
+  "claimantAccountSectionTitle": "Akaunti ya Mwombaji",
+  "claimantLabel": "Mwombaji",
+
+  "approveMembershipClaimConfirmTitle": "Idhinisha Ombi?",
+  "approveMembershipClaimTarget": "Unaidhinisha {claimantName} kuunganishwa na {memberName}.",
+  "@approveMembershipClaimTarget": {
+    "placeholders": {
+      "claimantName": { "type": "String" },
+      "memberName": { "type": "String" }
+    }
+  },
+  "approveMembershipClaimWarning": "Kuidhinisha kutaunganisha akaunti hii ya programu na uanachama uliochaguliwa na kuipa akaunti hiyo ufikiaji wa taarifa za huduma binafsi za mwanachama.",
+  "approveMembershipClaimAction": "Idhinisha",
+  "approveMembershipClaimSuccessMessage": "Ombi limeidhinishwa.",
+  "rejectMembershipClaimConfirmTitle": "Kataa Ombi?",
+  "rejectMembershipClaimReasonFieldLabel": "Sababu ya kukataa",
+  "rejectMembershipClaimAction": "Kataa",
+  "rejectMembershipClaimSuccessMessage": "Ombi limekataliwa.",
 
   "homeGreetingPlain": "Habari",
   "homeGreetingNamed": "Habari, {name}",

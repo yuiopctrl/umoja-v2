@@ -67,6 +67,13 @@ class _MembersListScreenState extends ConsumerState<MembersListScreen> {
     final canEdit =
         selectedGroup is SelectedGroupResolved &&
         selectedGroup.membership.hasPermission('member.edit');
+    // Prompt 09G-B1-D3: gated on the exact permission the backend RPCs
+    // enforce (`member.claim.approve`) — never a role name. Nav
+    // visibility only; `rpc_list_membership_claims` re-checks this
+    // itself regardless of how the screen is reached.
+    final canReviewClaims =
+        selectedGroup is SelectedGroupResolved &&
+        selectedGroup.membership.hasPermission('member.claim.approve');
 
     final statusFilters = <(String label, String? value)>[
       (l10n.filterAll, null),
@@ -75,17 +82,37 @@ class _MembersListScreenState extends ConsumerState<MembersListScreen> {
       (l10n.filterExited, 'EXITED'),
     ];
 
+    final headerActions = <Widget>[
+      if (canReviewClaims)
+        IconButton(
+          key: const Key('membershipRequestsNavAction'),
+          tooltip: l10n.membershipRequestsTitle,
+          onPressed: () => context.push(AppRoutes.membershipRequestsList),
+          icon: const Icon(Icons.assignment_ind_outlined),
+        ),
+      if (canCreate)
+        FilledButton.icon(
+          onPressed: () => context.push(AppRoutes.memberNew),
+          icon: const Icon(Icons.person_add_alt),
+          label: Text(l10n.addMemberAction),
+        ),
+    ];
+
     return UmojaPage(
       title: l10n.membersTitle,
       scrollable: false,
       maxWidth: 900,
-      headerTrailing: canCreate
-          ? FilledButton.icon(
-              onPressed: () => context.push(AppRoutes.memberNew),
-              icon: const Icon(Icons.person_add_alt),
-              label: Text(l10n.addMemberAction),
-            )
-          : null,
+      headerTrailing: headerActions.isEmpty
+          ? null
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (final (i, action) in headerActions.indexed) ...[
+                  if (i > 0) const SizedBox(width: UmojaSpacing.sm),
+                  action,
+                ],
+              ],
+            ),
       floatingActionButton: canCreate
           ? FloatingActionButton.extended(
               onPressed: () => context.push(AppRoutes.memberNew),

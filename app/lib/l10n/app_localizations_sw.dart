@@ -164,6 +164,17 @@ class AppLocalizationsSw extends AppLocalizations {
   String get homeTitle => 'Nyumbani';
 
   @override
+  String get memberHomeTitle => 'Nyumbani kwa Mwanachama';
+
+  @override
+  String get membershipClaimHistoryQuickAccessTitle =>
+      'Historia ya Maombi ya Uanachama';
+
+  @override
+  String get membershipClaimHistoryQuickAccessSubtitle =>
+      'Angalia hali ya maombi yako ya uanachama';
+
+  @override
   String get roleAdmin => 'Msimamizi';
 
   @override
@@ -233,6 +244,191 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get noRolesShort => 'Hakuna majukumu';
+
+  @override
+  String get membershipEntryTitle => 'Hujaunganishwa na Uanachama Bado';
+
+  @override
+  String get membershipEntrySubtitle =>
+      'Kama wewe ni mwanachama aliyesajiliwa wa kikundi tayari, unaweza kuomba kuunganishwa na uanachama wako. Vinginevyo, unaweza kutengeneza kikundi kipya.';
+
+  @override
+  String get linkMyMembershipAction => 'Unganisha Uanachama Wangu';
+
+  @override
+  String get viewMyClaimStatusAction => 'Angalia Hali ya Ombi Langu';
+
+  @override
+  String get createNewGroupInsteadAction =>
+      'Tengeneza kikundi kipya badala yake';
+
+  @override
+  String get membershipLinkTitle => 'Unganisha Uanachama';
+
+  @override
+  String get membershipLinkExplanation =>
+      'Weka Msimbo wa Kikundi na Namba ya Mwanachama uliyopewa na kikundi chako. Ombi lako litakaguliwa na afisa aliyeidhinishwa wa kikundi. Kuweka taarifa sahihi hakukupi ufikiaji papo hapo.';
+
+  @override
+  String get groupCodeLabel => 'Msimbo wa Kikundi';
+
+  @override
+  String get requestAccessAction => 'Omba Ufikiaji';
+
+  @override
+  String get membershipClaimStatusPending => 'Inasubiri Idhini';
+
+  @override
+  String get membershipClaimStatusApproved => 'Imeidhinishwa';
+
+  @override
+  String get membershipClaimStatusRejected => 'Imekataliwa';
+
+  @override
+  String get membershipClaimStatusCancelled => 'Imeghairiwa';
+
+  @override
+  String get membershipClaimStatusUnknown => 'Haijulikani';
+
+  @override
+  String get membershipClaimsTitle => 'Maombi Yangu ya Uanachama';
+
+  @override
+  String get membershipClaimsEmptyTitle => 'Hakuna Maombi Bado';
+
+  @override
+  String get membershipClaimsEmptyMessage =>
+      'Bado hujaomba kuunganishwa na uanachama wowote.';
+
+  @override
+  String get linkAnotherMembershipAction => 'Omba Uanachama Mwingine';
+
+  @override
+  String get cancelMembershipClaimConfirmTitle => 'Ghairi Ombi la Uanachama?';
+
+  @override
+  String get cancelMembershipClaimConfirmMessage =>
+      'Je, una uhakika unataka kughairi ombi hili? Unaweza kuomba tena baadaye.';
+
+  @override
+  String get cancelMembershipClaimAction => 'Ghairi Ombi';
+
+  @override
+  String get submittedOnLabel => 'Ilitumwa tarehe';
+
+  @override
+  String get membershipClaimReferenceNotVerifiedError =>
+      'Hatukuweza kuthibitisha taarifa hizo za uanachama. Hakikisha msimbo wa kikundi na namba ya mwanachama kisha ujaribu tena.';
+
+  @override
+  String get membershipClaimNotPendingError =>
+      'Ombi hili si la kusubiri idhini tena, hivyo haliwezi kubadilishwa.';
+
+  @override
+  String get membershipClaimNotFoundError => 'Hatukuweza kupata ombi hilo.';
+
+  @override
+  String get membershipClaimRejectionReasonRequiredError =>
+      'Sababu ya kukataa inahitajika.';
+
+  @override
+  String get membershipClaimAlreadyLinkedError =>
+      'Uanachama huu tayari umeunganishwa na akaunti nyingine.';
+
+  @override
+  String get membershipClaimMembershipNotActiveError =>
+      'Uanachama huu si hai tena.';
+
+  @override
+  String get membershipClaimGroupNotActiveError => 'Kikundi hiki si hai tena.';
+
+  @override
+  String get membershipClaimClaimantAlreadyActiveError =>
+      'Mwombaji huyu tayari ana uanachama hai kwenye kikundi hiki.';
+
+  @override
+  String get membershipRequestsTitle => 'Maombi ya Uanachama';
+
+  @override
+  String get membershipRequestsPendingTab => 'Yanayosubiri';
+
+  @override
+  String get membershipRequestsHistoryTab => 'Historia';
+
+  @override
+  String get membershipRequestsEmptyPendingTitle =>
+      'Hakuna Maombi Yanayosubiri';
+
+  @override
+  String get membershipRequestsEmptyPendingMessage =>
+      'Hakuna maombi ya uanachama yanayosubiri ukaguzi.';
+
+  @override
+  String get membershipRequestsEmptyHistoryTitle => 'Hakuna Historia Bado';
+
+  @override
+  String get membershipRequestsUnknownClaimant => 'Mwombaji Hajulikani';
+
+  @override
+  String get reviewMembershipRequestTitle => 'Kagua Ombi';
+
+  @override
+  String get membershipRequestInaccessibleMessage =>
+      'Hatukuweza kupata ombi hili au huna ruhusa ya kuliona.';
+
+  @override
+  String get claimSectionTitle => 'Ombi';
+
+  @override
+  String get statusLabel => 'Hali';
+
+  @override
+  String get resolvedOnLabel => 'Ilihitimishwa tarehe';
+
+  @override
+  String get rejectionReasonLabel => 'Sababu ya Kukataa';
+
+  @override
+  String get memberRecordSectionTitle => 'Taarifa za Mwanachama';
+
+  @override
+  String get memberLabel => 'Mwanachama';
+
+  @override
+  String get claimantAccountSectionTitle => 'Akaunti ya Mwombaji';
+
+  @override
+  String get claimantLabel => 'Mwombaji';
+
+  @override
+  String get approveMembershipClaimConfirmTitle => 'Idhinisha Ombi?';
+
+  @override
+  String approveMembershipClaimTarget(String claimantName, String memberName) {
+    return 'Unaidhinisha $claimantName kuunganishwa na $memberName.';
+  }
+
+  @override
+  String get approveMembershipClaimWarning =>
+      'Kuidhinisha kutaunganisha akaunti hii ya programu na uanachama uliochaguliwa na kuipa akaunti hiyo ufikiaji wa taarifa za huduma binafsi za mwanachama.';
+
+  @override
+  String get approveMembershipClaimAction => 'Idhinisha';
+
+  @override
+  String get approveMembershipClaimSuccessMessage => 'Ombi limeidhinishwa.';
+
+  @override
+  String get rejectMembershipClaimConfirmTitle => 'Kataa Ombi?';
+
+  @override
+  String get rejectMembershipClaimReasonFieldLabel => 'Sababu ya kukataa';
+
+  @override
+  String get rejectMembershipClaimAction => 'Kataa';
+
+  @override
+  String get rejectMembershipClaimSuccessMessage => 'Ombi limekataliwa.';
 
   @override
   String get homeGreetingPlain => 'Habari';

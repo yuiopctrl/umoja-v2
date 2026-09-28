@@ -32,6 +32,25 @@ class AppRoutes {
   static const onboardingProfile = '/onboarding/profile';
   static const onboardingGroup = '/onboarding/group';
 
+  /// Prompt 09G-B1-D2: shown to a signed-in, profile-complete user
+  /// with zero eligible memberships — offers "Link my membership"
+  /// (an existing roster row, [membershipLink]) alongside the
+  /// pre-existing "create a new group" ([onboardingGroup]) path,
+  /// rather than forcing every such user through group creation.
+  static const onboardingMembershipEntry = '/onboarding/membership';
+
+  /// The Group Code + Member Number claim-initiation form
+  /// (`rpc_request_membership_claim_by_reference`). Never takes a
+  /// membership/group id as a route argument — the server resolves
+  /// the target entirely from the human-readable reference.
+  static const membershipLink = '/membership/link';
+
+  /// The claimant's own claim status list
+  /// (`rpc_list_my_membership_claims`) — reachable both pre-
+  /// operational (no selected group required) and, later, from within
+  /// the app if the user wants to check on or start another claim.
+  static const membershipClaims = '/membership/claims';
+
   static const selectGroup = '/select-group';
 
   static const accessAccountDisabled = '/access/account-disabled';
@@ -70,6 +89,27 @@ class AppRoutes {
   static const memberCharges = '/members/:membershipId/charges';
   static String memberChargesPath(String membershipId) =>
       '/members/$membershipId/charges';
+
+  // -- Membership claim review (Prompt 09G-B1-D3) -------------------------
+  //
+  // The officer-facing counterpart to the D2 claimant flow
+  // (`/onboarding/membership`, `/membership/link`, `/membership/claims`,
+  // all outside the shell) — these two live INSIDE the shell/Members
+  // area instead, since reviewing claims is an ordinary operational,
+  // permission-gated (`member.claim.approve`) administrative action,
+  // not part of onboarding. Declared as a literal sibling of
+  // [membershipRequestDetail] (same precedent as [memberNew] vs
+  // [memberDetail]) so it is never captured as a `claimId`.
+
+  static const membershipRequestsList = '/members/requests';
+
+  /// Path template; use [membershipRequestDetailPath] for a concrete
+  /// URL. Carries only the claim id — the review screen fetches its
+  /// own authoritative detail from the server; no claim/member data is
+  /// ever passed through the route itself.
+  static const membershipRequestDetail = '/members/requests/:claimId';
+  static String membershipRequestDetailPath(String claimId) =>
+      '/members/requests/$claimId';
 
   // -- Contributions (Michango) ------------------------------------------
   //

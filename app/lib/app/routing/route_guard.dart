@@ -31,7 +31,12 @@ String noEligibleGroupTarget(List<MembershipContext> memberships) {
   );
   if (hasClosedGroup) return AppRoutes.accessGroupClosed;
 
-  return AppRoutes.onboardingGroup;
+  // Prompt 09G-B1-D2: no eligible membership and no other explained
+  // reason (no memberships at all, or EXITED-only) — offer BOTH
+  // linking an existing roster membership and creating a new group,
+  // rather than forcing group creation as the only path. See
+  // MembershipEntryScreen.
+  return AppRoutes.onboardingMembershipEntry;
 }
 
 const _authRoutes = {AppRoutes.authPhone, AppRoutes.authVerify};
@@ -48,6 +53,21 @@ const _authRoutes = {AppRoutes.authPhone, AppRoutes.authVerify};
 const _pinRecoveryRoutes = {
   AppRoutes.pinForgotVerify,
   AppRoutes.pinForgotNewPin,
+};
+
+/// Prompt 09G-B1-D2: the sub-routes reached by pushing from
+/// [AppRoutes.onboardingMembershipEntry] — the claim-flow screens plus
+/// the pre-existing "create a new group instead" secondary path.
+/// Deliberately NOT including the entry route itself, since that one
+/// is already the correct `SelectedGroupNone` target and stays via
+/// the ordinary `currentLocation == target` check below. Without this
+/// exemption, pushing to any of these would be immediately redirected
+/// back to the entry screen on the next redirect evaluation, since
+/// none of them is the computed `target`.
+const _membershipClaimFlowRoutes = {
+  AppRoutes.membershipLink,
+  AppRoutes.membershipClaims,
+  AppRoutes.onboardingGroup,
 };
 
 /// Computes the redirect target for the current app state, or `null`
@@ -156,6 +176,17 @@ String? computeRedirect({
     return _isOperationalRoute(currentLocation) ? null : AppRoutes.home;
   }
 
+  // Prompt 09G-B1-D2: while no eligible membership is resolved, the
+  // membership-linking sub-flow (Group Code + Member Number form, own
+  // claim status) is reached via context.push from
+  // onboardingMembershipEntry and must never be bounced back to it —
+  // these routes ARE the "no eligible group yet" experience, not
+  // something the eligibility target-recompute below should override.
+  if (selectedGroup is SelectedGroupNone &&
+      _membershipClaimFlowRoutes.contains(currentLocation)) {
+    return null;
+  }
+
   final target = switch (selectedGroup) {
     SelectedGroupLoading() => AppRoutes.splash,
     SelectedGroupNone() => noEligibleGroupTarget(
@@ -173,6 +204,14 @@ String? computeRedirect({
 bool _isOperationalRoute(String location) {
   return location == AppRoutes.home ||
       location == AppRoutes.more ||
+      // Prompt 09G-B1-D4 §J: once linked, the claimant's own claim
+      // history remains reachable as secondary information (e.g. from
+      // Member Home's own quick-access card) — deliberately NOT
+      // extended to [AppRoutes.membershipLink] or
+      // [AppRoutes.onboardingMembershipEntry], which correctly keep
+      // auto-redirecting a now-linked user away (§I: "linked member
+      // opening /membership/link should be redirected appropriately").
+      location == AppRoutes.membershipClaims ||
       location == AppRoutes.membersList ||
       location.startsWith('${AppRoutes.membersList}/') ||
       location == AppRoutes.contributionsHome ||
