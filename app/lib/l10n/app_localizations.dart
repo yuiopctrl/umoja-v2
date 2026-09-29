@@ -206,6 +206,36 @@ abstract class AppLocalizations {
   /// **'Mara ya kwanza? Thibitisha namba kwa OTP'**
   String get authFirstTimeLink;
 
+  /// No description provided for @authCreateAccountSubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ingiza namba yako ya simu ili kufungua akaunti yako ya Umoja.'**
+  String get authCreateAccountSubtitle;
+
+  /// No description provided for @authCreateAccountContinueButton.
+  ///
+  /// In sw, this message translates to:
+  /// **'Endelea'**
+  String get authCreateAccountContinueButton;
+
+  /// No description provided for @alreadyHaveAccountSignInAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Una akaunti tayari? Ingia'**
+  String get alreadyHaveAccountSignInAction;
+
+  /// No description provided for @haveInvitationLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Una mwaliko?'**
+  String get haveInvitationLabel;
+
+  /// No description provided for @openInvitationAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Fungua Mwaliko'**
+  String get openInvitationAction;
+
   /// No description provided for @otpTitle.
   ///
   /// In sw, this message translates to:
@@ -950,11 +980,35 @@ abstract class AppLocalizations {
   /// **'Ingia au fungua akaunti ili kuona maelezo ya mwaliko huu na kuukubali.'**
   String get invitationSignInPromptMessage;
 
+  /// No description provided for @invitationSignedOutGuidance.
+  ///
+  /// In sw, this message translates to:
+  /// **'Umealikwa kujiunga na kikundi kupitia Umoja.'**
+  String get invitationSignedOutGuidance;
+
+  /// No description provided for @invitationAlreadyHaveAccountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tayari una akaunti ya Umoja?'**
+  String get invitationAlreadyHaveAccountLabel;
+
+  /// No description provided for @invitationNewToUmojaLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ni mara yako ya kwanza kutumia Umoja?'**
+  String get invitationNewToUmojaLabel;
+
   /// No description provided for @signInAction.
   ///
   /// In sw, this message translates to:
   /// **'Ingia'**
   String get signInAction;
+
+  /// No description provided for @createAccountAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Fungua Akaunti'**
+  String get createAccountAction;
 
   /// No description provided for @acceptInvitationAction.
   ///
@@ -1021,6 +1075,42 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Una uanachama hai tayari kwenye kikundi hiki.'**
   String get membershipInvitationClaimantAlreadyActiveError;
+
+  /// No description provided for @openInvitationTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Fungua Mwaliko'**
+  String get openInvitationTitle;
+
+  /// No description provided for @openInvitationInstructions.
+  ///
+  /// In sw, this message translates to:
+  /// **'Bandika kiungo cha mwaliko ulioupokea, kisha uendelee.'**
+  String get openInvitationInstructions;
+
+  /// No description provided for @openInvitationLinkLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiungo cha Mwaliko'**
+  String get openInvitationLinkLabel;
+
+  /// No description provided for @invitationLinkInvalidError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hiki hakionekani kuwa kiungo sahihi cha mwaliko. Kagua na ujaribu tena.'**
+  String get invitationLinkInvalidError;
+
+  /// No description provided for @pasteFromClipboardAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Bandika kutoka Clipboard'**
+  String get pasteFromClipboardAction;
+
+  /// No description provided for @invitationLinkNotConfiguredError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kushiriki bado hakujawekwa kwenye kifaa hiki. Jaribu tena kutoka programu ya wavuti, au shiriki kiungo kutoka huko badala yake.'**
+  String get invitationLinkNotConfiguredError;
 
   /// No description provided for @membershipEntryInvitationGuidance.
   ///

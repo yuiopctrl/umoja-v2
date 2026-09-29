@@ -7,6 +7,7 @@ import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/utils/auto_submit_on_length.dart';
+import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_code_input.dart';
 import '../../security/controllers/pin_recovery_controller.dart';
 import '../controllers/phone_auth_controller.dart';
@@ -26,7 +27,19 @@ enum _LastAction { none, login, firstTime, forgotPin }
 /// whatever phone number is already typed here rather than asking for
 /// it again.
 class PhoneEntryScreen extends ConsumerStatefulWidget {
-  const PhoneEntryScreen({super.key});
+  const PhoneEntryScreen({super.key, this.startInFirstTimeMode = false});
+
+  /// Prompt 09G-B1-E4 §C: a presentation-only hint — when `true`, the
+  /// PIN field/login button are hidden and the phone field instead
+  /// leads directly into the EXISTING first-time (phone -> OTP) flow
+  /// (the same [PhoneAuthController.submitPhone] the "Mara ya kwanza?"
+  /// link below always used), since a genuinely new user has no PIN to
+  /// enter. Purely local UI state (`_firstTimeMode` below) once
+  /// initialized from this — the user can always flip back to the
+  /// ordinary login form via "Already have an account? Sign in", and
+  /// arriving at `/auth/phone` any other way (the default, `false`)
+  /// keeps today's exact behavior.
+  final bool startInFirstTimeMode;
 
   @override
   ConsumerState<PhoneEntryScreen> createState() => _PhoneEntryScreenState();
@@ -37,15 +50,31 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
   final _pinController = TextEditingController();
   AutoSubmitOnLength? _autoSubmit;
   _LastAction _lastAction = _LastAction.none;
+  late bool _firstTimeMode;
 
   @override
   void initState() {
     super.initState();
+    _firstTimeMode = widget.startInFirstTimeMode;
     _autoSubmit = AutoSubmitOnLength(
       controller: _pinController,
       length: _pinLength,
       onComplete: _submitLogin,
     );
+  }
+
+  @override
+  void didUpdateWidget(covariant PhoneEntryScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Defensive: if this exact State instance is ever reused across a
+    // navigation that changes `?intent=` (e.g. `go` replacing the
+    // current `/auth/phone` entry in place, rather than `push` adding
+    // a new one — the only way this screen is actually reached today),
+    // the mode must follow the NEW navigation's intent rather than
+    // silently keeping whatever `initState` saw first.
+    if (widget.startInFirstTimeMode != oldWidget.startInFirstTimeMode) {
+      setState(() => _firstTimeMode = widget.startInFirstTimeMode);
+    }
   }
 
   @override
@@ -107,12 +136,33 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
     };
   }
 
+  Widget _neutralLink({
+    required Key? key,
+    required VoidCallback? onPressed,
+    required Widget child,
+  }) {
+    return Center(
+      child: TextButton(
+        key: key,
+        onPressed: onPressed,
+        // Prompt 05E-E: neutral, matching "Karibu Umoja"'s color
+        // (`onSurface`) rather than the global text-button theme's
+        // primary red — deliberately scoped to just these secondary
+        // auth links, not a `textButtonTheme` change, so OTP screens'
+        // Cancel/Resend (which should stay branded) are unaffected.
+        style: TextButton.styleFrom(
+          foregroundColor: Theme.of(context).colorScheme.onSurface,
+        ),
+        child: child,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final loginState = ref.watch(pinLoginControllerProvider);
-    final firstTimeSubmitting = ref.watch(
-      phoneAuthControllerProvider.select((s) => s.isSubmitting),
-    );
+    final firstTimeState = ref.watch(phoneAuthControllerProvider);
+    final firstTimeSubmitting = firstTimeState.isSubmitting;
     final forgotSubmitting = ref.watch(
       pinRecoveryControllerProvider.select((s) => s.isSubmitting),
     );
@@ -127,7 +177,12 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
       children: [
         Text(l10n.authWelcomeTitle, style: textTheme.headlineMedium),
         const SizedBox(height: UmojaSpacing.sm),
-        Text(l10n.authLoginSubtitle, style: textTheme.bodyLarge),
+        Text(
+          _firstTimeMode
+              ? l10n.authCreateAccountSubtitle
+              : l10n.authLoginSubtitle,
+          style: textTheme.bodyLarge,
+        ),
         const SizedBox(height: UmojaSpacing.xxl),
         TextField(
           controller: _phoneController,
@@ -140,16 +195,18 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
             hintText: l10n.authPhoneHint,
           ),
         ),
-        const SizedBox(height: UmojaSpacing.lg),
-        Text(l10n.authPinLabel, style: textTheme.labelLarge),
-        const SizedBox(height: UmojaSpacing.sm),
-        UmojaCodeInput(
-          controller: _pinController,
-          length: _pinLength,
-          enabled: !isBusy,
-          hasError: errorType != null,
-          onSubmitted: (_) => _submitLogin(),
-        ),
+        if (!_firstTimeMode) ...[
+          const SizedBox(height: UmojaSpacing.lg),
+          Text(l10n.authPinLabel, style: textTheme.labelLarge),
+          const SizedBox(height: UmojaSpacing.sm),
+          UmojaCodeInput(
+            controller: _pinController,
+            length: _pinLength,
+            enabled: !isBusy,
+            hasError: errorType != null,
+            onSubmitted: (_) => _submitLogin(),
+          ),
+        ],
         if (errorType != null) ...[
           const SizedBox(height: UmojaSpacing.xs),
           Text(
@@ -158,42 +215,67 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
           ),
         ],
         const SizedBox(height: UmojaSpacing.xxl),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton(
-            onPressed: isBusy ? null : _submitLogin,
-            child: loginState.isSubmitting
-                ? const SizedBox(
-                    height: 18,
-                    width: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Text(l10n.loginButton),
+        if (_firstTimeMode) ...[
+          UmojaPrimaryButton(
+            key: const Key('authCreateAccountContinueAction'),
+            expand: true,
+            isLoading: firstTimeSubmitting,
+            label: l10n.authCreateAccountContinueButton,
+            onPressed: isBusy ? null : _submitFirstTime,
           ),
-        ),
-        const SizedBox(height: UmojaSpacing.lg),
-        Center(
-          child: TextButton(
-            onPressed: isBusy ? null : _forgotPin,
-            // Prompt 05E-E: neutral, matching "Karibu Umoja"'s color
-            // (`onSurface`) rather than the global text-button theme's
-            // primary red — deliberately scoped to just these two
-            // secondary auth links, not a `textButtonTheme` change, so
-            // OTP screens' Cancel/Resend (which should stay branded)
-            // are unaffected.
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.onSurface,
+          const SizedBox(height: UmojaSpacing.lg),
+          _neutralLink(
+            key: const Key('switchToSignInAction'),
+            onPressed: isBusy
+                ? null
+                : () => setState(() => _firstTimeMode = false),
+            child: Text(l10n.alreadyHaveAccountSignInAction),
+          ),
+        ] else ...[
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: isBusy ? null : _submitLogin,
+              child: loginState.isSubmitting
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(l10n.loginButton),
             ),
+          ),
+          const SizedBox(height: UmojaSpacing.lg),
+          _neutralLink(
+            key: null,
+            onPressed: isBusy ? null : _forgotPin,
             child: Text(l10n.pinForgot),
           ),
+          // Unchanged from before this prompt: submits immediately with
+          // whatever phone number is already typed, exactly like
+          // before — never repurposed into a local mode toggle, so
+          // this stays byte-for-byte the pre-existing, already-tested
+          // behavior.
+          _neutralLink(
+            key: null,
+            onPressed: isBusy ? null : _submitFirstTime,
+            child: Text(l10n.authFirstTimeLink),
+          ),
+        ],
+        const SizedBox(height: UmojaSpacing.xxl),
+        const Divider(),
+        const SizedBox(height: UmojaSpacing.md),
+        Center(
+          child: Text(l10n.haveInvitationLabel, style: textTheme.bodyMedium),
         ),
+        const SizedBox(height: UmojaSpacing.sm),
         Center(
           child: TextButton(
-            onPressed: isBusy ? null : _submitFirstTime,
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.onSurface,
-            ),
-            child: Text(l10n.authFirstTimeLink),
+            key: const Key('openInvitationAction'),
+            onPressed: isBusy
+                ? null
+                : () => context.push(AppRoutes.membershipInvitationOpen),
+            child: Text(l10n.openInvitationAction),
           ),
         ),
       ],

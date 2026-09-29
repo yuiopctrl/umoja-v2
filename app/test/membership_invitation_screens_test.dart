@@ -270,12 +270,26 @@ void main() {
         await tester.tap(find.byKey(const Key('createInvitationAction')));
         await tester.pumpAndSettle();
 
+        // Prompt 09G-B1-E4 §H: a `flutter test` run is a VM (non-web)
+        // target with no `APP_PUBLIC_WEB_URL` configured — exactly the
+        // "not configured" case, which must fail safely (a localized
+        // error, clipboard left untouched) rather than ever copying a
+        // broken relative URL. The web-origin/native-configured
+        // branches of the SAME builder are covered directly in
+        // `test/invitation_link_builder_test.dart`, since a widget
+        // test run on the VM can never genuinely exercise `kIsWeb`.
         await tester.tap(find.byKey(const Key('copyInvitationLinkAction')));
         await tester.pump();
         await tester.pump();
 
-        expect(clipboardText, contains('b' * 64));
-        expect(find.text('Invitation link copied.'), findsOneWidget);
+        expect(clipboardText, isNot(contains('b' * 64)));
+        expect(
+          find.text(
+            "Sharing isn't set up on this device yet. Try again from "
+            'the web app, or share the link from there instead.',
+          ),
+          findsOneWidget,
+        );
       },
     );
 

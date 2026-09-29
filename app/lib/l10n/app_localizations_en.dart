@@ -64,6 +64,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authFirstTimeLink => 'First time? Verify by OTP';
 
   @override
+  String get authCreateAccountSubtitle =>
+      'Enter your phone number to create your Umoja account.';
+
+  @override
+  String get authCreateAccountContinueButton => 'Continue';
+
+  @override
+  String get alreadyHaveAccountSignInAction =>
+      'Already have an account? Sign in';
+
+  @override
+  String get haveInvitationLabel => 'Have an invitation?';
+
+  @override
+  String get openInvitationAction => 'Open Invitation';
+
+  @override
   String get otpTitle => 'Verify Number';
 
   @override
@@ -480,7 +497,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sign in or create an account to see the details of this invitation and accept it.';
 
   @override
+  String get invitationSignedOutGuidance =>
+      'You have been invited to join a group on Umoja.';
+
+  @override
+  String get invitationAlreadyHaveAccountLabel =>
+      'Already have an Umoja account?';
+
+  @override
+  String get invitationNewToUmojaLabel => 'New to Umoja?';
+
+  @override
   String get signInAction => 'Sign In';
+
+  @override
+  String get createAccountAction => 'Create Account';
 
   @override
   String get acceptInvitationAction => 'Accept Invitation';
@@ -519,6 +550,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get membershipInvitationClaimantAlreadyActiveError =>
       'You already have an active membership in this group.';
+
+  @override
+  String get openInvitationTitle => 'Open Invitation';
+
+  @override
+  String get openInvitationInstructions =>
+      'Paste the invitation link you received, then continue.';
+
+  @override
+  String get openInvitationLinkLabel => 'Invitation Link';
+
+  @override
+  String get invitationLinkInvalidError =>
+      'That doesn\'t look like a valid invitation link. Check it and try again.';
+
+  @override
+  String get pasteFromClipboardAction => 'Paste from Clipboard';
+
+  @override
+  String get invitationLinkNotConfiguredError =>
+      'Sharing isn\'t set up on this device yet. Try again from the web app, or share the link from there instead.';
 
   @override
   String get membershipEntryInvitationGuidance =>

@@ -13,6 +13,15 @@ class AppRoutes {
   static const authPhone = '/auth/phone';
   static const authVerify = '/auth/verify';
 
+  /// [authPhone] with a UI-presentation-only hint (Prompt 09G-B1-E4
+  /// §C) to start in the first-time (phone -> OTP) mode instead of the
+  /// default returning-user phone+PIN form — never a security
+  /// boundary, never inspected by `route_guard.dart` (which matches on
+  /// `state.uri.path`, not its query string), and never a second auth
+  /// flow: [PhoneEntryScreen.startInFirstTimeMode] just changes which
+  /// of the EXISTING controllers/actions the screen leads with.
+  static const authPhoneFirstTimePath = '$authPhone?intent=create';
+
   /// Shown once, right after a fresh OTP verify, when the now-signed-in
   /// user has no PIN credential yet server-side
   /// (`rpc_has_pin_credential()`). See `docs/product/authentication.md`
@@ -123,11 +132,20 @@ class AppRoutes {
   static const membershipInvite = '/members/invite';
   static const membershipInvitationsList = '/members/invitations';
 
-  /// Path template for the (E3) member acceptance screen — not yet
-  /// registered as a route (no screen exists for it yet), but the
-  /// path itself is needed now to build the shareable invitation link
-  /// text. Carries only the opaque bearer token; the acceptance screen
-  /// will resolve everything else from it server-side via
+  /// Prompt 09G-B1-E4 §E: the in-app fallback for a user who received
+  /// an invitation link via WhatsApp/SMS but is already inside the
+  /// installed app (no OS-level deep link exists yet — see
+  /// `docs/product/architecture.md`'s deep-link note). A literal
+  /// sibling of [membershipInvitationAccept] under the same `/invite`
+  /// prefix — declared, and registered in `app_router.dart`, BEFORE
+  /// it, same static-before-dynamic precedent as
+  /// [membershipRequestsList] vs [membershipRequestDetail], so it is
+  /// never captured as a `token`.
+  static const membershipInvitationOpen = '/invite/open';
+
+  /// Path template for the (E3) member acceptance screen. Carries only
+  /// the opaque bearer token; the acceptance screen resolves
+  /// everything else server-side via
   /// `rpc_preview_membership_invitation`/`rpc_accept_membership_invitation`.
   static const membershipInvitationAccept = '/invite/:token';
   static String membershipInvitationAcceptPath(String token) =>

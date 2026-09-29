@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_page.dart';
@@ -16,6 +17,7 @@ import '../../members/domain/group_member.dart';
 import '../../members/presentation/widgets/member_role_label.dart';
 import '../../payments/presentation/widgets/member_search_picker.dart';
 import '../controllers/membership_invitation_controller.dart';
+import '../domain/invitation_link_builder.dart';
 import '../domain/membership_invitation.dart';
 
 /// The five role codes the backend actually accepts today
@@ -215,6 +217,15 @@ class _InviteMemberScreenState extends ConsumerState<InviteMemberScreen> {
 TextStyle? _labelStyle(BuildContext context) =>
     Theme.of(context).textTheme.labelMedium;
 
+/// Prompt 09G-B1-E4 §H: shown instead of ever sending a broken/relative
+/// URL when no canonical public web URL is configured for this build
+/// (native platforms only — web always resolves via `Uri.base`).
+void _showNotConfiguredError(BuildContext context, AppLocalizations l10n) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(l10n.invitationLinkNotConfiguredError)),
+  );
+}
+
 class _InvitationCreatedScreen extends StatelessWidget {
   const _InvitationCreatedScreen({
     required this.invitation,
@@ -224,23 +235,10 @@ class _InvitationCreatedScreen extends StatelessWidget {
   final MembershipInvitation invitation;
   final GroupMember member;
 
-  String _invitationLink() {
-    // Web: Uri.base gives the real deployed origin. Non-web platforms
-    // fall back to a relative path — there is no canonical app domain
-    // configured yet for a native deep link; E3 will define the actual
-    // acceptance screen this path resolves to.
-    final path = AppRoutes.membershipInvitationAcceptPath(invitation.token);
-    try {
-      return Uri.base.resolve(path).toString();
-    } catch (_) {
-      return path;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final link = _invitationLink();
+    final linkResult = buildInvitationLinkResult(invitation.token);
 
     return UmojaPage(
       title: l10n.invitationCreatedTitle,
@@ -293,7 +291,12 @@ class _InvitationCreatedScreen extends StatelessWidget {
               icon: Icons.copy,
               expand: true,
               onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: link));
+                final url = linkResult.url;
+                if (url == null) {
+                  _showNotConfiguredError(context, l10n);
+                  return;
+                }
+                await Clipboard.setData(ClipboardData(text: url));
                 if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(l10n.invitationLinkCopiedMessage)),
@@ -307,7 +310,12 @@ class _InvitationCreatedScreen extends StatelessWidget {
               icon: Icons.share,
               expand: true,
               onPressed: () async {
-                await SharePlus.instance.share(ShareParams(text: link));
+                final url = linkResult.url;
+                if (url == null) {
+                  _showNotConfiguredError(context, l10n);
+                  return;
+                }
+                await SharePlus.instance.share(ShareParams(text: url));
               },
             ),
             const SizedBox(height: UmojaSpacing.lg),

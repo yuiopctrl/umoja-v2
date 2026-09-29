@@ -5,9 +5,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:umoja/core/localization/language_provider.dart';
 import 'package:umoja/features/auth/models/group_context.dart';
 import 'package:umoja/features/auth/models/membership_context.dart';
+import 'package:umoja/app/routing/app_routes.dart';
 import 'package:umoja/features/auth/providers/auth_session_provider.dart';
+import 'package:umoja/features/auth/providers/pending_invitation_token_provider.dart';
 import 'package:umoja/features/membership_invitations/data/membership_invitation_failure.dart';
 import 'package:umoja/features/membership_invitations/domain/membership_invitation_status.dart';
+import 'package:umoja/core/widgets/umoja_code_input.dart';
 
 import 'fakes/fake_membership_claim_repository.dart';
 import 'fakes/fake_membership_invitation_repository.dart';
@@ -185,6 +188,140 @@ void main() {
         expect(router.state.uri.path, '/invite/${'e' * 64}');
         expect(find.text('Sign in to view this invitation'), findsOneWidget);
         expect(find.byKey(const Key('invitationSignInAction')), findsOneWidget);
+      },
+    );
+
+    testWidgets('Prompt 09G-B1-E4 §C: the signed-out landing offers BOTH an '
+        'explicit "Sign In" (returning user) and "Create Account" '
+        '(first-time user) action, not one ambiguous button', (tester) async {
+      final fakeRepo = FakeMembershipInvitationRepository();
+      final (router, _) = await pumpMembershipInvitationAcceptanceApp(
+        tester,
+        sessionStatus: AuthSessionStatus.signedOut,
+        fakeInvitationRepo: fakeRepo,
+        language: AppLanguage.english,
+      );
+
+      router.go('/invite/${'m' * 64}');
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('invitationSignInAction')), findsOneWidget);
+      expect(
+        find.byKey(const Key('invitationCreateAccountAction')),
+        findsOneWidget,
+      );
+      expect(find.text('Already have an Umoja account?'), findsOneWidget);
+      expect(find.text('New to Umoja?'), findsOneWidget);
+    });
+
+    testWidgets(
+      'Prompt 09G-B1-E4 §C: tapping "Create Account" leads to the phone '
+      'screen in first-time mode (the EXISTING phone -> OTP flow, no '
+      'PIN field, no second auth subsystem)',
+      (tester) async {
+        final fakeRepo = FakeMembershipInvitationRepository();
+        final (router, _) = await pumpMembershipInvitationAcceptanceApp(
+          tester,
+          sessionStatus: AuthSessionStatus.signedOut,
+          fakeInvitationRepo: fakeRepo,
+          language: AppLanguage.english,
+        );
+
+        router.go('/invite/${'n' * 64}');
+        await tester.pumpAndSettle();
+        await tester.tap(
+          find.byKey(const Key('invitationCreateAccountAction')),
+        );
+        await tester.pumpAndSettle();
+
+        expect(router.state.uri.path, AppRoutes.authPhone);
+        expect(find.byType(UmojaCodeInput), findsNothing);
+        expect(
+          find.byKey(const Key('authCreateAccountContinueAction')),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'Prompt 09G-B1-E4 §B/§C/§J (regression for a real UAT defect): the '
+      'invitation token is captured into pendingInvitationTokenProvider '
+      'the moment it is viewed signed out, and SURVIVES the user pushing '
+      'themselves away to /auth/phone — not only when a redirect fires. '
+      'Before this fix, no capture ever happened in this exact case '
+      '(computeRedirect intentionally returns null while signed out on '
+      'an invitation route), so the token was silently lost the instant '
+      'the user tapped Sign In/Create Account.',
+      (tester) async {
+        final fakeRepo = FakeMembershipInvitationRepository();
+        final (router, container) = await pumpMembershipInvitationAcceptanceApp(
+          tester,
+          sessionStatus: AuthSessionStatus.signedOut,
+          fakeInvitationRepo: fakeRepo,
+          language: AppLanguage.english,
+        );
+        final token = 'p' * 64;
+
+        router.go('/invite/$token');
+        await tester.pumpAndSettle();
+
+        expect(container.read(pendingInvitationTokenProvider), token);
+
+        await tester.tap(find.byKey(const Key('invitationSignInAction')));
+        await tester.pumpAndSettle();
+
+        expect(router.state.uri.path, AppRoutes.authPhone);
+        // Still preserved after navigating away — this is exactly the
+        // state a completed sign-in/OTP/PIN/profile flow later reads
+        // via computeRedirect's own `pendingInvitationToken` priority
+        // check to send the user back to /invite/:token.
+        expect(container.read(pendingInvitationTokenProvider), token);
+      },
+    );
+
+    testWidgets(
+      'opening /invite/open (no :token) while signed out never captures '
+      'a pending invitation token — there is nothing to preserve yet',
+      (tester) async {
+        final fakeRepo = FakeMembershipInvitationRepository();
+        final (router, container) = await pumpMembershipInvitationAcceptanceApp(
+          tester,
+          sessionStatus: AuthSessionStatus.signedOut,
+          fakeInvitationRepo: fakeRepo,
+          language: AppLanguage.english,
+        );
+
+        router.go(AppRoutes.membershipInvitationOpen);
+        await tester.pumpAndSettle();
+
+        expect(router.state.uri.path, AppRoutes.membershipInvitationOpen);
+        expect(container.read(pendingInvitationTokenProvider), isNull);
+      },
+    );
+
+    testWidgets(
+      'Prompt 09G-B1-E4-FINAL §B.16/17: abandoning TOKEN_A and opening '
+      'TOKEN_B makes TOKEN_B authoritative — TOKEN_A never resurrects',
+      (tester) async {
+        final fakeRepo = FakeMembershipInvitationRepository();
+        final (router, container) = await pumpMembershipInvitationAcceptanceApp(
+          tester,
+          sessionStatus: AuthSessionStatus.signedOut,
+          fakeInvitationRepo: fakeRepo,
+          language: AppLanguage.english,
+        );
+        final tokenA = 'a' * 64;
+        final tokenB = 'b' * 64;
+
+        router.go('/invite/$tokenA');
+        await tester.pumpAndSettle();
+        expect(container.read(pendingInvitationTokenProvider), tokenA);
+
+        router.go('/invite/$tokenB');
+        await tester.pumpAndSettle();
+
+        expect(container.read(pendingInvitationTokenProvider), tokenB);
+        expect(container.read(pendingInvitationTokenProvider), isNot(tokenA));
       },
     );
   });
@@ -489,6 +626,26 @@ void main() {
 
       expect(find.byKey(const Key('linkMyMembershipAction')), findsOneWidget);
     });
+
+    testWidgets(
+      'Prompt 09G-B1-E4 §G.B: a signed-in user with no linked membership '
+      'has a discoverable "Open Invitation" action, ahead of the claim '
+      'fallback, that leads to the paste flow',
+      (tester) async {
+        final router = await pumpMembershipClaimApp(
+          tester,
+          fakeRepo: FakeMembershipClaimRepository(),
+          language: AppLanguage.english,
+        );
+
+        expect(find.byKey(const Key('openInvitationAction')), findsOneWidget);
+
+        await tester.tap(find.byKey(const Key('openInvitationAction')));
+        await tester.pumpAndSettle();
+
+        expect(router.state.uri.path, AppRoutes.membershipInvitationOpen);
+      },
+    );
 
     testWidgets('30: View My Claim Status remains reachable', (tester) async {
       await pumpMembershipClaimApp(

@@ -64,6 +64,22 @@ class AppLocalizationsSw extends AppLocalizations {
   String get authFirstTimeLink => 'Mara ya kwanza? Thibitisha namba kwa OTP';
 
   @override
+  String get authCreateAccountSubtitle =>
+      'Ingiza namba yako ya simu ili kufungua akaunti yako ya Umoja.';
+
+  @override
+  String get authCreateAccountContinueButton => 'Endelea';
+
+  @override
+  String get alreadyHaveAccountSignInAction => 'Una akaunti tayari? Ingia';
+
+  @override
+  String get haveInvitationLabel => 'Una mwaliko?';
+
+  @override
+  String get openInvitationAction => 'Fungua Mwaliko';
+
+  @override
   String get otpTitle => 'Thibitisha Namba';
 
   @override
@@ -480,7 +496,22 @@ class AppLocalizationsSw extends AppLocalizations {
       'Ingia au fungua akaunti ili kuona maelezo ya mwaliko huu na kuukubali.';
 
   @override
+  String get invitationSignedOutGuidance =>
+      'Umealikwa kujiunga na kikundi kupitia Umoja.';
+
+  @override
+  String get invitationAlreadyHaveAccountLabel =>
+      'Tayari una akaunti ya Umoja?';
+
+  @override
+  String get invitationNewToUmojaLabel =>
+      'Ni mara yako ya kwanza kutumia Umoja?';
+
+  @override
   String get signInAction => 'Ingia';
+
+  @override
+  String get createAccountAction => 'Fungua Akaunti';
 
   @override
   String get acceptInvitationAction => 'Kubali Mwaliko';
@@ -520,6 +551,27 @@ class AppLocalizationsSw extends AppLocalizations {
   @override
   String get membershipInvitationClaimantAlreadyActiveError =>
       'Una uanachama hai tayari kwenye kikundi hiki.';
+
+  @override
+  String get openInvitationTitle => 'Fungua Mwaliko';
+
+  @override
+  String get openInvitationInstructions =>
+      'Bandika kiungo cha mwaliko ulioupokea, kisha uendelee.';
+
+  @override
+  String get openInvitationLinkLabel => 'Kiungo cha Mwaliko';
+
+  @override
+  String get invitationLinkInvalidError =>
+      'Hiki hakionekani kuwa kiungo sahihi cha mwaliko. Kagua na ujaribu tena.';
+
+  @override
+  String get pasteFromClipboardAction => 'Bandika kutoka Clipboard';
+
+  @override
+  String get invitationLinkNotConfiguredError =>
+      'Kushiriki bado hakujawekwa kwenye kifaa hiki. Jaribu tena kutoka programu ya wavuti, au shiriki kiungo kutoka huko badala yake.';
 
   @override
   String get membershipEntryInvitationGuidance =>

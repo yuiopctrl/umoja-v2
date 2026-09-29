@@ -45,6 +45,19 @@ class MembershipEntryScreen extends StatelessWidget {
                 const SizedBox(height: UmojaSpacing.sm),
                 Text(l10n.membershipEntryInvitationGuidance),
                 const SizedBox(height: UmojaSpacing.lg),
+                // Prompt 09G-B1-E4 §E/§G: the "Open Invitation" paste
+                // fallback for a user who has an invitation link
+                // (WhatsApp/SMS) but is already signed in here, ahead
+                // of the "ask your officer" card below — invitations
+                // remain the primary/recommended path.
+                UmojaPrimaryButton(
+                  key: const Key('openInvitationAction'),
+                  expand: true,
+                  label: l10n.openInvitationAction,
+                  onPressed: () =>
+                      context.push(AppRoutes.membershipInvitationOpen),
+                ),
+                const SizedBox(height: UmojaSpacing.lg),
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(UmojaSpacing.lg),

@@ -175,6 +175,14 @@ key by design and is safe to embed this way. The Supabase secret key
 and the legacy service-role key must never be used in Flutter — see
 `CLAUDE.md`.
 
+`APP_PUBLIC_WEB_URL` is optional and only affects invitation link
+sharing on native builds (Android/iOS/Linux/Windows/macOS) — see
+`app/lib/core/config/env_config.dart`. No production web domain exists
+for this project yet, so it is left empty by default; until it is set,
+native invitation Copy/Share fails safely with a configuration error
+rather than sending a broken link (web builds are unaffected — they
+use the browser's own origin instead).
+
 ## Running the app
 
 Web:

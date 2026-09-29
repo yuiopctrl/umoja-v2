@@ -50,6 +50,18 @@ class InvitationAcceptScreen extends ConsumerWidget {
     final sessionStatus = ref.watch(authSessionStatusProvider);
 
     if (sessionStatus == AuthSessionStatus.signedOut) {
+      // Prompt 09G-B1-E4 §C: an explicit choice between the two
+      // EXISTING auth flows, rather than one ambiguous "Sign In"
+      // button — physical UAT found that a first-time invited member
+      // did not know they should use the "first time" OTP path instead
+      // of trying to sign in with a PIN they never had. Both buttons
+      // lead to the same `/auth/phone` screen and reuse the existing
+      // phone+PIN / phone->OTP controllers unchanged (see
+      // PhoneEntryScreen's `startInFirstTimeMode`) — this never
+      // creates a second auth subsystem or invitation-specific
+      // credential. The token itself survives via the router's own
+      // signed-out capture (see app_router.dart's redirect wrapper),
+      // not anything done here.
       return _InvitationScaffold(
         title: l10n.invitationAcceptTitle,
         child: Column(
@@ -57,13 +69,30 @@ class InvitationAcceptScreen extends ConsumerWidget {
           children: [
             Text(l10n.invitationSignInPromptTitle),
             const SizedBox(height: UmojaSpacing.sm),
-            Text(l10n.invitationSignInPromptMessage),
-            const SizedBox(height: UmojaSpacing.lg),
+            Text(l10n.invitationSignedOutGuidance),
+            const SizedBox(height: UmojaSpacing.xl),
+            Text(
+              l10n.invitationAlreadyHaveAccountLabel,
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            const SizedBox(height: UmojaSpacing.sm),
             UmojaPrimaryButton(
               key: const Key('invitationSignInAction'),
               expand: true,
               label: l10n.signInAction,
               onPressed: () => context.push(AppRoutes.authPhone),
+            ),
+            const SizedBox(height: UmojaSpacing.lg),
+            Text(
+              l10n.invitationNewToUmojaLabel,
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            const SizedBox(height: UmojaSpacing.sm),
+            UmojaSecondaryButton(
+              key: const Key('invitationCreateAccountAction'),
+              expand: true,
+              label: l10n.createAccountAction,
+              onPressed: () => context.push(AppRoutes.authPhoneFirstTimePath),
             ),
           ],
         ),

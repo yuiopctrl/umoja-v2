@@ -77,6 +77,7 @@ import '../../features/membership_invitations/controllers/membership_invitation_
 import '../../features/membership_invitations/presentation/invitation_accept_screen.dart';
 import '../../features/membership_invitations/presentation/invite_member_screen.dart';
 import '../../features/membership_invitations/presentation/membership_invitations_list_screen.dart';
+import '../../features/membership_invitations/presentation/open_invitation_link_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/onboarding/presentation/group_onboarding_screen.dart';
 import '../../features/onboarding/presentation/profile_onboarding_screen.dart';
@@ -116,11 +117,11 @@ final routerProvider = Provider<GoRouter>((ref) {
     refreshListenable: refreshNotifier,
     redirect: (context, state) {
       final path = state.uri.path;
-      final isInvitationPath = path.startsWith('/invite/');
-      final invitationToken = isInvitationPath
-          ? state.pathParameters['token']
-          : null;
+      // Only ever non-null for the actual :token route (`/invite/open`
+      // has no such path parameter), regardless of `isInvitationPath`.
+      final invitationToken = state.pathParameters['token'];
       final pendingToken = ref.read(pendingInvitationTokenProvider);
+      final sessionStatus = ref.read(authSessionStatusProvider);
 
       // Prompt 09G-B1-E3 §H: only true once THIS exact token's own
       // acceptance has succeeded — never inferred from selectedGroup
@@ -135,7 +136,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               .isAcceptedFor(invitationToken);
 
       final result = computeRedirect(
-        sessionStatus: ref.read(authSessionStatusProvider),
+        sessionStatus: sessionStatus,
         appContext: ref.read(appContextProvider),
         selectedGroup: ref.read(selectedGroupProvider),
         currentLocation: path,
@@ -144,22 +145,39 @@ final routerProvider = Provider<GoRouter>((ref) {
         invitationJustAccepted: invitationJustAccepted,
       );
 
-      // Capture the token ONLY when a genuine prerequisite (sign in,
-      // PIN setup, profile completion) is about to bounce the user
-      // away from it — never merely for being present on this route,
-      // which would otherwise fight with the clear below on every
-      // subsequent evaluation. Explicitly excludes the
-      // `invitationJustAccepted` case: that redirect (to /home or
-      // /select-group) is the correct, final exit after a successful
-      // acceptance, not a prerequisite detour to come back from — if
-      // this captured the token there too, it would immediately bounce
+      final hasCapturableToken =
+          invitationToken != null && invitationToken.isNotEmpty;
+
+      // Capture the token whenever the user is about to leave
+      // `/invite/:token` without having accepted it yet — either
+      // because a genuine prerequisite (PIN setup, profile completion)
+      // is redirecting them away (`result != null`), OR because they
+      // are signed out and are about to navigate away THEMSELVES (via
+      // the "Sign In"/"Create Account" buttons, an ordinary
+      // `context.push`, which this redirect callback never sees —
+      // Prompt 09G-B1-E4 §B/§C/§J found the original narrower
+      // "only on a redirect-triggered exit" condition silently lost
+      // the token in exactly that case, since no redirect ever fires
+      // while signed out and viewing an invitation:
+      // `computeRedirect` intentionally returns `null` there). Capturing
+      // proactively on every signed-out evaluation is safe and
+      // idempotent — [PendingInvitationTokenNotifier.set] is a no-op
+      // once the value is already current, so this can never itself
+      // trigger the SET/CLEAR oscillation fixed in E3 (that required a
+      // SET and a CLEAR to BOTH be re-triggerable from the very same
+      // steady-state location; here, `sessionStatus == signedOut` and
+      // the CLEAR branch's signed-in-appropriate conditions are
+      // mutually exclusive).
+      //
+      // Explicitly excludes the `invitationJustAccepted` case: that
+      // redirect (to /home or /select-group) is the correct, final
+      // exit after a successful acceptance, not a prerequisite detour
+      // to come back from — capturing there would immediately bounce
       // the user right back to /invite/:token from their new
       // destination.
-      if (isInvitationPath &&
-          result != null &&
+      if (hasCapturableToken &&
           !invitationJustAccepted &&
-          invitationToken != null &&
-          invitationToken.isNotEmpty) {
+          (sessionStatus == AuthSessionStatus.signedOut || result != null)) {
         ref.read(pendingInvitationTokenProvider.notifier).set(invitationToken);
       } else if (pendingToken != null &&
           result == null &&
@@ -180,7 +198,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.authPhone,
-        builder: (context, state) => const PhoneEntryScreen(),
+        builder: (context, state) => PhoneEntryScreen(
+          startInFirstTimeMode: state.uri.queryParameters['intent'] == 'create',
+        ),
       ),
       GoRoute(
         path: AppRoutes.authVerify,
@@ -218,6 +238,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.membershipClaims,
         builder: (context, state) => const MembershipClaimsScreen(),
+      ),
+      // Prompt 09G-B1-E4 §E: a literal, static sibling of
+      // [AppRoutes.membershipInvitationAccept] under the same
+      // `/invite` prefix — registered BEFORE it, same static-before-
+      // dynamic precedent as membershipRequestsList/
+      // membershipRequestDetail above, so `/invite/open` is never
+      // captured as a `:token`.
+      GoRoute(
+        path: AppRoutes.membershipInvitationOpen,
+        builder: (context, state) => const OpenInvitationLinkScreen(),
       ),
       // Prompt 09G-B1-E3: reachable at every stage (signed out through
       // fully operational — see route_guard.dart's `_isInvitationRoute`
