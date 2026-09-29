@@ -1,0 +1,16 @@
+-- Prompt 09G-B1-F1: adds DECLINED to membership_invitation_status —
+-- split into its own migration file because `ALTER TYPE ... ADD VALUE`
+-- cannot be used in the same transaction as a later statement that
+-- references the new value (confirmed locally: PostgreSQL 17.6 still
+-- enforces this — the statement immediately following it in a combined
+-- file failed with "invalid input value for enum ... DECLINED",
+-- SQLSTATE 22P02, during `supabase db reset`). The dependent schema/
+-- RPC changes that actually use DECLINED live in
+-- 20260922091500_create_phone_targeted_membership_invitations.sql,
+-- applied as a separate, later transaction.
+--
+-- DECLINED is a member-initiated terminal state for a PHONE
+-- invitation, distinct from CANCELLED (which remains exclusively
+-- officer/system-initiated — see the next migration's header for the
+-- full rationale).
+alter type public.membership_invitation_status add value 'DECLINED';
