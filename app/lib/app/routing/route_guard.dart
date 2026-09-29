@@ -219,6 +219,18 @@ String? computeRedirect({
     return null;
   }
 
+  // Prompt 09G-B1-F2 §J/§K/§L: the personal invitation inbox is
+  // reachable regardless of [selectedGroup]'s state — a brand-new,
+  // zero-membership user (Case A) must be able to reach it exactly as
+  // freely as a user who already has one or many resolved groups
+  // (Cases B/C/D); it is never gated on the currently selected group's
+  // permissions, since these invitations are addressed to the
+  // authenticated PERSON, not the selected group. Same unconditional-
+  // hold position/priority as the invitation-route check above.
+  if (currentLocation == AppRoutes.myInvitations) {
+    return null;
+  }
+
   // A pending invitation destination takes priority over the normal
   // home/select-group/onboarding target — the user's explicit intent
   // (having opened the link, then been detoured through PIN/profile

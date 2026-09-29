@@ -3,9 +3,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../domain/membership_invitation.dart';
 import '../domain/membership_invitation_acceptance.dart';
+import '../domain/membership_invitation_decline.dart';
 import '../domain/membership_invitation_preview.dart';
 import '../domain/membership_invitation_queue_item.dart';
 import '../domain/membership_invitation_status.dart';
+import '../domain/membership_phone_invitation.dart';
+import '../domain/my_membership_invitation.dart';
 import 'membership_invitation_failure.dart';
 import 'membership_invitation_repository.dart';
 
@@ -111,18 +114,99 @@ class SupabaseMembershipInvitationRepository
       throw _mapError(error, stackTrace);
     }
   }
+
+  @override
+  Future<MembershipPhoneInvitation> createPhoneInvitation({
+    required String groupId,
+    required String membershipId,
+    required String phone,
+    required List<String> roleCodes,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_create_membership_phone_invitation',
+        params: {
+          'p_group_id': groupId,
+          'p_membership_id': membershipId,
+          'p_phone': phone,
+          'p_role_codes': roleCodes,
+        },
+      );
+      return MembershipPhoneInvitation.fromJson(result as Map<String, dynamic>);
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<MyMembershipInvitationsPage> listMyInvitations({
+    MembershipInvitationStatus? status,
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_list_my_membership_invitations',
+        params: {
+          'p_status': _statusParam(status),
+          'p_limit': limit,
+          'p_offset': offset,
+        },
+      );
+      return MyMembershipInvitationsPage.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<MembershipInvitationAcceptance> acceptPhoneInvitation({
+    required String invitationId,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_accept_membership_phone_invitation',
+        params: {'p_invitation_id': invitationId},
+      );
+      return MembershipInvitationAcceptance.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
+
+  @override
+  Future<MembershipInvitationDecline> declinePhoneInvitation({
+    required String invitationId,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'rpc_decline_membership_phone_invitation',
+        params: {'p_invitation_id': invitationId},
+      );
+      return MembershipInvitationDecline.fromJson(
+        result as Map<String, dynamic>,
+      );
+    } catch (error, stackTrace) {
+      throw _mapError(error, stackTrace);
+    }
+  }
 }
 
-/// `rpc_list_membership_invitations`'s `p_status` is a Postgres enum,
-/// sent as its bare uppercase text label — `null` maps through
-/// untouched (the RPC's own `p_status is null` branch means "every
-/// status").
+/// `rpc_list_membership_invitations`/`rpc_list_my_membership_
+/// invitations`'s `p_status` is a Postgres enum, sent as its bare
+/// uppercase text label — `null` maps through untouched (the RPC's own
+/// `p_status is null` branch means "every status").
 String? _statusParam(MembershipInvitationStatus? status) => switch (status) {
   null => null,
   MembershipInvitationStatus.pending => 'PENDING',
   MembershipInvitationStatus.accepted => 'ACCEPTED',
   MembershipInvitationStatus.cancelled => 'CANCELLED',
   MembershipInvitationStatus.expired => 'EXPIRED',
+  MembershipInvitationStatus.declined => 'DECLINED',
   MembershipInvitationStatus.unknown => null,
 };
 
@@ -137,10 +221,28 @@ MembershipInvitationFailure _mapError(Object error, StackTrace stackTrace) {
     final message = error.message;
     final code = error.code;
 
-    if (message.contains('MEMBERSHIP_INVITATION_NOT_FOUND')) {
+    if (message.contains('MEMBERSHIP_INVITATION_NOT_FOUND') ||
+        message.contains('MEMBERSHIP_PHONE_INVITATION_NOT_FOUND')) {
+      // Deliberately the SAME failure type for both: the phone flow's
+      // own anti-enumeration collapse (id/type/phone-mismatch) is
+      // exactly the TOKEN flow's "unresolvable" outcome under a
+      // different backend error string — the client must not invent a
+      // distinction the server deliberately erased.
       return const MembershipInvitationFailure(
         MembershipInvitationFailureType.invitationNotFound,
         'We could not find that invitation.',
+      );
+    }
+    if (message.contains('MEMBERSHIP_INVITATION_INVALID_PHONE')) {
+      return const MembershipInvitationFailure(
+        MembershipInvitationFailureType.invalidPhone,
+        'That phone number could not be used. Please check it and try again.',
+      );
+    }
+    if (message.contains('AUTH_PHONE_NOT_VERIFIED')) {
+      return const MembershipInvitationFailure(
+        MembershipInvitationFailureType.authPhoneNotVerified,
+        'Your account has no verified phone number yet.',
       );
     }
     if (message.contains('MEMBERSHIP_INVITATION_EXPIRED')) {

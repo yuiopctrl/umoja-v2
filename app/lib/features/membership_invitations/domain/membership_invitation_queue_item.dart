@@ -1,10 +1,15 @@
 import 'membership_invitation_status.dart';
+import 'membership_invitation_type.dart';
 
 /// One row of the officer-facing invitation queue/history
-/// (`rpc_list_membership_invitations`, Prompt 09G-B1-E1).
+/// (`rpc_list_membership_invitations`, Prompt 09G-B1-E1; [type]/
+/// [targetPhoneE164]/[declinedAt] added additively by Prompt
+/// 09G-B1-F1 — every TOKEN-era field/row shape is unchanged).
 class MembershipInvitationQueueItem {
   const MembershipInvitationQueueItem({
     required this.invitationId,
+    required this.type,
+    this.targetPhoneE164,
     required this.membershipId,
     this.membershipDisplayName,
     this.membershipMemberNumber,
@@ -18,11 +23,20 @@ class MembershipInvitationQueueItem {
     this.acceptedByFullName,
     this.cancelledAt,
     this.cancelledByFullName,
+    this.declinedAt,
   });
 
   factory MembershipInvitationQueueItem.fromJson(Map<String, dynamic> json) {
     return MembershipInvitationQueueItem(
       invitationId: json['invitation_id'] as String,
+      // Legacy 20260922090000-era `rpc_list_membership_invitations`
+      // responses (cached client state from before this migration)
+      // never included `invitation_type` — default to TOKEN, the only
+      // type that ever existed before F1.
+      type: MembershipInvitationType.fromRaw(
+        json['invitation_type'] as String? ?? 'TOKEN',
+      ),
+      targetPhoneE164: json['target_phone_e164'] as String?,
       membershipId: json['membership_id'] as String,
       membershipDisplayName: json['membership_display_name'] as String?,
       membershipMemberNumber: json['membership_member_number'] as String?,
@@ -40,10 +54,23 @@ class MembershipInvitationQueueItem {
           ? null
           : DateTime.parse(json['cancelled_at'] as String),
       cancelledByFullName: json['cancelled_by_full_name'] as String?,
+      declinedAt: json['declined_at'] == null
+          ? null
+          : DateTime.parse(json['declined_at'] as String),
     );
   }
 
   final String invitationId;
+
+  /// TOKEN or PHONE. Display-only distinction for officer history —
+  /// never changes how the row is fetched/mutated (both types share
+  /// the exact same list/cancel RPCs).
+  final MembershipInvitationType type;
+
+  /// PHONE invitations only — the canonical target phone, already
+  /// known to the officer (they entered it). `null` for TOKEN rows.
+  final String? targetPhoneE164;
+
   final String membershipId;
   final String? membershipDisplayName;
   final String? membershipMemberNumber;
@@ -66,6 +93,10 @@ class MembershipInvitationQueueItem {
   final String? acceptedByFullName;
   final DateTime? cancelledAt;
   final String? cancelledByFullName;
+
+  /// PHONE invitations only — set when the recipient explicitly
+  /// declined. `null` for every other status/type.
+  final DateTime? declinedAt;
 
   bool get isPending => status == MembershipInvitationStatus.pending;
 

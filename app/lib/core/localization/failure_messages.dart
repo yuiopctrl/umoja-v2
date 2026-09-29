@@ -77,6 +77,10 @@ String membershipInvitationFailureMessage(
       l10n.membershipInvitationAlreadyPendingError,
     MembershipInvitationFailureType.invitationNotPending =>
       l10n.membershipInvitationNotPendingError,
+    MembershipInvitationFailureType.invalidPhone =>
+      l10n.membershipInvitationInvalidPhoneError,
+    MembershipInvitationFailureType.authPhoneNotVerified =>
+      l10n.authPhoneNotVerifiedError,
     MembershipInvitationFailureType.network => l10n.memberErrorNetwork,
     MembershipInvitationFailureType.unexpected => l10n.memberErrorUnexpected,
   };

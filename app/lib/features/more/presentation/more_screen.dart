@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/routing/app_routes.dart';
 import '../../../app/shell/shell_destination.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/theme/umoja_breakpoints.dart';
@@ -17,6 +18,7 @@ import '../../auth/providers/auth_controller_provider.dart';
 import '../../auth/providers/selected_group_provider.dart';
 import '../../members/presentation/widgets/member_role_label.dart';
 import '../../members/presentation/widgets/member_status_badge.dart';
+import '../../membership_invitations/providers/my_membership_invitations_provider.dart';
 
 /// `/more`: account information, current group, security, and
 /// account-level actions (switch group) — moved off Home so the
@@ -35,6 +37,14 @@ class MoreScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appContextAsync = ref.watch(appContextProvider);
     final selectedGroup = ref.watch(selectedGroupProvider);
+    // Prompt 09G-B1-F2 §L/§M: the SAME already-fetched personal inbox
+    // result Home's own banner reads — never a second query.
+    final pendingInvitationCount =
+        ref
+            .watch(myMembershipInvitationsProvider)
+            .value
+            ?.pendingActionableCount ??
+        0;
     final profile = appContextAsync.value?.profile;
     final membership = selectedGroup is SelectedGroupResolved
         ? selectedGroup.membership
@@ -64,6 +74,38 @@ class MoreScreen extends ConsumerWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Prompt 09G-B1-F2 §L: "My Invitations" — invitations
+          // addressed TO the authenticated person, never gated on the
+          // currently selected group's permissions (unlike every other
+          // destination on this screen, which IS group-scoped).
+          UmojaCard(
+            key: const Key('moreMyInvitationsLink'),
+            padding: EdgeInsets.zero,
+            child: ListTile(
+              key: const Key('moreMyInvitationsAction'),
+              leading: const Icon(Icons.mail_outline),
+              title: Text(l10n.myInvitationsTitle),
+              trailing: pendingInvitationCount > 0
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        '$pendingInvitationCount',
+                        style: Theme.of(context).textTheme.labelSmall
+                            ?.copyWith(color: Colors.white),
+                      ),
+                    )
+                  : const Icon(Icons.chevron_right),
+              onTap: () => context.push(AppRoutes.myInvitations),
+            ),
+          ),
+          const SizedBox(height: UmojaSpacing.xxl),
           if (overflowDestinations.isNotEmpty) ...[
             UmojaSection(
               title: l10n.modulesSectionTitle,

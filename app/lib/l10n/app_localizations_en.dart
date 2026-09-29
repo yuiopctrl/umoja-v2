@@ -392,10 +392,24 @@ class AppLocalizationsEn extends AppLocalizations {
       'This invitation will allow the recipient to link their login account to this existing membership. Access is granted only once the invitation is accepted, and it expires after 7 days.';
 
   @override
-  String get createInvitationAction => 'Create Invitation';
+  String get inviteMemberPhoneStepTitle => 'Phone Number';
 
   @override
-  String get invitationCreatedTitle => 'Invitation Created';
+  String get inviteMemberPhoneStepHint =>
+      'Enter the phone number this member will use to sign in to Umoja. If they already have an Umoja account, use the phone number on that account.';
+
+  @override
+  String get inviteMemberPhonePrefilledHint =>
+      'This phone number is already on file for this member. You can correct it before sending if it\'s wrong.';
+
+  @override
+  String get continueToPhoneStepAction => 'Continue';
+
+  @override
+  String get createInvitationAction => 'Send Invitation';
+
+  @override
+  String get invitationCreatedTitle => 'Invitation Sent';
 
   @override
   String get expiresOnLabel => 'Expires on';
@@ -411,6 +425,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createdOnLabel => 'Created on';
+
+  @override
+  String get targetPhoneLabel => 'Phone';
+
+  @override
+  String get invitationSentForLabel => 'An invitation has been created for:';
+
+  @override
+  String get invitationSentNextStepsMessage =>
+      'The member can sign in or create an Umoja account using this phone number to review the invitation.';
+
+  @override
+  String get viewInvitationsAction => 'View Invitations';
 
   @override
   String get membershipInvitationsTitle => 'Invitations';
@@ -443,6 +470,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get membershipInvitationStatusExpired => 'Expired';
+
+  @override
+  String get membershipInvitationStatusDeclined => 'Declined';
 
   @override
   String get membershipInvitationStatusUnknown => 'Unknown';
@@ -482,6 +512,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get membershipInvitationNotPendingError =>
       'This invitation has already been resolved.';
+
+  @override
+  String get membershipInvitationInvalidPhoneError =>
+      'That doesn\'t look like a valid Tanzanian mobile number.';
+
+  @override
+  String get authPhoneNotVerifiedError =>
+      'Your account has no verified phone number yet.';
 
   @override
   String get moreActionsTooltip => 'More actions';
@@ -573,20 +611,64 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sharing isn\'t set up on this device yet. Try again from the web app, or share the link from there instead.';
 
   @override
+  String get myInvitationsTitle => 'My Invitations';
+
+  @override
+  String get myInvitationsEmptyTitle => 'No Invitations';
+
+  @override
+  String get myInvitationsEmptyMessage =>
+      'If an officer has invited you using this phone number, your invitation will appear here.';
+
+  @override
+  String get acceptInvitationConfirmTitle => 'Accept Invitation?';
+
+  @override
+  String acceptInvitationConfirmMessage(Object groupName) {
+    return 'You will join $groupName with the role(s) shown above.';
+  }
+
+  @override
+  String get declineInvitationAction => 'Decline Invitation';
+
+  @override
+  String get declineInvitationConfirmTitle => 'Decline Invitation?';
+
+  @override
+  String get declineInvitationConfirmMessage =>
+      'Are you sure you want to decline this invitation? You can ask the officer to send a new one later if you change your mind.';
+
+  @override
+  String get invitationDeclinedMessage => 'Invitation declined.';
+
+  @override
+  String get pendingInvitationBannerTitle =>
+      'You have a pending group invitation.';
+
+  @override
+  String get pendingInvitationBannerMessage => 'Review it to join the group.';
+
+  @override
+  String get invitedOnLabel => 'Invited on';
+
+  @override
+  String get roleLabel => 'Role(s)';
+
+  @override
   String get membershipEntryInvitationGuidance =>
-      'The normal way to join a group is through an invitation link sent by a group officer.';
+      'If an officer has invited you using this phone number, your invitation will appear here.';
 
   @override
   String get membershipEntryNoInvitationTitle =>
-      'Don\'t have an invitation link?';
+      'Haven\'t received an invitation?';
 
   @override
   String get membershipEntryAskOfficerMessage =>
-      'Ask your group administrator or secretary to send you an invitation.';
+      'Ask your group administrator or secretary to invite you using your phone number.';
 
   @override
   String get membershipEntryFallbackHeading =>
-      'Already a registered member without a link?';
+      'Already a registered member without an invitation?';
 
   @override
   String get membershipRequestsTitle => 'Membership Requests';

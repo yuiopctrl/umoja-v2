@@ -589,8 +589,9 @@ void main() {
 
   group('Redesigned no-membership onboarding (§P 27-31)', () {
     testWidgets(
-      '27/28: the entry screen explains invitation is the normal path and '
-      'tells the user without a link to ask their officer',
+      '27/28: the entry screen explains PHONE invitations are the normal '
+      'path (Prompt 09G-B1-F2 §N) and tells the user without one to ask '
+      'their officer',
       (tester) async {
         await pumpMembershipClaimApp(
           tester,
@@ -600,18 +601,37 @@ void main() {
 
         expect(
           find.text(
-            'The normal way to join a group is through an invitation link '
-            'sent by a group officer.',
+            'If an officer has invited you using this phone number, your '
+            'invitation will appear here.',
           ),
           findsOneWidget,
         );
         expect(
           find.text(
-            'Ask your group administrator or secretary to send you an '
-            'invitation.',
+            'Ask your group administrator or secretary to invite you using '
+            'your phone number.',
           ),
           findsOneWidget,
         );
+      },
+    );
+
+    testWidgets(
+      'Prompt 09G-B1-F2 §N: "View Invitations" is now the PRIMARY action '
+      'on the entry screen, leading to the personal inbox',
+      (tester) async {
+        final router = await pumpMembershipClaimApp(
+          tester,
+          fakeRepo: FakeMembershipClaimRepository(),
+          language: AppLanguage.english,
+        );
+
+        expect(find.byKey(const Key('viewInvitationsAction')), findsOneWidget);
+
+        await tester.tap(find.byKey(const Key('viewInvitationsAction')));
+        await tester.pumpAndSettle();
+
+        expect(router.state.uri.path, AppRoutes.myInvitations);
       },
     );
 

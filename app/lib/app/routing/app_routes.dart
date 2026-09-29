@@ -60,6 +60,18 @@ class AppRoutes {
   /// the app if the user wants to check on or start another claim.
   static const membershipClaims = '/membership/claims';
 
+  /// Prompt 09G-B1-F2 §J/§L: the authenticated caller's own, GLOBAL
+  /// personal invitation inbox (`rpc_list_my_membership_invitations`)
+  /// — never group-scoped, never gated on the currently selected
+  /// group's permissions (these are invitations TO the authenticated
+  /// person, not officer-managed invitations for a group — see
+  /// [membershipInvitationsList] for that, a different concept
+  /// entirely). Reachable regardless of [SelectedGroupState] (none,
+  /// pending, or resolved) — see route_guard.dart's dedicated
+  /// unconditional-hold check, the same pattern as
+  /// `_isInvitationRoute`.
+  static const myInvitations = '/invitations';
+
   static const selectGroup = '/select-group';
 
   static const accessAccountDisabled = '/access/account-disabled';

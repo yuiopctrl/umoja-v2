@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/membership_invitation_failure.dart';
 import '../domain/membership_invitation.dart';
+import '../domain/membership_phone_invitation.dart';
 import '../providers/membership_invitation_repository_provider.dart';
 import '../providers/membership_invitations_queue_provider.dart';
 
@@ -46,6 +47,41 @@ class MembershipInvitationController
           .createMembershipInvitation(
             groupId: groupId,
             membershipId: membershipId,
+            roleCodes: roleCodes,
+          );
+      state = const MembershipInvitationControllerState();
+      return invitation;
+    } catch (error) {
+      state = MembershipInvitationControllerState(
+        errorType: error is MembershipInvitationFailure
+            ? error.type
+            : MembershipInvitationFailureType.unexpected,
+      );
+      return null;
+    }
+  }
+
+  /// Returns the created PHONE invitation on success, or `null` on
+  /// failure with [state.errorType] set (Prompt 09G-B1-F1/F2 — the
+  /// PRIMARY officer creation path from F2 onward). No bearer token is
+  /// ever generated or returned. `isSubmitting` guards against a
+  /// double-submit exactly like [create].
+  Future<MembershipPhoneInvitation?> createPhoneInvitation({
+    required String groupId,
+    required String membershipId,
+    required String phone,
+    required List<String> roleCodes,
+  }) async {
+    if (state.isSubmitting) return null;
+
+    state = const MembershipInvitationControllerState(isSubmitting: true);
+    try {
+      final invitation = await ref
+          .read(membershipInvitationRepositoryProvider)
+          .createPhoneInvitation(
+            groupId: groupId,
+            membershipId: membershipId,
+            phone: phone,
             roleCodes: roleCodes,
           );
       state = const MembershipInvitationControllerState();

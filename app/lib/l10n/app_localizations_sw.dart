@@ -391,6 +391,20 @@ class AppLocalizationsSw extends AppLocalizations {
       'Mwaliko huu utamruhusu mpokeaji kuunganisha akaunti yake ya kuingia na uanachama huu uliopo. Ufikiaji utatolewa tu baada ya mwaliko kukubaliwa, na mwaliko huu utaisha muda wake baada ya siku 7.';
 
   @override
+  String get inviteMemberPhoneStepTitle => 'Namba ya Simu';
+
+  @override
+  String get inviteMemberPhoneStepHint =>
+      'Ingiza namba ya simu ambayo mwanachama huyu atatumia kuingia Umoja. Kama ana akaunti ya Umoja tayari, tumia namba ya simu iliyo kwenye akaunti hiyo.';
+
+  @override
+  String get inviteMemberPhonePrefilledHint =>
+      'Namba hii ya simu ipo tayari kwenye taarifa za mwanachama huyu. Unaweza kuirekebisha kabla ya kutuma kama si sahihi.';
+
+  @override
+  String get continueToPhoneStepAction => 'Endelea';
+
+  @override
   String get createInvitationAction => 'Tuma Mwaliko';
 
   @override
@@ -410,6 +424,19 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get createdOnLabel => 'Ilitumwa tarehe';
+
+  @override
+  String get targetPhoneLabel => 'Simu';
+
+  @override
+  String get invitationSentForLabel => 'Mwaliko umetengenezwa kwa:';
+
+  @override
+  String get invitationSentNextStepsMessage =>
+      'Mwanachama anaweza kuingia au kufungua akaunti ya Umoja kwa kutumia namba hii ya simu ili kuona mwaliko.';
+
+  @override
+  String get viewInvitationsAction => 'Angalia Mialiko';
 
   @override
   String get membershipInvitationsTitle => 'Mialiko';
@@ -442,6 +469,9 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get membershipInvitationStatusExpired => 'Muda Umeisha';
+
+  @override
+  String get membershipInvitationStatusDeclined => 'Imekataliwa';
 
   @override
   String get membershipInvitationStatusUnknown => 'Haijulikani';
@@ -481,6 +511,14 @@ class AppLocalizationsSw extends AppLocalizations {
   @override
   String get membershipInvitationNotPendingError =>
       'Mwaliko huu tayari umeshughulikiwa.';
+
+  @override
+  String get membershipInvitationInvalidPhoneError =>
+      'Hiyo haionekani kuwa namba sahihi ya simu ya Tanzania.';
+
+  @override
+  String get authPhoneNotVerifiedError =>
+      'Akaunti yako haina namba ya simu iliyothibitishwa bado.';
 
   @override
   String get moreActionsTooltip => 'Vitendo zaidi';
@@ -574,19 +612,64 @@ class AppLocalizationsSw extends AppLocalizations {
       'Kushiriki bado hakujawekwa kwenye kifaa hiki. Jaribu tena kutoka programu ya wavuti, au shiriki kiungo kutoka huko badala yake.';
 
   @override
-  String get membershipEntryInvitationGuidance =>
-      'Njia ya kawaida ya kujiunga na kikundi ni kupitia kiungo cha mwaliko kinachotumwa na kiongozi wa kikundi.';
+  String get myInvitationsTitle => 'Mialiko Yangu';
 
   @override
-  String get membershipEntryNoInvitationTitle => 'Hauna kiungo cha mwaliko?';
+  String get myInvitationsEmptyTitle => 'Hakuna Mialiko';
+
+  @override
+  String get myInvitationsEmptyMessage =>
+      'Kama kiongozi amekukaribisha kwa namba hii ya simu, mwaliko wako utaonekana hapa.';
+
+  @override
+  String get acceptInvitationConfirmTitle => 'Kubali Mwaliko?';
+
+  @override
+  String acceptInvitationConfirmMessage(Object groupName) {
+    return 'Utajiunga na $groupName na nafasi zilizoonyeshwa hapo juu.';
+  }
+
+  @override
+  String get declineInvitationAction => 'Kataa Mwaliko';
+
+  @override
+  String get declineInvitationConfirmTitle => 'Kataa Mwaliko?';
+
+  @override
+  String get declineInvitationConfirmMessage =>
+      'Una uhakika unataka kukataa mwaliko huu? Unaweza kumwomba kiongozi atume mwingine baadaye ukibadilisha nia.';
+
+  @override
+  String get invitationDeclinedMessage => 'Mwaliko umekataliwa.';
+
+  @override
+  String get pendingInvitationBannerTitle =>
+      'Una mwaliko wa kikundi unaosubiri.';
+
+  @override
+  String get pendingInvitationBannerMessage =>
+      'Ukague ili kujiunga na kikundi.';
+
+  @override
+  String get invitedOnLabel => 'Alikwa tarehe';
+
+  @override
+  String get roleLabel => 'Nafasi';
+
+  @override
+  String get membershipEntryInvitationGuidance =>
+      'Kama kiongozi amekukaribisha kwa namba hii ya simu, mwaliko wako utaonekana hapa.';
+
+  @override
+  String get membershipEntryNoInvitationTitle => 'Hujapokea mwaliko?';
 
   @override
   String get membershipEntryAskOfficerMessage =>
-      'Muombe msimamizi au katibu wa kikundi chako akutumie mwaliko.';
+      'Muombe msimamizi au katibu wa kikundi chako akukaribishe kwa kutumia namba yako ya simu.';
 
   @override
   String get membershipEntryFallbackHeading =>
-      'Tayari ni mwanachama aliyesajiliwa bila kiungo?';
+      'Tayari ni mwanachama aliyesajiliwa bila mwaliko?';
 
   @override
   String get membershipRequestsTitle => 'Maombi ya Uanachama';

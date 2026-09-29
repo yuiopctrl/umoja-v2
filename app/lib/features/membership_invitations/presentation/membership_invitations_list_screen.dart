@@ -76,6 +76,10 @@ class _MembershipInvitationsListScreenState
         l10n.membershipInvitationStatusExpired,
         MembershipInvitationStatus.expired,
       ),
+      (
+        l10n.membershipInvitationStatusDeclined,
+        MembershipInvitationStatus.declined,
+      ),
     ];
 
     return UmojaPage(
@@ -225,6 +229,14 @@ class _InvitationCard extends ConsumerWidget {
                 item.membershipMemberNumber!,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
+            // Prompt 09G-B1-F2 §H: PHONE invitations show their target
+            // phone (already known to the officer — they entered it);
+            // TOKEN rows have none, so nothing renders here for them.
+            if (item.targetPhoneE164 != null)
+              Text(
+                item.targetPhoneE164!,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             const SizedBox(height: UmojaSpacing.sm),
             Text(
               item.roleCodes
@@ -249,6 +261,12 @@ class _InvitationCard extends ConsumerWidget {
                 '${l10n.membershipInvitationStatusCancelled}: '
                 '${formatKiswahiliDate(item.cancelledAt!)}'
                 '${item.cancelledByFullName != null ? ' · ${item.cancelledByFullName}' : ''}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            if (item.declinedAt != null)
+              Text(
+                '${l10n.membershipInvitationStatusDeclined}: '
+                '${formatKiswahiliDate(item.declinedAt!)}',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             if (item.canCancel) ...[

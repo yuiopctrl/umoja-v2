@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:umoja/app/routing/app_routes.dart';
 import 'package:umoja/core/localization/language_provider.dart';
 import 'package:umoja/features/members/domain/group_member.dart';
 import 'package:umoja/features/members/domain/group_member_page.dart';
@@ -17,7 +17,8 @@ Future<void> _goToMembersList(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
-/// An eligible invite target: ACTIVE, not yet login-linked.
+/// An eligible invite target: ACTIVE, not yet login-linked, no phone
+/// on file (the phone step must start empty).
 GroupMemberPage _eligibleMemberPage() {
   return GroupMemberPage(
     items: [
@@ -35,6 +36,52 @@ GroupMemberPage _eligibleMemberPage() {
     limit: 25,
     offset: 0,
   );
+}
+
+/// Same as [_eligibleMemberPage], but the member already has a phone
+/// on file — the phone step must prefill it (Prompt 09G-B1-F2 §F).
+GroupMemberPage _eligibleMemberWithPhonePage() {
+  return GroupMemberPage(
+    items: [
+      GroupMember(
+        membershipId: 'm1',
+        groupId: 'g-officer',
+        displayName: 'Test Member',
+        phone: '0712345678',
+        status: 'ACTIVE',
+        createdAt: DateTime.utc(2026, 1, 15),
+        isLoginLinked: false,
+        roleCodes: const [],
+      ),
+    ],
+    totalCount: 1,
+    limit: 25,
+    offset: 0,
+  );
+}
+
+/// Drives the Invite Member flow through member selection and the
+/// phone step, leaving the test at the role-selection step — shared by
+/// every test below so the exact same navigation is never duplicated.
+Future<void> _selectMemberAndPhone(
+  WidgetTester tester, {
+  String memberText = 'Test Member',
+  String? phoneOverride,
+}) async {
+  await tester.tap(find.text('Invite Member'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(memberText));
+  await tester.pumpAndSettle();
+  if (phoneOverride != null) {
+    await tester.enterText(
+      find.byKey(const Key('invitePhoneField')),
+      phoneOverride,
+    );
+  }
+  await tester.tap(
+    find.byKey(const Key('inviteMemberContinueFromPhoneAction')),
+  );
+  await tester.pumpAndSettle();
 }
 
 /// Prompt 09G-B1-E2 §O: officer member-invitation UX — Invite Member
@@ -115,15 +162,17 @@ void main() {
     );
   });
 
-  group('Invite Member flow (§O 13-17)', () {
-    testWidgets('13/14/15/17: select a member, select roles, review, create — '
-        'invitation success renders member/roles/status/expiry', (
-      tester,
-    ) async {
+  group('Invite Member flow (§O 13-17, Prompt 09G-B1-F2 phone flow)', () {
+    testWidgets('13/14/15/17: select a member, confirm phone, select roles, '
+        'review, send — invitation success renders member/phone/roles/expiry '
+        '(§Z 5/8/9)', (tester) async {
       final memberRepo = FakeMemberRepository()
         ..nextListResult = _eligibleMemberPage();
       final invitationRepo = FakeMembershipInvitationRepository()
-        ..nextCreateResult = fakeMembershipInvitation(roleCodes: ['TREASURER']);
+        ..nextCreatePhoneResult = fakeMembershipPhoneInvitation(
+          roleCodes: ['TREASURER'],
+          targetPhoneE164: '+255712345678',
+        );
       await pumpMembershipInvitationApp(
         tester,
         membership: membershipInvitationOfficerMembership(),
@@ -138,13 +187,25 @@ void main() {
       await tester.tap(find.text('Invite Member'));
       await tester.pumpAndSettle();
 
-      // 13: member selection — the picker uses the real
+      // 13/5: member selection — the picker uses the real
       // rpc_list_group_members contract via FakeMemberRepository.
       expect(find.text('Test Member'), findsOneWidget);
       await tester.tap(find.text('Test Member'));
       await tester.pumpAndSettle();
 
-      // 14: role selection.
+      // §Z 7: phone can be entered (no phone was on file for this
+      // fixture, so the field starts empty).
+      expect(find.byKey(const Key('invitePhoneField')), findsOneWidget);
+      await tester.enterText(
+        find.byKey(const Key('invitePhoneField')),
+        '0712345678',
+      );
+      await tester.tap(
+        find.byKey(const Key('inviteMemberContinueFromPhoneAction')),
+      );
+      await tester.pumpAndSettle();
+
+      // 14/8: role selection.
       expect(
         find.byKey(const Key('inviteRoleOption_TREASURER')),
         findsOneWidget,
@@ -156,21 +217,135 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // 15: review shows member/roles and the explanatory text.
+      // 15: review shows member/phone/roles and the explanatory text.
       expect(find.text('Test Member'), findsOneWidget);
+      expect(find.text('0712345678'), findsOneWidget);
       expect(find.textContaining('expires after 7 days'), findsOneWidget);
 
-      // 17: create — success screen.
+      // 17/10: send — success screen. Exact wire contract: group_id,
+      // membership_id, phone, role_codes — no user_id, no role_id
+      // (structural, the fake's call signature has no such parameter).
       await tester.tap(find.byKey(const Key('createInvitationAction')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Invitation Created'), findsOneWidget);
+      expect(find.text('Invitation Sent'), findsOneWidget);
       expect(find.text('Test Member'), findsOneWidget);
-      expect(invitationRepo.createMembershipInvitationCalls, hasLength(1));
-      expect(invitationRepo.createMembershipInvitationCalls.single.roleCodes, [
-        'TREASURER',
-      ]);
+      expect(find.text('+255712345678'), findsOneWidget);
+      expect(invitationRepo.createPhoneInvitationCalls, hasLength(1));
+      final call = invitationRepo.createPhoneInvitationCalls.single;
+      expect(call.groupId, 'g-officer');
+      expect(call.membershipId, 'm1');
+      expect(call.phone, '0712345678');
+      expect(call.roleCodes, ['TREASURER']);
     });
+
+    testWidgets('6: phone prefills from the selected member\'s recorded '
+        'phone, and can still be corrected before sending', (tester) async {
+      final invitationRepo = FakeMembershipInvitationRepository();
+      await pumpMembershipInvitationApp(
+        tester,
+        membership: membershipInvitationOfficerMembership(),
+        fakeInvitationRepo: invitationRepo,
+        fakeMemberRepo: FakeMemberRepository()
+          ..nextListResult = _eligibleMemberWithPhonePage(),
+        language: AppLanguage.english,
+        viewSize: const Size(1440, 900),
+      );
+
+      await _goToMembersList(tester);
+      await tester.tap(find.text('Invite Member'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Test Member'));
+      await tester.pumpAndSettle();
+
+      final phoneField = tester.widget<TextField>(
+        find.byKey(const Key('invitePhoneField')),
+      );
+      expect(phoneField.controller?.text, '0712345678');
+
+      // The officer can still correct it before sending.
+      await tester.enterText(
+        find.byKey(const Key('invitePhoneField')),
+        '0712345999',
+      );
+      await tester.tap(
+        find.byKey(const Key('inviteMemberContinueFromPhoneAction')),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('inviteRoleOption_MEMBER')));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const Key('inviteMemberContinueToReviewAction')),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('createInvitationAction')));
+      await tester.pumpAndSettle();
+
+      expect(
+        invitationRepo.createPhoneInvitationCalls.single.phone,
+        '0712345999',
+      );
+    });
+
+    testWidgets('7: a malformed phone is rejected client-side before the '
+        'RPC is ever called', (tester) async {
+      final invitationRepo = FakeMembershipInvitationRepository();
+      await pumpMembershipInvitationApp(
+        tester,
+        membership: membershipInvitationOfficerMembership(),
+        fakeInvitationRepo: invitationRepo,
+        fakeMemberRepo: FakeMemberRepository()
+          ..nextListResult = _eligibleMemberPage(),
+        language: AppLanguage.english,
+        viewSize: const Size(1440, 900),
+      );
+
+      await _goToMembersList(tester);
+      await tester.tap(find.text('Invite Member'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Test Member'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const Key('invitePhoneField')),
+        'not-a-phone',
+      );
+      await tester.tap(
+        find.byKey(const Key('inviteMemberContinueFromPhoneAction')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text("That doesn't look like a valid Tanzanian mobile number."),
+        findsOneWidget,
+      );
+      expect(invitationRepo.createPhoneInvitationCalls, isEmpty);
+    });
+
+    testWidgets(
+      '9: ADMIN UX restriction preserved — a non-ADMIN inviter cannot '
+      'select the ADMIN role option',
+      (tester) async {
+        await pumpMembershipInvitationApp(
+          tester,
+          membership: membershipInvitationOfficerMembership(
+            roleCodes: const ['SECRETARY'],
+          ),
+          fakeInvitationRepo: FakeMembershipInvitationRepository(),
+          fakeMemberRepo: FakeMemberRepository()
+            ..nextListResult = _eligibleMemberPage(),
+          language: AppLanguage.english,
+          viewSize: const Size(1440, 900),
+        );
+
+        await _goToMembersList(tester);
+        await _selectMemberAndPhone(tester, phoneOverride: '0712345678');
+
+        final adminTile = tester.widget<CheckboxListTile>(
+          find.byKey(const Key('inviteRoleOption_ADMIN')),
+        );
+        expect(adminTile.enabled, isFalse);
+      },
+    );
 
     testWidgets(
       '16: double-submit is prevented — a fast double-tap issues exactly '
@@ -178,7 +353,7 @@ void main() {
       (tester) async {
         final gate = Completer<void>();
         final invitationRepo = FakeMembershipInvitationRepository()
-          ..createGate = gate;
+          ..createPhoneGate = gate;
         await pumpMembershipInvitationApp(
           tester,
           membership: membershipInvitationOfficerMembership(),
@@ -190,11 +365,7 @@ void main() {
         );
 
         await _goToMembersList(tester);
-
-        await tester.tap(find.text('Invite Member'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Test Member'));
-        await tester.pumpAndSettle();
+        await _selectMemberAndPhone(tester, phoneOverride: '0712345678');
         await tester.tap(find.byKey(const Key('inviteRoleOption_MEMBER')));
         await tester.pumpAndSettle();
         await tester.tap(
@@ -212,39 +383,23 @@ void main() {
         await tester.tap(action);
         await tester.pump();
 
-        expect(invitationRepo.createMembershipInvitationCalls, hasLength(1));
+        expect(invitationRepo.createPhoneInvitationCalls, hasLength(1));
 
         gate.complete();
         await tester.pumpAndSettle();
 
-        expect(invitationRepo.createMembershipInvitationCalls, hasLength(1));
+        expect(invitationRepo.createPhoneInvitationCalls, hasLength(1));
       },
     );
   });
 
-  group('Invitation token security (§O 18-20)', () {
+  group('Invitation success screen (§O 14-16, Prompt 09G-B1-F2 §G/§I)', () {
     testWidgets(
-      '18: Copy Invitation Link copies the link and shows a confirmation',
+      '14/15/16: the success screen has NO invitation link, NO raw token, '
+      'NO Copy Link, and NO Share Link action',
       (tester) async {
-        var clipboardText = '';
-        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-          SystemChannels.platform,
-          (call) async {
-            if (call.method == 'Clipboard.setData') {
-              clipboardText = (call.arguments as Map)['text'] as String;
-            }
-            return null;
-          },
-        );
-        addTearDown(
-          () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-            SystemChannels.platform,
-            null,
-          ),
-        );
-
         final invitationRepo = FakeMembershipInvitationRepository()
-          ..nextCreateResult = fakeMembershipInvitation(token: 'b' * 64);
+          ..nextCreatePhoneResult = fakeMembershipPhoneInvitation();
         await pumpMembershipInvitationApp(
           tester,
           membership: membershipInvitationOfficerMembership(),
@@ -256,11 +411,7 @@ void main() {
         );
 
         await _goToMembersList(tester);
-
-        await tester.tap(find.text('Invite Member'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Test Member'));
-        await tester.pumpAndSettle();
+        await _selectMemberAndPhone(tester, phoneOverride: '0712345678');
         await tester.tap(find.byKey(const Key('inviteRoleOption_MEMBER')));
         await tester.pumpAndSettle();
         await tester.tap(
@@ -270,68 +421,23 @@ void main() {
         await tester.tap(find.byKey(const Key('createInvitationAction')));
         await tester.pumpAndSettle();
 
-        // Prompt 09G-B1-E4 §H: a `flutter test` run is a VM (non-web)
-        // target with no `APP_PUBLIC_WEB_URL` configured — exactly the
-        // "not configured" case, which must fail safely (a localized
-        // error, clipboard left untouched) rather than ever copying a
-        // broken relative URL. The web-origin/native-configured
-        // branches of the SAME builder are covered directly in
-        // `test/invitation_link_builder_test.dart`, since a widget
-        // test run on the VM can never genuinely exercise `kIsWeb`.
-        await tester.tap(find.byKey(const Key('copyInvitationLinkAction')));
-        await tester.pump();
-        await tester.pump();
+        expect(find.text('Invitation Sent'), findsOneWidget);
+        expect(find.byKey(const Key('copyInvitationLinkAction')), findsNothing);
+        expect(find.byKey(const Key('shareInvitationAction')), findsNothing);
+        expect(find.textContaining('token'), findsNothing);
+        expect(find.textContaining('http'), findsNothing);
 
-        expect(clipboardText, isNot(contains('b' * 64)));
+        // View Invitations / Done, per §G.
         expect(
-          find.text(
-            "Sharing isn't set up on this device yet. Try again from "
-            'the web app, or share the link from there instead.',
-          ),
+          find.byKey(const Key('invitationSentViewInvitationsAction')),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const Key('invitationSentDoneAction')),
           findsOneWidget,
         );
       },
     );
-
-    testWidgets('19/20: the invitation-created screen never renders a raw '
-        'token_hash field, and the plaintext token itself is only ever '
-        'embedded inside the copy/share link — never shown as bare text', (
-      tester,
-    ) async {
-      final invitationRepo = FakeMembershipInvitationRepository()
-        ..nextCreateResult = fakeMembershipInvitation(token: 'c' * 64);
-      await pumpMembershipInvitationApp(
-        tester,
-        membership: membershipInvitationOfficerMembership(),
-        fakeInvitationRepo: invitationRepo,
-        fakeMemberRepo: FakeMemberRepository()
-          ..nextListResult = _eligibleMemberPage(),
-        language: AppLanguage.english,
-        viewSize: const Size(1440, 900),
-      );
-
-      await _goToMembersList(tester);
-
-      await tester.tap(find.text('Invite Member'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Test Member'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('inviteRoleOption_MEMBER')));
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const Key('inviteMemberContinueToReviewAction')),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('createInvitationAction')));
-      await tester.pumpAndSettle();
-
-      // The bare 64-char token is never rendered as its own visible
-      // Text widget on the success screen (it is only ever embedded
-      // inside the link string handed to Clipboard/Share, which this
-      // widget test does not render as on-screen text).
-      expect(find.text('c' * 64), findsNothing);
-      expect(find.textContaining('token_hash'), findsNothing);
-    });
   });
 
   group('Invitations history screen (§O 21-23)', () {
@@ -468,6 +574,62 @@ void main() {
         expect(tester.takeException(), isNull);
       });
     }
+
+    testWidgets('59: mobile (360x800) can complete the FULL officer invitation '
+        'workflow — member, phone, roles, review, send', (tester) async {
+      final invitationRepo = FakeMembershipInvitationRepository()
+        ..nextCreatePhoneResult = fakeMembershipPhoneInvitation();
+      final (router, _) = await pumpMembershipInvitationApp(
+        tester,
+        membership: membershipInvitationOfficerMembership(),
+        fakeInvitationRepo: invitationRepo,
+        fakeMemberRepo: FakeMemberRepository()
+          ..nextListResult = _eligibleMemberPage(),
+        language: AppLanguage.english,
+        viewSize: const Size(360, 800),
+      );
+
+      // Matches the real mobile bottom-nav path (a `go`, not a
+      // `push` from Home) — a `go`-reached Members has nothing to
+      // pop, making it a shell-root screen whose inline header (and
+      // therefore the overflow menu) renders on mobile too; see
+      // UmojaPage's `isShellRoot`/`showInlineHeader`.
+      router.go(AppRoutes.membersList);
+      await tester.pumpAndSettle();
+      // Mobile collapses officer actions into the overflow menu.
+      await tester.tap(find.byKey(const Key('membersHeaderOverflowAction')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Invite Member').last);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+
+      await tester.tap(find.text('Test Member'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+
+      await tester.enterText(
+        find.byKey(const Key('invitePhoneField')),
+        '0712345678',
+      );
+      await tester.tap(
+        find.byKey(const Key('inviteMemberContinueFromPhoneAction')),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+
+      await tester.tap(find.byKey(const Key('inviteRoleOption_MEMBER')));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const Key('inviteMemberContinueToReviewAction')),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+
+      await tester.tap(find.byKey(const Key('createInvitationAction')));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(invitationRepo.createPhoneInvitationCalls, hasLength(1));
+    });
   });
 
   group('Claim workflow coexistence (§O 25)', () {

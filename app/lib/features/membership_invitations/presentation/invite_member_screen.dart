@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
-import '../../../l10n/app_localizations.dart';
 import '../../../core/theme/umoja_spacing.dart';
+import '../../../core/utils/tanzania_phone_number.dart';
 import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_page.dart';
 import '../../../shared/widgets/responsive_center.dart';
@@ -17,8 +15,7 @@ import '../../members/domain/group_member.dart';
 import '../../members/presentation/widgets/member_role_label.dart';
 import '../../payments/presentation/widgets/member_search_picker.dart';
 import '../controllers/membership_invitation_controller.dart';
-import '../domain/invitation_link_builder.dart';
-import '../domain/membership_invitation.dart';
+import '../domain/membership_phone_invitation.dart';
 
 /// The five role codes the backend actually accepts today
 /// (`public.roles`, seeded by migration) — never invented client-side,
@@ -35,12 +32,18 @@ const _availableRoleCodes = [
   'ADMIN',
 ];
 
-enum _InviteStep { selectMember, selectRoles, review }
+enum _InviteStep { selectMember, enterPhone, selectRoles, review }
 
 /// `/members/invite`: Members → Invite Member → select an existing
-/// eligible member → select role(s) → review → create. Operates
-/// exclusively on an EXISTING `group_memberships` row (never creates a
-/// duplicate member record) via `rpc_create_membership_invitation`.
+/// eligible member → confirm/enter phone → select role(s) → review →
+/// Send Invitation. Prompt 09G-B1-F2: PHONE invitations are now the
+/// PRIMARY creation path — `rpc_create_membership_phone_invitation`,
+/// never the legacy bearer-token RPC. Operates exclusively on an
+/// EXISTING `group_memberships` row (never creates a duplicate member
+/// record). The phone value is targeting input only — the BACKEND
+/// remains authoritative for normalization; client-side validation
+/// (`TanzaniaPhoneNumber.tryParse`) only catches an obviously malformed
+/// number early, it never transforms what is actually sent.
 class InviteMemberScreen extends ConsumerStatefulWidget {
   const InviteMemberScreen({super.key});
 
@@ -51,8 +54,36 @@ class InviteMemberScreen extends ConsumerStatefulWidget {
 class _InviteMemberScreenState extends ConsumerState<InviteMemberScreen> {
   _InviteStep _step = _InviteStep.selectMember;
   GroupMember? _selectedMember;
+  final _phoneController = TextEditingController();
   final Set<String> _selectedRoleCodes = {};
-  MembershipInvitation? _created;
+  MembershipPhoneInvitation? _created;
+  bool _showPhoneError = false;
+
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  void _selectMember(GroupMember member) {
+    setState(() {
+      _selectedMember = member;
+      _phoneController.text = member.phone ?? '';
+      _step = _InviteStep.enterPhone;
+    });
+  }
+
+  void _continueFromPhoneStep() {
+    final parsed = TanzaniaPhoneNumber.tryParse(_phoneController.text);
+    if (parsed == null) {
+      setState(() => _showPhoneError = true);
+      return;
+    }
+    setState(() {
+      _showPhoneError = false;
+      _step = _InviteStep.selectRoles;
+    });
+  }
 
   Future<void> _submit(String groupId) async {
     final member = _selectedMember;
@@ -61,9 +92,10 @@ class _InviteMemberScreenState extends ConsumerState<InviteMemberScreen> {
     final l10n = context.l10n;
     final invitation = await ref
         .read(membershipInvitationControllerProvider.notifier)
-        .create(
+        .createPhoneInvitation(
           groupId: groupId,
           membershipId: member.membershipId,
+          phone: _phoneController.text,
           roleCodes: _selectedRoleCodes.toList(growable: false),
         );
     if (!mounted) return;
@@ -100,7 +132,7 @@ class _InviteMemberScreenState extends ConsumerState<InviteMemberScreen> {
 
     final created = _created;
     if (created != null && _selectedMember != null) {
-      return _InvitationCreatedScreen(
+      return _InvitationSentScreen(
         invitation: created,
         member: _selectedMember!,
       );
@@ -121,10 +153,51 @@ class _InviteMemberScreenState extends ConsumerState<InviteMemberScreen> {
           filter: (member) => member.isActive && !member.isLoginLinked,
           emptyTitle: l10n.inviteMemberNoEligibleTitle,
           emptyMessage: l10n.inviteMemberNoEligibleMessage,
-          onSelected: (member) => setState(() {
-            _selectedMember = member;
-            _step = _InviteStep.selectRoles;
-          }),
+          onSelected: _selectMember,
+        ),
+        _InviteStep.enterPhone => ResponsiveCenter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                l10n.inviteMemberPhoneStepHint,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: UmojaSpacing.md),
+              if ((_selectedMember?.phone ?? '').isNotEmpty) ...[
+                Text(
+                  l10n.inviteMemberPhonePrefilledHint,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                const SizedBox(height: UmojaSpacing.sm),
+              ],
+              TextField(
+                key: const Key('invitePhoneField'),
+                controller: _phoneController,
+                autofocus: true,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  labelText: l10n.inviteMemberPhoneStepTitle,
+                  hintText: l10n.authPhoneHint,
+                  errorText: _showPhoneError
+                      ? l10n.membershipInvitationInvalidPhoneError
+                      : null,
+                ),
+                onChanged: (_) {
+                  if (_showPhoneError) {
+                    setState(() => _showPhoneError = false);
+                  }
+                },
+                onSubmitted: (_) => _continueFromPhoneStep(),
+              ),
+              const SizedBox(height: UmojaSpacing.lg),
+              UmojaPrimaryButton(
+                key: const Key('inviteMemberContinueFromPhoneAction'),
+                label: l10n.continueToPhoneStepAction,
+                onPressed: _continueFromPhoneStep,
+              ),
+            ],
+          ),
         ),
         _InviteStep.selectRoles => ResponsiveCenter(
           child: Column(
@@ -179,6 +252,9 @@ class _InviteMemberScreenState extends ConsumerState<InviteMemberScreen> {
                       Text(l10n.memberNumberLabel, style: _labelStyle(context)),
                       Text(_selectedMember?.memberNumber ?? '—'),
                       const SizedBox(height: UmojaSpacing.md),
+                      Text(l10n.targetPhoneLabel, style: _labelStyle(context)),
+                      Text(_phoneController.text),
+                      const SizedBox(height: UmojaSpacing.md),
                       Text(
                         l10n.inviteMemberSelectedRolesLabel,
                         style: _labelStyle(context),
@@ -217,28 +293,20 @@ class _InviteMemberScreenState extends ConsumerState<InviteMemberScreen> {
 TextStyle? _labelStyle(BuildContext context) =>
     Theme.of(context).textTheme.labelMedium;
 
-/// Prompt 09G-B1-E4 §H: shown instead of ever sending a broken/relative
-/// URL when no canonical public web URL is configured for this build
-/// (native platforms only — web always resolves via `Uri.base`).
-void _showNotConfiguredError(BuildContext context, AppLocalizations l10n) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(l10n.invitationLinkNotConfiguredError)),
-  );
-}
+/// Prompt 09G-B1-F2 §G: the redesigned success state — NO invitation
+/// URL, NO raw token/secret, NO Copy Link/Share Link/Open Invitation
+/// link action. "Invitation Sent" here means only that the invitation
+/// record was created in Umoja — never implies an SMS was actually
+/// delivered (no SMS provider exists yet).
+class _InvitationSentScreen extends StatelessWidget {
+  const _InvitationSentScreen({required this.invitation, required this.member});
 
-class _InvitationCreatedScreen extends StatelessWidget {
-  const _InvitationCreatedScreen({
-    required this.invitation,
-    required this.member,
-  });
-
-  final MembershipInvitation invitation;
+  final MembershipPhoneInvitation invitation;
   final GroupMember member;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final linkResult = buildInvitationLinkResult(invitation.token);
 
     return UmojaPage(
       title: l10n.invitationCreatedTitle,
@@ -248,17 +316,27 @@ class _InvitationCreatedScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Icon(
+              Icons.check_circle_outline,
+              size: 56,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: UmojaSpacing.lg),
+            Text(
+              l10n.invitationSentForLabel,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: UmojaSpacing.sm),
+            Text(member.displayName),
+            const SizedBox(height: UmojaSpacing.md),
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(UmojaSpacing.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.memberLabel, style: _labelStyle(context)),
-                    Text(member.displayName),
-                    const SizedBox(height: UmojaSpacing.md),
-                    Text(l10n.memberNumberLabel, style: _labelStyle(context)),
-                    Text(member.memberNumber ?? '—'),
+                    Text(l10n.targetPhoneLabel, style: _labelStyle(context)),
+                    Text(invitation.targetPhoneE164),
                     const SizedBox(height: UmojaSpacing.md),
                     Text(
                       l10n.inviteMemberSelectedRolesLabel,
@@ -270,9 +348,6 @@ class _InvitationCreatedScreen extends StatelessWidget {
                           .join(', '),
                     ),
                     const SizedBox(height: UmojaSpacing.md),
-                    Text(l10n.statusLabel, style: _labelStyle(context)),
-                    Text(l10n.membershipInvitationStatusPending),
-                    const SizedBox(height: UmojaSpacing.md),
                     Text(l10n.expiresOnLabel, style: _labelStyle(context)),
                     Text(invitation.expiresAt.toLocal().toString()),
                   ],
@@ -280,48 +355,22 @@ class _InvitationCreatedScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: UmojaSpacing.lg),
-            // Stacked full-width (not side-by-side): these two labels
-            // are too long to share a Row on narrower widths without
-            // overflowing the button's inner content — see
-            // `_ButtonContent` (core/widgets/umoja_buttons.dart), which
-            // doesn't wrap/ellipsize its label.
+            Text(
+              l10n.invitationSentNextStepsMessage,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: UmojaSpacing.xl),
             UmojaSecondaryButton(
-              key: const Key('copyInvitationLinkAction'),
-              label: l10n.copyInvitationLinkAction,
-              icon: Icons.copy,
+              key: const Key('invitationSentViewInvitationsAction'),
+              label: l10n.viewInvitationsAction,
               expand: true,
-              onPressed: () async {
-                final url = linkResult.url;
-                if (url == null) {
-                  _showNotConfiguredError(context, l10n);
-                  return;
-                }
-                await Clipboard.setData(ClipboardData(text: url));
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.invitationLinkCopiedMessage)),
-                );
-              },
+              onPressed: () => context.go(AppRoutes.membershipInvitationsList),
             ),
             const SizedBox(height: UmojaSpacing.sm),
             UmojaPrimaryButton(
-              key: const Key('shareInvitationAction'),
-              label: l10n.shareInvitationAction,
-              icon: Icons.share,
-              expand: true,
-              onPressed: () async {
-                final url = linkResult.url;
-                if (url == null) {
-                  _showNotConfiguredError(context, l10n);
-                  return;
-                }
-                await SharePlus.instance.share(ShareParams(text: url));
-              },
-            ),
-            const SizedBox(height: UmojaSpacing.lg),
-            UmojaSecondaryButton(
-              key: const Key('invitationCreatedDoneAction'),
+              key: const Key('invitationSentDoneAction'),
               label: l10n.doneAction,
+              expand: true,
               onPressed: () => context.go(AppRoutes.membersList),
             ),
           ],

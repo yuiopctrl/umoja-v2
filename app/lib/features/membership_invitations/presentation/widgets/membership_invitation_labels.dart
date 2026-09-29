@@ -20,6 +20,8 @@ String membershipInvitationStatusLabel(
       l10n.membershipInvitationStatusCancelled,
     MembershipInvitationStatus.expired =>
       l10n.membershipInvitationStatusExpired,
+    MembershipInvitationStatus.declined =>
+      l10n.membershipInvitationStatusDeclined,
     MembershipInvitationStatus.unknown =>
       l10n.membershipInvitationStatusUnknown,
   };
@@ -36,6 +38,7 @@ UmojaStatusSemantic membershipInvitationStatusSemantic(
     MembershipInvitationStatus.accepted => UmojaStatusSemantic.success,
     MembershipInvitationStatus.cancelled => UmojaStatusSemantic.neutral,
     MembershipInvitationStatus.expired => UmojaStatusSemantic.neutral,
+    MembershipInvitationStatus.declined => UmojaStatusSemantic.neutral,
     MembershipInvitationStatus.unknown => UmojaStatusSemantic.neutral,
   };
 }

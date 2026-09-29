@@ -296,7 +296,16 @@ class _MembersHeaderActions extends StatelessWidget {
               children: [
                 Icon(item.icon, size: 20),
                 const SizedBox(width: UmojaSpacing.sm),
-                Text(item.label),
+                // Prompt 09G-B1-F2 §E/§Y: a long label ("Membership
+                // Requests"/"Invitations") plus the icon can overflow
+                // PopupMenuItem's own narrow default width on a small
+                // (360px) mobile screen — never exercised until F2's
+                // own responsive test actually opened this menu with a
+                // non-empty member list. Flexible+ellipsis, never a
+                // truncated/hidden action.
+                Flexible(
+                  child: Text(item.label, overflow: TextOverflow.ellipsis),
+                ),
               ],
             ),
           ),

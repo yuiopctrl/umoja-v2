@@ -737,4 +737,97 @@ void main() {
       );
     });
   });
+
+  group('Personal invitation inbox route (Prompt 09G-B1-F2 §J/§K/§L)', () {
+    test(
+      'a zero-membership (Case A) signed-in user AT /invitations is held '
+      'there unconditionally, never bounced to the onboarding entry screen',
+      () {
+        final context = AppContext(
+          userId: 'u1',
+          profile: _complete,
+          memberships: const [],
+        );
+        expect(
+          _redirect(
+            sessionStatus: AuthSessionStatus.signedIn,
+            appContext: AsyncValue.data(context),
+            selectedGroup: const SelectedGroupNone(),
+            currentLocation: AppRoutes.myInvitations,
+          ),
+          isNull,
+        );
+      },
+    );
+
+    test('a one-group (Case B) resolved user AT /invitations is held there — '
+        'never redirected to /home', () {
+      final membership = _membership(id: 'm1');
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: [membership],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: SelectedGroupResolved(membership),
+          currentLocation: AppRoutes.myInvitations,
+        ),
+        isNull,
+      );
+    });
+
+    test('a multi-group (Case C) pending-selection user AT /invitations is '
+        'held there — never redirected to /select-group', () {
+      final memberships = [_membership(id: 'm1'), _membership(id: 'm2')];
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: memberships,
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: SelectedGroupPending(memberships),
+          currentLocation: AppRoutes.myInvitations,
+        ),
+        isNull,
+      );
+    });
+
+    test('navigating to /invitations does not depend on pendingInvitationToken '
+        'and takes priority over the normal selectedGroup target', () {
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: const [],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: const SelectedGroupNone(),
+          currentLocation: AppRoutes.myInvitations,
+          pendingInvitationToken: null,
+        ),
+        isNull,
+      );
+    });
+
+    test('signed out at /invitations still goes through the ordinary auth '
+        'redirect — the unconditional hold only applies once signed in', () {
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedOut,
+          appContext: const AsyncValue.loading(),
+          selectedGroup: const SelectedGroupLoading(),
+          currentLocation: AppRoutes.myInvitations,
+        ),
+        AppRoutes.authPhone,
+      );
+    });
+  });
 }

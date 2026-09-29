@@ -15,6 +15,7 @@ import '../../auth/providers/app_context_provider.dart';
 import '../../auth/providers/selected_group_provider.dart';
 import '../../members/presentation/widgets/member_role_label.dart';
 import '../../members/presentation/widgets/member_status_badge.dart';
+import '../../membership_invitations/providers/my_membership_invitations_provider.dart';
 
 /// Permission codes that already gate one of [HomeScreen]'s own
 /// operational shortcut cards below, plus `member.claim.approve` (the
@@ -58,6 +59,18 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedState = ref.watch(selectedGroupProvider);
     final appContextAsync = ref.watch(appContextProvider);
+    // Prompt 09G-B1-F2 §K/§M: a lightweight, authoritative pending-
+    // invitation indicator — reuses the SAME already-fetched personal
+    // inbox result the count badge (More screen) also reads, never a
+    // direct table query or a separate RPC call. `.value` is null
+    // while loading/on error, which simply hides the banner rather
+    // than showing a stale/incorrect count.
+    final pendingInvitationCount =
+        ref
+            .watch(myMembershipInvitationsProvider)
+            .value
+            ?.pendingActionableCount ??
+        0;
     final l10n = context.l10n;
 
     final membership = selectedState is SelectedGroupResolved
@@ -85,6 +98,40 @@ class HomeScreen extends ConsumerWidget {
                 : l10n.homeGreetingNamed(toTitleCase(firstName)),
             style: Theme.of(context).textTheme.headlineMedium,
           ),
+          if (pendingInvitationCount > 0) ...[
+            const SizedBox(height: UmojaSpacing.lg),
+            UmojaCard(
+              key: const Key('homePendingInvitationBanner'),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.mail_outline,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const SizedBox(width: UmojaSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.pendingInvitationBannerTitle,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        Text(
+                          l10n.pendingInvitationBannerMessage,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => context.push(AppRoutes.myInvitations),
+                    child: Text(l10n.viewInvitationsAction),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: UmojaSpacing.xxl),
           UmojaCard(
             child: Column(

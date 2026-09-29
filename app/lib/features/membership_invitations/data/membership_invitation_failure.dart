@@ -62,6 +62,16 @@ enum MembershipInvitationFailureType {
   /// invitation that was already ACCEPTED/CANCELLED (or expired).
   invitationNotPending,
 
+  /// `MEMBERSHIP_INVITATION_INVALID_PHONE` (Prompt 09G-B1-F1) — the
+  /// officer-supplied invitation target phone failed server-side
+  /// normalization (not a supported Tanzanian mobile number).
+  invalidPhone,
+
+  /// `AUTH_PHONE_NOT_VERIFIED` (Prompt 09G-B1-F1) — the caller has no
+  /// Supabase-Auth-verified phone; personal accept/decline fails
+  /// closed with this rather than any partial/ambiguous result.
+  authPhoneNotVerified,
+
   /// Network error. Check your connection and try again.
   network,
 

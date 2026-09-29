@@ -794,6 +794,30 @@ abstract class AppLocalizations {
   /// **'Mwaliko huu utamruhusu mpokeaji kuunganisha akaunti yake ya kuingia na uanachama huu uliopo. Ufikiaji utatolewa tu baada ya mwaliko kukubaliwa, na mwaliko huu utaisha muda wake baada ya siku 7.'**
   String get inviteMemberReviewExplanation;
 
+  /// No description provided for @inviteMemberPhoneStepTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Namba ya Simu'**
+  String get inviteMemberPhoneStepTitle;
+
+  /// No description provided for @inviteMemberPhoneStepHint.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ingiza namba ya simu ambayo mwanachama huyu atatumia kuingia Umoja. Kama ana akaunti ya Umoja tayari, tumia namba ya simu iliyo kwenye akaunti hiyo.'**
+  String get inviteMemberPhoneStepHint;
+
+  /// No description provided for @inviteMemberPhonePrefilledHint.
+  ///
+  /// In sw, this message translates to:
+  /// **'Namba hii ya simu ipo tayari kwenye taarifa za mwanachama huyu. Unaweza kuirekebisha kabla ya kutuma kama si sahihi.'**
+  String get inviteMemberPhonePrefilledHint;
+
+  /// No description provided for @continueToPhoneStepAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Endelea'**
+  String get continueToPhoneStepAction;
+
   /// No description provided for @createInvitationAction.
   ///
   /// In sw, this message translates to:
@@ -835,6 +859,30 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Ilitumwa tarehe'**
   String get createdOnLabel;
+
+  /// No description provided for @targetPhoneLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Simu'**
+  String get targetPhoneLabel;
+
+  /// No description provided for @invitationSentForLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwaliko umetengenezwa kwa:'**
+  String get invitationSentForLabel;
+
+  /// No description provided for @invitationSentNextStepsMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwanachama anaweza kuingia au kufungua akaunti ya Umoja kwa kutumia namba hii ya simu ili kuona mwaliko.'**
+  String get invitationSentNextStepsMessage;
+
+  /// No description provided for @viewInvitationsAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia Mialiko'**
+  String get viewInvitationsAction;
 
   /// No description provided for @membershipInvitationsTitle.
   ///
@@ -896,6 +944,12 @@ abstract class AppLocalizations {
   /// **'Muda Umeisha'**
   String get membershipInvitationStatusExpired;
 
+  /// No description provided for @membershipInvitationStatusDeclined.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imekataliwa'**
+  String get membershipInvitationStatusDeclined;
+
   /// No description provided for @membershipInvitationStatusUnknown.
   ///
   /// In sw, this message translates to:
@@ -955,6 +1009,18 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Mwaliko huu tayari umeshughulikiwa.'**
   String get membershipInvitationNotPendingError;
+
+  /// No description provided for @membershipInvitationInvalidPhoneError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hiyo haionekani kuwa namba sahihi ya simu ya Tanzania.'**
+  String get membershipInvitationInvalidPhoneError;
+
+  /// No description provided for @authPhoneNotVerifiedError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Akaunti yako haina namba ya simu iliyothibitishwa bado.'**
+  String get authPhoneNotVerifiedError;
 
   /// No description provided for @moreActionsTooltip.
   ///
@@ -1112,28 +1178,106 @@ abstract class AppLocalizations {
   /// **'Kushiriki bado hakujawekwa kwenye kifaa hiki. Jaribu tena kutoka programu ya wavuti, au shiriki kiungo kutoka huko badala yake.'**
   String get invitationLinkNotConfiguredError;
 
+  /// No description provided for @myInvitationsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mialiko Yangu'**
+  String get myInvitationsTitle;
+
+  /// No description provided for @myInvitationsEmptyTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna Mialiko'**
+  String get myInvitationsEmptyTitle;
+
+  /// No description provided for @myInvitationsEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kama kiongozi amekukaribisha kwa namba hii ya simu, mwaliko wako utaonekana hapa.'**
+  String get myInvitationsEmptyMessage;
+
+  /// No description provided for @acceptInvitationConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kubali Mwaliko?'**
+  String get acceptInvitationConfirmTitle;
+
+  /// No description provided for @acceptInvitationConfirmMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Utajiunga na {groupName} na nafasi zilizoonyeshwa hapo juu.'**
+  String acceptInvitationConfirmMessage(Object groupName);
+
+  /// No description provided for @declineInvitationAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kataa Mwaliko'**
+  String get declineInvitationAction;
+
+  /// No description provided for @declineInvitationConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kataa Mwaliko?'**
+  String get declineInvitationConfirmTitle;
+
+  /// No description provided for @declineInvitationConfirmMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Una uhakika unataka kukataa mwaliko huu? Unaweza kumwomba kiongozi atume mwingine baadaye ukibadilisha nia.'**
+  String get declineInvitationConfirmMessage;
+
+  /// No description provided for @invitationDeclinedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwaliko umekataliwa.'**
+  String get invitationDeclinedMessage;
+
+  /// No description provided for @pendingInvitationBannerTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Una mwaliko wa kikundi unaosubiri.'**
+  String get pendingInvitationBannerTitle;
+
+  /// No description provided for @pendingInvitationBannerMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ukague ili kujiunga na kikundi.'**
+  String get pendingInvitationBannerMessage;
+
+  /// No description provided for @invitedOnLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Alikwa tarehe'**
+  String get invitedOnLabel;
+
+  /// No description provided for @roleLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nafasi'**
+  String get roleLabel;
+
   /// No description provided for @membershipEntryInvitationGuidance.
   ///
   /// In sw, this message translates to:
-  /// **'Njia ya kawaida ya kujiunga na kikundi ni kupitia kiungo cha mwaliko kinachotumwa na kiongozi wa kikundi.'**
+  /// **'Kama kiongozi amekukaribisha kwa namba hii ya simu, mwaliko wako utaonekana hapa.'**
   String get membershipEntryInvitationGuidance;
 
   /// No description provided for @membershipEntryNoInvitationTitle.
   ///
   /// In sw, this message translates to:
-  /// **'Hauna kiungo cha mwaliko?'**
+  /// **'Hujapokea mwaliko?'**
   String get membershipEntryNoInvitationTitle;
 
   /// No description provided for @membershipEntryAskOfficerMessage.
   ///
   /// In sw, this message translates to:
-  /// **'Muombe msimamizi au katibu wa kikundi chako akutumie mwaliko.'**
+  /// **'Muombe msimamizi au katibu wa kikundi chako akukaribishe kwa kutumia namba yako ya simu.'**
   String get membershipEntryAskOfficerMessage;
 
   /// No description provided for @membershipEntryFallbackHeading.
   ///
   /// In sw, this message translates to:
-  /// **'Tayari ni mwanachama aliyesajiliwa bila kiungo?'**
+  /// **'Tayari ni mwanachama aliyesajiliwa bila mwaliko?'**
   String get membershipEntryFallbackHeading;
 
   /// No description provided for @membershipRequestsTitle.

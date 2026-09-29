@@ -78,6 +78,7 @@ import '../../features/membership_invitations/presentation/invitation_accept_scr
 import '../../features/membership_invitations/presentation/invite_member_screen.dart';
 import '../../features/membership_invitations/presentation/membership_invitations_list_screen.dart';
 import '../../features/membership_invitations/presentation/open_invitation_link_screen.dart';
+import '../../features/membership_invitations/presentation/personal_invitations_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/onboarding/presentation/group_onboarding_screen.dart';
 import '../../features/onboarding/presentation/profile_onboarding_screen.dart';
@@ -238,6 +239,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.membershipClaims,
         builder: (context, state) => const MembershipClaimsScreen(),
+      ),
+      // Prompt 09G-B1-F2 §J: outside the ShellRoute, same precedent as
+      // the claim-flow routes above — reachable regardless of
+      // [SelectedGroupState] (a brand-new, zero-membership user must
+      // reach it exactly as freely as an operationally-resolved one).
+      GoRoute(
+        path: AppRoutes.myInvitations,
+        builder: (context, state) => const PersonalInvitationsScreen(),
       ),
       // Prompt 09G-B1-E4 §E: a literal, static sibling of
       // [AppRoutes.membershipInvitationAccept] under the same

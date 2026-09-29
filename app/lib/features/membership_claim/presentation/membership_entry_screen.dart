@@ -13,16 +13,16 @@ import '../../auth/presentation/sign_out_button.dart';
 /// and no other more-specific reason (suspended/closed — see
 /// [AppRoutes.accessMembershipRestricted] etc.).
 ///
-/// Prompt 09G-B1-E3 §J/§K redesign: invitation (an officer-sent link)
-/// is now the PRIMARY onboarding path. A user reaching this screen did
-/// NOT arrive via a valid invitation link (if they had, the router's
-/// `pendingInvitationToken` handling would have sent them to
-/// `/invite/:token` instead — see route_guard.dart) — so there is
-/// nothing to click here for that path; this screen instead explains
-/// the normal flow and tells them to ask their officer, while keeping
-/// the pre-09G-B1-D2 claim workflow fully intact as an explicitly-
-/// labelled fallback/recovery path, never presented as the preferred
-/// first step.
+/// Prompt 09G-B1-F2 §N redesign: PHONE invitation (officer invites by
+/// phone number, no link required) is now the PRIMARY onboarding path
+/// — "View Invitations" (the personal inbox, `/invitations`,
+/// discovered from the user's own Supabase-Auth-verified phone) is the
+/// primary action. The legacy TOKEN "Open Invitation" link-paste
+/// fallback (Prompt 09G-B1-E4) remains reachable but demoted — it is
+/// no longer the first thing offered, since a normal PHONE invitation
+/// needs no link at all. The pre-09G-B1-D2 claim workflow remains
+/// fully intact as an explicitly-labelled fallback/recovery path,
+/// never presented as a preferred first step.
 class MembershipEntryScreen extends StatelessWidget {
   const MembershipEntryScreen({super.key});
 
@@ -45,17 +45,15 @@ class MembershipEntryScreen extends StatelessWidget {
                 const SizedBox(height: UmojaSpacing.sm),
                 Text(l10n.membershipEntryInvitationGuidance),
                 const SizedBox(height: UmojaSpacing.lg),
-                // Prompt 09G-B1-E4 §E/§G: the "Open Invitation" paste
-                // fallback for a user who has an invitation link
-                // (WhatsApp/SMS) but is already signed in here, ahead
-                // of the "ask your officer" card below — invitations
-                // remain the primary/recommended path.
+                // Prompt 09G-B1-F2 §N: the personal invitation inbox —
+                // the PRIMARY action. A PHONE invitation needs no link
+                // at all; if an officer has invited this verified
+                // phone, it will already be there.
                 UmojaPrimaryButton(
-                  key: const Key('openInvitationAction'),
+                  key: const Key('viewInvitationsAction'),
                   expand: true,
-                  label: l10n.openInvitationAction,
-                  onPressed: () =>
-                      context.push(AppRoutes.membershipInvitationOpen),
+                  label: l10n.viewInvitationsAction,
+                  onPressed: () => context.push(AppRoutes.myInvitations),
                 ),
                 const SizedBox(height: UmojaSpacing.lg),
                 Card(
@@ -72,6 +70,19 @@ class MembershipEntryScreen extends StatelessWidget {
                         Text(l10n.membershipEntryAskOfficerMessage),
                       ],
                     ),
+                  ),
+                ),
+                const SizedBox(height: UmojaSpacing.lg),
+                // Demoted (Prompt 09G-B1-F2 §I): the legacy TOKEN
+                // link-paste fallback — old invitation links must keep
+                // working, but this is no longer the first/primary
+                // action offered.
+                Center(
+                  child: TextButton(
+                    key: const Key('openInvitationAction'),
+                    onPressed: () =>
+                        context.push(AppRoutes.membershipInvitationOpen),
+                    child: Text(l10n.openInvitationAction),
                   ),
                 ),
                 const SizedBox(height: UmojaSpacing.xl),

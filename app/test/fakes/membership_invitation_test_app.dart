@@ -12,7 +12,6 @@ import 'package:umoja/features/auth/models/membership_context.dart';
 import 'package:umoja/features/auth/providers/app_context_provider.dart';
 import 'package:umoja/features/auth/providers/auth_session_provider.dart';
 import 'package:umoja/features/members/providers/member_repository_provider.dart';
-import 'package:umoja/features/membership_invitations/providers/membership_invitation_repository_provider.dart';
 
 import 'fake_member_repository.dart';
 import 'fake_membership_invitation_repository.dart';
@@ -90,7 +89,7 @@ Future<(GoRouter, ProviderContainer)> pumpMembershipInvitationApp(
     // back to loading mid-pumpAndSettle.
     retry: (retryCount, error) => null,
     overrides: [
-      ...pinBypassOverrides(),
+      ...pinBypassOverrides(membershipInvitationRepository: fakeInvitationRepo),
       authSessionStatusProvider.overrideWithValue(AuthSessionStatus.signedIn),
       appContextProvider.overrideWith(
         (ref) async => AppContext(
@@ -98,9 +97,6 @@ Future<(GoRouter, ProviderContainer)> pumpMembershipInvitationApp(
           profile: const AppUserProfile(id: 'u1', fullName: 'Officer One'),
           memberships: [membership],
         ),
-      ),
-      membershipInvitationRepositoryProvider.overrideWithValue(
-        fakeInvitationRepo,
       ),
       memberRepositoryProvider.overrideWithValue(fakeMemberRepo),
       if (language != null)
@@ -138,7 +134,7 @@ Future<(GoRouter, ProviderContainer)> pumpMembershipInvitationAcceptanceApp(
   final container = ProviderContainer(
     retry: (retryCount, error) => null,
     overrides: [
-      ...pinBypassOverrides(),
+      ...pinBypassOverrides(membershipInvitationRepository: fakeInvitationRepo),
       authSessionStatusProvider.overrideWithValue(sessionStatus),
       appContextProvider.overrideWith(
         (ref) async => sessionStatus == AuthSessionStatus.signedOut
@@ -148,9 +144,6 @@ Future<(GoRouter, ProviderContainer)> pumpMembershipInvitationAcceptanceApp(
                 profile: const AppUserProfile(id: 'u1', fullName: 'Invitee'),
                 memberships: memberships,
               ),
-      ),
-      membershipInvitationRepositoryProvider.overrideWithValue(
-        fakeInvitationRepo,
       ),
       if (language != null)
         languageProvider.overrideWith(() => _FixedLanguage(language)),
@@ -199,7 +192,7 @@ pumpMembershipInvitationAcceptanceAppMutable(
   final container = ProviderContainer(
     retry: (retryCount, error) => null,
     overrides: [
-      ...pinBypassOverrides(),
+      ...pinBypassOverrides(membershipInvitationRepository: fakeInvitationRepo),
       authSessionStatusProvider.overrideWithValue(AuthSessionStatus.signedIn),
       appContextProvider.overrideWith(
         (ref) async => AppContext(
@@ -207,9 +200,6 @@ pumpMembershipInvitationAcceptanceAppMutable(
           profile: const AppUserProfile(id: 'u1', fullName: 'Invitee'),
           memberships: fixture.memberships,
         ),
-      ),
-      membershipInvitationRepositoryProvider.overrideWithValue(
-        fakeInvitationRepo,
       ),
       if (language != null)
         languageProvider.overrideWith(() => _FixedLanguage(language)),
