@@ -28,10 +28,26 @@ class MemberSearchPicker extends ConsumerStatefulWidget {
     super.key,
     required this.hintText,
     required this.onSelected,
+    this.filter,
+    this.emptyTitle,
+    this.emptyMessage,
   });
 
   final String hintText;
   final ValueChanged<GroupMember> onSelected;
+
+  /// When given, only members for which this returns `true` are shown
+  /// — e.g. the member-invitation flow (Prompt 09G-B1-E2) restricts
+  /// selection to ACTIVE, not-yet-login-linked members. `null` (the
+  /// default) shows every member regardless of status, matching this
+  /// picker's original Record Payment/Wallet behavior unchanged.
+  final bool Function(GroupMember member)? filter;
+
+  /// Overrides the empty-state copy shown when [filter] excludes every
+  /// result — falls back to the generic "no member found" copy when
+  /// omitted.
+  final String? emptyTitle;
+  final String? emptyMessage;
 
   @override
   ConsumerState<MemberSearchPicker> createState() => _MemberSearchPickerState();
@@ -95,12 +111,19 @@ class _MemberSearchPickerState extends ConsumerState<MemberSearchPicker> {
                         onRetry: () => setState(() {}),
                       );
                     }
-                    final items = snapshot.data?.items ?? const [];
+                    final allItems = snapshot.data?.items ?? const [];
+                    final items = widget.filter == null
+                        ? allItems
+                        : allItems
+                              .where(widget.filter!)
+                              .toList(growable: false);
                     if (items.isEmpty) {
                       return UmojaEmptyState(
                         icon: Icons.person_search_outlined,
-                        title: l10n.memberPickerEmptyTitle,
-                        message: l10n.memberPickerEmptyMessage,
+                        title: widget.emptyTitle ?? l10n.memberPickerEmptyTitle,
+                        message:
+                            widget.emptyMessage ??
+                            l10n.memberPickerEmptyMessage,
                       );
                     }
                     return ListView.separated(

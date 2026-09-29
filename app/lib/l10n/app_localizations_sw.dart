@@ -347,6 +347,196 @@ class AppLocalizationsSw extends AppLocalizations {
       'Mwombaji huyu tayari ana uanachama hai kwenye kikundi hiki.';
 
   @override
+  String get inviteMemberAction => 'Karibisha Mwanachama';
+
+  @override
+  String get inviteMemberTitle => 'Karibisha Mwanachama';
+
+  @override
+  String get inviteMemberNoEligibleTitle => 'Hakuna Wanachama Wanaostahili';
+
+  @override
+  String get inviteMemberNoEligibleMessage =>
+      'Wanachama wote wameunganishwa na akaunti tayari, au hakuna anayelingana na utafutaji wako.';
+
+  @override
+  String get inviteMemberSelectRolesHint =>
+      'Chagua nafasi/nafasi ambazo mwanachama huyu atapata baada ya kukubali mwaliko.';
+
+  @override
+  String get inviteMemberAdminRoleRequiresAdminHint =>
+      'Msimamizi aliyepo tu anaweza kumkaribisha mwanachama kama Msimamizi.';
+
+  @override
+  String get inviteMemberSelectedRolesLabel => 'Nafasi Zilizochaguliwa';
+
+  @override
+  String get inviteMemberReviewExplanation =>
+      'Mwaliko huu utamruhusu mpokeaji kuunganisha akaunti yake ya kuingia na uanachama huu uliopo. Ufikiaji utatolewa tu baada ya mwaliko kukubaliwa, na mwaliko huu utaisha muda wake baada ya siku 7.';
+
+  @override
+  String get createInvitationAction => 'Tuma Mwaliko';
+
+  @override
+  String get invitationCreatedTitle => 'Mwaliko Umetumwa';
+
+  @override
+  String get expiresOnLabel => 'Unaisha muda wake tarehe';
+
+  @override
+  String get copyInvitationLinkAction => 'Nakili Kiungo cha Mwaliko';
+
+  @override
+  String get invitationLinkCopiedMessage => 'Kiungo cha mwaliko kimenakiliwa.';
+
+  @override
+  String get shareInvitationAction => 'Shiriki Mwaliko';
+
+  @override
+  String get createdOnLabel => 'Ilitumwa tarehe';
+
+  @override
+  String get membershipInvitationsTitle => 'Mialiko';
+
+  @override
+  String get membershipInvitationsEmptyTitle => 'Bado Hakuna Mialiko';
+
+  @override
+  String get membershipInvitationsEmptyMessage =>
+      'Mialiko utakayotuma itaonekana hapa.';
+
+  @override
+  String get cancelInvitationConfirmTitle => 'Ghairi Mwaliko?';
+
+  @override
+  String get cancelInvitationConfirmMessage =>
+      'Una uhakika unataka kughairi mwaliko huu? Mpokeaji hataweza kuukubali tena.';
+
+  @override
+  String get cancelInvitationAction => 'Ghairi Mwaliko';
+
+  @override
+  String get membershipInvitationStatusPending => 'Inasubiri';
+
+  @override
+  String get membershipInvitationStatusAccepted => 'Imekubaliwa';
+
+  @override
+  String get membershipInvitationStatusCancelled => 'Imeghairiwa';
+
+  @override
+  String get membershipInvitationStatusExpired => 'Muda Umeisha';
+
+  @override
+  String get membershipInvitationStatusUnknown => 'Haijulikani';
+
+  @override
+  String get membershipInvitationAdminRoleRequiredError =>
+      'Msimamizi aliyepo tu anaweza kumkaribisha mwanachama na nafasi ya Msimamizi.';
+
+  @override
+  String get membershipInvitationRoleSelectionRequiredError =>
+      'Chagua angalau nafasi moja.';
+
+  @override
+  String get membershipInvitationUnknownRoleError =>
+      'Mojawapo ya nafasi zilizochaguliwa haitambuliki.';
+
+  @override
+  String get membershipInvitationMembershipNotFoundError =>
+      'Hatukuweza kupata mwanachama au mwaliko huo.';
+
+  @override
+  String get membershipInvitationAlreadyLinkedError =>
+      'Mwanachama huyu ana akaunti iliyounganishwa tayari.';
+
+  @override
+  String get membershipInvitationMembershipNotActiveError =>
+      'Mwanachama huyu si hai tena.';
+
+  @override
+  String get membershipInvitationGroupNotActiveError =>
+      'Kikundi hiki si hai tena.';
+
+  @override
+  String get membershipInvitationAlreadyPendingError =>
+      'Mwaliko upo tayari unaosubiri kwa mwanachama huyu.';
+
+  @override
+  String get membershipInvitationNotPendingError =>
+      'Mwaliko huu tayari umeshughulikiwa.';
+
+  @override
+  String get moreActionsTooltip => 'Vitendo zaidi';
+
+  @override
+  String get invitationAcceptTitle => 'Mwaliko';
+
+  @override
+  String get invitationSignInPromptTitle => 'Ingia ili kuona mwaliko huu';
+
+  @override
+  String get invitationSignInPromptMessage =>
+      'Ingia au fungua akaunti ili kuona maelezo ya mwaliko huu na kuukubali.';
+
+  @override
+  String get signInAction => 'Ingia';
+
+  @override
+  String get acceptInvitationAction => 'Kubali Mwaliko';
+
+  @override
+  String get invitationAcceptedTitle => 'Umefanikiwa!';
+
+  @override
+  String get invitationAlreadyAcceptedTitle => 'Umekubaliwa Tayari';
+
+  @override
+  String get invitationAcceptedRedirectingMessage =>
+      'Tunakupeleka kwenye kikundi chako...';
+
+  @override
+  String get invitationExpiredMessage =>
+      'Mwaliko huu umeisha muda wake. Muombe msimamizi wako atume mwaliko mpya.';
+
+  @override
+  String get invitationCancelledMessage => 'Mwaliko huu umeghairiwa.';
+
+  @override
+  String get invitationAlreadyAcceptedMessage =>
+      'Mwaliko huu umekubaliwa tayari.';
+
+  @override
+  String get continueToAppAction => 'Endelea';
+
+  @override
+  String get membershipInvitationNotFoundError =>
+      'Hatukuweza kupata mwaliko huo.';
+
+  @override
+  String get membershipInvitationExpiredError =>
+      'Mwaliko huu umeisha muda wake.';
+
+  @override
+  String get membershipInvitationClaimantAlreadyActiveError =>
+      'Una uanachama hai tayari kwenye kikundi hiki.';
+
+  @override
+  String get membershipEntryInvitationGuidance =>
+      'Njia ya kawaida ya kujiunga na kikundi ni kupitia kiungo cha mwaliko kinachotumwa na kiongozi wa kikundi.';
+
+  @override
+  String get membershipEntryNoInvitationTitle => 'Hauna kiungo cha mwaliko?';
+
+  @override
+  String get membershipEntryAskOfficerMessage =>
+      'Muombe msimamizi au katibu wa kikundi chako akutumie mwaliko.';
+
+  @override
+  String get membershipEntryFallbackHeading =>
+      'Tayari ni mwanachama aliyesajiliwa bila kiungo?';
+
+  @override
   String get membershipRequestsTitle => 'Maombi ya Uanachama';
 
   @override

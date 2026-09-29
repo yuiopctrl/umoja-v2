@@ -40,6 +40,14 @@ class MembershipContext {
 
   bool hasPermission(String code) => permissionCodes.contains(code);
 
+  /// Whether this membership holds the given role code — UX guidance
+  /// only (e.g. showing/hiding the ADMIN option when inviting a member
+  /// with roles). The backend's own ADMIN-escalation checks
+  /// (`rpc_assign_group_role`/`rpc_create_membership_invitation`) are
+  /// the actual authorization boundary and are re-checked server-side
+  /// regardless of what this returns.
+  bool hasRole(String code) => roleCodes.contains(code);
+
   bool get isActiveMembership => membershipStatus == 'ACTIVE';
   bool get isSuspendedMembership => membershipStatus == 'SUSPENDED';
   bool get isExitedMembership => membershipStatus == 'EXITED';

@@ -716,6 +716,336 @@ abstract class AppLocalizations {
   /// **'Mwombaji huyu tayari ana uanachama hai kwenye kikundi hiki.'**
   String get membershipClaimClaimantAlreadyActiveError;
 
+  /// No description provided for @inviteMemberAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Karibisha Mwanachama'**
+  String get inviteMemberAction;
+
+  /// No description provided for @inviteMemberTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Karibisha Mwanachama'**
+  String get inviteMemberTitle;
+
+  /// No description provided for @inviteMemberNoEligibleTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna Wanachama Wanaostahili'**
+  String get inviteMemberNoEligibleTitle;
+
+  /// No description provided for @inviteMemberNoEligibleMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wanachama wote wameunganishwa na akaunti tayari, au hakuna anayelingana na utafutaji wako.'**
+  String get inviteMemberNoEligibleMessage;
+
+  /// No description provided for @inviteMemberSelectRolesHint.
+  ///
+  /// In sw, this message translates to:
+  /// **'Chagua nafasi/nafasi ambazo mwanachama huyu atapata baada ya kukubali mwaliko.'**
+  String get inviteMemberSelectRolesHint;
+
+  /// No description provided for @inviteMemberAdminRoleRequiresAdminHint.
+  ///
+  /// In sw, this message translates to:
+  /// **'Msimamizi aliyepo tu anaweza kumkaribisha mwanachama kama Msimamizi.'**
+  String get inviteMemberAdminRoleRequiresAdminHint;
+
+  /// No description provided for @inviteMemberSelectedRolesLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nafasi Zilizochaguliwa'**
+  String get inviteMemberSelectedRolesLabel;
+
+  /// No description provided for @inviteMemberReviewExplanation.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwaliko huu utamruhusu mpokeaji kuunganisha akaunti yake ya kuingia na uanachama huu uliopo. Ufikiaji utatolewa tu baada ya mwaliko kukubaliwa, na mwaliko huu utaisha muda wake baada ya siku 7.'**
+  String get inviteMemberReviewExplanation;
+
+  /// No description provided for @createInvitationAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tuma Mwaliko'**
+  String get createInvitationAction;
+
+  /// No description provided for @invitationCreatedTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwaliko Umetumwa'**
+  String get invitationCreatedTitle;
+
+  /// No description provided for @expiresOnLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Unaisha muda wake tarehe'**
+  String get expiresOnLabel;
+
+  /// No description provided for @copyInvitationLinkAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nakili Kiungo cha Mwaliko'**
+  String get copyInvitationLinkAction;
+
+  /// No description provided for @invitationLinkCopiedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiungo cha mwaliko kimenakiliwa.'**
+  String get invitationLinkCopiedMessage;
+
+  /// No description provided for @shareInvitationAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Shiriki Mwaliko'**
+  String get shareInvitationAction;
+
+  /// No description provided for @createdOnLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ilitumwa tarehe'**
+  String get createdOnLabel;
+
+  /// No description provided for @membershipInvitationsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mialiko'**
+  String get membershipInvitationsTitle;
+
+  /// No description provided for @membershipInvitationsEmptyTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Bado Hakuna Mialiko'**
+  String get membershipInvitationsEmptyTitle;
+
+  /// No description provided for @membershipInvitationsEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mialiko utakayotuma itaonekana hapa.'**
+  String get membershipInvitationsEmptyMessage;
+
+  /// No description provided for @cancelInvitationConfirmTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ghairi Mwaliko?'**
+  String get cancelInvitationConfirmTitle;
+
+  /// No description provided for @cancelInvitationConfirmMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Una uhakika unataka kughairi mwaliko huu? Mpokeaji hataweza kuukubali tena.'**
+  String get cancelInvitationConfirmMessage;
+
+  /// No description provided for @cancelInvitationAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ghairi Mwaliko'**
+  String get cancelInvitationAction;
+
+  /// No description provided for @membershipInvitationStatusPending.
+  ///
+  /// In sw, this message translates to:
+  /// **'Inasubiri'**
+  String get membershipInvitationStatusPending;
+
+  /// No description provided for @membershipInvitationStatusAccepted.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imekubaliwa'**
+  String get membershipInvitationStatusAccepted;
+
+  /// No description provided for @membershipInvitationStatusCancelled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imeghairiwa'**
+  String get membershipInvitationStatusCancelled;
+
+  /// No description provided for @membershipInvitationStatusExpired.
+  ///
+  /// In sw, this message translates to:
+  /// **'Muda Umeisha'**
+  String get membershipInvitationStatusExpired;
+
+  /// No description provided for @membershipInvitationStatusUnknown.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haijulikani'**
+  String get membershipInvitationStatusUnknown;
+
+  /// No description provided for @membershipInvitationAdminRoleRequiredError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Msimamizi aliyepo tu anaweza kumkaribisha mwanachama na nafasi ya Msimamizi.'**
+  String get membershipInvitationAdminRoleRequiredError;
+
+  /// No description provided for @membershipInvitationRoleSelectionRequiredError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Chagua angalau nafasi moja.'**
+  String get membershipInvitationRoleSelectionRequiredError;
+
+  /// No description provided for @membershipInvitationUnknownRoleError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mojawapo ya nafasi zilizochaguliwa haitambuliki.'**
+  String get membershipInvitationUnknownRoleError;
+
+  /// No description provided for @membershipInvitationMembershipNotFoundError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupata mwanachama au mwaliko huo.'**
+  String get membershipInvitationMembershipNotFoundError;
+
+  /// No description provided for @membershipInvitationAlreadyLinkedError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwanachama huyu ana akaunti iliyounganishwa tayari.'**
+  String get membershipInvitationAlreadyLinkedError;
+
+  /// No description provided for @membershipInvitationMembershipNotActiveError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwanachama huyu si hai tena.'**
+  String get membershipInvitationMembershipNotActiveError;
+
+  /// No description provided for @membershipInvitationGroupNotActiveError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kikundi hiki si hai tena.'**
+  String get membershipInvitationGroupNotActiveError;
+
+  /// No description provided for @membershipInvitationAlreadyPendingError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwaliko upo tayari unaosubiri kwa mwanachama huyu.'**
+  String get membershipInvitationAlreadyPendingError;
+
+  /// No description provided for @membershipInvitationNotPendingError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwaliko huu tayari umeshughulikiwa.'**
+  String get membershipInvitationNotPendingError;
+
+  /// No description provided for @moreActionsTooltip.
+  ///
+  /// In sw, this message translates to:
+  /// **'Vitendo zaidi'**
+  String get moreActionsTooltip;
+
+  /// No description provided for @invitationAcceptTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwaliko'**
+  String get invitationAcceptTitle;
+
+  /// No description provided for @invitationSignInPromptTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ingia ili kuona mwaliko huu'**
+  String get invitationSignInPromptTitle;
+
+  /// No description provided for @invitationSignInPromptMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ingia au fungua akaunti ili kuona maelezo ya mwaliko huu na kuukubali.'**
+  String get invitationSignInPromptMessage;
+
+  /// No description provided for @signInAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ingia'**
+  String get signInAction;
+
+  /// No description provided for @acceptInvitationAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kubali Mwaliko'**
+  String get acceptInvitationAction;
+
+  /// No description provided for @invitationAcceptedTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Umefanikiwa!'**
+  String get invitationAcceptedTitle;
+
+  /// No description provided for @invitationAlreadyAcceptedTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Umekubaliwa Tayari'**
+  String get invitationAlreadyAcceptedTitle;
+
+  /// No description provided for @invitationAcceptedRedirectingMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tunakupeleka kwenye kikundi chako...'**
+  String get invitationAcceptedRedirectingMessage;
+
+  /// No description provided for @invitationExpiredMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwaliko huu umeisha muda wake. Muombe msimamizi wako atume mwaliko mpya.'**
+  String get invitationExpiredMessage;
+
+  /// No description provided for @invitationCancelledMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwaliko huu umeghairiwa.'**
+  String get invitationCancelledMessage;
+
+  /// No description provided for @invitationAlreadyAcceptedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwaliko huu umekubaliwa tayari.'**
+  String get invitationAlreadyAcceptedMessage;
+
+  /// No description provided for @continueToAppAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Endelea'**
+  String get continueToAppAction;
+
+  /// No description provided for @membershipInvitationNotFoundError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupata mwaliko huo.'**
+  String get membershipInvitationNotFoundError;
+
+  /// No description provided for @membershipInvitationExpiredError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mwaliko huu umeisha muda wake.'**
+  String get membershipInvitationExpiredError;
+
+  /// No description provided for @membershipInvitationClaimantAlreadyActiveError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Una uanachama hai tayari kwenye kikundi hiki.'**
+  String get membershipInvitationClaimantAlreadyActiveError;
+
+  /// No description provided for @membershipEntryInvitationGuidance.
+  ///
+  /// In sw, this message translates to:
+  /// **'Njia ya kawaida ya kujiunga na kikundi ni kupitia kiungo cha mwaliko kinachotumwa na kiongozi wa kikundi.'**
+  String get membershipEntryInvitationGuidance;
+
+  /// No description provided for @membershipEntryNoInvitationTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hauna kiungo cha mwaliko?'**
+  String get membershipEntryNoInvitationTitle;
+
+  /// No description provided for @membershipEntryAskOfficerMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Muombe msimamizi au katibu wa kikundi chako akutumie mwaliko.'**
+  String get membershipEntryAskOfficerMessage;
+
+  /// No description provided for @membershipEntryFallbackHeading.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tayari ni mwanachama aliyesajiliwa bila kiungo?'**
+  String get membershipEntryFallbackHeading;
+
   /// No description provided for @membershipRequestsTitle.
   ///
   /// In sw, this message translates to:

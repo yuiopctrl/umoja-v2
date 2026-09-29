@@ -41,6 +41,17 @@ String noEligibleGroupTarget(List<MembershipContext> memberships) {
 
 const _authRoutes = {AppRoutes.authPhone, AppRoutes.authVerify};
 
+/// Prompt 09G-B1-E3 §C: `/invite/:token` is reachable at every stage —
+/// signed out (the screen itself shows a "sign in to continue" CTA),
+/// mid-onboarding, or fully operational — never bounced away by the
+/// signed-out->login redirect the way an ordinary route would be. Once
+/// signed in, it still passes through the PIN/profile/account-disabled
+/// gates below like any other route (those are genuine prerequisites,
+/// not something an invitation link should let a user skip); only the
+/// *destination* priority once those pass is handled separately, via
+/// [pendingInvitationToken].
+bool _isInvitationRoute(String location) => location.startsWith('/invite/');
+
 /// "Umesahau PIN?" recovery sub-flow (prompt 05E §17) — reachable both
 /// signed-out (before its own OTP verify) and signed-in (right after,
 /// until a new PIN is confirmed). Deliberately exempt from the
@@ -95,6 +106,26 @@ String? computeRedirect({
   required SelectedGroupState selectedGroup,
   required String currentLocation,
   required AsyncValue<bool> hasPinCredential,
+
+  /// Prompt 09G-B1-E3 §C: the bearer token of an invitation the user
+  /// was trying to reach before signing in / finishing onboarding
+  /// (from [pendingInvitationTokenProvider]), or `null` if none is
+  /// pending. Read fresh by the caller on every evaluation — this
+  /// function stays pure/side-effect-free itself.
+  String? pendingInvitationToken,
+
+  /// Prompt 09G-B1-E3 §H: whether the invitation currently at
+  /// [currentLocation] (if it is an invitation route) has just been
+  /// successfully accepted by THIS specific token (from
+  /// `MembershipInvitationAcceptanceController`). `/invite/:token`
+  /// unconditionally holds the user in place while this is `false`
+  /// (a zero-eligible-group user viewing an invitation must never be
+  /// bounced to onboarding — accepting IS how they get their first
+  /// group) — but once `true`, that hold is released so the normal
+  /// selectedGroup-based routing below can take over and move them to
+  /// their newly-linked destination, exactly like every other
+  /// resolved-group transition.
+  bool invitationJustAccepted = false,
 }) {
   if (sessionStatus == AuthSessionStatus.configMissing) {
     // Rendered directly at '/' — nothing else is reachable without
@@ -107,6 +138,13 @@ String? computeRedirect({
     // its own OTP verify) — never bounced to the login screen while
     // it's already mid-flow.
     if (_pinRecoveryRoutes.contains(currentLocation)) return null;
+    // Prompt 09G-B1-E3 §C: an invitation link must render its own
+    // "sign in to continue" state rather than being redirected away —
+    // otherwise the token would only ever reach this function's caller
+    // (the router wrapper, which captures it into
+    // pendingInvitationTokenProvider) on this one evaluation, then be
+    // lost the moment the redirect fires.
+    if (_isInvitationRoute(currentLocation)) return null;
     return _authRoutes.contains(currentLocation) ? null : AppRoutes.authPhone;
   }
 
@@ -165,6 +203,31 @@ String? computeRedirect({
     return currentLocation == AppRoutes.onboardingProfile
         ? null
         : AppRoutes.onboardingProfile;
+  }
+
+  // Prompt 09G-B1-E3 §H: every genuine account-level prerequisite
+  // (auth, PIN, profile, active account) has now passed. As long as
+  // this invitation has not just been accepted, `/invite/:token`
+  // holds the user in place unconditionally — deliberately BEFORE the
+  // pendingInvitationToken/selectedGroup logic below, and regardless
+  // of [selectedGroup]'s own state: a zero-eligible-group user must
+  // never be bounced to onboarding while viewing an invitation
+  // (accepting it is how they get their first group), and a user who
+  // already has a resolved group may still be viewing a DIFFERENT
+  // invitation to a second one.
+  if (_isInvitationRoute(currentLocation) && !invitationJustAccepted) {
+    return null;
+  }
+
+  // A pending invitation destination takes priority over the normal
+  // home/select-group/onboarding target — the user's explicit intent
+  // (having opened the link, then been detoured through PIN/profile
+  // setup) is followed through rather than silently dropped.
+  if (pendingInvitationToken != null) {
+    final target = AppRoutes.membershipInvitationAcceptPath(
+      pendingInvitationToken,
+    );
+    return currentLocation == target ? null : target;
   }
 
   if (selectedGroup is SelectedGroupResolved) {

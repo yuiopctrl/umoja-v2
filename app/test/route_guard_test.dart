@@ -42,6 +42,8 @@ String? _redirect({
   required SelectedGroupState selectedGroup,
   required String currentLocation,
   AsyncValue<bool> hasPinCredential = const AsyncValue.data(true),
+  String? pendingInvitationToken,
+  bool invitationJustAccepted = false,
 }) {
   return computeRedirect(
     sessionStatus: sessionStatus,
@@ -49,6 +51,8 @@ String? _redirect({
     selectedGroup: selectedGroup,
     currentLocation: currentLocation,
     hasPinCredential: hasPinCredential,
+    pendingInvitationToken: pendingInvitationToken,
+    invitationJustAccepted: invitationJustAccepted,
   );
 }
 
@@ -552,6 +556,184 @@ void main() {
           currentLocation: AppRoutes.membershipClaims,
         ),
         AppRoutes.selectGroup,
+      );
+    });
+  });
+
+  group('Invitation routes (Prompt 09G-B1-E3 §C/§H)', () {
+    test('signed out on /invite/:token is never redirected to /auth/phone', () {
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedOut,
+          appContext: const AsyncValue.loading(),
+          selectedGroup: const SelectedGroupLoading(),
+          currentLocation: '/invite/abc123',
+        ),
+        isNull,
+      );
+    });
+
+    test('signed in with a pending invitation token and no eligible group is '
+        'sent to /invite/:token instead of the onboarding entry screen', () {
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: const [],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: const SelectedGroupNone(),
+          currentLocation: AppRoutes.home,
+          pendingInvitationToken: 'abc123',
+        ),
+        '/invite/abc123',
+      );
+    });
+
+    test('signed in with a resolved group and a pending invitation token is '
+        'sent to /invite/:token instead of /home', () {
+      final membership = _membership(id: 'm1');
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: [membership],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: SelectedGroupResolved(membership),
+          currentLocation: AppRoutes.membersList,
+          pendingInvitationToken: 'abc123',
+        ),
+        '/invite/abc123',
+      );
+    });
+
+    test('a pending invitation token does not skip PIN setup or profile '
+        'completion — those prerequisite gates still fire first', () {
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: const AsyncValue.loading(),
+          selectedGroup: const SelectedGroupLoading(),
+          currentLocation: '/invite/abc123',
+          hasPinCredential: const AsyncValue.data(false),
+          pendingInvitationToken: 'abc123',
+        ),
+        AppRoutes.pinSetup,
+      );
+
+      final incompleteContext = AppContext(
+        userId: 'u1',
+        profile: _incomplete,
+        memberships: const [],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(incompleteContext),
+          selectedGroup: const SelectedGroupNone(),
+          currentLocation: '/invite/abc123',
+          pendingInvitationToken: 'abc123',
+        ),
+        AppRoutes.onboardingProfile,
+      );
+    });
+
+    test('already at the exact pending invitation destination is not '
+        'redirected', () {
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: const [],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: const SelectedGroupNone(),
+          currentLocation: '/invite/abc123',
+          pendingInvitationToken: 'abc123',
+        ),
+        isNull,
+      );
+    });
+
+    test('a zero-eligible-group user AT /invite/:token is held there '
+        'unconditionally — never bounced to the onboarding entry screen, '
+        'even with no pending token at all', () {
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: const [],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: const SelectedGroupNone(),
+          currentLocation: '/invite/abc123',
+        ),
+        isNull,
+      );
+    });
+
+    test('once THIS token has just been accepted, the unconditional hold '
+        'releases and the normal resolved-group target (/home) applies', () {
+      final membership = _membership(id: 'm1');
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: [membership],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: SelectedGroupResolved(membership),
+          currentLocation: '/invite/abc123',
+          invitationJustAccepted: true,
+        ),
+        AppRoutes.home,
+      );
+    });
+
+    test('without invitationJustAccepted, the SAME resolved-group state still '
+        'holds the user at /invite/:token instead of bouncing to /home', () {
+      final membership = _membership(id: 'm1');
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: [membership],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: SelectedGroupResolved(membership),
+          currentLocation: '/invite/abc123',
+        ),
+        isNull,
+      );
+    });
+
+    test('no pending token: normal routing is completely unaffected', () {
+      final context = AppContext(
+        userId: 'u1',
+        profile: _complete,
+        memberships: const [],
+      );
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(context),
+          selectedGroup: const SelectedGroupNone(),
+          currentLocation: AppRoutes.home,
+        ),
+        AppRoutes.onboardingMembershipEntry,
       );
     });
   });

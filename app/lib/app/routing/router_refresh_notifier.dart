@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/auth/providers/app_context_provider.dart';
 import '../../features/auth/providers/auth_session_provider.dart';
+import '../../features/auth/providers/pending_invitation_token_provider.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
 import '../../features/security/providers/has_pin_credential_provider.dart';
 
@@ -16,7 +17,8 @@ class RouterRefreshNotifier extends ChangeNotifier {
       ..listen(authSessionStatusProvider, (_, _) => notifyListeners())
       ..listen(appContextProvider, (_, _) => notifyListeners())
       ..listen(selectedGroupProvider, (_, _) => notifyListeners())
-      ..listen(hasPinCredentialProvider, (_, _) => notifyListeners());
+      ..listen(hasPinCredentialProvider, (_, _) => notifyListeners())
+      ..listen(pendingInvitationTokenProvider, (_, _) => notifyListeners());
   }
 
   final Ref _ref;

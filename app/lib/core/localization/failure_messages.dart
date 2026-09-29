@@ -4,6 +4,7 @@ import '../../features/financial_accounts/data/financial_account_failure.dart';
 import '../../features/loans/data/loan_failure.dart';
 import '../../features/members/data/member_failure.dart';
 import '../../features/membership_claim/data/membership_claim_failure.dart';
+import '../../features/membership_invitations/data/membership_invitation_failure.dart';
 import '../../features/payments/data/payment_failure.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -38,6 +39,46 @@ String membershipClaimFailureMessage(
       l10n.membershipClaimClaimantAlreadyActiveError,
     MembershipClaimFailureType.network => l10n.memberErrorNetwork,
     MembershipClaimFailureType.unexpected => l10n.memberErrorUnexpected,
+  };
+}
+
+/// Localizes a [MembershipInvitationFailureType] for display — the
+/// single place this mapping happens (Prompt 09G-B1-E2).
+String membershipInvitationFailureMessage(
+  AppLocalizations l10n,
+  MembershipInvitationFailureType type,
+) {
+  return switch (type) {
+    MembershipInvitationFailureType.invitationNotFound =>
+      l10n.membershipInvitationNotFoundError,
+    MembershipInvitationFailureType.invitationExpired =>
+      l10n.membershipInvitationExpiredError,
+    MembershipInvitationFailureType.claimantAlreadyActiveInGroup =>
+      l10n.membershipInvitationClaimantAlreadyActiveError,
+    MembershipInvitationFailureType.accountDisabled =>
+      l10n.memberErrorAccountDisabled,
+    MembershipInvitationFailureType.permissionDenied =>
+      l10n.memberErrorPermissionDenied,
+    MembershipInvitationFailureType.adminRoleRequired =>
+      l10n.membershipInvitationAdminRoleRequiredError,
+    MembershipInvitationFailureType.roleSelectionRequired =>
+      l10n.membershipInvitationRoleSelectionRequiredError,
+    MembershipInvitationFailureType.unknownRole =>
+      l10n.membershipInvitationUnknownRoleError,
+    MembershipInvitationFailureType.membershipNotFound =>
+      l10n.membershipInvitationMembershipNotFoundError,
+    MembershipInvitationFailureType.membershipAlreadyLinked =>
+      l10n.membershipInvitationAlreadyLinkedError,
+    MembershipInvitationFailureType.membershipNotActive =>
+      l10n.membershipInvitationMembershipNotActiveError,
+    MembershipInvitationFailureType.groupNotActive =>
+      l10n.membershipInvitationGroupNotActiveError,
+    MembershipInvitationFailureType.invitationAlreadyPending =>
+      l10n.membershipInvitationAlreadyPendingError,
+    MembershipInvitationFailureType.invitationNotPending =>
+      l10n.membershipInvitationNotPendingError,
+    MembershipInvitationFailureType.network => l10n.memberErrorNetwork,
+    MembershipInvitationFailureType.unexpected => l10n.memberErrorUnexpected,
   };
 }
 

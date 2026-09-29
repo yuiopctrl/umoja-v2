@@ -43,6 +43,12 @@ dependencies:
   shared_preferences: ^2.5.5
   intl: ^0.20.3
   smart_auth: ^3.2.0
+  # Native OS share sheet for the member-invitation link (Prompt
+  # 09G-B1-E2 §G) — no Flutter-SDK-builtin cross-platform mechanism
+  # exists for this; share_plus is the ecosystem-standard package and
+  # already supports every platform this app targets (Android/iOS/
+  # Web/Linux/Windows/macOS).
+  share_plus: ^12.0.0
 
 dev_dependencies:
   flutter_test:

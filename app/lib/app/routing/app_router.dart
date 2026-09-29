@@ -10,6 +10,7 @@ import '../../features/auth/presentation/otp_verify_screen.dart';
 import '../../features/auth/presentation/phone_entry_screen.dart';
 import '../../features/auth/providers/app_context_provider.dart';
 import '../../features/auth/providers/auth_session_provider.dart';
+import '../../features/auth/providers/pending_invitation_token_provider.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
 import '../../features/contributions/presentation/contribution_adjustment_form_screen.dart';
 import '../../features/contributions/presentation/contribution_charge_detail_screen.dart';
@@ -72,6 +73,10 @@ import '../../features/membership_claim/presentation/membership_claims_queue_scr
 import '../../features/membership_claim/presentation/membership_claims_screen.dart';
 import '../../features/membership_claim/presentation/membership_entry_screen.dart';
 import '../../features/membership_claim/presentation/membership_link_screen.dart';
+import '../../features/membership_invitations/controllers/membership_invitation_acceptance_controller.dart';
+import '../../features/membership_invitations/presentation/invitation_accept_screen.dart';
+import '../../features/membership_invitations/presentation/invite_member_screen.dart';
+import '../../features/membership_invitations/presentation/membership_invitations_list_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/onboarding/presentation/group_onboarding_screen.dart';
 import '../../features/onboarding/presentation/profile_onboarding_screen.dart';
@@ -110,13 +115,63 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: AppRoutes.splash,
     refreshListenable: refreshNotifier,
     redirect: (context, state) {
-      return computeRedirect(
+      final path = state.uri.path;
+      final isInvitationPath = path.startsWith('/invite/');
+      final invitationToken = isInvitationPath
+          ? state.pathParameters['token']
+          : null;
+      final pendingToken = ref.read(pendingInvitationTokenProvider);
+
+      // Prompt 09G-B1-E3 §H: only true once THIS exact token's own
+      // acceptance has succeeded — never inferred from selectedGroup
+      // alone, which cannot distinguish "just accepted this
+      // invitation" from "already had an unrelated resolved group
+      // while viewing a different, still-pending one".
+      final invitationJustAccepted =
+          invitationToken != null &&
+          invitationToken.isNotEmpty &&
+          ref
+              .read(membershipInvitationAcceptanceControllerProvider)
+              .isAcceptedFor(invitationToken);
+
+      final result = computeRedirect(
         sessionStatus: ref.read(authSessionStatusProvider),
         appContext: ref.read(appContextProvider),
         selectedGroup: ref.read(selectedGroupProvider),
-        currentLocation: state.uri.path,
+        currentLocation: path,
         hasPinCredential: ref.read(hasPinCredentialProvider),
+        pendingInvitationToken: pendingToken,
+        invitationJustAccepted: invitationJustAccepted,
       );
+
+      // Capture the token ONLY when a genuine prerequisite (sign in,
+      // PIN setup, profile completion) is about to bounce the user
+      // away from it — never merely for being present on this route,
+      // which would otherwise fight with the clear below on every
+      // subsequent evaluation. Explicitly excludes the
+      // `invitationJustAccepted` case: that redirect (to /home or
+      // /select-group) is the correct, final exit after a successful
+      // acceptance, not a prerequisite detour to come back from — if
+      // this captured the token there too, it would immediately bounce
+      // the user right back to /invite/:token from their new
+      // destination.
+      if (isInvitationPath &&
+          result != null &&
+          !invitationJustAccepted &&
+          invitationToken != null &&
+          invitationToken.isNotEmpty) {
+        ref.read(pendingInvitationTokenProvider.notifier).set(invitationToken);
+      } else if (pendingToken != null &&
+          result == null &&
+          path == AppRoutes.membershipInvitationAcceptPath(pendingToken)) {
+        // Arrived and staying at the exact pending destination — the
+        // breadcrumb has served its purpose. Safe to release now: the
+        // computeRedirect hold above no longer depends on it once the
+        // user is actually here.
+        ref.read(pendingInvitationTokenProvider.notifier).clear();
+      }
+
+      return result;
     },
     routes: [
       GoRoute(
@@ -163,6 +218,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.membershipClaims,
         builder: (context, state) => const MembershipClaimsScreen(),
+      ),
+      // Prompt 09G-B1-E3: reachable at every stage (signed out through
+      // fully operational — see route_guard.dart's `_isInvitationRoute`
+      // and the `pendingInvitationToken` destination-priority logic),
+      // so it lives outside the ShellRoute like the claim-flow routes
+      // above it, not nested under Members.
+      GoRoute(
+        path: AppRoutes.membershipInvitationAccept,
+        builder: (context, state) =>
+            InvitationAcceptScreen(token: state.pathParameters['token']!),
       ),
       GoRoute(
         path: AppRoutes.selectGroup,
@@ -219,6 +284,19 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => MembershipClaimReviewScreen(
               claimId: state.pathParameters['claimId']!,
             ),
+          ),
+          // Prompt 09G-B1-E2: same static-before-dynamic registration
+          // precedent as membershipRequestsList/membershipRequestDetail
+          // above — both `/members/invite` and `/members/invitations`
+          // must precede the dynamic `/members/:membershipId` sibling.
+          GoRoute(
+            path: AppRoutes.membershipInvite,
+            builder: (context, state) => const InviteMemberScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.membershipInvitationsList,
+            builder: (context, state) =>
+                const MembershipInvitationsListScreen(),
           ),
           GoRoute(
             path: AppRoutes.memberDetail,

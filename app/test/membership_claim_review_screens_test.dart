@@ -27,6 +27,13 @@ void main() {
         fakeRepo: fakeRepo,
         memberships: [membershipClaimOfficerMembership()],
         language: AppLanguage.english,
+        // Prompt 09G-B1-E2: on narrow mobile, Members' header actions
+        // collapse into a single labelled overflow menu — this test is
+        // about permission gating, not that responsive behavior, so it
+        // uses a desktop/tablet width where the action is a direct,
+        // explicitly labelled button (see members_list_screen.dart's
+        // own `UmojaBreakpoints.isMobile` check).
+        viewSize: const Size(1440, 900),
       );
       router.go(AppRoutes.membersList);
       await tester.pumpAndSettle();

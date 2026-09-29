@@ -347,6 +347,196 @@ class AppLocalizationsEn extends AppLocalizations {
       'This claimant already has an active membership in this group.';
 
   @override
+  String get inviteMemberAction => 'Invite Member';
+
+  @override
+  String get inviteMemberTitle => 'Invite Member';
+
+  @override
+  String get inviteMemberNoEligibleTitle => 'No Eligible Members';
+
+  @override
+  String get inviteMemberNoEligibleMessage =>
+      'Every member is already linked to an account, or none match your search.';
+
+  @override
+  String get inviteMemberSelectRolesHint =>
+      'Select the role(s) this member should receive once they accept the invitation.';
+
+  @override
+  String get inviteMemberAdminRoleRequiresAdminHint =>
+      'Only an existing Administrator can invite a member as Administrator.';
+
+  @override
+  String get inviteMemberSelectedRolesLabel => 'Selected Role(s)';
+
+  @override
+  String get inviteMemberReviewExplanation =>
+      'This invitation will allow the recipient to link their login account to this existing membership. Access is granted only once the invitation is accepted, and it expires after 7 days.';
+
+  @override
+  String get createInvitationAction => 'Create Invitation';
+
+  @override
+  String get invitationCreatedTitle => 'Invitation Created';
+
+  @override
+  String get expiresOnLabel => 'Expires on';
+
+  @override
+  String get copyInvitationLinkAction => 'Copy Invitation Link';
+
+  @override
+  String get invitationLinkCopiedMessage => 'Invitation link copied.';
+
+  @override
+  String get shareInvitationAction => 'Share Invitation';
+
+  @override
+  String get createdOnLabel => 'Created on';
+
+  @override
+  String get membershipInvitationsTitle => 'Invitations';
+
+  @override
+  String get membershipInvitationsEmptyTitle => 'No Invitations Yet';
+
+  @override
+  String get membershipInvitationsEmptyMessage =>
+      'Invitations you create will appear here.';
+
+  @override
+  String get cancelInvitationConfirmTitle => 'Cancel Invitation?';
+
+  @override
+  String get cancelInvitationConfirmMessage =>
+      'Are you sure you want to cancel this invitation? The recipient will no longer be able to accept it.';
+
+  @override
+  String get cancelInvitationAction => 'Cancel Invitation';
+
+  @override
+  String get membershipInvitationStatusPending => 'Pending';
+
+  @override
+  String get membershipInvitationStatusAccepted => 'Accepted';
+
+  @override
+  String get membershipInvitationStatusCancelled => 'Cancelled';
+
+  @override
+  String get membershipInvitationStatusExpired => 'Expired';
+
+  @override
+  String get membershipInvitationStatusUnknown => 'Unknown';
+
+  @override
+  String get membershipInvitationAdminRoleRequiredError =>
+      'Only an existing Administrator can invite a member with the Administrator role.';
+
+  @override
+  String get membershipInvitationRoleSelectionRequiredError =>
+      'Select at least one role.';
+
+  @override
+  String get membershipInvitationUnknownRoleError =>
+      'One of the selected roles is not recognized.';
+
+  @override
+  String get membershipInvitationMembershipNotFoundError =>
+      'We couldn\'t find that member or invitation.';
+
+  @override
+  String get membershipInvitationAlreadyLinkedError =>
+      'This member already has a linked account.';
+
+  @override
+  String get membershipInvitationMembershipNotActiveError =>
+      'This member is no longer active.';
+
+  @override
+  String get membershipInvitationGroupNotActiveError =>
+      'This group is no longer active.';
+
+  @override
+  String get membershipInvitationAlreadyPendingError =>
+      'An invitation is already pending for this member.';
+
+  @override
+  String get membershipInvitationNotPendingError =>
+      'This invitation has already been resolved.';
+
+  @override
+  String get moreActionsTooltip => 'More actions';
+
+  @override
+  String get invitationAcceptTitle => 'Invitation';
+
+  @override
+  String get invitationSignInPromptTitle => 'Sign in to view this invitation';
+
+  @override
+  String get invitationSignInPromptMessage =>
+      'Sign in or create an account to see the details of this invitation and accept it.';
+
+  @override
+  String get signInAction => 'Sign In';
+
+  @override
+  String get acceptInvitationAction => 'Accept Invitation';
+
+  @override
+  String get invitationAcceptedTitle => 'You\'re in!';
+
+  @override
+  String get invitationAlreadyAcceptedTitle => 'Already Accepted';
+
+  @override
+  String get invitationAcceptedRedirectingMessage =>
+      'Taking you to your group...';
+
+  @override
+  String get invitationExpiredMessage =>
+      'This invitation has expired. Ask your officer to send a new one.';
+
+  @override
+  String get invitationCancelledMessage => 'This invitation was cancelled.';
+
+  @override
+  String get invitationAlreadyAcceptedMessage =>
+      'This invitation has already been accepted.';
+
+  @override
+  String get continueToAppAction => 'Continue';
+
+  @override
+  String get membershipInvitationNotFoundError =>
+      'We couldn\'t find that invitation.';
+
+  @override
+  String get membershipInvitationExpiredError => 'This invitation has expired.';
+
+  @override
+  String get membershipInvitationClaimantAlreadyActiveError =>
+      'You already have an active membership in this group.';
+
+  @override
+  String get membershipEntryInvitationGuidance =>
+      'The normal way to join a group is through an invitation link sent by a group officer.';
+
+  @override
+  String get membershipEntryNoInvitationTitle =>
+      'Don\'t have an invitation link?';
+
+  @override
+  String get membershipEntryAskOfficerMessage =>
+      'Ask your group administrator or secretary to send you an invitation.';
+
+  @override
+  String get membershipEntryFallbackHeading =>
+      'Already a registered member without a link?';
+
+  @override
   String get membershipRequestsTitle => 'Membership Requests';
 
   @override

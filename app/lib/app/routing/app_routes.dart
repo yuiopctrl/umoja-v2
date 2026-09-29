@@ -111,6 +111,28 @@ class AppRoutes {
   static String membershipRequestDetailPath(String claimId) =>
       '/members/requests/$claimId';
 
+  // -- Member invitations (Prompt 09G-B1-E1/E2) ----------------------------
+  //
+  // The preferred officer-driven onboarding path, alongside (never
+  // replacing) the claim workflow above. Both live inside the shell/
+  // Members area — same registration-order precedent as
+  // [membershipRequestsList]/[membershipRequestDetail]: declared
+  // BEFORE [memberDetail] (`/members/:membershipId`) so the static
+  // segments are never shadowed/captured as a `membershipId`.
+
+  static const membershipInvite = '/members/invite';
+  static const membershipInvitationsList = '/members/invitations';
+
+  /// Path template for the (E3) member acceptance screen — not yet
+  /// registered as a route (no screen exists for it yet), but the
+  /// path itself is needed now to build the shareable invitation link
+  /// text. Carries only the opaque bearer token; the acceptance screen
+  /// will resolve everything else from it server-side via
+  /// `rpc_preview_membership_invitation`/`rpc_accept_membership_invitation`.
+  static const membershipInvitationAccept = '/invite/:token';
+  static String membershipInvitationAcceptPath(String token) =>
+      '/invite/$token';
+
   // -- Contributions (Michango) ------------------------------------------
   //
   // Obligation-ledger foundation only — no payment/cash/receipt route

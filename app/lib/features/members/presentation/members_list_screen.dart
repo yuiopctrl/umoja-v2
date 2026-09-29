@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
+import '../../../core/theme/umoja_breakpoints.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/utils/title_case.dart';
 import '../../../core/widgets/umoja_empty_state.dart';
@@ -74,6 +75,12 @@ class _MembersListScreenState extends ConsumerState<MembersListScreen> {
     final canReviewClaims =
         selectedGroup is SelectedGroupResolved &&
         selectedGroup.membership.hasPermission('member.claim.approve');
+    // Prompt 09G-B1-E1/E2: invitation is now the PREFERRED officer-
+    // driven onboarding path; the claim workflow above remains the
+    // member-driven fallback — neither is removed or weakened.
+    final canInvite =
+        selectedGroup is SelectedGroupResolved &&
+        selectedGroup.membership.hasPermission('member.invite');
 
     final statusFilters = <(String label, String? value)>[
       (l10n.filterAll, null),
@@ -82,19 +89,40 @@ class _MembersListScreenState extends ConsumerState<MembersListScreen> {
       (l10n.filterExited, 'EXITED'),
     ];
 
-    final headerActions = <Widget>[
+    // Prompt 09G-B1-E2 §A/§J: physical UAT found the previous icon-only
+    // "Membership Requests" button too hard to discover. Every action
+    // here is now explicitly text-labelled, never icon-only, on every
+    // breakpoint — on narrow mobile they collapse into a single
+    // overflow menu whose items still show their full text label (see
+    // [_MembersHeaderActions] below), never just icons.
+    final headerActionItems = <_HeaderActionItem>[
+      if (canInvite)
+        _HeaderActionItem(
+          key: 'inviteMemberNavAction',
+          label: l10n.inviteMemberAction,
+          icon: Icons.person_add_outlined,
+          onPressed: () => context.push(AppRoutes.membershipInvite),
+        ),
+      if (canInvite)
+        _HeaderActionItem(
+          key: 'membershipInvitationsNavAction',
+          label: l10n.membershipInvitationsTitle,
+          icon: Icons.mail_outline,
+          onPressed: () => context.push(AppRoutes.membershipInvitationsList),
+        ),
       if (canReviewClaims)
-        IconButton(
-          key: const Key('membershipRequestsNavAction'),
-          tooltip: l10n.membershipRequestsTitle,
+        _HeaderActionItem(
+          key: 'membershipRequestsNavAction',
+          label: l10n.membershipRequestsTitle,
+          icon: Icons.assignment_ind_outlined,
           onPressed: () => context.push(AppRoutes.membershipRequestsList),
-          icon: const Icon(Icons.assignment_ind_outlined),
         ),
       if (canCreate)
-        FilledButton.icon(
+        _HeaderActionItem(
+          key: 'addMemberNavAction',
+          label: l10n.addMemberAction,
+          icon: Icons.person_add_alt,
           onPressed: () => context.push(AppRoutes.memberNew),
-          icon: const Icon(Icons.person_add_alt),
-          label: Text(l10n.addMemberAction),
         ),
     ];
 
@@ -102,17 +130,9 @@ class _MembersListScreenState extends ConsumerState<MembersListScreen> {
       title: l10n.membersTitle,
       scrollable: false,
       maxWidth: 900,
-      headerTrailing: headerActions.isEmpty
+      headerTrailing: headerActionItems.isEmpty
           ? null
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (final (i, action) in headerActions.indexed) ...[
-                  if (i > 0) const SizedBox(width: UmojaSpacing.sm),
-                  action,
-                ],
-              ],
-            ),
+          : _MembersHeaderActions(items: headerActionItems),
       floatingActionButton: canCreate
           ? FloatingActionButton.extended(
               onPressed: () => context.push(AppRoutes.memberNew),
@@ -201,6 +221,92 @@ class _MembersListScreenState extends ConsumerState<MembersListScreen> {
               },
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One officer action offered from the Members header — always
+/// rendered with an explicit text [label], never icon-only, on any
+/// breakpoint (Prompt 09G-B1-E2 §A).
+class _HeaderActionItem {
+  const _HeaderActionItem({
+    required this.key,
+    required this.label,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final String key;
+  final String label;
+  final IconData icon;
+  final VoidCallback onPressed;
+}
+
+/// Renders [items] as clearly labelled desktop/tablet buttons
+/// (>= [UmojaBreakpoints.mobile]), or collapses them into a single
+/// overflow menu on small mobile — whose entries still show their
+/// full text label, never just an icon, per the physical-UAT
+/// discoverability fix.
+class _MembersHeaderActions extends StatelessWidget {
+  const _MembersHeaderActions({required this.items});
+
+  final List<_HeaderActionItem> items;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isMobile = UmojaBreakpoints.isMobile(
+      MediaQuery.sizeOf(context).width,
+    );
+
+    if (!isMobile) {
+      // Every header action is an equal-weight secondary button — the
+      // one true primary CTA ("Add Member") already has its own
+      // FloatingActionButton, so no single header item needs FilledButton
+      // styling (and which one "should" get it would otherwise depend
+      // on which optional permissions the caller happens to hold).
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final (i, item) in items.indexed) ...[
+            if (i > 0) const SizedBox(width: UmojaSpacing.sm),
+            OutlinedButton.icon(
+              key: Key(item.key),
+              onPressed: item.onPressed,
+              icon: Icon(item.icon),
+              label: Text(item.label),
+            ),
+          ],
+        ],
+      );
+    }
+
+    return PopupMenuButton<VoidCallback>(
+      key: const Key('membersHeaderOverflowAction'),
+      tooltip: l10n.moreActionsTooltip,
+      onSelected: (action) => action(),
+      itemBuilder: (context) => [
+        for (final item in items)
+          PopupMenuItem<VoidCallback>(
+            key: Key(item.key),
+            value: item.onPressed,
+            child: Row(
+              children: [
+                Icon(item.icon, size: 20),
+                const SizedBox(width: UmojaSpacing.sm),
+                Text(item.label),
+              ],
+            ),
+          ),
+      ],
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.more_horiz),
+          const SizedBox(width: 4),
+          Text(l10n.moreActionsTooltip),
         ],
       ),
     );
