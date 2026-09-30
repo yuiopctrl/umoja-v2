@@ -106,6 +106,27 @@ class MoreScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: UmojaSpacing.xxl),
+          // Prompt 09G-B1-F-UAT-FIX-03 §E/§H: the mobile entry point for
+          // Members/Invite Member/Sent Invitations/Membership Requests
+          // — group-scoped, so only offered once a group is actually
+          // selected (matching the "Current Group" section below).
+          // Desktop/tablet shows the same children as an expandable
+          // sidebar group instead (`app_shell.dart`) rather than this
+          // link.
+          if (membership != null) ...[
+            UmojaCard(
+              padding: EdgeInsets.zero,
+              child: ListTile(
+                key: const Key('moreMemberManagementAction'),
+                leading: const Icon(Icons.people_alt_outlined),
+                title: Text(l10n.memberManagementTitle),
+                subtitle: Text(l10n.memberManagementSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push(AppRoutes.memberManagement),
+              ),
+            ),
+            const SizedBox(height: UmojaSpacing.xxl),
+          ],
           if (overflowDestinations.isNotEmpty) ...[
             UmojaSection(
               title: l10n.modulesSectionTitle,

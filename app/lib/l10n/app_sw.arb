@@ -168,6 +168,9 @@
   "viewInvitationsAction": "Angalia Mialiko",
 
   "membershipInvitationsTitle": "Mialiko",
+  "sentInvitationsTitle": "Mialiko Yaliyotumwa",
+  "memberManagementTitle": "Usimamizi wa Wanachama",
+  "memberManagementSubtitle": "Wanachama, mialiko, na maombi",
   "membershipInvitationsEmptyTitle": "Bado Hakuna Mialiko",
   "membershipInvitationsEmptyMessage": "Mialiko utakayotuma itaonekana hapa.",
   "cancelInvitationConfirmTitle": "Ghairi Mwaliko?",

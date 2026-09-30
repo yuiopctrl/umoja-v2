@@ -159,6 +159,9 @@
   "viewInvitationsAction": "View Invitations",
 
   "membershipInvitationsTitle": "Invitations",
+  "sentInvitationsTitle": "Sent Invitations",
+  "memberManagementTitle": "Member Management",
+  "memberManagementSubtitle": "Members, invitations, and requests",
   "membershipInvitationsEmptyTitle": "No Invitations Yet",
   "membershipInvitationsEmptyMessage": "Invitations you create will appear here.",
   "cancelInvitationConfirmTitle": "Cancel Invitation?",

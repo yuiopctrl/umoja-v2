@@ -279,6 +279,11 @@ String? computeRedirect({
 bool _isOperationalRoute(String location) {
   return location == AppRoutes.home ||
       location == AppRoutes.more ||
+      // Prompt 09G-B1-F-UAT-FIX-03: the mobile Member Management hub —
+      // an ordinary operational, group-scoped screen, gated the same
+      // way as the destinations it links to (each of which re-checks
+      // its own permission regardless of how it was reached).
+      location == AppRoutes.memberManagement ||
       // Prompt 09G-B1-D4 §J: once linked, the claimant's own claim
       // history remains reachable as secondary information (e.g. from
       // Member Home's own quick-access card) — deliberately NOT

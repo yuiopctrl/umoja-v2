@@ -13,18 +13,28 @@ import 'package:umoja/features/members/providers/member_repository_provider.dart
 import 'fakes/pin_bypass_overrides.dart';
 import 'fakes/fake_member_repository.dart';
 
-MembershipContext _membership() {
-  return const MembershipContext(
+/// Prompt 09G-B1-F-UAT-FIX-03: desktop/tablet no longer uses a stock
+/// [NavigationRail] — the "Member Management" group needs an
+/// expandable/collapsible entry interleaved with the flat
+/// destinations, which [NavigationRail] cannot represent, so
+/// `app_shell.dart` builds its own sidebar instead (keyed
+/// `desktopSidebar`). Members is also no longer a mobile bottom-bar
+/// destination — it moved under More → Member Management — so mobile
+/// selection tests below use Payments instead.
+MembershipContext _membership({
+  List<String> permissionCodes = const ['member.view', 'payment.view'],
+}) {
+  return MembershipContext(
     membershipId: 'm-admin',
-    group: GroupContext(
+    group: const GroupContext(
       groupId: 'g1',
       groupName: 'Umoja Wamama',
       groupStatus: 'ACTIVE',
     ),
     membershipStatus: 'ACTIVE',
     displayName: 'Admin Caller',
-    roleCodes: ['ADMIN'],
-    permissionCodes: ['member.view'],
+    roleCodes: const ['ADMIN'],
+    permissionCodes: permissionCodes,
   );
 }
 
@@ -57,38 +67,57 @@ void _setViewport(WidgetTester tester, Size size) {
 
 void main() {
   testWidgets(
-    'a mobile-width viewport shows the bottom navigation bar, not a rail',
+    'a mobile-width viewport shows the bottom navigation bar, not the '
+    'desktop sidebar',
     (tester) async {
       _setViewport(tester, const Size(390, 844));
       await _pumpSignedInApp(tester);
 
       expect(find.byType(NavigationBar), findsOneWidget);
-      expect(find.byType(NavigationRail), findsNothing);
+      expect(find.byKey(const Key('desktopSidebar')), findsNothing);
     },
   );
 
   testWidgets(
-    'a wide viewport shows an extended NavigationRail, not the bottom bar',
+    'a wide viewport shows the extended desktop sidebar (labels visible), '
+    'not the bottom bar',
     (tester) async {
       _setViewport(tester, const Size(1400, 900));
       await _pumpSignedInApp(tester);
 
-      expect(find.byType(NavigationRail), findsOneWidget);
+      expect(find.byKey(const Key('desktopSidebar')), findsOneWidget);
       expect(find.byType(NavigationBar), findsNothing);
-      final rail = tester.widget<NavigationRail>(find.byType(NavigationRail));
-      expect(rail.extended, isTrue);
+      // Extended: the flat Home destination shows its text label
+      // alongside the icon.
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('desktopSidebar')),
+          matching: find.text('Nyumbani'),
+        ),
+        findsOneWidget,
+      );
     },
   );
 
   testWidgets(
-    'a tablet-width viewport shows a compact (non-extended) NavigationRail',
+    'a tablet-width viewport shows a compact desktop sidebar (narrower, '
+    'label stacked below the icon — matching the stock NavigationRail '
+    'labelType.all convention this replaced, never icon-only)',
     (tester) async {
       _setViewport(tester, const Size(900, 800));
       await _pumpSignedInApp(tester);
 
-      expect(find.byType(NavigationRail), findsOneWidget);
-      final rail = tester.widget<NavigationRail>(find.byType(NavigationRail));
-      expect(rail.extended, isFalse);
+      expect(find.byKey(const Key('desktopSidebar')), findsOneWidget);
+      expect(tester.getSize(find.byKey(const Key('desktopSidebar'))).width, 80);
+      // Compact: the label is still rendered (stacked below the icon),
+      // never icon-only.
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('desktopSidebar')),
+          matching: find.text('Nyumbani'),
+        ),
+        findsOneWidget,
+      );
     },
   );
 
@@ -110,7 +139,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(NavigationBar), findsNothing);
-    expect(find.byType(NavigationRail), findsNothing);
+    expect(find.byKey(const Key('desktopSidebar')), findsNothing);
   });
 
   testWidgets(
@@ -126,7 +155,7 @@ void main() {
       await tester.tap(
         find.descendant(
           of: find.byType(NavigationBar),
-          matching: find.text('Wanachama'),
+          matching: find.text('Malipo'),
         ),
       );
       await tester.pumpAndSettle();

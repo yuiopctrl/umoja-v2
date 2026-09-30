@@ -84,7 +84,7 @@ void main() {
         _setViewport(tester, const Size(1400, 900));
         await _pumpSignedInApp(tester, permissions: _fullPermissions);
 
-        final rail = find.byType(NavigationRail);
+        final rail = find.byKey(const Key('desktopSidebar'));
         expect(rail, findsOneWidget);
         expect(
           find.descendant(of: rail, matching: find.text('Malipo')),
@@ -108,7 +108,7 @@ void main() {
         _setViewport(tester, const Size(1400, 900));
         await _pumpSignedInApp(tester, permissions: const ['member.view']);
 
-        final rail = find.byType(NavigationRail);
+        final rail = find.byKey(const Key('desktopSidebar'));
         expect(rail, findsOneWidget);
         expect(
           find.descendant(of: rail, matching: find.text('Malipo')),
@@ -127,17 +127,18 @@ void main() {
   });
 
   group('Mobile bottom navigation', () {
-    testWidgets('a fully-permissioned user sees only the curated Home/Members/'
-        'Payments/More set on mobile — Contributions/Loans/Finance move '
-        'into the More screen instead of congesting the bar', (tester) async {
+    testWidgets('a fully-permissioned user sees only the curated Home/'
+        'Payments/More set on mobile — Members moved under More → Member '
+        'Management, and Contributions/Loans/Finance move into the More '
+        'screen instead of congesting the bar', (tester) async {
       _setViewport(tester, const Size(390, 844));
       await _pumpSignedInApp(tester, permissions: _fullPermissions);
 
       expect(find.byType(NavigationBar), findsOneWidget);
-      expect(find.byType(NavigationRail), findsNothing);
+      expect(find.byKey(const Key('desktopSidebar')), findsNothing);
 
       final navBar = find.byType(NavigationBar);
-      expect(tester.widget<NavigationBar>(navBar).destinations.length, 4);
+      expect(tester.widget<NavigationBar>(navBar).destinations.length, 3);
       expect(
         find.descendant(of: navBar, matching: find.text('Malipo')),
         findsOneWidget,
@@ -157,15 +158,16 @@ void main() {
     });
 
     testWidgets(
-      'a member.view-only user on mobile still sees exactly Home/Members/'
-      'More, unaffected by the module additions',
+      'a member.view-only user on mobile sees exactly Home/More — Members '
+      'is never a bottom-bar destination any more, unaffected by the '
+      'module additions',
       (tester) async {
         _setViewport(tester, const Size(390, 844));
         await _pumpSignedInApp(tester, permissions: const ['member.view']);
 
         final navBar = find.byType(NavigationBar);
         expect(navBar, findsOneWidget);
-        expect(tester.widget<NavigationBar>(navBar).destinations.length, 3);
+        expect(tester.widget<NavigationBar>(navBar).destinations.length, 2);
       },
     );
 

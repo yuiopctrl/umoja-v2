@@ -197,7 +197,7 @@ class HomeScreen extends ConsumerWidget {
               key: const Key('homeContributionsShortcut'),
               padding: EdgeInsets.zero,
               child: UmojaListTile(
-                leading: const Icon(Icons.savings_outlined),
+                leading: const Icon(Icons.volunteer_activism_outlined),
                 title: l10n.contributionsTitle,
                 subtitle: Text(l10n.homeContributionsShortcutSubtitle),
                 onTap: () => context.push(AppRoutes.contributionsHome),

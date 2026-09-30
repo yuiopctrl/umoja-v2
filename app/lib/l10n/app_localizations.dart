@@ -890,6 +890,24 @@ abstract class AppLocalizations {
   /// **'Mialiko'**
   String get membershipInvitationsTitle;
 
+  /// No description provided for @sentInvitationsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mialiko Yaliyotumwa'**
+  String get sentInvitationsTitle;
+
+  /// No description provided for @memberManagementTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Usimamizi wa Wanachama'**
+  String get memberManagementTitle;
+
+  /// No description provided for @memberManagementSubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wanachama, mialiko, na maombi'**
+  String get memberManagementSubtitle;
+
   /// No description provided for @membershipInvitationsEmptyTitle.
   ///
   /// In sw, this message translates to:

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:umoja/app/routing/app_routes.dart';
 import 'package:umoja/core/localization/language_provider.dart';
 import 'package:umoja/features/members/domain/group_member.dart';
@@ -12,10 +13,18 @@ import 'fakes/fake_member_repository.dart';
 import 'fakes/fake_membership_invitation_repository.dart';
 import 'fakes/membership_invitation_test_app.dart';
 
-Future<void> _goToMembersList(WidgetTester tester) async {
-  await tester.tap(find.byKey(const Key('homeMembersShortcut')));
-  await tester.pumpAndSettle();
-}
+/// Prompt 09G-B1-F-UAT-FIX-03: Invite Member/Sent Invitations/
+/// Membership Requests no longer live on the Members screen at all —
+/// they are the "Member Management" navigation group, an expandable
+/// desktop/tablet sidebar section (`app_shell.dart`) or a dedicated
+/// mobile screen reached from More (`member_management_screen.dart`).
+/// Desktop-width tests below navigate to `/members` first (which
+/// auto-expands the sidebar group, since Members is itself the
+/// group's first child) then tap a `memberManagementNavChild_<path>`
+/// sidebar entry; mobile-width tests go through More → Member
+/// Management instead.
+Key _sidebarChildKey(String path) => Key('memberManagementNavChild_$path');
+Key _mobileRowKey(String path) => Key('memberManagementRow_$path');
 
 /// An eligible invite target: ACTIVE, not yet login-linked, no phone
 /// on file (the phone step must start empty).
@@ -60,16 +69,35 @@ GroupMemberPage _eligibleMemberWithPhonePage() {
   );
 }
 
+/// Desktop-width helper: navigates to `/members` (auto-expanding the
+/// Member Management sidebar group, since Members is its own first
+/// child) then taps the given child's sidebar entry.
+Future<void> _openMemberManagementChildDesktop(
+  WidgetTester tester,
+  GoRouter router,
+  String childPath,
+) async {
+  router.go(AppRoutes.membersList);
+  await tester.pumpAndSettle();
+  await tester.tap(find.byKey(_sidebarChildKey(childPath)));
+  await tester.pumpAndSettle();
+}
+
 /// Drives the Invite Member flow through member selection and the
 /// phone step, leaving the test at the role-selection step — shared by
-/// every test below so the exact same navigation is never duplicated.
+/// every desktop-width test below so the exact same navigation is
+/// never duplicated.
 Future<void> _selectMemberAndPhone(
-  WidgetTester tester, {
+  WidgetTester tester,
+  GoRouter router, {
   String memberText = 'Test Member',
   String? phoneOverride,
 }) async {
-  await tester.tap(find.text('Invite Member'));
-  await tester.pumpAndSettle();
+  await _openMemberManagementChildDesktop(
+    tester,
+    router,
+    AppRoutes.membershipInvite,
+  );
   await tester.tap(find.text(memberText));
   await tester.pumpAndSettle();
   if (phoneOverride != null) {
@@ -86,13 +114,15 @@ Future<void> _selectMemberAndPhone(
 
 /// Prompt 09G-B1-E2 §O: officer member-invitation UX — Invite Member
 /// flow (member/role selection, review, create, success), the
-/// Invitations history screen (list/filter/cancel), Members
+/// Invitations history screen (list/filter/cancel), Member Management
 /// discoverability, and coexistence with the existing claim workflow.
 void main() {
-  group('Members discoverability (§O 9-12, 26)', () {
+  group('Member Management discoverability (§O 9-12, 26)', () {
     testWidgets('9/11: an officer without member.invite/'
-        'member.claim.approve sees neither action', (tester) async {
-      await pumpMembershipInvitationApp(
+        'member.claim.approve sees neither Member Management child', (
+      tester,
+    ) async {
+      final (router, _) = await pumpMembershipInvitationApp(
         tester,
         membership: membershipInvitationPlainMemberMembership(),
         fakeInvitationRepo: FakeMembershipInvitationRepository(),
@@ -101,15 +131,22 @@ void main() {
         viewSize: const Size(1440, 900),
       );
 
-      await _goToMembersList(tester);
+      router.go(AppRoutes.membersList);
+      await tester.pumpAndSettle();
 
-      expect(find.text('Invite Member'), findsNothing);
-      expect(find.text('Membership Requests'), findsNothing);
+      expect(
+        find.byKey(_sidebarChildKey(AppRoutes.membershipInvite)),
+        findsNothing,
+      );
+      expect(
+        find.byKey(_sidebarChildKey(AppRoutes.membershipRequestsList)),
+        findsNothing,
+      );
     });
 
-    testWidgets('10/12: an officer holding both permissions sees both actions, '
-        'explicitly labelled (never icon-only)', (tester) async {
-      await pumpMembershipInvitationApp(
+    testWidgets('10/12: an officer holding both permissions sees both '
+        'children, explicitly labelled (never icon-only)', (tester) async {
+      final (router, _) = await pumpMembershipInvitationApp(
         tester,
         membership: membershipInvitationOfficerMembership(),
         fakeInvitationRepo: FakeMembershipInvitationRepository(),
@@ -118,23 +155,24 @@ void main() {
         viewSize: const Size(1440, 900),
       );
 
-      await _goToMembersList(tester);
+      router.go(AppRoutes.membersList);
+      await tester.pumpAndSettle();
 
       expect(
-        find.widgetWithText(OutlinedButton, 'Invite Member'),
+        find.byKey(_sidebarChildKey(AppRoutes.membershipInvite)),
         findsOneWidget,
       );
       expect(
-        find.widgetWithText(OutlinedButton, 'Membership Requests'),
+        find.byKey(_sidebarChildKey(AppRoutes.membershipRequestsList)),
         findsOneWidget,
       );
     });
 
     testWidgets(
       '26: a dual-role officer (also a plain member elsewhere) still sees '
-      'both officer actions — permission alone gates visibility',
+      'both officer children — permission alone gates visibility',
       (tester) async {
-        await pumpMembershipInvitationApp(
+        final (router, _) = await pumpMembershipInvitationApp(
           tester,
           membership: membershipInvitationOfficerMembership(
             roleCodes: const ['MEMBER'],
@@ -145,17 +183,18 @@ void main() {
           viewSize: const Size(1440, 900),
         );
 
-        await _goToMembersList(tester);
+        router.go(AppRoutes.membersList);
+        await tester.pumpAndSettle();
 
         // roleCodes is MEMBER, not ADMIN, but permissionCodes still
         // includes member.invite/member.claim.approve — the actual
         // backend-enforced gate.
         expect(
-          find.widgetWithText(OutlinedButton, 'Invite Member'),
+          find.byKey(_sidebarChildKey(AppRoutes.membershipInvite)),
           findsOneWidget,
         );
         expect(
-          find.widgetWithText(OutlinedButton, 'Membership Requests'),
+          find.byKey(_sidebarChildKey(AppRoutes.membershipRequestsList)),
           findsOneWidget,
         );
       },
@@ -173,7 +212,7 @@ void main() {
           roleCodes: ['TREASURER'],
           targetPhoneE164: '+255712345678',
         );
-      await pumpMembershipInvitationApp(
+      final (router, _) = await pumpMembershipInvitationApp(
         tester,
         membership: membershipInvitationOfficerMembership(),
         fakeInvitationRepo: invitationRepo,
@@ -182,10 +221,11 @@ void main() {
         viewSize: const Size(1440, 900),
       );
 
-      await _goToMembersList(tester);
-
-      await tester.tap(find.text('Invite Member'));
-      await tester.pumpAndSettle();
+      await _openMemberManagementChildDesktop(
+        tester,
+        router,
+        AppRoutes.membershipInvite,
+      );
 
       // 13/5: member selection — the picker uses the real
       // rpc_list_group_members contract via FakeMemberRepository.
@@ -242,7 +282,7 @@ void main() {
     testWidgets('6: phone prefills from the selected member\'s recorded '
         'phone, and can still be corrected before sending', (tester) async {
       final invitationRepo = FakeMembershipInvitationRepository();
-      await pumpMembershipInvitationApp(
+      final (router, _) = await pumpMembershipInvitationApp(
         tester,
         membership: membershipInvitationOfficerMembership(),
         fakeInvitationRepo: invitationRepo,
@@ -252,9 +292,11 @@ void main() {
         viewSize: const Size(1440, 900),
       );
 
-      await _goToMembersList(tester);
-      await tester.tap(find.text('Invite Member'));
-      await tester.pumpAndSettle();
+      await _openMemberManagementChildDesktop(
+        tester,
+        router,
+        AppRoutes.membershipInvite,
+      );
       await tester.tap(find.text('Test Member'));
       await tester.pumpAndSettle();
 
@@ -290,7 +332,7 @@ void main() {
     testWidgets('7: a malformed phone is rejected client-side before the '
         'RPC is ever called', (tester) async {
       final invitationRepo = FakeMembershipInvitationRepository();
-      await pumpMembershipInvitationApp(
+      final (router, _) = await pumpMembershipInvitationApp(
         tester,
         membership: membershipInvitationOfficerMembership(),
         fakeInvitationRepo: invitationRepo,
@@ -300,9 +342,11 @@ void main() {
         viewSize: const Size(1440, 900),
       );
 
-      await _goToMembersList(tester);
-      await tester.tap(find.text('Invite Member'));
-      await tester.pumpAndSettle();
+      await _openMemberManagementChildDesktop(
+        tester,
+        router,
+        AppRoutes.membershipInvite,
+      );
       await tester.tap(find.text('Test Member'));
       await tester.pumpAndSettle();
       await tester.enterText(
@@ -325,7 +369,7 @@ void main() {
       '9: ADMIN UX restriction preserved — a non-ADMIN inviter cannot '
       'select the ADMIN role option',
       (tester) async {
-        await pumpMembershipInvitationApp(
+        final (router, _) = await pumpMembershipInvitationApp(
           tester,
           membership: membershipInvitationOfficerMembership(
             roleCodes: const ['SECRETARY'],
@@ -337,8 +381,11 @@ void main() {
           viewSize: const Size(1440, 900),
         );
 
-        await _goToMembersList(tester);
-        await _selectMemberAndPhone(tester, phoneOverride: '0712345678');
+        await _selectMemberAndPhone(
+          tester,
+          router,
+          phoneOverride: '0712345678',
+        );
 
         final adminTile = tester.widget<CheckboxListTile>(
           find.byKey(const Key('inviteRoleOption_ADMIN')),
@@ -354,7 +401,7 @@ void main() {
         final gate = Completer<void>();
         final invitationRepo = FakeMembershipInvitationRepository()
           ..createPhoneGate = gate;
-        await pumpMembershipInvitationApp(
+        final (router, _) = await pumpMembershipInvitationApp(
           tester,
           membership: membershipInvitationOfficerMembership(),
           fakeInvitationRepo: invitationRepo,
@@ -364,8 +411,11 @@ void main() {
           viewSize: const Size(1440, 900),
         );
 
-        await _goToMembersList(tester);
-        await _selectMemberAndPhone(tester, phoneOverride: '0712345678');
+        await _selectMemberAndPhone(
+          tester,
+          router,
+          phoneOverride: '0712345678',
+        );
         await tester.tap(find.byKey(const Key('inviteRoleOption_MEMBER')));
         await tester.pumpAndSettle();
         await tester.tap(
@@ -400,7 +450,7 @@ void main() {
       (tester) async {
         final invitationRepo = FakeMembershipInvitationRepository()
           ..nextCreatePhoneResult = fakeMembershipPhoneInvitation();
-        await pumpMembershipInvitationApp(
+        final (router, _) = await pumpMembershipInvitationApp(
           tester,
           membership: membershipInvitationOfficerMembership(),
           fakeInvitationRepo: invitationRepo,
@@ -410,8 +460,11 @@ void main() {
           viewSize: const Size(1440, 900),
         );
 
-        await _goToMembersList(tester);
-        await _selectMemberAndPhone(tester, phoneOverride: '0712345678');
+        await _selectMemberAndPhone(
+          tester,
+          router,
+          phoneOverride: '0712345678',
+        );
         await tester.tap(find.byKey(const Key('inviteRoleOption_MEMBER')));
         await tester.pumpAndSettle();
         await tester.tap(
@@ -440,7 +493,7 @@ void main() {
     );
   });
 
-  group('Invitations history screen (§O 21-23)', () {
+  group('Sent Invitations history screen (§O 21-23)', () {
     testWidgets('21: the officer queue renders member/roles/status/dates', (
       tester,
     ) async {
@@ -451,7 +504,7 @@ void main() {
             roleCodes: ['TREASURER'],
           ),
         ];
-      await pumpMembershipInvitationApp(
+      final (router, _) = await pumpMembershipInvitationApp(
         tester,
         membership: membershipInvitationOfficerMembership(),
         fakeInvitationRepo: invitationRepo,
@@ -460,10 +513,11 @@ void main() {
         viewSize: const Size(1440, 900),
       );
 
-      await _goToMembersList(tester);
-
-      await tester.tap(find.text('Invitations'));
-      await tester.pumpAndSettle();
+      await _openMemberManagementChildDesktop(
+        tester,
+        router,
+        AppRoutes.membershipInvitationsList,
+      );
 
       expect(find.text('Amina Hassan'), findsOneWidget);
       expect(find.text('Treasurer'), findsOneWidget);
@@ -478,7 +532,7 @@ void main() {
           ..nextQueueItems = [
             fakeMembershipInvitationQueueItem(invitationId: 'invitation-1'),
           ];
-        await pumpMembershipInvitationApp(
+        final (router, _) = await pumpMembershipInvitationApp(
           tester,
           membership: membershipInvitationOfficerMembership(),
           fakeInvitationRepo: invitationRepo,
@@ -487,10 +541,11 @@ void main() {
           viewSize: const Size(1440, 900),
         );
 
-        await _goToMembersList(tester);
-
-        await tester.tap(find.text('Invitations'));
-        await tester.pumpAndSettle();
+        await _openMemberManagementChildDesktop(
+          tester,
+          router,
+          AppRoutes.membershipInvitationsList,
+        );
 
         await tester.tap(
           find.byKey(const Key('cancelInvitationAction_invitation-1')),
@@ -531,7 +586,7 @@ void main() {
             membershipDisplayName: 'Cancelled Member',
           ),
         ];
-      await pumpMembershipInvitationApp(
+      final (router, _) = await pumpMembershipInvitationApp(
         tester,
         membership: membershipInvitationOfficerMembership(),
         fakeInvitationRepo: invitationRepo,
@@ -540,10 +595,11 @@ void main() {
         viewSize: const Size(1440, 900),
       );
 
-      await _goToMembersList(tester);
-
-      await tester.tap(find.text('Invitations'));
-      await tester.pumpAndSettle();
+      await _openMemberManagementChildDesktop(
+        tester,
+        router,
+        AppRoutes.membershipInvitationsList,
+      );
       await tester.tap(find.text('All'));
       await tester.pumpAndSettle();
 
@@ -560,7 +616,7 @@ void main() {
     ]) {
       testWidgets('renders Members with no overflow at ${size.width.toInt()}x'
           '${size.height.toInt()}', (tester) async {
-        await pumpMembershipInvitationApp(
+        final (router, _) = await pumpMembershipInvitationApp(
           tester,
           membership: membershipInvitationOfficerMembership(),
           fakeInvitationRepo: FakeMembershipInvitationRepository(),
@@ -569,14 +625,16 @@ void main() {
           viewSize: size,
         );
 
-        await _goToMembersList(tester);
+        router.go(AppRoutes.membersList);
+        await tester.pumpAndSettle();
 
         expect(tester.takeException(), isNull);
       });
     }
 
     testWidgets('59: mobile (360x800) can complete the FULL officer invitation '
-        'workflow — member, phone, roles, review, send', (tester) async {
+        'workflow via More → Member Management — member, phone, roles, '
+        'review, send', (tester) async {
       final invitationRepo = FakeMembershipInvitationRepository()
         ..nextCreatePhoneResult = fakeMembershipPhoneInvitation();
       final (router, _) = await pumpMembershipInvitationApp(
@@ -589,17 +647,16 @@ void main() {
         viewSize: const Size(360, 800),
       );
 
-      // Matches the real mobile bottom-nav path (a `go`, not a
-      // `push` from Home) — a `go`-reached Members has nothing to
-      // pop, making it a shell-root screen whose inline header (and
-      // therefore the overflow menu) renders on mobile too; see
-      // UmojaPage's `isShellRoot`/`showInlineHeader`.
-      router.go(AppRoutes.membersList);
+      // Prompt 09G-B1-F-UAT-FIX-03 §E: mobile no longer collapses
+      // Members' header into an overflow menu — Invite Member is
+      // reached via More → Member Management instead.
+      router.go(AppRoutes.more);
       await tester.pumpAndSettle();
-      // Mobile collapses officer actions into the overflow menu.
-      await tester.tap(find.byKey(const Key('membersHeaderOverflowAction')));
+      await tester.tap(find.byKey(const Key('moreMemberManagementAction')));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Invite Member').last);
+      expect(tester.takeException(), isNull);
+
+      await tester.tap(find.byKey(_mobileRowKey(AppRoutes.membershipInvite)));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
 
@@ -645,10 +702,11 @@ void main() {
           viewSize: const Size(1440, 900),
         );
 
-        await _goToMembersList(tester);
-
-        await tester.tap(find.text('Membership Requests'));
-        await tester.pumpAndSettle();
+        await _openMemberManagementChildDesktop(
+          tester,
+          router,
+          AppRoutes.membershipRequestsList,
+        );
 
         expect(router.state.uri.path, '/members/requests');
         expect(tester.takeException(), isNull);

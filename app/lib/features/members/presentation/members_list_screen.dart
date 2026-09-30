@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,7 +29,19 @@ import 'widgets/member_status_badge.dart';
 const _fabScrollClearance = 96.0;
 
 /// `/members`: searchable, filterable, paginated member list for the
-/// currently selected group.
+/// currently selected group — the member directory, and nothing else.
+///
+/// Prompt 09G-B1-F-UAT-FIX-03 §C/§I: Invite Member/Sent Invitations/
+/// Membership Requests are no longer offered from this screen at all
+/// (neither a header action, an overflow menu, nor an in-body card —
+/// every prior iteration of that discoverability attempt has been
+/// removed). Those workflows now live in ONE place: the "Member
+/// Management" navigation group — an expandable desktop/tablet sidebar
+/// section, or a dedicated mobile screen reached from More (see
+/// `app_shell.dart`/`member_management_screen.dart`). This screen's own
+/// job stays exactly what it was before any of that existed: list,
+/// search, and filter the members of the selected group, and (for
+/// `member.create`) add one.
 class MembersListScreen extends ConsumerStatefulWidget {
   const MembersListScreen({super.key});
 
@@ -69,19 +80,6 @@ class _MembersListScreenState extends ConsumerState<MembersListScreen> {
     final canEdit =
         selectedGroup is SelectedGroupResolved &&
         selectedGroup.membership.hasPermission('member.edit');
-    // Prompt 09G-B1-D3: gated on the exact permission the backend RPCs
-    // enforce (`member.claim.approve`) — never a role name. Nav
-    // visibility only; `rpc_list_membership_claims` re-checks this
-    // itself regardless of how the screen is reached.
-    final canReviewClaims =
-        selectedGroup is SelectedGroupResolved &&
-        selectedGroup.membership.hasPermission('member.claim.approve');
-    // Prompt 09G-B1-E1/E2: invitation is now the PREFERRED officer-
-    // driven onboarding path; the claim workflow above remains the
-    // member-driven fallback — neither is removed or weakened.
-    final canInvite =
-        selectedGroup is SelectedGroupResolved &&
-        selectedGroup.membership.hasPermission('member.invite');
 
     final statusFilters = <(String label, String? value)>[
       (l10n.filterAll, null),
@@ -90,50 +88,20 @@ class _MembersListScreenState extends ConsumerState<MembersListScreen> {
       (l10n.filterExited, 'EXITED'),
     ];
 
-    // Prompt 09G-B1-E2 §A/§J: physical UAT found the previous icon-only
-    // "Membership Requests" button too hard to discover. Every action
-    // here is now explicitly text-labelled, never icon-only, on every
-    // breakpoint — on narrow mobile they collapse into a single
-    // overflow menu whose items still show their full text label (see
-    // [_MembersHeaderActions] below), never just icons.
-    final headerActionItems = <_HeaderActionItem>[
-      if (canInvite)
-        _HeaderActionItem(
-          key: 'inviteMemberNavAction',
-          label: l10n.inviteMemberAction,
-          icon: Icons.person_add_outlined,
-          onPressed: () => context.push(AppRoutes.membershipInvite),
-        ),
-      if (canInvite)
-        _HeaderActionItem(
-          key: 'membershipInvitationsNavAction',
-          label: l10n.membershipInvitationsTitle,
-          icon: Icons.mail_outline,
-          onPressed: () => context.push(AppRoutes.membershipInvitationsList),
-        ),
-      if (canReviewClaims)
-        _HeaderActionItem(
-          key: 'membershipRequestsNavAction',
-          label: l10n.membershipRequestsTitle,
-          icon: Icons.assignment_ind_outlined,
-          onPressed: () => context.push(AppRoutes.membershipRequestsList),
-        ),
-      if (canCreate)
-        _HeaderActionItem(
-          key: 'addMemberNavAction',
-          label: l10n.addMemberAction,
-          icon: Icons.person_add_alt,
-          onPressed: () => context.push(AppRoutes.memberNew),
-        ),
-    ];
-
     return UmojaPage(
       title: l10n.membersTitle,
       scrollable: false,
       maxWidth: 900,
-      headerTrailing: headerActionItems.isEmpty
-          ? null
-          : _MembersHeaderActions(items: headerActionItems),
+      // Add Member (member.create) is a plain directory action,
+      // unrelated to the Member Management group's scope (Invite
+      // Member/Sent Invitations/Membership Requests) — it keeps its
+      // own header action here. UmojaPage only renders
+      // [floatingActionButton] on mobile, so desktop/tablet needs this
+      // as its own reachable path; on mobile it would just duplicate
+      // the FAB below, so it's shown on desktop/tablet only.
+      headerTrailing: canCreate
+          ? _AddMemberHeaderAction(label: l10n.addMemberAction)
+          : null,
       floatingActionButton: canCreate
           ? FloatingActionButton.extended(
               onPressed: () => context.push(AppRoutes.memberNew),
@@ -228,125 +196,25 @@ class _MembersListScreenState extends ConsumerState<MembersListScreen> {
   }
 }
 
-/// One officer action offered from the Members header — always
-/// rendered with an explicit text [label], never icon-only, on any
-/// breakpoint (Prompt 09G-B1-E2 §A).
-class _HeaderActionItem {
-  const _HeaderActionItem({
-    required this.key,
-    required this.label,
-    required this.icon,
-    required this.onPressed,
-  });
+/// Desktop/tablet-only "Add Member" header action — `UmojaPage` only
+/// renders [UmojaPage.floatingActionButton] on mobile, so this is the
+/// desktop/tablet path for the same `member.create` action; rendering
+/// nothing on mobile avoids duplicating the FAB there.
+class _AddMemberHeaderAction extends StatelessWidget {
+  const _AddMemberHeaderAction({required this.label});
 
-  final String key;
   final String label;
-  final IconData icon;
-  final VoidCallback onPressed;
-}
-
-/// Renders [items] as clearly labelled desktop/tablet buttons
-/// (>= [UmojaBreakpoints.mobile]), or collapses them into a single
-/// overflow menu on small mobile — whose entries still show their
-/// full text label, never just an icon, per the physical-UAT
-/// discoverability fix.
-class _MembersHeaderActions extends StatelessWidget {
-  const _MembersHeaderActions({required this.items});
-
-  final List<_HeaderActionItem> items;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final isMobile = UmojaBreakpoints.isMobile(
-      MediaQuery.sizeOf(context).width,
-    );
-
-    if (!isMobile) {
-      // Every header action is an equal-weight secondary button — the
-      // one true primary CTA ("Add Member") already has its own
-      // FloatingActionButton, so no single header item needs FilledButton
-      // styling (and which one "should" get it would otherwise depend
-      // on which optional permissions the caller happens to hold).
-      //
-      // Prompt 09G-B1-F-UAT-FIX-01: an officer holding both
-      // member.invite and member.claim.approve shows all three actions
-      // at once, whose combined natural width can exceed the space
-      // left after the title even at 1024/1440px (Members caps content
-      // at 900px). UmojaPageHeader's Row gives its non-flex trailing
-      // slot an effectively UNBOUNDED main-axis constraint (Flutter
-      // never bounds an inflexible Row child by "space left after a
-      // still-unresolved flex sibling"), so a bare Wrap here would
-      // never actually wrap — it would just report its full unwrapped
-      // width and let the shared header's own Row overflow instead
-      // (confirmed empirically; changing that shared widget to bound
-      // trailing broke every other screen's mobile header trigger,
-      // which relies on the same unbounded slot to render at its small
-      // natural size). Bounding this widget's own width directly from
-      // MediaQuery — independent of whatever the Row gives it — is the
-      // narrowly-scoped fix: reserves a flat allowance for the title
-      // ("Members"/"Wanachama", always short) out of the same 900px
-      // content cap this screen itself passes to UmojaPage, and lets
-      // the Wrap fall back to a second line within that bound instead
-      // of overflowing.
-      final contentWidth = math.min(MediaQuery.sizeOf(context).width, 900.0);
-      final availableForActions = contentWidth - 2 * UmojaSpacing.xxl - 150.0;
-      return ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: math.max(availableForActions, 200.0),
-        ),
-        child: Wrap(
-          alignment: WrapAlignment.end,
-          spacing: UmojaSpacing.sm,
-          runSpacing: UmojaSpacing.sm,
-          children: [
-            for (final item in items)
-              OutlinedButton.icon(
-                key: Key(item.key),
-                onPressed: item.onPressed,
-                icon: Icon(item.icon),
-                label: Text(item.label),
-              ),
-          ],
-        ),
-      );
+    if (UmojaBreakpoints.isMobile(MediaQuery.sizeOf(context).width)) {
+      return const SizedBox.shrink();
     }
-
-    return PopupMenuButton<VoidCallback>(
-      key: const Key('membersHeaderOverflowAction'),
-      tooltip: l10n.moreActionsTooltip,
-      onSelected: (action) => action(),
-      itemBuilder: (context) => [
-        for (final item in items)
-          PopupMenuItem<VoidCallback>(
-            key: Key(item.key),
-            value: item.onPressed,
-            child: Row(
-              children: [
-                Icon(item.icon, size: 20),
-                const SizedBox(width: UmojaSpacing.sm),
-                // Prompt 09G-B1-F2 §E/§Y: a long label ("Membership
-                // Requests"/"Invitations") plus the icon can overflow
-                // PopupMenuItem's own narrow default width on a small
-                // (360px) mobile screen — never exercised until F2's
-                // own responsive test actually opened this menu with a
-                // non-empty member list. Flexible+ellipsis, never a
-                // truncated/hidden action.
-                Flexible(
-                  child: Text(item.label, overflow: TextOverflow.ellipsis),
-                ),
-              ],
-            ),
-          ),
-      ],
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.more_horiz),
-          const SizedBox(width: 4),
-          Text(l10n.moreActionsTooltip),
-        ],
-      ),
+    return OutlinedButton.icon(
+      key: const Key('addMemberNavAction'),
+      onPressed: () => context.push(AppRoutes.memberNew),
+      icon: const Icon(Icons.person_add_alt),
+      label: Text(label),
     );
   }
 }

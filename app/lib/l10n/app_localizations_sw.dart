@@ -442,6 +442,15 @@ class AppLocalizationsSw extends AppLocalizations {
   String get membershipInvitationsTitle => 'Mialiko';
 
   @override
+  String get sentInvitationsTitle => 'Mialiko Yaliyotumwa';
+
+  @override
+  String get memberManagementTitle => 'Usimamizi wa Wanachama';
+
+  @override
+  String get memberManagementSubtitle => 'Wanachama, mialiko, na maombi';
+
+  @override
   String get membershipInvitationsEmptyTitle => 'Bado Hakuna Mialiko';
 
   @override

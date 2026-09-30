@@ -155,9 +155,13 @@ void main() {
       expect(find.text('ADMIN'), findsNothing);
       expect(find.text('ACTIVE'), findsNothing);
 
-      // Members list: a SUSPENDED Treasurer.
+      // Members list: a SUSPENDED Treasurer. Prompt
+      // 09G-B1-F-UAT-FIX-03: Members is no longer a bottom-bar
+      // destination — reached via the Home shortcut card instead (the
+      // session is still on Home, the initial route, at this point).
       await _closeModal(tester);
-      await _tapNavDestination(tester, 'Members');
+      await tester.tap(find.byKey(const Key('homeMembersShortcut')));
+      await tester.pumpAndSettle();
 
       expect(find.textContaining('Treasurer'), findsOneWidget);
       // Both the row's status badge and the "Suspended" filter chip

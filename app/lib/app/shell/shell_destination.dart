@@ -85,19 +85,20 @@ List<ShellDestination> shellDestinations(
     selectedIcon: Icons.home,
     primaryOnMobile: true,
   ),
-  ShellDestination(
-    path: AppRoutes.membersList,
-    label: l10n.membersTitle,
-    icon: Icons.people_alt_outlined,
-    selectedIcon: Icons.people_alt,
-    primaryOnMobile: true,
-  ),
+  // Prompt 09G-B1-F-UAT-FIX-03: Members is no longer a standalone flat
+  // destination — it is the first child of the "Member Management"
+  // navigation group (see [memberManagementChildren]), shown as an
+  // expandable sidebar section on desktop/tablet and as its own
+  // dedicated screen reached from More on mobile. Removing it here
+  // (rather than keeping it AND adding the group) is deliberate — one
+  // destination reachable two structurally different ways would be
+  // the "duplicate destination" this refactor explicitly avoids.
   if (membership?.hasPermission('contribution.view') ?? false)
     ShellDestination(
       path: AppRoutes.contributionsHome,
       label: l10n.contributionsTitle,
-      icon: Icons.savings_outlined,
-      selectedIcon: Icons.savings,
+      icon: Icons.volunteer_activism_outlined,
+      selectedIcon: Icons.volunteer_activism,
     ),
   if (membership?.hasPermission('payment.view') ?? false)
     ShellDestination(
@@ -129,3 +130,79 @@ List<ShellDestination> shellDestinations(
     primaryOnMobile: true,
   ),
 ];
+
+/// One entry inside the "Member Management" navigation group — the
+/// desktop/tablet expandable sidebar section, and the mobile dedicated
+/// screen reached from More (Prompt 09G-B1-F-UAT-FIX-03). Unlike
+/// [ShellDestination], never appears in the mobile bottom bar directly.
+class MemberManagementChild {
+  const MemberManagementChild({
+    required this.path,
+    required this.label,
+    required this.icon,
+  });
+
+  final String path;
+  final String label;
+  final IconData icon;
+
+  bool isSelected(String location) =>
+      location == path || location.startsWith('$path/');
+}
+
+/// The Member Management group's children, permission-gated
+/// individually — never by role name. Members (the directory itself)
+/// is unconditionally included whenever [membership] is non-null,
+/// preserving the member directory's existing, ungated visibility
+/// (Prompt 09G-B1-F-UAT-FIX-03 §C/§F) — it is never hidden from an
+/// ordinary member who is otherwise allowed to view it. Invite Member
+/// and Sent Invitations require `member.invite`; Membership Requests
+/// requires `member.claim.approve`. Never empty when [membership] is
+/// non-null (Members alone guarantees at least one child), so callers
+/// never need to render an empty expandable group.
+List<MemberManagementChild> memberManagementChildren(
+  AppLocalizations l10n, {
+  MembershipContext? membership,
+}) {
+  if (membership == null) return const [];
+
+  final canInvite = membership.hasPermission('member.invite');
+  final canReviewClaims = membership.hasPermission('member.claim.approve');
+
+  return [
+    MemberManagementChild(
+      path: AppRoutes.membersList,
+      label: l10n.membersTitle,
+      icon: Icons.people_alt_outlined,
+    ),
+    if (canInvite)
+      MemberManagementChild(
+        path: AppRoutes.membershipInvite,
+        label: l10n.inviteMemberAction,
+        icon: Icons.person_add_outlined,
+      ),
+    if (canInvite)
+      MemberManagementChild(
+        path: AppRoutes.membershipInvitationsList,
+        label: l10n.sentInvitationsTitle,
+        icon: Icons.mail_outline,
+      ),
+    if (canReviewClaims)
+      MemberManagementChild(
+        path: AppRoutes.membershipRequestsList,
+        label: l10n.membershipRequestsTitle,
+        icon: Icons.assignment_ind_outlined,
+      ),
+  ];
+}
+
+/// Whether [location] is on any Member Management child route — used to
+/// keep the desktop sidebar group expanded/highlighted while the user
+/// is anywhere inside it (Prompt 09G-B1-F-UAT-FIX-03 §D7).
+bool isMemberManagementLocation(String location) =>
+    location == AppRoutes.membersList ||
+    location.startsWith('${AppRoutes.membersList}/') ||
+    location == AppRoutes.membershipInvite ||
+    location == AppRoutes.membershipInvitationsList ||
+    location == AppRoutes.membershipRequestsList ||
+    location.startsWith('${AppRoutes.membershipRequestsList}/');

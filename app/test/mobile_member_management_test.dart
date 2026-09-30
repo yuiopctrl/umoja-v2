@@ -23,18 +23,15 @@ import 'fakes/fake_membership_claim_repository.dart';
 import 'fakes/fake_membership_invitation_repository.dart';
 import 'fakes/pin_bypass_overrides.dart';
 
-/// Prompt 09G-B1-F-UAT-FIX-01: reproduces, then guards against
-/// regressing, the physical-UAT defect where an officer who reached
-/// Members via the Home "Members" shortcut card (rather than the
-/// bottom-nav tab) saw NONE of Invite Member/Invitations/Membership
-/// Requests on mobile. Root cause: that shortcut used `context.push`,
-/// which left Members poppable — `UmojaPage`'s `isShellRoot` (and
-/// therefore `showInlineHeader`, which carries every officer action)
-/// is false for any poppable, non-mobile-AppBar screen on a narrow
-/// viewport. Members is a `primaryOnMobile` shell tab
-/// (`shell_destination.dart`), so it must be reached the same way the
-/// bottom nav itself reaches it — via `context.go` — never `push`.
-/// Fixed in `home_screen.dart`'s `homeMembersShortcut` `onTap`.
+/// Prompt 09G-B1-F-UAT-FIX-03: Invite Member/Sent Invitations/
+/// Membership Requests moved off the Members screen entirely (no
+/// header, no overflow menu, no in-body card — every prior FIX-01/
+/// FIX-02 discoverability attempt has been removed) into ONE "Member
+/// Management" navigation group: an expandable desktop/tablet sidebar
+/// section (`app_shell.dart`), or a dedicated mobile screen reached
+/// from More (`member_management_screen.dart`). This file replaces the
+/// FIX-01/FIX-02 coverage that tested the now-removed UI with coverage
+/// of the current architecture.
 MembershipContext _membership({
   String id = 'm-officer',
   String groupId = 'g-officer',
@@ -64,7 +61,7 @@ MembershipContext _membership({
 Future<
   (GoRouter, FakeMembershipInvitationRepository, FakeMembershipClaimRepository)
 >
-_pumpHomeApp(
+_pumpApp(
   WidgetTester tester, {
   required List<MembershipContext> memberships,
   Size viewSize = const Size(390, 844),
@@ -116,44 +113,295 @@ class _FixedLanguage extends LanguageNotifier {
   AppLanguage build() => _language;
 }
 
-/// Reproduces the exact defect path: reach Members via the Home
-/// shortcut card, never the bottom-nav tab directly.
-Future<void> _goToMembersViaHomeShortcut(WidgetTester tester) async {
-  await tester.tap(find.byKey(const Key('homeMembersShortcut')));
+Key _sidebarChildKey(String path) => Key('memberManagementNavChild_$path');
+Key _mobileRowKey(String path) => Key('memberManagementRow_$path');
+
+/// Desktop-width helper: navigates to `/members` — the Member
+/// Management sidebar group auto-expands, since Members is itself the
+/// group's first child.
+Future<void> _openMembersDesktop(WidgetTester tester, GoRouter router) async {
+  router.go(AppRoutes.membersList);
+  await tester.pumpAndSettle();
+}
+
+/// Mobile-width helper: More → Member Management.
+Future<void> _openMemberManagementMobile(
+  WidgetTester tester,
+  GoRouter router,
+) async {
+  router.go(AppRoutes.more);
+  await tester.pumpAndSettle();
+  await tester.tap(find.byKey(const Key('moreMemberManagementAction')));
   await tester.pumpAndSettle();
 }
 
 void main() {
-  group('Officer action visibility from Members via Home shortcut (mobile)', () {
+  group('Desktop/tablet Member Management sidebar group (§D)', () {
     testWidgets(
-      '1/2/3: full officer (member.invite + member.claim.approve) sees Invite '
-      'Member, Invitations, and Membership Requests in the mobile overflow '
-      'menu — even after reaching Members via the Home shortcut, never the '
-      'bottom-nav tab',
+      'both permissions — Members, Invite Member, Sent Invitations, and '
+      'Membership Requests all visible as sidebar children',
       (tester) async {
-        await _pumpHomeApp(tester, memberships: [_membership()]);
-        await _goToMembersViaHomeShortcut(tester);
+        final (router, _, _) = await _pumpApp(
+          tester,
+          memberships: [_membership()],
+          viewSize: const Size(1440, 900),
+        );
+        await _openMembersDesktop(tester, router);
 
-        expect(tester.takeException(), isNull);
-        await tester.tap(find.byKey(const Key('membersHeaderOverflowAction')));
-        await tester.pumpAndSettle();
-        expect(tester.takeException(), isNull);
-
-        expect(find.byKey(const Key('inviteMemberNavAction')), findsOneWidget);
         expect(
-          find.byKey(const Key('membershipInvitationsNavAction')),
+          find.byKey(_sidebarChildKey(AppRoutes.membersList)),
           findsOneWidget,
         );
         expect(
-          find.byKey(const Key('membershipRequestsNavAction')),
+          find.byKey(_sidebarChildKey(AppRoutes.membershipInvite)),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membershipInvitationsList)),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membershipRequestsList)),
           findsOneWidget,
         );
       },
     );
 
-    testWidgets('4: member.invite only — Invite Member and officer Invitations '
-        'visible, Membership Requests hidden', (tester) async {
-      await _pumpHomeApp(
+    testWidgets(
+      'member.invite only — Members/Invite Member/Sent Invitations visible, '
+      'Membership Requests hidden',
+      (tester) async {
+        final (router, _, _) = await _pumpApp(
+          tester,
+          memberships: [
+            _membership(
+              roleCodes: const ['MEMBER'],
+              permissionCodes: const [
+                'group.view',
+                'member.view',
+                'member.invite',
+              ],
+            ),
+          ],
+          viewSize: const Size(1440, 900),
+        );
+        await _openMembersDesktop(tester, router);
+
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membersList)),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membershipInvite)),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membershipInvitationsList)),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membershipRequestsList)),
+          findsNothing,
+        );
+      },
+    );
+
+    testWidgets(
+      'member.claim.approve only — Members/Membership Requests visible, '
+      'Invite Member/Sent Invitations hidden',
+      (tester) async {
+        final (router, _, _) = await _pumpApp(
+          tester,
+          memberships: [
+            _membership(
+              roleCodes: const ['MEMBER'],
+              permissionCodes: const [
+                'group.view',
+                'member.view',
+                'member.claim.approve',
+              ],
+            ),
+          ],
+          viewSize: const Size(1440, 900),
+        );
+        await _openMembersDesktop(tester, router);
+
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membersList)),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membershipRequestsList)),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membershipInvite)),
+          findsNothing,
+        );
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membershipInvitationsList)),
+          findsNothing,
+        );
+      },
+    );
+
+    testWidgets(
+      'an ordinary member (neither permission) still sees Members — the '
+      'directory itself is never hidden — but no officer children',
+      (tester) async {
+        final (router, _, _) = await _pumpApp(
+          tester,
+          memberships: [
+            _membership(
+              roleCodes: const ['MEMBER'],
+              permissionCodes: const ['group.view', 'member.view'],
+            ),
+          ],
+          viewSize: const Size(1440, 900),
+        );
+        await _openMembersDesktop(tester, router);
+
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membersList)),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membershipInvite)),
+          findsNothing,
+        );
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membershipInvitationsList)),
+          findsNothing,
+        );
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membershipRequestsList)),
+          findsNothing,
+        );
+      },
+    );
+
+    testWidgets('tapping each sidebar child navigates to its own route', (
+      tester,
+    ) async {
+      final (router, _, _) = await _pumpApp(
+        tester,
+        memberships: [_membership()],
+        viewSize: const Size(1440, 900),
+      );
+      await _openMembersDesktop(tester, router);
+
+      await tester.tap(
+        find.byKey(_sidebarChildKey(AppRoutes.membershipInvite)),
+      );
+      await tester.pumpAndSettle();
+      expect(router.state.uri.path, AppRoutes.membershipInvite);
+
+      await tester.tap(
+        find.byKey(_sidebarChildKey(AppRoutes.membershipInvitationsList)),
+      );
+      await tester.pumpAndSettle();
+      expect(router.state.uri.path, AppRoutes.membershipInvitationsList);
+
+      await tester.tap(
+        find.byKey(_sidebarChildKey(AppRoutes.membershipRequestsList)),
+      );
+      await tester.pumpAndSettle();
+      expect(router.state.uri.path, AppRoutes.membershipRequestsList);
+    });
+
+    testWidgets(
+      'the group stays expanded/active while on any of its child routes',
+      (tester) async {
+        final (router, _, _) = await _pumpApp(
+          tester,
+          memberships: [_membership()],
+          viewSize: const Size(1440, 900),
+        );
+        router.go(AppRoutes.membershipInvite);
+        await tester.pumpAndSettle();
+
+        // Auto-expanded on arrival — every child, including Members
+        // itself, is visible without needing to tap the group header.
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membersList)),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(_sidebarChildKey(AppRoutes.membershipRequestsList)),
+          findsOneWidget,
+        );
+      },
+    );
+
+    for (final size in [const Size(1024, 768), const Size(1440, 900)]) {
+      testWidgets(
+        '${size.width.toInt()}x${size.height.toInt()}: sidebar renders '
+        'with no overflow',
+        (tester) async {
+          final (router, _, _) = await _pumpApp(
+            tester,
+            memberships: [_membership()],
+            viewSize: size,
+          );
+          await _openMembersDesktop(tester, router);
+
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  });
+
+  group('Mobile Member Management screen, reached from More (§E/§F)', () {
+    testWidgets(
+      'More shows the Member Management entry when a group is selected',
+      (tester) async {
+        final (router, _, _) = await _pumpApp(
+          tester,
+          memberships: [_membership()],
+        );
+        router.go(AppRoutes.more);
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byKey(const Key('moreMemberManagementAction')),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'both permissions — Members, Invite Member, Sent Invitations, and '
+      'Membership Requests all visible as rows',
+      (tester) async {
+        final (router, _, _) = await _pumpApp(
+          tester,
+          memberships: [_membership()],
+        );
+        await _openMemberManagementMobile(tester, router);
+
+        expect(
+          find.byKey(_mobileRowKey(AppRoutes.membersList)),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(_mobileRowKey(AppRoutes.membershipInvite)),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(_mobileRowKey(AppRoutes.membershipInvitationsList)),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(_mobileRowKey(AppRoutes.membershipRequestsList)),
+          findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets('member.invite only — Invite Member/Sent Invitations visible, '
+        'Membership Requests hidden', (tester) async {
+      final (router, _, _) = await _pumpApp(
         tester,
         memberships: [
           _membership(
@@ -166,26 +414,27 @@ void main() {
           ),
         ],
       );
-      await _goToMembersViaHomeShortcut(tester);
-      await tester.tap(find.byKey(const Key('membersHeaderOverflowAction')));
-      await tester.pumpAndSettle();
+      await _openMemberManagementMobile(tester, router);
 
-      expect(find.byKey(const Key('inviteMemberNavAction')), findsOneWidget);
       expect(
-        find.byKey(const Key('membershipInvitationsNavAction')),
+        find.byKey(_mobileRowKey(AppRoutes.membershipInvite)),
         findsOneWidget,
       );
       expect(
-        find.byKey(const Key('membershipRequestsNavAction')),
+        find.byKey(_mobileRowKey(AppRoutes.membershipInvitationsList)),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(_mobileRowKey(AppRoutes.membershipRequestsList)),
         findsNothing,
       );
     });
 
     testWidgets(
-      '5: member.claim.approve only — Membership Requests visible, Invite '
-      'Member/officer Invitations hidden',
+      'member.claim.approve only — Membership Requests visible, Invite '
+      'Member/Sent Invitations hidden',
       (tester) async {
-        await _pumpHomeApp(
+        final (router, _, _) = await _pumpApp(
           tester,
           memberships: [
             _membership(
@@ -198,27 +447,28 @@ void main() {
             ),
           ],
         );
-        await _goToMembersViaHomeShortcut(tester);
-        await tester.tap(find.byKey(const Key('membersHeaderOverflowAction')));
-        await tester.pumpAndSettle();
+        await _openMemberManagementMobile(tester, router);
 
         expect(
-          find.byKey(const Key('membershipRequestsNavAction')),
+          find.byKey(_mobileRowKey(AppRoutes.membershipRequestsList)),
           findsOneWidget,
         );
-        expect(find.byKey(const Key('inviteMemberNavAction')), findsNothing);
         expect(
-          find.byKey(const Key('membershipInvitationsNavAction')),
+          find.byKey(_mobileRowKey(AppRoutes.membershipInvite)),
+          findsNothing,
+        );
+        expect(
+          find.byKey(_mobileRowKey(AppRoutes.membershipInvitationsList)),
           findsNothing,
         );
       },
     );
 
     testWidgets(
-      '6: no relevant permissions — none of the three officer actions are '
-      'offered, and the overflow menu itself does not render',
+      'an ordinary member (neither permission) still sees Members but no '
+      'officer rows',
       (tester) async {
-        await _pumpHomeApp(
+        final (router, _, _) = await _pumpApp(
           tester,
           memberships: [
             _membership(
@@ -227,144 +477,120 @@ void main() {
             ),
           ],
         );
-        await _goToMembersViaHomeShortcut(tester);
+        await _openMemberManagementMobile(tester, router);
 
         expect(
-          find.byKey(const Key('membersHeaderOverflowAction')),
-          findsNothing,
-        );
-        expect(find.byKey(const Key('inviteMemberNavAction')), findsNothing);
-        expect(
-          find.byKey(const Key('membershipInvitationsNavAction')),
-          findsNothing,
+          find.byKey(_mobileRowKey(AppRoutes.membersList)),
+          findsOneWidget,
         );
         expect(
-          find.byKey(const Key('membershipRequestsNavAction')),
+          find.byKey(_mobileRowKey(AppRoutes.membershipInvite)),
+          findsNothing,
+        );
+        expect(
+          find.byKey(_mobileRowKey(AppRoutes.membershipInvitationsList)),
+          findsNothing,
+        );
+        expect(
+          find.byKey(_mobileRowKey(AppRoutes.membershipRequestsList)),
           findsNothing,
         );
       },
     );
+
+    testWidgets('tapping each row navigates to its own route', (tester) async {
+      final (router, _, _) = await _pumpApp(
+        tester,
+        memberships: [_membership()],
+      );
+      await _openMemberManagementMobile(tester, router);
+
+      await tester.tap(find.byKey(_mobileRowKey(AppRoutes.membershipInvite)));
+      await tester.pumpAndSettle();
+      expect(router.state.uri.path, AppRoutes.membershipInvite);
+    });
+
+    for (final size in [
+      const Size(360, 800),
+      const Size(1024, 768),
+      const Size(1440, 900),
+    ]) {
+      testWidgets(
+        '${size.width.toInt()}x${size.height.toInt()}: Member Management '
+        'screen renders with no overflow',
+        (tester) async {
+          final (router, _, _) = await _pumpApp(
+            tester,
+            memberships: [_membership()],
+            viewSize: size,
+          );
+          await _openMemberManagementMobile(tester, router);
+
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
   });
 
-  group('Tablet/desktop layouts render the same actions directly (§O 7/8)', () {
-    for (final size in [const Size(1024, 768), const Size(1440, 900)]) {
-      testWidgets('${size.width.toInt()}x${size.height.toInt()}: full officer '
-          'sees all three actions as labelled buttons, no overflow menu', (
-        tester,
-      ) async {
-        await _pumpHomeApp(
+  group('Members screen no longer offers management actions (§C/§I)', () {
+    testWidgets(
+      'the Members screen has no Invite Member/Sent Invitations/Membership '
+      'Requests action anywhere in its own body, header, or an overflow '
+      'menu',
+      (tester) async {
+        final (router, _, _) = await _pumpApp(
           tester,
           memberships: [_membership()],
-          viewSize: size,
+          viewSize: const Size(390, 844),
         );
-        await _goToMembersViaHomeShortcut(tester);
+        router.go(AppRoutes.membersList);
+        await tester.pumpAndSettle();
 
         expect(
           find.byKey(const Key('membersHeaderOverflowAction')),
           findsNothing,
         );
-        expect(find.byKey(const Key('inviteMemberNavAction')), findsOneWidget);
-        expect(
-          find.byKey(const Key('membershipInvitationsNavAction')),
-          findsOneWidget,
-        );
-        expect(
-          find.byKey(const Key('membershipRequestsNavAction')),
-          findsOneWidget,
-        );
-        expect(tester.takeException(), isNull);
-      });
-    }
-  });
-
-  group('Mobile navigation reaches the real officer screens (§O 9/10/11)', () {
-    testWidgets('9: Invite Member navigates to the phone-invitation flow, '
-        'reachable on Android/mobile — no platform gate blocks it', (
-      tester,
-    ) async {
-      final (router, _, _) = await _pumpHomeApp(
-        tester,
-        memberships: [_membership()],
-      );
-      await _goToMembersViaHomeShortcut(tester);
-      await tester.tap(find.byKey(const Key('membersHeaderOverflowAction')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('inviteMemberNavAction')));
-      await tester.pumpAndSettle();
-
-      expect(router.state.uri.path, AppRoutes.membershipInvite);
-      expect(tester.takeException(), isNull);
-    });
-
-    testWidgets('10: officer Invitations navigates to the group-scoped '
-        'history route, distinct from the personal inbox', (tester) async {
-      final (router, _, _) = await _pumpHomeApp(
-        tester,
-        memberships: [_membership()],
-      );
-      await _goToMembersViaHomeShortcut(tester);
-      await tester.tap(find.byKey(const Key('membersHeaderOverflowAction')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('membershipInvitationsNavAction')));
-      await tester.pumpAndSettle();
-
-      expect(router.state.uri.path, AppRoutes.membershipInvitationsList);
-      expect(router.state.uri.path, isNot(AppRoutes.myInvitations));
-      expect(tester.takeException(), isNull);
-    });
-
-    testWidgets('11: Membership Requests navigates to the existing '
-        'claim-review queue', (tester) async {
-      final (router, _, _) = await _pumpHomeApp(
-        tester,
-        memberships: [_membership()],
-      );
-      await _goToMembersViaHomeShortcut(tester);
-      await tester.tap(find.byKey(const Key('membersHeaderOverflowAction')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('membershipRequestsNavAction')));
-      await tester.pumpAndSettle();
-
-      expect(router.state.uri.path, AppRoutes.membershipRequestsList);
-      expect(tester.takeException(), isNull);
-    });
+        expect(find.text('Invite Member'), findsNothing);
+        expect(find.text('Sent Invitations'), findsNothing);
+        expect(find.text('Membership Requests'), findsNothing);
+      },
+    );
   });
 
   group(
-    'Personal vs officer invitation route separation (§D/§I, §O 13/14/15)',
+    'Personal vs officer invitation route separation (§G, §D/§I, §O 13/14/15)',
     () {
-      testWidgets(
-        '13/14: the personal /invitations route remains reachable and is a '
-        'distinct constant/screen from the officer /members/invitations route',
-        (tester) async {
-          final (router, _, _) = await _pumpHomeApp(
-            tester,
-            memberships: [_membership()],
-          );
+      testWidgets('the personal /invitations route remains reachable and is a '
+          'distinct constant/screen from the officer /members/invitations '
+          'route', (tester) async {
+        final (router, _, _) = await _pumpApp(
+          tester,
+          memberships: [_membership()],
+        );
 
-          expect(
-            AppRoutes.myInvitations,
-            isNot(AppRoutes.membershipInvitationsList),
-          );
+        expect(
+          AppRoutes.myInvitations,
+          isNot(AppRoutes.membershipInvitationsList),
+        );
 
-          router.push(AppRoutes.myInvitations);
-          await tester.pumpAndSettle();
-          expect(router.state.uri.path, AppRoutes.myInvitations);
-          expect(tester.takeException(), isNull);
-        },
-      );
+        router.push(AppRoutes.myInvitations);
+        await tester.pumpAndSettle();
+        expect(router.state.uri.path, AppRoutes.myInvitations);
+        expect(tester.takeException(), isNull);
+      });
 
       testWidgets(
-        '15: dual-role fixture — an officer in Group A who also personally '
-        'holds an invitation to Group B sees Group A officer history from '
-        'Members, and their OWN invitation to Group B from the personal '
-        'inbox — the two data sets are never confused',
+        'dual-role fixture — an officer in Group A who also personally '
+        'holds an invitation to Group B sees Group A Sent Invitations from '
+        'the desktop sidebar, and their OWN invitation to Group B from the '
+        'personal inbox — the two data sets are never confused',
         (tester) async {
-          final (router, invitationRepo, _) = await _pumpHomeApp(
+          final (router, invitationRepo, _) = await _pumpApp(
             tester,
             memberships: [
               _membership(groupId: 'group-a', groupName: 'Group A'),
             ],
+            viewSize: const Size(1440, 900),
           );
           invitationRepo.nextQueueItems = [
             fakeMembershipInvitationQueueItem(
@@ -386,13 +612,9 @@ void main() {
             offset: 0,
           );
 
-          await _goToMembersViaHomeShortcut(tester);
+          await _openMembersDesktop(tester, router);
           await tester.tap(
-            find.byKey(const Key('membersHeaderOverflowAction')),
-          );
-          await tester.pumpAndSettle();
-          await tester.tap(
-            find.byKey(const Key('membershipInvitationsNavAction')),
+            find.byKey(_sidebarChildKey(AppRoutes.membershipInvitationsList)),
           );
           await tester.pumpAndSettle();
 
@@ -411,20 +633,85 @@ void main() {
     },
   );
 
-  group('Localization (§O 17)', () {
-    testWidgets('the three officer actions render in Swahili', (tester) async {
-      await _pumpHomeApp(
+  group('Localization (§K)', () {
+    testWidgets(
+      'the Member Management children render in Swahili in the desktop '
+      'sidebar',
+      (tester) async {
+        final (router, _, _) = await _pumpApp(
+          tester,
+          memberships: [_membership()],
+          viewSize: const Size(1440, 900),
+          language: AppLanguage.swahili,
+        );
+        await _openMembersDesktop(tester, router);
+
+        expect(
+          find.descendant(
+            of: find.byKey(_sidebarChildKey(AppRoutes.membershipInvite)),
+            matching: find.text('Karibisha Mwanachama'),
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.descendant(
+            of: find.byKey(
+              _sidebarChildKey(AppRoutes.membershipInvitationsList),
+            ),
+            matching: find.text('Mialiko Yaliyotumwa'),
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.descendant(
+            of: find.byKey(_sidebarChildKey(AppRoutes.membershipRequestsList)),
+            matching: find.text('Maombi ya Uanachama'),
+          ),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets('the Member Management screen renders in Swahili on mobile', (
+      tester,
+    ) async {
+      final (router, _, _) = await _pumpApp(
         tester,
         memberships: [_membership()],
         language: AppLanguage.swahili,
       );
-      await _goToMembersViaHomeShortcut(tester);
-      await tester.tap(find.byKey(const Key('membersHeaderOverflowAction')));
+      await _openMemberManagementMobile(tester, router);
+
+      expect(find.text('Usimamizi wa Wanachama'), findsWidgets);
+      expect(
+        find.descendant(
+          of: find.byKey(_mobileRowKey(AppRoutes.membershipInvite)),
+          matching: find.text('Karibisha Mwanachama'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(_mobileRowKey(AppRoutes.membershipInvitationsList)),
+          matching: find.text('Mialiko Yaliyotumwa'),
+        ),
+        findsOneWidget,
+      );
+    });
+  });
+
+  group('Home → Members navigation semantics regression (Prompt '
+      '09G-B1-F-UAT-FIX-01)', () {
+    testWidgets('the Home Members shortcut still uses shell-correct navigation '
+        '(context.go), so the Members screen renders as a shell-root screen '
+        'on mobile', (tester) async {
+      await _pumpApp(tester, memberships: [_membership()]);
+
+      await tester.tap(find.byKey(const Key('homeMembersShortcut')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Karibisha Mwanachama'), findsOneWidget);
-      expect(find.text('Mialiko'), findsOneWidget);
-      expect(find.text('Maombi ya Uanachama'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      expect(find.text('Wanachama'), findsWidgets);
     });
   });
 }

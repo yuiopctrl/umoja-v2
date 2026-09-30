@@ -212,6 +212,34 @@ host with Visual Studio for Windows) and are not runnable from this
 development machine (Linux). Platform support code has already been
 generated under `app/ios/`, `app/macos/`, and `app/windows/`.
 
+## Building release artifacts
+
+`flutter build` needs the exact same `--dart-define-from-file` configuration
+as `flutter run` (see "Environment configuration" above) — a release build
+without it compiles successfully but starts to a "Supabase configuration
+missing" screen instead of the app, since `EnvConfig` simply has nothing to
+read. There is no separate release configuration mechanism; use whichever
+gitignored env JSON file you already created (`env.json`, or your own
+`env.local.json`, etc.) with the same flag:
+
+```bash
+cd app
+flutter build web --release --dart-define-from-file=env.local.json
+flutter build linux --release --dart-define-from-file=env.local.json
+flutter build apk --release --dart-define-from-file=env.local.json
+```
+
+For a physical Android device on the same network as your local Supabase
+instance, `SUPABASE_URL` in that env file must be your host machine's LAN
+IP (see "Environment configuration" above), not `127.0.0.1`/`10.0.2.2` —
+those only work for the desktop/emulator's own network view.
+
+A successful `flutter build` exit code only means the code compiled — it
+does not confirm the produced artifact actually starts against a
+configured Supabase project. Verify by installing/running the artifact
+(e.g. `adb install -r <path-to-apk>` for Android) and confirming the app
+does not stop at the configuration-missing screen.
+
 ## Tests, analysis, formatting
 
 ```bash

@@ -19,7 +19,8 @@ import 'fakes/membership_claim_test_app.dart';
 void main() {
   group('Permission gating (§R 17-21)', () {
     testWidgets('17/20/21: an officer holding member.claim.approve sees the '
-        'Members-list nav entry, and the queue/review actions', (tester) async {
+        'Membership Requests entry in the desktop sidebar\'s Member '
+        'Management group, and the queue/review actions', (tester) async {
       final fakeRepo = FakeMembershipClaimRepository()
         ..nextQueueItems = [fakeMembershipClaimQueueItem()];
       final router = await pumpMembershipClaimApp(
@@ -27,23 +28,24 @@ void main() {
         fakeRepo: fakeRepo,
         memberships: [membershipClaimOfficerMembership()],
         language: AppLanguage.english,
-        // Prompt 09G-B1-E2: on narrow mobile, Members' header actions
-        // collapse into a single labelled overflow menu — this test is
-        // about permission gating, not that responsive behavior, so it
-        // uses a desktop/tablet width where the action is a direct,
-        // explicitly labelled button (see members_list_screen.dart's
-        // own `UmojaBreakpoints.isMobile` check).
+        // Prompt 09G-B1-F-UAT-FIX-03: Membership Requests now lives
+        // in the "Member Management" navigation group — a desktop/
+        // tablet sidebar section, or a dedicated mobile screen — not
+        // on the Members screen itself. This test is about
+        // permission gating, not that responsive split, so it uses
+        // desktop width where the group renders as an expandable
+        // sidebar section (see `app_shell.dart`).
         viewSize: const Size(1440, 900),
       );
       router.go(AppRoutes.membersList);
       await tester.pumpAndSettle();
 
-      expect(
-        find.byKey(const Key('membershipRequestsNavAction')),
-        findsOneWidget,
+      final requestsChildKey = Key(
+        'memberManagementNavChild_${AppRoutes.membershipRequestsList}',
       );
+      expect(find.byKey(requestsChildKey), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('membershipRequestsNavAction')));
+      await tester.tap(find.byKey(requestsChildKey));
       await tester.pumpAndSettle();
 
       expect(find.text('Amina H.'), findsOneWidget);
@@ -64,12 +66,15 @@ void main() {
           fakeRepo: fakeRepo,
           memberships: [membershipClaimPlainMemberMembership()],
           language: AppLanguage.english,
+          viewSize: const Size(1440, 900),
         );
         router.go(AppRoutes.membersList);
         await tester.pumpAndSettle();
 
         expect(
-          find.byKey(const Key('membershipRequestsNavAction')),
+          find.byKey(
+            Key('memberManagementNavChild_${AppRoutes.membershipRequestsList}'),
+          ),
           findsNothing,
         );
 

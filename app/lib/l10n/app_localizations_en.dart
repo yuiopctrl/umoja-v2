@@ -443,6 +443,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get membershipInvitationsTitle => 'Invitations';
 
   @override
+  String get sentInvitationsTitle => 'Sent Invitations';
+
+  @override
+  String get memberManagementTitle => 'Member Management';
+
+  @override
+  String get memberManagementSubtitle => 'Members, invitations, and requests';
+
+  @override
   String get membershipInvitationsEmptyTitle => 'No Invitations Yet';
 
   @override

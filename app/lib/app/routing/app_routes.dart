@@ -89,6 +89,14 @@ class AppRoutes {
   static const home = '/home';
   static const more = '/more';
 
+  /// Prompt 09G-B1-F-UAT-FIX-03: the mobile entry point for the
+  /// "Member Management" navigation group (Members/Invite Member/Sent
+  /// Invitations/Membership Requests) — reached from [more], never a
+  /// business feature of its own. Desktop/tablet shows the same group
+  /// as an expandable sidebar section instead; this route only exists
+  /// for the narrow breakpoint where that space isn't available.
+  static const memberManagement = '/member-management';
+
   static const membersList = '/members';
   static const memberNew = '/members/new';
 
