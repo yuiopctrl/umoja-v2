@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -267,19 +268,47 @@ class _MembersHeaderActions extends StatelessWidget {
       // FloatingActionButton, so no single header item needs FilledButton
       // styling (and which one "should" get it would otherwise depend
       // on which optional permissions the caller happens to hold).
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (final (i, item) in items.indexed) ...[
-            if (i > 0) const SizedBox(width: UmojaSpacing.sm),
-            OutlinedButton.icon(
-              key: Key(item.key),
-              onPressed: item.onPressed,
-              icon: Icon(item.icon),
-              label: Text(item.label),
-            ),
+      //
+      // Prompt 09G-B1-F-UAT-FIX-01: an officer holding both
+      // member.invite and member.claim.approve shows all three actions
+      // at once, whose combined natural width can exceed the space
+      // left after the title even at 1024/1440px (Members caps content
+      // at 900px). UmojaPageHeader's Row gives its non-flex trailing
+      // slot an effectively UNBOUNDED main-axis constraint (Flutter
+      // never bounds an inflexible Row child by "space left after a
+      // still-unresolved flex sibling"), so a bare Wrap here would
+      // never actually wrap — it would just report its full unwrapped
+      // width and let the shared header's own Row overflow instead
+      // (confirmed empirically; changing that shared widget to bound
+      // trailing broke every other screen's mobile header trigger,
+      // which relies on the same unbounded slot to render at its small
+      // natural size). Bounding this widget's own width directly from
+      // MediaQuery — independent of whatever the Row gives it — is the
+      // narrowly-scoped fix: reserves a flat allowance for the title
+      // ("Members"/"Wanachama", always short) out of the same 900px
+      // content cap this screen itself passes to UmojaPage, and lets
+      // the Wrap fall back to a second line within that bound instead
+      // of overflowing.
+      final contentWidth = math.min(MediaQuery.sizeOf(context).width, 900.0);
+      final availableForActions = contentWidth - 2 * UmojaSpacing.xxl - 150.0;
+      return ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: math.max(availableForActions, 200.0),
+        ),
+        child: Wrap(
+          alignment: WrapAlignment.end,
+          spacing: UmojaSpacing.sm,
+          runSpacing: UmojaSpacing.sm,
+          children: [
+            for (final item in items)
+              OutlinedButton.icon(
+                key: Key(item.key),
+                onPressed: item.onPressed,
+                icon: Icon(item.icon),
+                label: Text(item.label),
+              ),
           ],
-        ],
+        ),
       );
     }
 

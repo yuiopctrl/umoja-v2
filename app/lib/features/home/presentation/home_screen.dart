@@ -179,7 +179,16 @@ class HomeScreen extends ConsumerWidget {
                 leading: const Icon(Icons.people_outline),
                 title: l10n.membersTitle,
                 subtitle: Text(l10n.homeMembersShortcutSubtitle),
-                onTap: () => context.push(AppRoutes.membersList),
+                // Prompt 09G-B1-F-UAT-FIX-01: Members is a primaryOnMobile
+                // shell tab (shell_destination.dart), reached from the
+                // bottom nav via context.go — never context.push. Pushing
+                // it left it poppable, which made UmojaPage's
+                // isShellRoot false and hid its inline header (and every
+                // officer action inside it — Invite Member/Invitations/
+                // Membership Requests) on mobile whenever a user reached
+                // Members from this Home shortcut instead of the bottom
+                // tab, the exact physical-UAT defect this fixes.
+                onTap: () => context.go(AppRoutes.membersList),
               ),
             ),
           if (membership.hasPermission('contribution.view')) ...[
