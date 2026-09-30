@@ -451,6 +451,52 @@ class AppLocalizationsSw extends AppLocalizations {
   String get memberManagementSubtitle => 'Wanachama, mialiko, na maombi';
 
   @override
+  String get myProfileTitle => 'Wasifu Wangu';
+
+  @override
+  String get myProfileAction => 'Wasifu Wangu';
+
+  @override
+  String get myProfileMembershipSectionTitle => 'Uanachama';
+
+  @override
+  String get myProfileRoleSectionTitle => 'Nafasi Yako Katika Kikundi Hiki';
+
+  @override
+  String get myProfileGroupCodeLabel => 'Nambari ya Kikundi';
+
+  @override
+  String get myProfileMemberNumberLabel => 'Namba ya Mwanachama';
+
+  @override
+  String get myProfileStatusLabel => 'Hali';
+
+  @override
+  String get myProfileJoinedLabel => 'Alijiunga';
+
+  @override
+  String get myProfileEditAction => 'Hariri Wasifu';
+
+  @override
+  String get myProfileFullNameLabel => 'Jina Kamili';
+
+  @override
+  String get myProfileSaveAction => 'Hifadhi';
+
+  @override
+  String get myProfileSaveSuccess => 'Wasifu umesasishwa.';
+
+  @override
+  String get myProfileLoadFailedMessage => 'Imeshindikana kupakia wasifu wako.';
+
+  @override
+  String get homeMyProfileLinkTitle => 'Wasifu Wangu';
+
+  @override
+  String get homeMyProfileLinkSubtitle =>
+      'Angalia na hariri maelezo ya akaunti yako';
+
+  @override
   String get membershipInvitationsEmptyTitle => 'Bado Hakuna Mialiko';
 
   @override

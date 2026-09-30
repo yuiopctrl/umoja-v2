@@ -67,6 +67,14 @@ class MoreScreen extends ConsumerWidget {
             shellDestinations(l10n, membership: membership),
           )
         : const <ShellDestination>[];
+    // Prompt 09G-B2 §F2: an empty Member Management (no member.view/
+    // member.invite/member.claim.approve) must not show as a container
+    // with nothing in it — the entry point itself is gated on this,
+    // not just its own contents.
+    final memberManagement = memberManagementChildren(
+      l10n,
+      membership: membership,
+    );
 
     return UmojaPage(
       title: l10n.moreTitle,
@@ -106,14 +114,32 @@ class MoreScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: UmojaSpacing.xxl),
-          // Prompt 09G-B1-F-UAT-FIX-03 §E/§H: the mobile entry point for
-          // Members/Invite Member/Sent Invitations/Membership Requests
-          // — group-scoped, so only offered once a group is actually
-          // selected (matching the "Current Group" section below).
-          // Desktop/tablet shows the same children as an expandable
-          // sidebar group instead (`app_shell.dart`) rather than this
-          // link.
+          // Prompt 09G-B2: "My Profile" — self-service, reachable once
+          // a group is selected, never gated on any permission (it is
+          // inherently the caller's own data, matching route_guard's
+          // treatment of `/me/profile`).
           if (membership != null) ...[
+            UmojaCard(
+              padding: EdgeInsets.zero,
+              child: ListTile(
+                key: const Key('moreMyProfileAction'),
+                leading: const Icon(Icons.account_circle_outlined),
+                title: Text(l10n.myProfileAction),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push(AppRoutes.myProfile),
+              ),
+            ),
+            const SizedBox(height: UmojaSpacing.xxl),
+          ],
+          // Prompt 09G-B1-F-UAT-FIX-03 §E/§H, 09G-B2 §F2: the mobile
+          // entry point for Members/Invite Member/Sent Invitations/
+          // Membership Requests — group-scoped, so only offered once a
+          // group is actually selected AND the caller holds at least
+          // one of the underlying permissions (an ordinary member with
+          // none of them must not see an empty container). Desktop/
+          // tablet shows the same children as an expandable sidebar
+          // group instead (`app_shell.dart`) rather than this link.
+          if (membership != null && memberManagement.isNotEmpty) ...[
             UmojaCard(
               padding: EdgeInsets.zero,
               child: ListTile(

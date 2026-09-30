@@ -102,7 +102,14 @@ class AppShell extends ConsumerWidget {
               showMoreSheet(
                 context,
                 overflowDestinations: mobileOverflowDestinations(destinations),
-                showMemberManagement: membership != null,
+                showMyProfile: membership != null,
+                // Prompt 09G-B2 §F2: an ordinary member with none of
+                // member.view/member.invite/member.claim.approve must
+                // not see an empty Member Management entry here either.
+                showMemberManagement: memberManagementChildren(
+                  context.l10n,
+                  membership: membership,
+                ).isNotEmpty,
               );
               return;
             }

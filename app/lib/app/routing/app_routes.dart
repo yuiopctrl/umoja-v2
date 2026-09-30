@@ -97,6 +97,12 @@ class AppRoutes {
   /// for the narrow breakpoint where that space isn't available.
   static const memberManagement = '/member-management';
 
+  /// Prompt 09G-B2: the caller's OWN account + membership details for
+  /// the currently selected group — no membership/group UUID in the
+  /// route; `selectedGroupProvider` remains the sole source of which
+  /// group's profile this resolves.
+  static const myProfile = '/me/profile';
+
   static const membersList = '/members';
   static const memberNew = '/members/new';
 

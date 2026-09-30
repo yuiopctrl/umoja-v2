@@ -1,7 +1,10 @@
+import 'package:umoja/features/member_profile/data/member_profile_repository.dart';
+import 'package:umoja/features/member_profile/providers/member_profile_repository_provider.dart';
 import 'package:umoja/features/membership_invitations/data/membership_invitation_repository.dart';
 import 'package:umoja/features/membership_invitations/providers/membership_invitation_repository_provider.dart';
 import 'package:umoja/features/security/providers/has_pin_credential_provider.dart';
 
+import 'fake_member_profile_repository.dart';
 import 'fake_membership_invitation_repository.dart';
 
 /// Standard overrides for widget tests that need to reach past the PIN
@@ -23,15 +26,23 @@ import 'fake_membership_invitation_repository.dart';
 /// provider a second time — Riverpod 3.x throws on a duplicate override
 /// within the same container.
 ///
+/// Same rationale for [MemberProfileRepository]/[memberProfileRepository]
+/// (Prompt 09G-B2): Home watches `myMemberProfileProvider` on every app
+/// boot too.
+///
 /// No explicit return type: `Override` isn't part of riverpod 3.x's
 /// public export surface, so this relies on type inference rather than
 /// naming it.
 // ignore: strict_top_level_inference
 pinBypassOverrides({
   MembershipInvitationRepository? membershipInvitationRepository,
+  MemberProfileRepository? memberProfileRepository,
 }) => [
   hasPinCredentialProvider.overrideWith((ref) async => true),
   membershipInvitationRepositoryProvider.overrideWithValue(
     membershipInvitationRepository ?? FakeMembershipInvitationRepository(),
+  ),
+  memberProfileRepositoryProvider.overrideWithValue(
+    memberProfileRepository ?? FakeMemberProfileRepository(),
   ),
 ];

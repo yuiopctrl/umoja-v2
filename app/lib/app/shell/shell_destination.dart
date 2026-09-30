@@ -152,29 +152,37 @@ class MemberManagementChild {
 
 /// The Member Management group's children, permission-gated
 /// individually — never by role name. Members (the directory itself)
-/// is unconditionally included whenever [membership] is non-null,
-/// preserving the member directory's existing, ungated visibility
-/// (Prompt 09G-B1-F-UAT-FIX-03 §C/§F) — it is never hidden from an
-/// ordinary member who is otherwise allowed to view it. Invite Member
-/// and Sent Invitations require `member.invite`; Membership Requests
-/// requires `member.claim.approve`. Never empty when [membership] is
-/// non-null (Members alone guarantees at least one child), so callers
-/// never need to render an empty expandable group.
+/// requires `member.view` (Prompt 09G-B2 §F — an ordinary member
+/// without it must not see the Members directory anywhere); Invite
+/// Member and Sent Invitations require `member.invite`; Membership
+/// Requests requires `member.claim.approve`. May be EMPTY when
+/// [membership] holds none of those permissions — callers must check
+/// `.isEmpty` before rendering an entry point to this group at all
+/// (see `app_shell.dart`'s `memberManagementChildren.isNotEmpty` guard
+/// and the equivalent checks in `more_screen.dart`/`more_sheet.dart`),
+/// never showing an empty Member Management container/menu.
 List<MemberManagementChild> memberManagementChildren(
   AppLocalizations l10n, {
   MembershipContext? membership,
 }) {
   if (membership == null) return const [];
 
+  final canView = membership.hasPermission('member.view');
   final canInvite = membership.hasPermission('member.invite');
   final canReviewClaims = membership.hasPermission('member.claim.approve');
 
   return [
-    MemberManagementChild(
-      path: AppRoutes.membersList,
-      label: l10n.membersTitle,
-      icon: Icons.people_alt_outlined,
-    ),
+    // Prompt 09G-B2 §F: an ordinary member without member.view must
+    // not see the Members directory anywhere, including here — this
+    // list is the single source every Member Management surface
+    // (desktop sidebar, mobile screen, More sheet) renders from, so
+    // gating it here is sufficient for all of them at once.
+    if (canView)
+      MemberManagementChild(
+        path: AppRoutes.membersList,
+        label: l10n.membersTitle,
+        icon: Icons.people_alt_outlined,
+      ),
     if (canInvite)
       MemberManagementChild(
         path: AppRoutes.membershipInvite,

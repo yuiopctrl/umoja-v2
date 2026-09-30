@@ -13,6 +13,7 @@ import '../../../core/widgets/umoja_status_badge.dart';
 import '../../auth/models/membership_context.dart';
 import '../../auth/providers/app_context_provider.dart';
 import '../../auth/providers/selected_group_provider.dart';
+import '../../member_profile/providers/my_member_profile_provider.dart';
 import '../../members/presentation/widgets/member_role_label.dart';
 import '../../members/presentation/widgets/member_status_badge.dart';
 import '../../membership_invitations/providers/my_membership_invitations_provider.dart';
@@ -71,6 +72,12 @@ class HomeScreen extends ConsumerWidget {
             .value
             ?.pendingActionableCount ??
         0;
+    // Prompt 09G-B2 §G: member_number isn't part of MembershipContext/
+    // rpc_get_my_context (that RPC is out of this phase's scope) — the
+    // already-built My Profile RPC is the authoritative source for it.
+    // `.value` is null while loading/on error, which simply omits the
+    // line rather than showing a stale/fabricated number.
+    final memberNumber = ref.watch(myMemberProfileProvider).value?.memberNumber;
     final l10n = context.l10n;
 
     final membership = selectedState is SelectedGroupResolved
@@ -167,7 +174,25 @@ class HomeScreen extends ConsumerWidget {
                         ),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
+                if (memberNumber != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    '${l10n.myProfileMemberNumberLabel}: $memberNumber',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
               ],
+            ),
+          ),
+          const SizedBox(height: UmojaSpacing.lg),
+          UmojaCard(
+            key: const Key('homeMyProfileShortcut'),
+            padding: EdgeInsets.zero,
+            child: UmojaListTile(
+              leading: const Icon(Icons.account_circle_outlined),
+              title: l10n.homeMyProfileLinkTitle,
+              subtitle: Text(l10n.homeMyProfileLinkSubtitle),
+              onTap: () => context.push(AppRoutes.myProfile),
             ),
           ),
           const SizedBox(height: UmojaSpacing.xxl),

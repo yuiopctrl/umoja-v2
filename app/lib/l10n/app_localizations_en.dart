@@ -452,6 +452,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get memberManagementSubtitle => 'Members, invitations, and requests';
 
   @override
+  String get myProfileTitle => 'My Profile';
+
+  @override
+  String get myProfileAction => 'My Profile';
+
+  @override
+  String get myProfileMembershipSectionTitle => 'Membership';
+
+  @override
+  String get myProfileRoleSectionTitle => 'Role in This Group';
+
+  @override
+  String get myProfileGroupCodeLabel => 'Group Code';
+
+  @override
+  String get myProfileMemberNumberLabel => 'Member Number';
+
+  @override
+  String get myProfileStatusLabel => 'Status';
+
+  @override
+  String get myProfileJoinedLabel => 'Joined';
+
+  @override
+  String get myProfileEditAction => 'Edit Profile';
+
+  @override
+  String get myProfileFullNameLabel => 'Full Name';
+
+  @override
+  String get myProfileSaveAction => 'Save';
+
+  @override
+  String get myProfileSaveSuccess => 'Profile updated.';
+
+  @override
+  String get myProfileLoadFailedMessage => 'Could not load your profile.';
+
+  @override
+  String get homeMyProfileLinkTitle => 'My Profile';
+
+  @override
+  String get homeMyProfileLinkSubtitle => 'View and edit your account details';
+
+  @override
   String get membershipInvitationsEmptyTitle => 'No Invitations Yet';
 
   @override

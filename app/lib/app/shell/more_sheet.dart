@@ -22,6 +22,7 @@ void showMoreSheet(
   BuildContext context, {
   required List<ShellDestination> overflowDestinations,
   required bool showMemberManagement,
+  required bool showMyProfile,
 }) {
   showModalBottomSheet<void>(
     context: context,
@@ -29,6 +30,7 @@ void showMoreSheet(
     builder: (context) => _MoreSheet(
       overflowDestinations: overflowDestinations,
       showMemberManagement: showMemberManagement,
+      showMyProfile: showMyProfile,
     ),
   );
 }
@@ -37,10 +39,12 @@ class _MoreSheet extends StatelessWidget {
   const _MoreSheet({
     required this.overflowDestinations,
     required this.showMemberManagement,
+    required this.showMyProfile,
   });
 
   final List<ShellDestination> overflowDestinations;
   final bool showMemberManagement;
+  final bool showMyProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +71,16 @@ class _MoreSheet extends StatelessWidget {
                 ),
               ),
             ),
+            if (showMyProfile)
+              ListTile(
+                key: const Key('moreSheetMyProfile'),
+                leading: const Icon(Icons.account_circle_outlined),
+                title: Text(l10n.myProfileAction),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  context.push(AppRoutes.myProfile);
+                },
+              ),
             if (showMemberManagement)
               ListTile(
                 key: const Key('moreSheetMemberManagement'),

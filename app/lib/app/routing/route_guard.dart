@@ -243,6 +243,22 @@ String? computeRedirect({
   }
 
   if (selectedGroup is SelectedGroupResolved) {
+    // Prompt 09G-B2 §F1: an ordinary member without `member.view` must
+    // not reach the Members DIRECTORY (the list screen itself) by any
+    // path, including a direct URL/deep link/browser back-forward —
+    // not just by hiding its nav entry points. Deliberately the exact
+    // list route only, never every `/members/*` sub-route: member
+    // detail/charges/etc. are independently reachable by an officer
+    // holding a different, narrower permission (e.g. payment.view)
+    // without also holding member.view — each such sub-route already
+    // re-checks its own permission regardless of how it was reached
+    // (see MemberDetailScreen's own Charges-entry gating), matching
+    // this project's "nav guard ≠ enforcement" convention.
+    if (currentLocation == AppRoutes.membersList &&
+        !selectedGroup.membership.hasPermission('member.view')) {
+      return AppRoutes.home;
+    }
+
     // Once resolved, the user is free to navigate within the
     // operational area (home, members, ...) — only redirect them here
     // from a pre-operational route (splash, auth, onboarding, access,
@@ -274,6 +290,14 @@ String? computeRedirect({
   return currentLocation == target ? null : target;
 }
 
+/// Whether [location] is `/members` or a sub-route of it — used by
+/// the `member.view` denial check above, kept separate from
+/// [_isOperationalRoute] so that check can run before the general
+/// allowlist.
+bool _isMembersRoute(String location) =>
+    location == AppRoutes.membersList ||
+    location.startsWith('${AppRoutes.membersList}/');
+
 /// Routes reachable once a group is resolved — the operational
 /// (non-onboarding, non-auth) part of the app.
 bool _isOperationalRoute(String location) {
@@ -284,6 +308,10 @@ bool _isOperationalRoute(String location) {
       // way as the destinations it links to (each of which re-checks
       // its own permission regardless of how it was reached).
       location == AppRoutes.memberManagement ||
+      // Prompt 09G-B2: the caller's own profile — always reachable
+      // once a group is resolved, no permission gate (it is inherently
+      // self-scoped, never another member's data).
+      location == AppRoutes.myProfile ||
       // Prompt 09G-B1-D4 §J: once linked, the claimant's own claim
       // history remains reachable as secondary information (e.g. from
       // Member Home's own quick-access card) — deliberately NOT
@@ -292,8 +320,7 @@ bool _isOperationalRoute(String location) {
       // auto-redirecting a now-linked user away (§I: "linked member
       // opening /membership/link should be redirected appropriately").
       location == AppRoutes.membershipClaims ||
-      location == AppRoutes.membersList ||
-      location.startsWith('${AppRoutes.membersList}/') ||
+      _isMembersRoute(location) ||
       location == AppRoutes.contributionsHome ||
       location.startsWith('${AppRoutes.contributionsHome}/') ||
       location == AppRoutes.financialAccountsList ||

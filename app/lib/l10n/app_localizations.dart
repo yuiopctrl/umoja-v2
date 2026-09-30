@@ -908,6 +908,96 @@ abstract class AppLocalizations {
   /// **'Wanachama, mialiko, na maombi'**
   String get memberManagementSubtitle;
 
+  /// No description provided for @myProfileTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wasifu Wangu'**
+  String get myProfileTitle;
+
+  /// No description provided for @myProfileAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wasifu Wangu'**
+  String get myProfileAction;
+
+  /// No description provided for @myProfileMembershipSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Uanachama'**
+  String get myProfileMembershipSectionTitle;
+
+  /// No description provided for @myProfileRoleSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nafasi Yako Katika Kikundi Hiki'**
+  String get myProfileRoleSectionTitle;
+
+  /// No description provided for @myProfileGroupCodeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nambari ya Kikundi'**
+  String get myProfileGroupCodeLabel;
+
+  /// No description provided for @myProfileMemberNumberLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Namba ya Mwanachama'**
+  String get myProfileMemberNumberLabel;
+
+  /// No description provided for @myProfileStatusLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali'**
+  String get myProfileStatusLabel;
+
+  /// No description provided for @myProfileJoinedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Alijiunga'**
+  String get myProfileJoinedLabel;
+
+  /// No description provided for @myProfileEditAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hariri Wasifu'**
+  String get myProfileEditAction;
+
+  /// No description provided for @myProfileFullNameLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jina Kamili'**
+  String get myProfileFullNameLabel;
+
+  /// No description provided for @myProfileSaveAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hifadhi'**
+  String get myProfileSaveAction;
+
+  /// No description provided for @myProfileSaveSuccess.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wasifu umesasishwa.'**
+  String get myProfileSaveSuccess;
+
+  /// No description provided for @myProfileLoadFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imeshindikana kupakia wasifu wako.'**
+  String get myProfileLoadFailedMessage;
+
+  /// No description provided for @homeMyProfileLinkTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wasifu Wangu'**
+  String get homeMyProfileLinkTitle;
+
+  /// No description provided for @homeMyProfileLinkSubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia na hariri maelezo ya akaunti yako'**
+  String get homeMyProfileLinkSubtitle;
+
   /// No description provided for @membershipInvitationsEmptyTitle.
   ///
   /// In sw, this message translates to:
