@@ -312,6 +312,12 @@ bool _isOperationalRoute(String location) {
       // once a group is resolved, no permission gate (it is inherently
       // self-scoped, never another member's data).
       location == AppRoutes.myProfile ||
+      // Prompt 09G-B3-C: the caller's own financial statement —
+      // reachable once a group is resolved, same self-scoped
+      // treatment as myProfile above. The backend RPC itself is the
+      // real authorization boundary (financial_report.self_view) —
+      // this is reachability only.
+      location == AppRoutes.myStatement ||
       // Prompt 09G-B1-D4 §J: once linked, the claimant's own claim
       // history remains reachable as secondary information (e.g. from
       // Member Home's own quick-access card) — deliberately NOT

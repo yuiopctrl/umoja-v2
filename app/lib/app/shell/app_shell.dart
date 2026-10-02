@@ -103,6 +103,9 @@ class AppShell extends ConsumerWidget {
                 context,
                 overflowDestinations: mobileOverflowDestinations(destinations),
                 showMyProfile: membership != null,
+                showFinancialStatement:
+                    membership?.hasPermission('financial_report.self_view') ??
+                    false,
                 // Prompt 09G-B2 §F2: an ordinary member with none of
                 // member.view/member.invite/member.claim.approve must
                 // not see an empty Member Management entry here either.

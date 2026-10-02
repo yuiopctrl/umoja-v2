@@ -998,6 +998,168 @@ abstract class AppLocalizations {
   /// **'Angalia na hariri maelezo ya akaunti yako'**
   String get homeMyProfileLinkSubtitle;
 
+  /// No description provided for @financialStatementTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Taarifa ya Fedha'**
+  String get financialStatementTitle;
+
+  /// No description provided for @homeFinancialStatementLinkTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Taarifa ya Fedha'**
+  String get homeFinancialStatementLinkTitle;
+
+  /// No description provided for @homeFinancialStatementLinkSubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Michango, malipo, mikopo, na salio lako'**
+  String get homeFinancialStatementLinkSubtitle;
+
+  /// No description provided for @moreFinancialStatementAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Taarifa ya Fedha'**
+  String get moreFinancialStatementAction;
+
+  /// No description provided for @statementCurrentPositionSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali ya Sasa'**
+  String get statementCurrentPositionSectionTitle;
+
+  /// No description provided for @statementOpeningPositionSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali ya Mwanzo'**
+  String get statementOpeningPositionSectionTitle;
+
+  /// No description provided for @statementClosingPositionSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali ya Mwisho'**
+  String get statementClosingPositionSectionTitle;
+
+  /// No description provided for @statementAsOfLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kufikia {date}'**
+  String statementAsOfLabel(String date);
+
+  /// No description provided for @statementWalletSectionLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio'**
+  String get statementWalletSectionLabel;
+
+  /// No description provided for @statementCurrentOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi Kinachodaiwa Sasa'**
+  String get statementCurrentOutstandingLabel;
+
+  /// No description provided for @statementLastPaymentSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo ya Mwisho'**
+  String get statementLastPaymentSectionTitle;
+
+  /// No description provided for @statementNoPaymentsYetMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Bado hakuna malipo.'**
+  String get statementNoPaymentsYetMessage;
+
+  /// No description provided for @homeMyFinancialPositionSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali Yangu ya Fedha'**
+  String get homeMyFinancialPositionSectionTitle;
+
+  /// No description provided for @homeViewFinancialStatementAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia Taarifa ya Fedha'**
+  String get homeViewFinancialStatementAction;
+
+  /// No description provided for @homeFinancialSummaryLoadFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imeshindikana kupakia muhtasari wa fedha.'**
+  String get homeFinancialSummaryLoadFailedMessage;
+
+  /// No description provided for @statementFromDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kuanzia'**
+  String get statementFromDateLabel;
+
+  /// No description provided for @statementToDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hadi'**
+  String get statementToDateLabel;
+
+  /// No description provided for @statementApplyFilterAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tumia'**
+  String get statementApplyFilterAction;
+
+  /// No description provided for @statementAllActivityAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Shughuli Zote'**
+  String get statementAllActivityAction;
+
+  /// No description provided for @statementFromAfterToError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya kuanzia haiwezi kuwa baada ya tarehe ya mwisho.'**
+  String get statementFromAfterToError;
+
+  /// No description provided for @statementNoActivityMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna shughuli za kifedha bado.'**
+  String get statementNoActivityMessage;
+
+  /// No description provided for @statementNoActivityFilteredMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna shughuli za kifedha katika kipindi hiki.'**
+  String get statementNoActivityFilteredMessage;
+
+  /// No description provided for @statementLoadFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imeshindikana kupakia taarifa yako ya fedha.'**
+  String get statementLoadFailedMessage;
+
+  /// No description provided for @statementNextPageFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imeshindikana kupakia shughuli zaidi. Tafadhali jaribu tena.'**
+  String get statementNextPageFailedMessage;
+
+  /// No description provided for @statementPaymentActivityTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo'**
+  String get statementPaymentActivityTitle;
+
+  /// No description provided for @statementAllocationsLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mgawanyo'**
+  String get statementAllocationsLabel;
+
+  /// No description provided for @statementActivityTimelineTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Shughuli'**
+  String get statementActivityTimelineTitle;
+
   /// No description provided for @membershipInvitationsEmptyTitle.
   ///
   /// In sw, this message translates to:

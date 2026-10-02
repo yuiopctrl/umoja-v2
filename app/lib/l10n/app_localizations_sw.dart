@@ -497,6 +497,95 @@ class AppLocalizationsSw extends AppLocalizations {
       'Angalia na hariri maelezo ya akaunti yako';
 
   @override
+  String get financialStatementTitle => 'Taarifa ya Fedha';
+
+  @override
+  String get homeFinancialStatementLinkTitle => 'Taarifa ya Fedha';
+
+  @override
+  String get homeFinancialStatementLinkSubtitle =>
+      'Michango, malipo, mikopo, na salio lako';
+
+  @override
+  String get moreFinancialStatementAction => 'Taarifa ya Fedha';
+
+  @override
+  String get statementCurrentPositionSectionTitle => 'Hali ya Sasa';
+
+  @override
+  String get statementOpeningPositionSectionTitle => 'Hali ya Mwanzo';
+
+  @override
+  String get statementClosingPositionSectionTitle => 'Hali ya Mwisho';
+
+  @override
+  String statementAsOfLabel(String date) {
+    return 'Kufikia $date';
+  }
+
+  @override
+  String get statementWalletSectionLabel => 'Salio';
+
+  @override
+  String get statementCurrentOutstandingLabel => 'Kiasi Kinachodaiwa Sasa';
+
+  @override
+  String get statementLastPaymentSectionTitle => 'Malipo ya Mwisho';
+
+  @override
+  String get statementNoPaymentsYetMessage => 'Bado hakuna malipo.';
+
+  @override
+  String get homeMyFinancialPositionSectionTitle => 'Hali Yangu ya Fedha';
+
+  @override
+  String get homeViewFinancialStatementAction => 'Angalia Taarifa ya Fedha';
+
+  @override
+  String get homeFinancialSummaryLoadFailedMessage =>
+      'Imeshindikana kupakia muhtasari wa fedha.';
+
+  @override
+  String get statementFromDateLabel => 'Kuanzia';
+
+  @override
+  String get statementToDateLabel => 'Hadi';
+
+  @override
+  String get statementApplyFilterAction => 'Tumia';
+
+  @override
+  String get statementAllActivityAction => 'Shughuli Zote';
+
+  @override
+  String get statementFromAfterToError =>
+      'Tarehe ya kuanzia haiwezi kuwa baada ya tarehe ya mwisho.';
+
+  @override
+  String get statementNoActivityMessage => 'Hakuna shughuli za kifedha bado.';
+
+  @override
+  String get statementNoActivityFilteredMessage =>
+      'Hakuna shughuli za kifedha katika kipindi hiki.';
+
+  @override
+  String get statementLoadFailedMessage =>
+      'Imeshindikana kupakia taarifa yako ya fedha.';
+
+  @override
+  String get statementNextPageFailedMessage =>
+      'Imeshindikana kupakia shughuli zaidi. Tafadhali jaribu tena.';
+
+  @override
+  String get statementPaymentActivityTitle => 'Malipo';
+
+  @override
+  String get statementAllocationsLabel => 'Mgawanyo';
+
+  @override
+  String get statementActivityTimelineTitle => 'Shughuli';
+
+  @override
   String get membershipInvitationsEmptyTitle => 'Bado Hakuna Mialiko';
 
   @override

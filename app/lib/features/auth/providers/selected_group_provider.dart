@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../member_statement/providers/member_statement_query_provider.dart';
 import '../../members/providers/members_query_provider.dart';
 import '../models/membership_context.dart';
 import 'app_context_provider.dart';
@@ -75,6 +76,10 @@ class SelectedGroupNotifier extends Notifier<SelectedGroupState> {
       if (candidate.membershipId == membershipId) {
         state = SelectedGroupResolved(candidate);
         ref.invalidate(membersQueryProvider);
+        // Prompt 09G-B3-C §P/§Q: a previously-loaded page count/date
+        // filter from the old group must never carry into the newly-
+        // selected one — same rationale as membersQueryProvider above.
+        ref.invalidate(memberStatementQueryProvider);
         return;
       }
     }

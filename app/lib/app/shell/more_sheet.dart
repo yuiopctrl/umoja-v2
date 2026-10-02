@@ -23,6 +23,7 @@ void showMoreSheet(
   required List<ShellDestination> overflowDestinations,
   required bool showMemberManagement,
   required bool showMyProfile,
+  required bool showFinancialStatement,
 }) {
   showModalBottomSheet<void>(
     context: context,
@@ -31,6 +32,7 @@ void showMoreSheet(
       overflowDestinations: overflowDestinations,
       showMemberManagement: showMemberManagement,
       showMyProfile: showMyProfile,
+      showFinancialStatement: showFinancialStatement,
     ),
   );
 }
@@ -40,11 +42,13 @@ class _MoreSheet extends StatelessWidget {
     required this.overflowDestinations,
     required this.showMemberManagement,
     required this.showMyProfile,
+    required this.showFinancialStatement,
   });
 
   final List<ShellDestination> overflowDestinations;
   final bool showMemberManagement;
   final bool showMyProfile;
+  final bool showFinancialStatement;
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +83,16 @@ class _MoreSheet extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).pop();
                   context.push(AppRoutes.myProfile);
+                },
+              ),
+            if (showFinancialStatement)
+              ListTile(
+                key: const Key('moreSheetFinancialStatement'),
+                leading: const Icon(Icons.receipt_long_outlined),
+                title: Text(l10n.moreFinancialStatementAction),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  context.push(AppRoutes.myStatement);
                 },
               ),
             if (showMemberManagement)

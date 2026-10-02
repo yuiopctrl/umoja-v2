@@ -6,14 +6,20 @@ import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/utils/title_case.dart';
+import '../../../core/widgets/umoja_buttons.dart';
 import '../../../core/widgets/umoja_card.dart';
+import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_list_tile.dart';
+import '../../../core/widgets/umoja_loading_state.dart';
 import '../../../core/widgets/umoja_page.dart';
 import '../../../core/widgets/umoja_status_badge.dart';
 import '../../auth/models/membership_context.dart';
 import '../../auth/providers/app_context_provider.dart';
 import '../../auth/providers/selected_group_provider.dart';
 import '../../member_profile/providers/my_member_profile_provider.dart';
+import '../../member_statement/presentation/widgets/statement_last_payment_card.dart';
+import '../../member_statement/presentation/widgets/statement_position_cards.dart';
+import '../../member_statement/providers/home_financial_summary_provider.dart';
 import '../../members/presentation/widgets/member_role_label.dart';
 import '../../members/presentation/widgets/member_status_badge.dart';
 import '../../membership_invitations/providers/my_membership_invitations_provider.dart';
@@ -195,6 +201,17 @@ class HomeScreen extends ConsumerWidget {
               onTap: () => context.push(AppRoutes.myProfile),
             ),
           ),
+          // Prompt 09G-B3-C/B3-D §F/§G/§N: self-scoped, gated on
+          // financial_report.self_view (never loan.view/payment.view/
+          // contribution.view/an officer permission, and never a role
+          // name) — a member feature, discoverable from Home exactly
+          // like My Profile, never buried inside officer-only Member
+          // Management. A dual-role officer sees exactly this same
+          // section (their OWN position), never a group-wide total.
+          if (membership.hasPermission('financial_report.self_view')) ...[
+            const SizedBox(height: UmojaSpacing.xxl),
+            const _HomeFinancialSummarySection(),
+          ],
           const SizedBox(height: UmojaSpacing.xxl),
           if (membership.hasPermission('member.view'))
             UmojaCard(
@@ -291,6 +308,66 @@ class HomeScreen extends ConsumerWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+/// Prompt 09G-B3-D: Home's financial summary — reads
+/// [homeFinancialSummaryProvider] (NEVER
+/// `myMemberStatementProvider`/`memberStatementQueryProvider`; see that
+/// provider's own doc comment) and renders only the exact canonical
+/// values `rpc_get_my_member_statement` returns: the three independent
+/// current positions ([StatementCurrentPositionSection], reused
+/// unchanged from the Financial Statement screen — never a second
+/// implementation) and `summary.last_payment`
+/// ([StatementLastPaymentSection]). No activity timeline, no
+/// opening/closing period positions (Home has no date filter), and no
+/// synthetic cross-domain total — this is a summary layer over the
+/// same backend derivation, never a parallel accounting engine.
+class _HomeFinancialSummarySection extends ConsumerWidget {
+  const _HomeFinancialSummarySection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final summaryAsync = ref.watch(homeFinancialSummaryProvider);
+
+    return Column(
+      key: const Key('homeFinancialSummarySection'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.homeMyFinancialPositionSectionTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: UmojaSpacing.md),
+        summaryAsync.when(
+          loading: () =>
+              const SizedBox(height: 180, child: UmojaLoadingState(rows: 3)),
+          error: (error, stackTrace) => UmojaErrorState(
+            message: l10n.homeFinancialSummaryLoadFailedMessage,
+            retryLabel: l10n.retryButton,
+            onRetry: () => ref.invalidate(homeFinancialSummaryProvider),
+          ),
+          data: (statement) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              StatementCurrentPositionSection(summary: statement.summary),
+              const SizedBox(height: UmojaSpacing.xxl),
+              StatementLastPaymentSection(
+                lastPayment: statement.summary.lastPayment,
+              ),
+              const SizedBox(height: UmojaSpacing.lg),
+              UmojaSecondaryButton(
+                key: const Key('homeViewFinancialStatementAction'),
+                label: l10n.homeViewFinancialStatementAction,
+                onPressed: () => context.push(AppRoutes.myStatement),
+                expand: true,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

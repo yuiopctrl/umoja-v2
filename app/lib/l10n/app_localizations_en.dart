@@ -497,6 +497,95 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeMyProfileLinkSubtitle => 'View and edit your account details';
 
   @override
+  String get financialStatementTitle => 'Financial Statement';
+
+  @override
+  String get homeFinancialStatementLinkTitle => 'Financial Statement';
+
+  @override
+  String get homeFinancialStatementLinkSubtitle =>
+      'Your contributions, payments, loans, and wallet';
+
+  @override
+  String get moreFinancialStatementAction => 'Financial Statement';
+
+  @override
+  String get statementCurrentPositionSectionTitle => 'Current Position';
+
+  @override
+  String get statementOpeningPositionSectionTitle => 'Opening Position';
+
+  @override
+  String get statementClosingPositionSectionTitle => 'Closing Position';
+
+  @override
+  String statementAsOfLabel(String date) {
+    return 'As of $date';
+  }
+
+  @override
+  String get statementWalletSectionLabel => 'Wallet';
+
+  @override
+  String get statementCurrentOutstandingLabel => 'Current Outstanding';
+
+  @override
+  String get statementLastPaymentSectionTitle => 'Last Payment';
+
+  @override
+  String get statementNoPaymentsYetMessage => 'No payments yet.';
+
+  @override
+  String get homeMyFinancialPositionSectionTitle => 'My Financial Position';
+
+  @override
+  String get homeViewFinancialStatementAction => 'View Financial Statement';
+
+  @override
+  String get homeFinancialSummaryLoadFailedMessage =>
+      'Unable to load financial summary.';
+
+  @override
+  String get statementFromDateLabel => 'From';
+
+  @override
+  String get statementToDateLabel => 'To';
+
+  @override
+  String get statementApplyFilterAction => 'Apply';
+
+  @override
+  String get statementAllActivityAction => 'All Activity';
+
+  @override
+  String get statementFromAfterToError =>
+      'The start date must not be after the end date.';
+
+  @override
+  String get statementNoActivityMessage => 'No financial activity yet.';
+
+  @override
+  String get statementNoActivityFilteredMessage =>
+      'No financial activity in this date range.';
+
+  @override
+  String get statementLoadFailedMessage =>
+      'Could not load your financial statement.';
+
+  @override
+  String get statementNextPageFailedMessage =>
+      'Could not load more activity. Please try again.';
+
+  @override
+  String get statementPaymentActivityTitle => 'Payment';
+
+  @override
+  String get statementAllocationsLabel => 'Allocations';
+
+  @override
+  String get statementActivityTimelineTitle => 'Activity';
+
+  @override
   String get membershipInvitationsEmptyTitle => 'No Invitations Yet';
 
   @override

@@ -80,6 +80,7 @@ import '../../features/membership_invitations/presentation/membership_invitation
 import '../../features/membership_invitations/presentation/open_invitation_link_screen.dart';
 import '../../features/membership_invitations/presentation/personal_invitations_screen.dart';
 import '../../features/member_profile/presentation/my_profile_screen.dart';
+import '../../features/member_statement/presentation/member_statement_screen.dart';
 import '../../features/more/presentation/member_management_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/onboarding/presentation/group_onboarding_screen.dart';
@@ -368,6 +369,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.myProfile,
             builder: (context, state) => const MyProfileScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.myStatement,
+            builder: (context, state) => const MemberStatementScreen(),
           ),
           GoRoute(
             path: AppRoutes.contributionsHome,

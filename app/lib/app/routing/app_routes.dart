@@ -103,6 +103,13 @@ class AppRoutes {
   /// group's profile this resolves.
   static const myProfile = '/me/profile';
 
+  /// Prompt 09G-B3-C: the caller's OWN cross-domain financial
+  /// statement (contributions/payments/loans/wallet) for the currently
+  /// selected group — no membership/group UUID in the route, same
+  /// convention as [myProfile]; `selectedGroupProvider` remains the
+  /// sole source of which group's statement this resolves.
+  static const myStatement = '/me/statement';
+
   static const membersList = '/members';
   static const memberNew = '/members/new';
 

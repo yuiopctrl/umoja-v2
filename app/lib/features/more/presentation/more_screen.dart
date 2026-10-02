@@ -131,6 +131,23 @@ class MoreScreen extends ConsumerWidget {
             ),
             const SizedBox(height: UmojaSpacing.xxl),
           ],
+          // Prompt 09G-B3-C §F/§G: gated on financial_report.self_view
+          // — never loan.view/payment.view/contribution.view/an
+          // officer permission, never a role name.
+          if (membership != null &&
+              membership.hasPermission('financial_report.self_view')) ...[
+            UmojaCard(
+              padding: EdgeInsets.zero,
+              child: ListTile(
+                key: const Key('moreFinancialStatementAction'),
+                leading: const Icon(Icons.receipt_long_outlined),
+                title: Text(l10n.moreFinancialStatementAction),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push(AppRoutes.myStatement),
+              ),
+            ),
+            const SizedBox(height: UmojaSpacing.xxl),
+          ],
           // Prompt 09G-B1-F-UAT-FIX-03 §E/§H, 09G-B2 §F2: the mobile
           // entry point for Members/Invite Member/Sent Invitations/
           // Membership Requests — group-scoped, so only offered once a
