@@ -24,27 +24,15 @@ class StatementCurrentPositionSection extends StatelessWidget {
     final l10n = context.l10n;
     return UmojaSection(
       title: l10n.statementCurrentPositionSectionTitle,
-      child: _PositionCardRow(
-        cards: [
-          _PositionCard(
-            key: const Key('statementCurrentContributions'),
-            label: l10n.contributionsTitle,
-            amountLabel: l10n.statementCurrentOutstandingLabel,
-            amount: summary.contributionsCurrentOutstanding,
-          ),
-          _PositionCard(
-            key: const Key('statementCurrentLoans'),
-            label: l10n.loansTitle,
-            amountLabel: l10n.statementCurrentOutstandingLabel,
-            amount: summary.loansCurrentOutstanding,
-          ),
-          _PositionCard(
-            key: const Key('statementCurrentWallet'),
-            label: l10n.statementWalletSectionLabel,
-            amountLabel: l10n.walletBalanceLabel,
-            amount: summary.walletCurrentBalance,
-          ),
-        ],
+      child: UmojaCard(
+        child: StatementPositionMetrics(
+          contributionsOutstanding: summary.contributionsCurrentOutstanding,
+          loansOutstanding: summary.loansCurrentOutstanding,
+          walletBalance: summary.walletCurrentBalance,
+          contributionsKey: const Key('statementCurrentContributions'),
+          loansKey: const Key('statementCurrentLoans'),
+          walletKey: const Key('statementCurrentWallet'),
+        ),
       ),
     );
   }
@@ -72,89 +60,131 @@ class StatementPeriodPositionSection extends StatelessWidget {
         l10n.statementAsOfLabel(_dateFormat.format(position.asOfDate)),
         style: Theme.of(context).textTheme.bodySmall,
       ),
-      child: _PositionCardRow(
-        cards: [
-          _PositionCard(
-            label: l10n.contributionsTitle,
-            amountLabel: l10n.chargeOutstandingLabel,
-            amount: position.contributionsOutstanding,
-          ),
-          _PositionCard(
-            label: l10n.loansTitle,
-            amountLabel: l10n.chargeOutstandingLabel,
-            amount: position.loansOutstanding,
-          ),
-          _PositionCard(
-            label: l10n.statementWalletSectionLabel,
-            amountLabel: l10n.walletBalanceLabel,
-            amount: position.walletBalance,
-          ),
-        ],
+      child: UmojaCard(
+        child: StatementPositionMetrics(
+          contributionsOutstanding: position.contributionsOutstanding,
+          loansOutstanding: position.loansOutstanding,
+          walletBalance: position.walletBalance,
+        ),
       ),
     );
   }
 }
 
-class _PositionCardRow extends StatelessWidget {
-  const _PositionCardRow({required this.cards});
+/// Prompt 09G-B3-UX-01 §F: the ONE reusable position component shared
+/// by Home's current position, Statement's Current Position, and
+/// Statement's Opening/Closing positions — three independent rows
+/// (never a fourth, netted figure) inside whatever single surface the
+/// caller wraps this in, rather than each domain getting its own
+/// narrow bordered card. Mobile stacks the three as label/amount rows
+/// using the surface's full width (so large values like
+/// "33,921,875" never need to shrink to fit); tablet/desktop may use
+/// a 3-column layout within that SAME surface.
+class StatementPositionMetrics extends StatelessWidget {
+  const StatementPositionMetrics({
+    super.key,
+    required this.contributionsOutstanding,
+    required this.loansOutstanding,
+    required this.walletBalance,
+    this.contributionsKey,
+    this.loansKey,
+    this.walletKey,
+  });
 
-  final List<Widget> cards;
+  final double contributionsOutstanding;
+  final double loansOutstanding;
+  final double walletBalance;
+  final Key? contributionsKey;
+  final Key? loansKey;
+  final Key? walletKey;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isMobile = UmojaBreakpoints.isMobile(
       MediaQuery.sizeOf(context).width,
     );
+    final metrics = [
+      (
+        contributionsKey,
+        l10n.statementContributionsOutstandingLabel,
+        contributionsOutstanding,
+      ),
+      (loansKey, l10n.statementLoansOutstandingLabel, loansOutstanding),
+      (walletKey, l10n.statementWalletBalanceLabel, walletBalance),
+    ];
+
     if (isMobile) {
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (final (i, card) in cards.indexed) ...[
-            if (i > 0) const SizedBox(height: UmojaSpacing.md),
-            card,
+          for (final (i, m) in metrics.indexed) ...[
+            if (i > 0) const SizedBox(height: UmojaSpacing.sm),
+            _MetricRow(key: m.$1, label: m.$2, amount: m.$3),
           ],
         ],
       );
     }
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final (i, card) in cards.indexed) ...[
-          if (i > 0) const SizedBox(width: UmojaSpacing.md),
-          Expanded(child: card),
+        for (final (i, m) in metrics.indexed) ...[
+          if (i > 0) const SizedBox(width: UmojaSpacing.xl),
+          Expanded(
+            child: _MetricColumn(key: m.$1, label: m.$2, amount: m.$3),
+          ),
         ],
       ],
     );
   }
 }
 
-class _PositionCard extends StatelessWidget {
-  const _PositionCard({
-    super.key,
-    required this.label,
-    required this.amountLabel,
-    required this.amount,
-  });
+class _MetricRow extends StatelessWidget {
+  const _MetricRow({super.key, required this.label, required this.amount});
 
   final String label;
-  final String amountLabel;
   final double amount;
 
   @override
   Widget build(BuildContext context) {
-    return UmojaCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: Theme.of(context).textTheme.titleSmall),
-          const SizedBox(height: UmojaSpacing.sm),
-          Text(
-            formatAmount(amount),
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 2),
-          Text(amountLabel, style: Theme.of(context).textTheme.bodySmall),
-        ],
-      ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Text(label, style: Theme.of(context).textTheme.bodyMedium),
+        ),
+        const SizedBox(width: UmojaSpacing.sm),
+        Text(
+          formatAmount(amount),
+          style: Theme.of(context).textTheme.titleSmall
+              ?.copyWith(fontWeight: FontWeight.w700),
+          textAlign: TextAlign.right,
+        ),
+      ],
+    );
+  }
+}
+
+class _MetricColumn extends StatelessWidget {
+  const _MetricColumn({super.key, required this.label, required this.amount});
+
+  final String label;
+  final double amount;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: UmojaSpacing.xs),
+        Text(
+          formatAmount(amount),
+          style: Theme.of(context).textTheme.headlineSmall
+              ?.copyWith(fontWeight: FontWeight.w700),
+        ),
+      ],
     );
   }
 }

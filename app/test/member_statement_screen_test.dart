@@ -157,6 +157,19 @@ void main() {
     );
   });
 
+  // --- Naming (Prompt 09G-B3-UX-01-FIX-02 §F) -----------------------
+
+  testWidgets('the self-service statement screen title is "My Financial '
+      'Statement" — never the generic/officer-facing name', (tester) async {
+    final (router, _) = await _pumpApp(tester, memberships: [_membership()]);
+
+    router.go(AppRoutes.myStatement);
+    await tester.pumpAndSettle();
+
+    expect(find.text('My Financial Statement'), findsWidgets);
+    expect(find.text('Financial Statement'), findsNothing);
+  });
+
   // --- Header / current position ---------------------------------------
 
   testWidgets('4/5: correct member/group header and the three-domain '
@@ -313,9 +326,280 @@ void main() {
 
     expect(find.text('Payment'), findsOneWidget);
     expect(find.byType(OutlinedButton).hitTestable(), findsAny);
+
+    // Prompt 09G-B3-UX-01 §H (mandatory): allocations start collapsed —
+    // not findable until "View details" is tapped.
+    expect(find.text('45,000'), findsNothing);
+    expect(find.text('30,000'), findsNothing);
+    expect(find.byKey(const Key('statementAllocationsToggle')), findsOneWidget);
+    expect(find.text('2 allocations'), findsOneWidget);
+    expect(find.text('View details'), findsOneWidget);
+
+    await tester.ensureVisible(
+      find.byKey(const Key('statementAllocationsToggle')),
+    );
+    await tester.tap(find.byKey(const Key('statementAllocationsToggle')));
+    await tester.pumpAndSettle();
+
     expect(find.text('45,000'), findsOneWidget);
     expect(find.text('30,000'), findsOneWidget);
+    expect(find.text('Hide details'), findsOneWidget);
+
+    // Collapsing again hides them without creating/duplicating any
+    // activity row (still exactly one "Payment" item).
+    await tester.ensureVisible(
+      find.byKey(const Key('statementAllocationsToggle')),
+    );
+    await tester.tap(find.byKey(const Key('statementAllocationsToggle')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Payment'), findsOneWidget);
+    expect(find.text('45,000'), findsNothing);
+    expect(find.text('30,000'), findsNothing);
   });
+
+  testWidgets(
+    'Prompt 09G-B3-UX-01-FIX-01: expanded allocations show real charge '
+    'titles and classifications, not a bare repeated "Contribution"/'
+    '"Loan" — and loan principal/interest/prepayment stay distinct',
+    (tester) async {
+      final (router, _) = await _pumpApp(
+        tester,
+        memberships: [_membership()],
+        statementRepo: FakeMemberStatementRepository(
+          statement: fakeMemberFinancialStatement(
+            items: [
+              fakePaymentActivityItem(
+                allocations: [
+                  {
+                    'amount': 3000,
+                    'target_type': 'CONTRIBUTION_COMPONENT',
+                    'charge_id': 'c1',
+                    'charge_component_id': 'cc1',
+                    'loan_account_id': null,
+                    'loan_installment_id': null,
+                    'period_label': 'Ada ya Septemba',
+                    'component_type': 'BASE',
+                  },
+                  {
+                    'amount': 6000,
+                    'target_type': 'CONTRIBUTION_COMPONENT',
+                    'charge_id': 'c2',
+                    'charge_component_id': 'cc2',
+                    'loan_account_id': null,
+                    'loan_installment_id': null,
+                    'period_label': 'Mkutano Mkuu',
+                    'component_type': 'PENALTY',
+                  },
+                  {
+                    'amount': 250000,
+                    'target_type': 'LOAN_PRINCIPAL',
+                    'charge_id': null,
+                    'charge_component_id': null,
+                    'loan_account_id': 'loan-1',
+                    'loan_installment_id': 'inst-1',
+                  },
+                  {
+                    'amount': 187500,
+                    'target_type': 'LOAN_INTEREST',
+                    'charge_id': null,
+                    'charge_component_id': null,
+                    'loan_account_id': 'loan-1',
+                    'loan_installment_id': 'inst-1',
+                  },
+                  {
+                    'amount': 75250,
+                    'target_type': 'LOAN_PRINCIPAL_PREPAYMENT',
+                    'charge_id': null,
+                    'charge_component_id': null,
+                    'loan_account_id': 'loan-2',
+                    'loan_installment_id': null,
+                  },
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+
+      router.go(AppRoutes.myStatement);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(
+        find.byKey(const Key('statementAllocationsToggle')),
+      );
+      await tester.tap(find.byKey(const Key('statementAllocationsToggle')));
+      await tester.pumpAndSettle();
+
+      // 6/7: the two contribution allocations show their real charge
+      // titles, not a generic "Contribution" — and are distinguishable
+      // from each other.
+      expect(find.text('Ada ya Septemba'), findsOneWidget);
+      expect(find.text('Mkutano Mkuu'), findsOneWidget);
+      expect(find.text('Contributions'), findsNothing);
+
+      // 8: BASE vs PENALTY classifications remain distinguishable as
+      // the secondary line.
+      expect(find.text('Base'), findsOneWidget);
+      expect(find.text('Penalty'), findsOneWidget);
+
+      // 9/10: loan principal/interest allocations keep their canonical
+      // distinct labels, never collapsed to generic "Loan".
+      expect(find.text('Principal'), findsOneWidget);
+      expect(find.text('Interest'), findsOneWidget);
+      expect(find.text('Loan'), findsNothing);
+
+      // A prepayment allocation is distinguishable from an ordinary
+      // principal allocation (never both labeled plain "Principal").
+      expect(find.text('Principal Prepayment'), findsOneWidget);
+
+      // 12: allocation amounts are exactly what was supplied.
+      expect(find.text('3,000'), findsOneWidget);
+      expect(find.text('6,000'), findsOneWidget);
+      expect(find.text('250,000'), findsOneWidget);
+      expect(find.text('187,500'), findsOneWidget);
+      expect(find.text('75,250'), findsOneWidget);
+
+      // 11/14: still exactly one PAYMENT activity row — expanding
+      // allocations never creates a second one, and a prepayment never
+      // becomes an independent monetary activity.
+      expect(find.text('Payment'), findsOneWidget);
+    },
+  );
+
+  testWidgets('a contribution allocation from before the enrichment (no '
+      'period_label/component_type) falls back to the prior generic '
+      'rendering, never a crash or fabricated title', (tester) async {
+    final (router, _) = await _pumpApp(
+      tester,
+      memberships: [_membership()],
+      statementRepo: FakeMemberStatementRepository(
+        statement: fakeMemberFinancialStatement(
+          items: [
+            fakePaymentActivityItem(
+              allocations: [
+                {
+                  'amount': 3000,
+                  'target_type': 'CONTRIBUTION_COMPONENT',
+                  'charge_id': 'c1',
+                  'charge_component_id': 'cc1',
+                  'loan_account_id': null,
+                  'loan_installment_id': null,
+                },
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+
+    router.go(AppRoutes.myStatement);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(
+      find.byKey(const Key('statementAllocationsToggle')),
+    );
+    await tester.tap(find.byKey(const Key('statementAllocationsToggle')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Contributions'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'Prompt 09G-B3-UX-01-FIX-02 §H6: two allocations with the IDENTICAL '
+    'amount and component type remain distinguishable by period_label',
+    (tester) async {
+      final (router, _) = await _pumpApp(
+        tester,
+        memberships: [_membership()],
+        statementRepo: FakeMemberStatementRepository(
+          statement: fakeMemberFinancialStatement(
+            items: [
+              fakePaymentActivityItem(
+                allocations: [
+                  {
+                    'amount': 3000,
+                    'target_type': 'CONTRIBUTION_COMPONENT',
+                    'charge_id': 'c1',
+                    'charge_component_id': 'cc1',
+                    'loan_account_id': null,
+                    'loan_installment_id': null,
+                    'period_label': 'Ada ya Septemba',
+                    'component_type': 'BASE',
+                  },
+                  {
+                    'amount': 3000,
+                    'target_type': 'CONTRIBUTION_COMPONENT',
+                    'charge_id': 'c2',
+                    'charge_component_id': 'cc2',
+                    'loan_account_id': null,
+                    'loan_installment_id': null,
+                    'period_label': 'Ada ya Oktoba',
+                    'component_type': 'BASE',
+                  },
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+
+      router.go(AppRoutes.myStatement);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(
+        find.byKey(const Key('statementAllocationsToggle')),
+      );
+      await tester.tap(find.byKey(const Key('statementAllocationsToggle')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Ada ya Septemba'), findsOneWidget);
+      expect(find.text('Ada ya Oktoba'), findsOneWidget);
+      expect(find.text('Base'), findsNWidgets(2));
+      expect(find.text('3,000'), findsNWidgets(2));
+    },
+  );
+
+  testWidgets(
+    'Prompt 09G-B3-UX-01-FIX-02 §H10: 360px with expanded contribution '
+    'allocations (real period labels) has no layout overflow',
+    (tester) async {
+      final (router, _) = await _pumpApp(
+        tester,
+        memberships: [_membership()],
+        viewSize: const Size(360, 800),
+        statementRepo: FakeMemberStatementRepository(
+          statement: fakeMemberFinancialStatement(
+            items: [
+              fakePaymentActivityItem(
+                allocations: [
+                  {
+                    'amount': 123456,
+                    'target_type': 'CONTRIBUTION_COMPONENT',
+                    'charge_id': 'c1',
+                    'charge_component_id': 'cc1',
+                    'loan_account_id': null,
+                    'loan_installment_id': null,
+                    'period_label':
+                        'A Rather Long Contribution Period Label For September',
+                    'component_type': 'PENALTY',
+                  },
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+
+      router.go(AppRoutes.myStatement);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(
+        find.byKey(const Key('statementAllocationsToggle')),
+      );
+      await tester.tap(find.byKey(const Key('statementAllocationsToggle')));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('14: a reversed payment is visibly identifiable', (tester) async {
     final (router, _) = await _pumpApp(
@@ -355,8 +639,11 @@ void main() {
     router.go(AppRoutes.myStatement);
     await tester.pumpAndSettle();
 
-    expect(find.text('LN-001'), findsOneWidget);
-    expect(find.text('LN-002'), findsOneWidget);
+    // Prompt 09G-B3-UX-01 §G: the loan number is now shown inline with
+    // the date on a compact single "d MMM • LN-001" row rather than its
+    // own separate line — still visibly distinguishable per loan.
+    expect(find.textContaining('LN-001'), findsOneWidget);
+    expect(find.textContaining('LN-002'), findsOneWidget);
   });
 
   testWidgets('17: wallet activity renders', (tester) async {
@@ -606,6 +893,6 @@ void main() {
     router.go(AppRoutes.myStatement);
     await tester.pumpAndSettle();
 
-    expect(find.text('Taarifa ya Fedha'), findsWidgets);
+    expect(find.text('Taarifa Yangu ya Fedha'), findsWidgets);
   });
 }

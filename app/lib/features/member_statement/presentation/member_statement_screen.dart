@@ -91,29 +91,41 @@ class _MemberStatementContentState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            UmojaCard(
+            // Prompt 09G-B3-UX-01 §E: a compact identity block — no
+            // card border (§J: a border communicates grouping; plain
+            // identity text doesn't need one). Member name is the
+            // prominent line; member number + group are secondary,
+            // combined onto one line.
+            Column(
               key: const Key('statementHeaderCard'),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    statement.group.groupName,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    statement.member.displayName,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  if (statement.member.memberNumber != null)
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  statement.member.displayName,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  children: [
+                    if (statement.member.memberNumber != null) ...[
+                      Text(
+                        statement.member.memberNumber!,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Text(
+                        '  •  ',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
                     Text(
-                      statement.member.memberNumber!,
+                      statement.group.groupName,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
-            const SizedBox(height: UmojaSpacing.xxl),
+            const SizedBox(height: UmojaSpacing.xl),
             const _DateRangeFilter(),
             const SizedBox(height: UmojaSpacing.xxl),
             StatementCurrentPositionSection(summary: statement.summary),
@@ -150,10 +162,15 @@ class _MemberStatementContentState
                     : l10n.statementNoActivityMessage,
               )
             else ...[
-              for (final item in statement.activity.items) ...[
-                StatementActivityTile(item: item),
-                const SizedBox(height: UmojaSpacing.sm),
-              ],
+              UmojaCard(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: UmojaSpacing.lg,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _buildActivityRows(statement.activity.items),
+                ),
+              ),
               if (nextPageAsync.hasError && _loadingMore == false)
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -191,6 +208,29 @@ class _MemberStatementContentState
       ),
     );
   }
+}
+
+/// Builds the activity feed's rows: a month-group heading whenever the
+/// month changes, a thin divider between consecutive items (never
+/// around every item — Prompt 09G-B3-UX-01 §G/§J), and one
+/// [StatementActivityTile] per item — in the EXACT order [items] is
+/// already in (never re-sorted/re-grouped/filtered; this only inserts
+/// presentational headers/dividers between them).
+List<Widget> _buildActivityRows(List<MemberStatementActivityItem> items) {
+  final rows = <Widget>[];
+  DateTime? lastMonth;
+  for (var i = 0; i < items.length; i++) {
+    final item = items[i];
+    final month = DateTime(item.effectiveDate.year, item.effectiveDate.month);
+    if (lastMonth == null || month != lastMonth) {
+      rows.add(StatementMonthHeader(month: month));
+    } else {
+      rows.add(const Divider(height: 1));
+    }
+    rows.add(StatementActivityTile(item: item));
+    lastMonth = month;
+  }
+  return rows;
 }
 
 class _DateRangeFilter extends ConsumerStatefulWidget {
@@ -262,6 +302,13 @@ class _DateRangeFilterState extends ConsumerState<_DateRangeFilter> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            l10n.statementPeriodLabel,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: UmojaSpacing.sm),
           Wrap(
             spacing: UmojaSpacing.md,
             runSpacing: UmojaSpacing.sm,

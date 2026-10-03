@@ -200,6 +200,8 @@ class MemberStatementAllocation {
     this.chargeComponentId,
     this.loanAccountId,
     this.loanInstallmentId,
+    this.periodLabel,
+    this.componentType,
   });
 
   factory MemberStatementAllocation.fromJson(Map<String, dynamic> json) {
@@ -210,6 +212,8 @@ class MemberStatementAllocation {
       chargeComponentId: json['charge_component_id'] as String?,
       loanAccountId: json['loan_account_id'] as String?,
       loanInstallmentId: json['loan_installment_id'] as String?,
+      periodLabel: json['period_label'] as String?,
+      componentType: json['component_type'] as String?,
     );
   }
 
@@ -225,6 +229,18 @@ class MemberStatementAllocation {
   final String? chargeComponentId;
   final String? loanAccountId;
   final String? loanInstallmentId;
+
+  /// Prompt 09G-B3-UX-01-FIX-01 §E: the contribution period's real
+  /// persisted `label` (e.g. "Ada ya Septemba") — null for a LOAN_*
+  /// allocation (no charge on those rows) and, defensively, for any
+  /// response from before this additive enrichment reached the
+  /// caller's environment.
+  final String? periodLabel;
+
+  /// The persisted `contribution_charge_components.component_type`
+  /// (BASE/PENALTY/ADJUSTMENT/WAIVER/OPENING_BALANCE) — null for a
+  /// LOAN_* allocation, same defensive-null reasoning as [periodLabel].
+  final String? componentType;
 
   bool get isContribution => targetType == 'CONTRIBUTION_COMPONENT';
   bool get isLoan => !isContribution;

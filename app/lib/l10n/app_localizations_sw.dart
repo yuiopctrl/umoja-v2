@@ -497,7 +497,7 @@ class AppLocalizationsSw extends AppLocalizations {
       'Angalia na hariri maelezo ya akaunti yako';
 
   @override
-  String get financialStatementTitle => 'Taarifa ya Fedha';
+  String get financialStatementTitle => 'Taarifa Yangu ya Fedha';
 
   @override
   String get homeFinancialStatementLinkTitle => 'Taarifa ya Fedha';
@@ -507,7 +507,7 @@ class AppLocalizationsSw extends AppLocalizations {
       'Michango, malipo, mikopo, na salio lako';
 
   @override
-  String get moreFinancialStatementAction => 'Taarifa ya Fedha';
+  String get moreFinancialStatementAction => 'Taarifa Yangu ya Fedha';
 
   @override
   String get statementCurrentPositionSectionTitle => 'Hali ya Sasa';
@@ -530,6 +530,15 @@ class AppLocalizationsSw extends AppLocalizations {
   String get statementCurrentOutstandingLabel => 'Kiasi Kinachodaiwa Sasa';
 
   @override
+  String get statementContributionsOutstandingLabel => 'Michango inayodaiwa';
+
+  @override
+  String get statementLoansOutstandingLabel => 'Mikopo inayodaiwa';
+
+  @override
+  String get statementWalletBalanceLabel => 'Salio la mkoba';
+
+  @override
   String get statementLastPaymentSectionTitle => 'Malipo ya Mwisho';
 
   @override
@@ -539,11 +548,21 @@ class AppLocalizationsSw extends AppLocalizations {
   String get homeMyFinancialPositionSectionTitle => 'Hali Yangu ya Fedha';
 
   @override
-  String get homeViewFinancialStatementAction => 'Angalia Taarifa ya Fedha';
+  String get homeQuickActionsSectionTitle => 'Vitendo vya Haraka';
+
+  @override
+  String get homeManageGroupSectionTitle => 'Simamia Kikundi';
+
+  @override
+  String get homeViewFinancialStatementAction =>
+      'Angalia Taarifa Yangu ya Fedha';
 
   @override
   String get homeFinancialSummaryLoadFailedMessage =>
       'Imeshindikana kupakia muhtasari wa fedha.';
+
+  @override
+  String get statementPeriodLabel => 'Kipindi';
 
   @override
   String get statementFromDateLabel => 'Kuanzia';
@@ -581,6 +600,17 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get statementAllocationsLabel => 'Mgawanyo';
+
+  @override
+  String statementAllocationsCount(Object count) {
+    return 'Mgawanyo $count';
+  }
+
+  @override
+  String get statementViewDetailsAction => 'Angalia maelezo';
+
+  @override
+  String get statementHideDetailsAction => 'Ficha maelezo';
 
   @override
   String get statementActivityTimelineTitle => 'Shughuli';

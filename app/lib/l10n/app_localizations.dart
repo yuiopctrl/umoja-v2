@@ -1001,7 +1001,7 @@ abstract class AppLocalizations {
   /// No description provided for @financialStatementTitle.
   ///
   /// In sw, this message translates to:
-  /// **'Taarifa ya Fedha'**
+  /// **'Taarifa Yangu ya Fedha'**
   String get financialStatementTitle;
 
   /// No description provided for @homeFinancialStatementLinkTitle.
@@ -1019,7 +1019,7 @@ abstract class AppLocalizations {
   /// No description provided for @moreFinancialStatementAction.
   ///
   /// In sw, this message translates to:
-  /// **'Taarifa ya Fedha'**
+  /// **'Taarifa Yangu ya Fedha'**
   String get moreFinancialStatementAction;
 
   /// No description provided for @statementCurrentPositionSectionTitle.
@@ -1058,6 +1058,24 @@ abstract class AppLocalizations {
   /// **'Kiasi Kinachodaiwa Sasa'**
   String get statementCurrentOutstandingLabel;
 
+  /// No description provided for @statementContributionsOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Michango inayodaiwa'**
+  String get statementContributionsOutstandingLabel;
+
+  /// No description provided for @statementLoansOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mikopo inayodaiwa'**
+  String get statementLoansOutstandingLabel;
+
+  /// No description provided for @statementWalletBalanceLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio la mkoba'**
+  String get statementWalletBalanceLabel;
+
   /// No description provided for @statementLastPaymentSectionTitle.
   ///
   /// In sw, this message translates to:
@@ -1076,10 +1094,22 @@ abstract class AppLocalizations {
   /// **'Hali Yangu ya Fedha'**
   String get homeMyFinancialPositionSectionTitle;
 
+  /// No description provided for @homeQuickActionsSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Vitendo vya Haraka'**
+  String get homeQuickActionsSectionTitle;
+
+  /// No description provided for @homeManageGroupSectionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Simamia Kikundi'**
+  String get homeManageGroupSectionTitle;
+
   /// No description provided for @homeViewFinancialStatementAction.
   ///
   /// In sw, this message translates to:
-  /// **'Angalia Taarifa ya Fedha'**
+  /// **'Angalia Taarifa Yangu ya Fedha'**
   String get homeViewFinancialStatementAction;
 
   /// No description provided for @homeFinancialSummaryLoadFailedMessage.
@@ -1087,6 +1117,12 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Imeshindikana kupakia muhtasari wa fedha.'**
   String get homeFinancialSummaryLoadFailedMessage;
+
+  /// No description provided for @statementPeriodLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi'**
+  String get statementPeriodLabel;
 
   /// No description provided for @statementFromDateLabel.
   ///
@@ -1153,6 +1189,24 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Mgawanyo'**
   String get statementAllocationsLabel;
+
+  /// No description provided for @statementAllocationsCount.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mgawanyo {count}'**
+  String statementAllocationsCount(Object count);
+
+  /// No description provided for @statementViewDetailsAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia maelezo'**
+  String get statementViewDetailsAction;
+
+  /// No description provided for @statementHideDetailsAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ficha maelezo'**
+  String get statementHideDetailsAction;
 
   /// No description provided for @statementActivityTimelineTitle.
   ///

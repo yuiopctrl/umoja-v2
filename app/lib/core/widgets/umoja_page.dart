@@ -38,6 +38,7 @@ class UmojaPage extends StatelessWidget {
     this.automaticallyImplyLeading = true,
     this.backTo,
     this.backLabel,
+    this.showTitleOnMobile = true,
   }) : assert(
          backTo == null || backLabel != null,
          'backLabel is required whenever backTo is set (used for the '
@@ -67,6 +68,16 @@ class UmojaPage extends StatelessWidget {
   /// "Wanachama"). Required when [backTo] is set.
   final String? backLabel;
 
+  /// Prompt 09G-B3-UX-01-FIX-01 §A: a shell-root screen's inline
+  /// [UmojaPageHeader] title normally shows on every breakpoint,
+  /// mobile included (see class doc). A screen whose mobile body
+  /// already opens with its own heading-equivalent content (e.g.
+  /// Home's greeting) can set this `false` to suppress JUST the
+  /// mobile copy of that title — tablet/desktop keep it unchanged,
+  /// since there it remains the page's only heading. Defaults to
+  /// `true` (today's behavior) for every other screen.
+  final bool showTitleOnMobile;
+
   @override
   Widget build(BuildContext context) {
     final isMobile = UmojaBreakpoints.isMobile(
@@ -81,7 +92,7 @@ class UmojaPage extends StatelessWidget {
     // its own second app bar — its title always lives inline instead.
     final isShellRoot =
         backTo == null && !(automaticallyImplyLeading && canPop);
-    final showInlineHeader = !isMobile || isShellRoot;
+    final showInlineHeader = !isMobile || (isShellRoot && showTitleOnMobile);
 
     // The FAB is a mobile affordance only — wide viewports get the
     // equivalent action via [headerTrailing] in the inline page header

@@ -497,7 +497,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeMyProfileLinkSubtitle => 'View and edit your account details';
 
   @override
-  String get financialStatementTitle => 'Financial Statement';
+  String get financialStatementTitle => 'My Financial Statement';
 
   @override
   String get homeFinancialStatementLinkTitle => 'Financial Statement';
@@ -507,7 +507,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your contributions, payments, loans, and wallet';
 
   @override
-  String get moreFinancialStatementAction => 'Financial Statement';
+  String get moreFinancialStatementAction => 'My Financial Statement';
 
   @override
   String get statementCurrentPositionSectionTitle => 'Current Position';
@@ -530,6 +530,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statementCurrentOutstandingLabel => 'Current Outstanding';
 
   @override
+  String get statementContributionsOutstandingLabel =>
+      'Contributions outstanding';
+
+  @override
+  String get statementLoansOutstandingLabel => 'Loans outstanding';
+
+  @override
+  String get statementWalletBalanceLabel => 'Wallet balance';
+
+  @override
   String get statementLastPaymentSectionTitle => 'Last Payment';
 
   @override
@@ -539,11 +549,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeMyFinancialPositionSectionTitle => 'My Financial Position';
 
   @override
-  String get homeViewFinancialStatementAction => 'View Financial Statement';
+  String get homeQuickActionsSectionTitle => 'Quick Actions';
+
+  @override
+  String get homeManageGroupSectionTitle => 'Manage Group';
+
+  @override
+  String get homeViewFinancialStatementAction => 'View My Financial Statement';
 
   @override
   String get homeFinancialSummaryLoadFailedMessage =>
       'Unable to load financial summary.';
+
+  @override
+  String get statementPeriodLabel => 'Period';
 
   @override
   String get statementFromDateLabel => 'From';
@@ -581,6 +600,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statementAllocationsLabel => 'Allocations';
+
+  @override
+  String statementAllocationsCount(Object count) {
+    return '$count allocations';
+  }
+
+  @override
+  String get statementViewDetailsAction => 'View details';
+
+  @override
+  String get statementHideDetailsAction => 'Hide details';
 
   @override
   String get statementActivityTimelineTitle => 'Activity';

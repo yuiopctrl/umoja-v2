@@ -321,7 +321,9 @@ void main() {
     await tester.tap(find.byKey(const Key('homeViewFinancialStatementAction')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Financial Statement'), findsOneWidget);
+    // Prompt 09G-B3-UX-01-FIX-02 §F: renamed to "My Financial
+    // Statement" — the self-service screen only.
+    expect(find.text('My Financial Statement'), findsOneWidget);
   });
 
   for (final width in [360.0, 1024.0, 1440.0]) {
@@ -347,7 +349,7 @@ void main() {
     );
 
     expect(find.text('Hali Yangu ya Fedha'), findsOneWidget);
-    expect(find.text('Angalia Taarifa ya Fedha'), findsOneWidget);
+    expect(find.text('Angalia Taarifa Yangu ya Fedha'), findsOneWidget);
   });
 
   testWidgets('11: a backend failure on Home shows a retry state, not a '

@@ -114,7 +114,10 @@ void main() {
 
       expect(find.textContaining('Amina'), findsWidgets);
       expect(find.text('Umoja Wamama'), findsWidgets);
-      expect(find.text('Member Home'), findsOneWidget);
+      // Prompt 09G-B3-UX-01-FIX-01 §A: the redundant mobile page
+      // heading ("Member Home") is gone — the bottom nav's "Home" tab
+      // label is the only "Home"-ish text, never "Member Home" itself.
+      expect(find.text('Member Home'), findsNothing);
     });
 
     testWidgets('29/30/31: no fake future-module cards (Contributions/Loans/'
@@ -158,11 +161,11 @@ void main() {
         'checks, never a role-name comparison', (tester) async {
       await _pumpHome(tester, _officer());
 
-      // "Home" appears twice for an officer: the shell's own bottom-nav
-      // tab label (always "Home", regardless of page content) and the
-      // page title itself — unlike "Member Home", which only ever
-      // appears as the page title.
-      expect(find.text('Home'), findsNWidgets(2));
+      // Prompt 09G-B3-UX-01-FIX-01 §A: "Home" now appears exactly
+      // once on mobile — the shell's own bottom-nav tab label. The
+      // redundant inline page-title copy is gone (tablet/desktop keep
+      // it; this test runs at the default mobile viewport).
+      expect(find.text('Home'), findsOneWidget);
       expect(find.text('Member Home'), findsNothing);
       expect(find.byKey(const Key('homeMembersShortcut')), findsOneWidget);
       expect(
@@ -176,6 +179,50 @@ void main() {
         find.byKey(const Key('memberHomeClaimHistoryShortcut')),
         findsNothing,
       );
+    });
+  });
+
+  group('Quick Actions / Manage Group split (Prompt 09G-B3-UX-01 §D)', () {
+    testWidgets('an ordinary member with no operational capability sees '
+        '"Quick Actions" but no "Manage Group" heading (no empty section)', (
+      tester,
+    ) async {
+      await _pumpHome(tester, _plainMember());
+
+      expect(find.text('Quick Actions'), findsOneWidget);
+      expect(find.text('Manage Group'), findsNothing);
+    });
+
+    testWidgets('an officer sees both "Quick Actions" (My Profile) and '
+        '"Manage Group" (the operational modules) as two separate '
+        'tiers — derived from permissions, never a role name', (tester) async {
+      await _pumpHome(tester, _officer());
+
+      expect(find.text('Quick Actions'), findsOneWidget);
+      expect(find.text('Manage Group'), findsOneWidget);
+      expect(find.byKey(const Key('homeMyProfileShortcut')), findsOneWidget);
+    });
+  });
+
+  group('Mobile page-title removal (Prompt 09G-B3-UX-01-FIX-01 §A)', () {
+    testWidgets('mobile: no redundant "Home" page heading, but the '
+        'greeting still renders and the bottom-nav Home tab is intact', (
+      tester,
+    ) async {
+      await _pumpHome(tester, _officer(), viewSize: const Size(360, 800));
+
+      // Exactly one "Home" — the bottom-nav tab — never a second
+      // inline page-title copy.
+      expect(find.text('Home'), findsOneWidget);
+      expect(find.textContaining('Hi, Amina'), findsOneWidget);
+    });
+
+    testWidgets('tablet/desktop keep the inline page title unchanged', (
+      tester,
+    ) async {
+      await _pumpHome(tester, _officer(), viewSize: const Size(1024, 768));
+
+      expect(find.text('Home'), findsWidgets);
     });
   });
 
