@@ -4,7 +4,7 @@
 -- has_group_permission(), which every mutation RPC already gates on.
 begin;
 
-select plan(23);
+select plan(25);
 
 insert into auth.users (id, email) values
   ('c0000000-0000-0000-0000-000000000001', 'admin@example.com'),
@@ -233,11 +233,42 @@ select is(
 
 -- 19. An active profile with only a SUSPENDED membership can still
 -- create a separate new group and become its ADMIN.
+-- STAB-04: the new membership is identified by set difference over
+-- membership_id against the pre-call context (t_b_ctx), not by array
+-- position. This user holds a pre-existing SUSPENDED membership in the
+-- same transaction, and memberships are ordered by created_at, which is
+-- identical for rows created in one transaction, so position 0 can be the
+-- SUSPENDED membership rather than the new one.
+create temporary table t_b_before_ids as
+select (m ->> 'membership_id')::uuid as membership_id
+from jsonb_array_elements((select ctx from t_b_ctx) -> 'memberships') m;
+
 create temporary table t_b_new_group as
 select public.rpc_create_group('B''s New Group') as result;
 
+create temporary table t_b_new_membership as
+select (m ->> 'membership_id')::uuid as membership_id
+from jsonb_array_elements((select result from t_b_new_group) -> 'memberships') m
+except
+select membership_id from t_b_before_ids;
+
+select is(
+  (select count(*)::integer from t_b_new_membership), 1,
+  'a single rpc_create_group call adds exactly one membership to the caller context'
+);
+
+select isnt(
+  (select (m ->> 'group_id')::uuid
+     from jsonb_array_elements((select result from t_b_new_group) -> 'memberships') m
+     where (m ->> 'membership_id')::uuid = (select membership_id from t_b_new_membership)),
+  'c1000000-0000-0000-0000-000000000004'::uuid,
+  'the new membership belongs to the newly created group, not the SUSPENDED one'
+);
+
 select ok(
-  ((select result from t_b_new_group) -> 'memberships' -> 0 -> 'roles') @> '["ADMIN"]'::jsonb,
+  (select m -> 'roles'
+     from jsonb_array_elements((select result from t_b_new_group) -> 'memberships') m
+     where (m ->> 'membership_id')::uuid = (select membership_id from t_b_new_membership)) @> '["ADMIN"]'::jsonb,
   'a user with only a SUSPENDED membership can still create a new group and become its ADMIN'
 );
 

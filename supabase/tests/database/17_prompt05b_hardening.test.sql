@@ -15,7 +15,7 @@
 -- rpc_create_group_member) and is left as a follow-up.
 begin;
 
-select plan(20);
+select plan(25);
 
 insert into auth.users (id, email) values
   ('b1000000-0000-0000-0000-000000000001', 'hardening-admin@example.com');
@@ -60,53 +60,122 @@ set local request.jwt.claim.sub to 'b1000000-0000-0000-0000-000000000001';
 -- Group code generation: short names, punctuation, length bounds.
 -- =======================================================================
 
--- 1-2. A one-character sanitized name still produces a code that meets
--- groups_code_format (>= 2 chars) rather than hitting the raw CHECK
--- constraint.
+-- Group identity for tests 1-5 (STAB-02). rpc_create_group returns
+-- rpc_get_my_context(), which does not expose the new group's id
+-- directly, and memberships are ordered by created_at (identical for
+-- every row created in one transaction), so positional lookups such as
+-- memberships[-1] are not a reliable identity. Each create is therefore
+-- identified by set difference: caller group ids before the call,
+-- caller group ids after it, and the single id that appears only after.
+
+create temporary table t_before_short as
+select (m ->> 'group_id')::uuid as group_id
+from jsonb_array_elements((select public.rpc_get_my_context()) -> 'memberships') m;
+
 create temporary table t_short as
 select public.rpc_create_group('A') as ctx;
 
+create temporary table t_new_short as
+select (m ->> 'group_id')::uuid as group_id
+from jsonb_array_elements((select ctx from t_short) -> 'memberships') m
+except
+select group_id from t_before_short;
+
+select is(
+  (select count(*)::integer from t_new_short), 1,
+  'a single rpc_create_group call (short name) adds exactly one group to the caller context'
+);
+
+-- 1-2. A one-character sanitized name still produces a code that meets
+-- groups_code_format (>= 2 chars) rather than hitting the raw CHECK
+-- constraint.
 select ok(
-  (select (ctx -> 'memberships' -> -1 ->> 'group_id') is not null from t_short),
+  (select group_id is not null from t_new_short),
   'a one-character group name is accepted (no raw CHECK-constraint failure)'
 );
 
 select ok(
-  (select code from public.groups
-     where id = ((select ctx from t_short) -> 'memberships' -> -1 ->> 'group_id')::uuid) ~ '^[A-Z0-9]{2,10}$',
+  (select code from public.groups where id = (select group_id from t_new_short)) ~ '^[A-Z0-9]{2,10}$',
   'the derived code for a one-character name matches the required format'
 );
 
--- 3. A punctuation-heavy name sanitizes down to a valid code.
+create temporary table t_before_punct as
+select (m ->> 'group_id')::uuid as group_id
+from jsonb_array_elements((select public.rpc_get_my_context()) -> 'memberships') m;
+
 create temporary table t_punct as
 select public.rpc_create_group('!!! ---   ???') as ctx;
 
+create temporary table t_new_punct as
+select (m ->> 'group_id')::uuid as group_id
+from jsonb_array_elements((select ctx from t_punct) -> 'memberships') m
+except
+select group_id from t_before_punct;
+
+select is(
+  (select count(*)::integer from t_new_punct), 1,
+  'a single rpc_create_group call (punctuation name) adds exactly one group to the caller context'
+);
+
+-- 3. A punctuation-heavy name sanitizes down to a valid code.
 select ok(
-  (select code from public.groups
-     where id = ((select ctx from t_punct) -> 'memberships' -> -1 ->> 'group_id')::uuid) ~ '^[A-Z0-9]{2,10}$',
+  (select code from public.groups where id = (select group_id from t_new_punct)) ~ '^[A-Z0-9]{2,10}$',
   'a punctuation-only group name still produces a code matching the required format'
 );
 
 -- 4-5. Two groups created with the identical name get distinct,
 -- disambiguated codes, and the disambiguated code still matches the
 -- required format.
+create temporary table t_before_dup1 as
+select (m ->> 'group_id')::uuid as group_id
+from jsonb_array_elements((select public.rpc_get_my_context()) -> 'memberships') m;
+
 create temporary table t_dup1 as
 select public.rpc_create_group('Twin Group Name') as ctx;
+
+create temporary table t_new_dup1 as
+select (m ->> 'group_id')::uuid as group_id
+from jsonb_array_elements((select ctx from t_dup1) -> 'memberships') m
+except
+select group_id from t_before_dup1;
+
+select is(
+  (select count(*)::integer from t_new_dup1), 1,
+  'a single rpc_create_group call (first twin) adds exactly one group to the caller context'
+);
+
+create temporary table t_before_dup2 as
+select (m ->> 'group_id')::uuid as group_id
+from jsonb_array_elements((select public.rpc_get_my_context()) -> 'memberships') m;
 
 create temporary table t_dup2 as
 select public.rpc_create_group('Twin Group Name') as ctx;
 
+create temporary table t_new_dup2 as
+select (m ->> 'group_id')::uuid as group_id
+from jsonb_array_elements((select ctx from t_dup2) -> 'memberships') m
+except
+select group_id from t_before_dup2;
+
+select is(
+  (select count(*)::integer from t_new_dup2), 1,
+  'a single rpc_create_group call (second twin) adds exactly one group to the caller context'
+);
+
 select isnt(
-  (select code from public.groups
-     where id = ((select ctx from t_dup1) -> 'memberships' -> -1 ->> 'group_id')::uuid),
-  (select code from public.groups
-     where id = ((select ctx from t_dup2) -> 'memberships' -> -1 ->> 'group_id')::uuid),
+  (select group_id from t_new_dup1),
+  (select group_id from t_new_dup2),
+  'two groups created with the identical name are two distinct group IDs'
+);
+
+select isnt(
+  (select code from public.groups where id = (select group_id from t_new_dup1)),
+  (select code from public.groups where id = (select group_id from t_new_dup2)),
   'two groups created with the identical name get distinct codes'
 );
 
 select ok(
-  (select code from public.groups
-     where id = ((select ctx from t_dup2) -> 'memberships' -> -1 ->> 'group_id')::uuid) ~ '^[A-Z0-9]{2,10}$',
+  (select code from public.groups where id = (select group_id from t_new_dup2)) ~ '^[A-Z0-9]{2,10}$',
   'the disambiguated (suffixed) code still matches the required format'
 );
 

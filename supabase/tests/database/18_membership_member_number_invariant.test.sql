@@ -4,7 +4,7 @@
 -- member_number immutability through rpc_update_group_member.
 begin;
 
-select plan(14);
+select plan(15);
 
 insert into auth.users (id, email) values
   ('c1000000-0000-0000-0000-000000000001', 'invariant-founder@example.com');
@@ -17,14 +17,37 @@ set local request.jwt.claim.sub to 'c1000000-0000-0000-0000-000000000001';
 -- creation time, in the CODE-YEAR-0001 format, is still ACTIVE, and
 -- the founder still gets ADMIN.
 -- ---------------------------------------------------------------------
+-- STAB-03: the founder's group and membership are identified by set
+-- difference over membership_id, not by array position. memberships are
+-- ordered by created_at, which is identical for every row created in one
+-- transaction, so a positional lookup is not a deterministic identity.
+create temporary table t_before_founder as
+select (m ->> 'membership_id')::uuid as membership_id
+from jsonb_array_elements((select public.rpc_get_my_context()) -> 'memberships') m;
+
 create temporary table t_group as
 select public.rpc_create_group('Invariant Group A') as ctx;
 
+create temporary table t_new_founder as
+select (m ->> 'membership_id')::uuid as membership_id
+from jsonb_array_elements((select ctx from t_group) -> 'memberships') m
+except
+select membership_id from t_before_founder;
+
+select is(
+  (select count(*)::integer from t_new_founder), 1,
+  'a single rpc_create_group call adds exactly one membership to the caller context'
+);
+
 create temporary table t_founder as
 select
-  ((select ctx from t_group) -> 'memberships' -> -1 ->> 'group_id')::uuid as group_id,
-  ((select ctx from t_group) -> 'memberships' -> -1 ->> 'membership_id')::uuid as membership_id,
-  ((select ctx from t_group) -> 'memberships' -> -1 -> 'roles') as roles;
+  gm.id as membership_id,
+  gm.group_id as group_id,
+  (select m -> 'roles'
+     from jsonb_array_elements((select ctx from t_group) -> 'memberships') m
+     where m ->> 'membership_id' = gm.id::text) as roles
+from public.group_memberships gm
+where gm.id = (select membership_id from t_new_founder);
 
 select ok(
   (select member_number from public.group_memberships where id = (select membership_id from t_founder)) is not null,
