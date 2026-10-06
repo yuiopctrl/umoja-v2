@@ -75,9 +75,11 @@ class MemberStatementPeriodPosition {
           ((json['contributions'] as Map<String, dynamic>)['outstanding']
                   as num)
               .toDouble(),
-      loansOutstanding:
-          ((json['loans'] as Map<String, dynamic>)['outstanding'] as num)
-              .toDouble(),
+      // 09G-B5-A3 §T: null means the historical loan position is
+      // NOT_AVAILABLE for this cutoff — never a fabricated zero.
+      loansOutstanding: _nullableAmount(
+        (json['loans'] as Map<String, dynamic>)['outstanding'],
+      ),
       walletBalance:
           ((json['wallet'] as Map<String, dynamic>)['balance'] as num)
               .toDouble(),
@@ -86,9 +88,15 @@ class MemberStatementPeriodPosition {
 
   final DateTime asOfDate;
   final double contributionsOutstanding;
-  final double loansOutstanding;
+
+  /// `null` = NOT_AVAILABLE (the loan position cannot be reconstructed
+  /// for this cutoff). Never rendered as zero.
+  final double? loansOutstanding;
   final double walletBalance;
 }
+
+double? _nullableAmount(Object? value) =>
+    value == null ? null : (value as num).toDouble();
 
 /// `period` — `opening`/`closing` are `null` whenever the
 /// corresponding date bound wasn't supplied; a `null` here is never

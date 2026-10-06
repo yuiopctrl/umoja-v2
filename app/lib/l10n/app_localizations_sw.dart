@@ -4615,4 +4615,7 @@ class AppLocalizationsSw extends AppLocalizations {
   @override
   String get myContributionsNetworkMessage =>
       'Hitilafu ya mtandao. Angalia muunganisho wako ujaribu tena.';
+
+  @override
+  String get statementAmountUnavailableLabel => 'Haipatikani';
 }

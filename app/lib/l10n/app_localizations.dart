@@ -8437,6 +8437,12 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Hitilafu ya mtandao. Angalia muunganisho wako ujaribu tena.'**
   String get myContributionsNetworkMessage;
+
+  /// No description provided for @statementAmountUnavailableLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haipatikani'**
+  String get statementAmountUnavailableLabel;
 }
 
 class _AppLocalizationsDelegate

@@ -92,7 +92,9 @@ class StatementPositionMetrics extends StatelessWidget {
   });
 
   final double contributionsOutstanding;
-  final double loansOutstanding;
+
+  /// `null` renders as the localized "Not available" value (09G-B5-A3 §T).
+  final double? loansOutstanding;
   final double walletBalance;
   final Key? contributionsKey;
   final Key? loansKey;
@@ -104,7 +106,7 @@ class StatementPositionMetrics extends StatelessWidget {
     final isMobile = UmojaBreakpoints.isMobile(
       MediaQuery.sizeOf(context).width,
     );
-    final metrics = [
+    final metrics = <(Key?, String, double?)>[
       (
         contributionsKey,
         l10n.statementContributionsOutstandingLabel,
@@ -120,7 +122,12 @@ class StatementPositionMetrics extends StatelessWidget {
         children: [
           for (final (i, m) in metrics.indexed) ...[
             if (i > 0) const SizedBox(height: UmojaSpacing.sm),
-            _MetricRow(key: m.$1, label: m.$2, amount: m.$3),
+            _MetricRow(
+              key: m.$1,
+              label: m.$2,
+              amount: m.$3,
+              unavailableLabel: l10n.statementAmountUnavailableLabel,
+            ),
           ],
         ],
       );
@@ -132,7 +139,12 @@ class StatementPositionMetrics extends StatelessWidget {
         for (final (i, m) in metrics.indexed) ...[
           if (i > 0) const SizedBox(width: UmojaSpacing.xl),
           Expanded(
-            child: _MetricColumn(key: m.$1, label: m.$2, amount: m.$3),
+            child: _MetricColumn(
+              key: m.$1,
+              label: m.$2,
+              amount: m.$3,
+              unavailableLabel: l10n.statementAmountUnavailableLabel,
+            ),
           ),
         ],
       ],
@@ -141,10 +153,16 @@ class StatementPositionMetrics extends StatelessWidget {
 }
 
 class _MetricRow extends StatelessWidget {
-  const _MetricRow({super.key, required this.label, required this.amount});
+  const _MetricRow({
+    super.key,
+    required this.label,
+    required this.amount,
+    required this.unavailableLabel,
+  });
 
   final String label;
-  final double amount;
+  final double? amount;
+  final String unavailableLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +174,7 @@ class _MetricRow extends StatelessWidget {
         ),
         const SizedBox(width: UmojaSpacing.sm),
         Text(
-          formatAmount(amount),
+          amount == null ? unavailableLabel : formatAmount(amount!),
           style: Theme.of(context).textTheme.titleSmall
               ?.copyWith(fontWeight: FontWeight.w700),
           textAlign: TextAlign.right,
@@ -167,10 +185,16 @@ class _MetricRow extends StatelessWidget {
 }
 
 class _MetricColumn extends StatelessWidget {
-  const _MetricColumn({super.key, required this.label, required this.amount});
+  const _MetricColumn({
+    super.key,
+    required this.label,
+    required this.amount,
+    required this.unavailableLabel,
+  });
 
   final String label;
-  final double amount;
+  final double? amount;
+  final String unavailableLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +204,7 @@ class _MetricColumn extends StatelessWidget {
         Text(label, style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: UmojaSpacing.xs),
         Text(
-          formatAmount(amount),
+          amount == null ? unavailableLabel : formatAmount(amount!),
           style: Theme.of(context).textTheme.headlineSmall
               ?.copyWith(fontWeight: FontWeight.w700),
         ),

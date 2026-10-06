@@ -1652,5 +1652,6 @@
   "myContributionsNotAuthorizedMessage": "Huruhusiwi kuona michango yako.",
   "myContributionsNotFoundMessage": "Mchango huu haupatikani.",
   "myContributionsInvalidRequestMessage": "Tafadhali kagua vichujio vyako kisha ujaribu tena.",
-  "myContributionsNetworkMessage": "Hitilafu ya mtandao. Angalia muunganisho wako ujaribu tena."
+  "myContributionsNetworkMessage": "Hitilafu ya mtandao. Angalia muunganisho wako ujaribu tena.",
+  "statementAmountUnavailableLabel": "Haipatikani"
 }

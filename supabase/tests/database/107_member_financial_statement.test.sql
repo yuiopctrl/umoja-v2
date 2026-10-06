@@ -130,6 +130,10 @@ insert into public.loan_accounts (id, group_id, membership_id, loan_product_id, 
   ('10700000-0000-0000-0000-000000000704', '10700000-0000-0000-0000-000000000001', '10700000-0000-0000-0000-000000000102', '10700000-0000-0000-0000-000000000601', 'LN-STB3B-004', 20000, 0, 'MONTHLY', 'FLAT', 1, 'MONTH', 'MONTHLY', '2025-06-01', 'ACTIVE', 'MIGRATED');
 insert into public.loan_installments (id, group_id, loan_account_id, installment_number, due_date, principal_due, interest_due) values
   ('10700000-0000-0000-0000-000000000714', '10700000-0000-0000-0000-000000000001', '10700000-0000-0000-0000-000000000704', 1, '2025-06-01', 20000, 0);
+-- Every real MIGRATED loan carries its authoritative opening position
+-- (09G-B5-A3 §H). Without it the canonical position is NOT_AVAILABLE.
+insert into public.loan_opening_positions (group_id, loan_account_id, opening_as_of_date, original_disbursement_date, original_principal, opening_principal_outstanding, opening_principal_arrears, opening_interest_arrears, opening_penalty_arrears, future_scheduled_principal, future_scheduled_interest, remaining_installment_count) values
+  ('10700000-0000-0000-0000-000000000001', '10700000-0000-0000-0000-000000000704', '2025-06-01', '2025-05-01', 20000, 20000, 0, 0, 0, 20000, 0, 1);
 
 -- Prompt 09G-B3-B-FIX-02: Loan 5 — a dedicated narrative-only shell
 -- (no installments, no disbursement row) that exists solely to hold
@@ -887,15 +891,15 @@ select is(
 -- installments) and the new events contribute exactly 0.
 select is(
   (public.rpc_get_my_member_statement('10700000-0000-0000-0000-000000000001'::uuid, '2026-01-16'::date, null) -> 'period' -> 'opening' -> 'loans' ->> 'outstanding')::numeric,
-  98000::numeric,
-  '67: period.opening.loans.outstanding is unchanged at 98000 after adding the narrative-only Loan 5 (restructure) and Loan 6 (prepayment) shells — both contribute exactly 0'
+  88000::numeric,
+  '67: period.opening.loans.outstanding is 88000 under the 09G-B5-A3 earned-interest definition (was 98000: the 10000 of loan-1 interest due 2026-02-01 is unearned at this cutoff, so it is excluded) after adding the narrative-only Loan 5 (restructure) and Loan 6 (prepayment) shells — both contribute exactly 0'
 );
 
 -- 68: closing position is unchanged for the same reason.
 select is(
   (public.rpc_get_my_member_statement('10700000-0000-0000-0000-000000000001'::uuid, null, '2026-02-10'::date) -> 'period' -> 'closing' -> 'loans' ->> 'outstanding')::numeric,
-  97000::numeric,
-  '68: period.closing.loans.outstanding is unchanged at 97000 — the restructure (2026-02-12) and prepayment (2026-06-01) both postdate this cutoff, and the penalty-assessment branch never alters any outstanding derivation'
+  93000::numeric,
+  '68: period.closing.loans.outstanding is 93000 under the 09G-B5-A3 earned-interest definition (was 97000: the 4000 of loan-2 interest due 2026-03-01 is unearned at this cutoff) — the restructure (2026-02-12) and prepayment (2026-06-01) both postdate this cutoff, and the penalty-assessment branch never alters any outstanding derivation'
 );
 
 -- 69: current summary still reconciles exactly to the canonical
@@ -1037,7 +1041,7 @@ select is(
 -- loan-2 doesn't exist yet.
 select is(
   (public.rpc_get_my_member_statement('10700000-0000-0000-0000-000000000001'::uuid, '2026-01-16'::date, null) -> 'period' -> 'opening' -> 'loans' ->> 'outstanding')::numeric,
-  98000::numeric,
+  88000::numeric,
   'AO6: period.opening.loans.outstanding correctly includes the not-yet-written-off loan-3 and the always-present MIGRATED loan-4, excludes the not-yet-disbursed loan-2'
 );
 
@@ -1068,7 +1072,7 @@ select is(
 -- now exists too.
 select is(
   (public.rpc_get_my_member_statement('10700000-0000-0000-0000-000000000001'::uuid, null, '2026-02-10'::date) -> 'period' -> 'closing' -> 'loans' ->> 'outstanding')::numeric,
-  97000::numeric,
+  93000::numeric,
   'AO7/AO10/AO14: period.closing.loans.outstanding (35000 loan-1 + 24000 loan-2 + 18000 loan-3 + 20000 loan-4) is correct, proving effective_date (not created_at/assessment date past the cutoff) drives inclusion'
 );
 
@@ -1133,8 +1137,8 @@ select is(
 -- disbursement.
 select is(
   (public.rpc_get_my_member_statement('10700000-0000-0000-0000-000000000001'::uuid, '2020-01-02'::date, null) -> 'period' -> 'opening' -> 'loans' ->> 'outstanding')::numeric,
-  20000::numeric,
-  'AO13/AO18: empty-history opening (cutoff 2020-01-01, before every other fixture event) correctly shows ONLY the MIGRATED loan-4''s real 20000 — never a fabricated zero, never a fabricated disbursement for it'
+  0::numeric,
+  'AO13/AO18 (09G-B5-A3 §H): empty-history opening (cutoff 2020-01-01, before the MIGRATED loan-4 original disbursement 2025-05-01) is exactly 0 — the loan did not yet exist; never its current schedule amount, never a fabricated disbursement'
 );
 select is(
   (public.rpc_get_my_member_statement('10700000-0000-0000-0000-000000000001'::uuid, '2020-01-02'::date, null) -> 'period' -> 'opening' -> 'contributions' ->> 'outstanding')::numeric,

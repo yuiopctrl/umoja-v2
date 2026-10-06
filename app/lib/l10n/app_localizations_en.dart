@@ -4604,4 +4604,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get myContributionsNetworkMessage =>
       'Network error. Check your connection and try again.';
+
+  @override
+  String get statementAmountUnavailableLabel => 'Not available';
 }

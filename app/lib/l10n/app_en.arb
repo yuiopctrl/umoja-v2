@@ -1612,5 +1612,6 @@
   "myContributionsNotAuthorizedMessage": "You are not authorized to view your contributions.",
   "myContributionsNotFoundMessage": "This contribution is not available.",
   "myContributionsInvalidRequestMessage": "Please check your filters and try again.",
-  "myContributionsNetworkMessage": "Network error. Check your connection and try again."
+  "myContributionsNetworkMessage": "Network error. Check your connection and try again.",
+  "statementAmountUnavailableLabel": "Not available"
 }
