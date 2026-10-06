@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../member_statement/providers/member_statement_query_provider.dart';
+import '../../my_contributions/providers/my_contributions_query_provider.dart';
 import '../../members/providers/members_query_provider.dart';
 import '../models/membership_context.dart';
 import 'app_context_provider.dart';
@@ -80,6 +81,10 @@ class SelectedGroupNotifier extends Notifier<SelectedGroupState> {
         // filter from the old group must never carry into the newly-
         // selected one — same rationale as membersQueryProvider above.
         ref.invalidate(memberStatementQueryProvider);
+        // Prompt 09G-B4-C §G: My Contributions filters/page size from the
+        // old group must never query the new one; its list and detail
+        // providers already rebuild from selectedGroupProvider.
+        ref.invalidate(myContributionsQueryProvider);
         return;
       }
     }
@@ -91,6 +96,7 @@ class SelectedGroupNotifier extends Notifier<SelectedGroupState> {
   void requireReselection(List<MembershipContext> eligibleCandidates) {
     if (eligibleCandidates.length > 1) {
       state = SelectedGroupPending(eligibleCandidates);
+      ref.invalidate(myContributionsQueryProvider);
     }
   }
 }

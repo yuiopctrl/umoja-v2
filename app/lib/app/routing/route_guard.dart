@@ -259,6 +259,15 @@ String? computeRedirect({
       return AppRoutes.home;
     }
 
+    // Prompt 09G-B4-C §V: My Contributions (list and detail) is gated by
+    // the effective contribution.self_view permission — never by a role
+    // name, and never by contribution.view (officer-wide). The backend
+    // RPCs enforce the same permission; this is navigation guidance.
+    if (_isMyContributionsRoute(currentLocation) &&
+        !selectedGroup.membership.hasPermission('contribution.self_view')) {
+      return AppRoutes.home;
+    }
+
     // Once resolved, the user is free to navigate within the
     // operational area (home, members, ...) — only redirect them here
     // from a pre-operational route (splash, auth, onboarding, access,
@@ -298,6 +307,13 @@ bool _isMembersRoute(String location) =>
     location == AppRoutes.membersList ||
     location.startsWith('${AppRoutes.membersList}/');
 
+/// Whether [location] is `/me/contributions` or one of its detail
+/// routes — the self-service contribution screens, kept separate from
+/// the officer `/contributions` workspace.
+bool _isMyContributionsRoute(String location) =>
+    location == AppRoutes.myContributions ||
+    location.startsWith('${AppRoutes.myContributions}/');
+
 /// Routes reachable once a group is resolved — the operational
 /// (non-onboarding, non-auth) part of the app.
 bool _isOperationalRoute(String location) {
@@ -318,6 +334,7 @@ bool _isOperationalRoute(String location) {
       // real authorization boundary (financial_report.self_view) —
       // this is reachability only.
       location == AppRoutes.myStatement ||
+      _isMyContributionsRoute(location) ||
       // Prompt 09G-B1-D4 §J: once linked, the claimant's own claim
       // history remains reachable as secondary information (e.g. from
       // Member Home's own quick-access card) — deliberately NOT

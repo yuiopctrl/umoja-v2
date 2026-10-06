@@ -8137,6 +8137,306 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Urejeshaji Umerekodiwa'**
   String get statementEventRecoveryPosted;
+
+  /// No description provided for @myContributionsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Michango Yangu'**
+  String get myContributionsTitle;
+
+  /// No description provided for @myContributionsShortcutSubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Madeni yako, hali na salio'**
+  String get myContributionsShortcutSubtitle;
+
+  /// No description provided for @myContributionsTotalOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Deni Lililobaki'**
+  String get myContributionsTotalOutstandingLabel;
+
+  /// No description provided for @myContributionsFiltersAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Vichujio'**
+  String get myContributionsFiltersAction;
+
+  /// No description provided for @myContributionsFilterSheetTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Chuja Michango'**
+  String get myContributionsFilterSheetTitle;
+
+  /// No description provided for @myContributionsStatusLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali'**
+  String get myContributionsStatusLabel;
+
+  /// No description provided for @myContributionsTypeLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina ya Mchango'**
+  String get myContributionsTypeLabel;
+
+  /// No description provided for @myContributionsAllTypes.
+  ///
+  /// In sw, this message translates to:
+  /// **'Aina Zote'**
+  String get myContributionsAllTypes;
+
+  /// No description provided for @myContributionsAllStatuses.
+  ///
+  /// In sw, this message translates to:
+  /// **'Zote'**
+  String get myContributionsAllStatuses;
+
+  /// No description provided for @myContributionsDateNotSet.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe yoyote'**
+  String get myContributionsDateNotSet;
+
+  /// No description provided for @myContributionsApplyAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tumia'**
+  String get myContributionsApplyAction;
+
+  /// No description provided for @myContributionsClearFiltersAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Futa Vichujio'**
+  String get myContributionsClearFiltersAction;
+
+  /// No description provided for @myContributionsClearFilterTooltip.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ondoa kichujio'**
+  String get myContributionsClearFilterTooltip;
+
+  /// No description provided for @myContributionsStatusOpen.
+  ///
+  /// In sw, this message translates to:
+  /// **'Wazi'**
+  String get myContributionsStatusOpen;
+
+  /// No description provided for @myContributionsStatusPartiallySettled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imelipwa Kiasi'**
+  String get myContributionsStatusPartiallySettled;
+
+  /// No description provided for @myContributionsStatusOverdue.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imechelewa'**
+  String get myContributionsStatusOverdue;
+
+  /// No description provided for @myContributionsStatusSettled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imelipwa'**
+  String get myContributionsStatusSettled;
+
+  /// No description provided for @myContributionsFromLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kuanzia'**
+  String get myContributionsFromLabel;
+
+  /// No description provided for @myContributionsToLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hadi'**
+  String get myContributionsToLabel;
+
+  /// No description provided for @myContributionsFromAfterToError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya kuanzia haipaswi kuwa baada ya tarehe ya mwisho.'**
+  String get myContributionsFromAfterToError;
+
+  /// No description provided for @myContributionsOpeningBalanceLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio la Mwanzo'**
+  String get myContributionsOpeningBalanceLabel;
+
+  /// No description provided for @myContributionsFallbackTypeName.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mchango'**
+  String get myContributionsFallbackTypeName;
+
+  /// No description provided for @myContributionsAllocatedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Iliyotumika'**
+  String get myContributionsAllocatedLabel;
+
+  /// No description provided for @myContributionsOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Deni Lililobaki'**
+  String get myContributionsOutstandingLabel;
+
+  /// No description provided for @myContributionsNetAssessedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya Deni Lililowekwa'**
+  String get myContributionsNetAssessedLabel;
+
+  /// No description provided for @myContributionsEffectiveDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe'**
+  String get myContributionsEffectiveDateLabel;
+
+  /// No description provided for @myContributionsDueDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya Mwisho'**
+  String get myContributionsDueDateLabel;
+
+  /// No description provided for @myContributionsPreviouslyRecordedAs.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hapo awali ilirekodiwa kama: {names}'**
+  String myContributionsPreviouslyRecordedAs(String names);
+
+  /// No description provided for @myContributionsPeriodLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kipindi'**
+  String get myContributionsPeriodLabel;
+
+  /// No description provided for @myContributionsDetailTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo ya Mchango'**
+  String get myContributionsDetailTitle;
+
+  /// No description provided for @myContributionsPositionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali ya Kifedha'**
+  String get myContributionsPositionTitle;
+
+  /// No description provided for @myContributionsComponentsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Vipengele'**
+  String get myContributionsComponentsTitle;
+
+  /// No description provided for @myContributionsSettlementHistoryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Historia ya Malipo'**
+  String get myContributionsSettlementHistoryTitle;
+
+  /// No description provided for @myContributionsNoSettlementsMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Bado hakuna malipo wala kiasi cha pochi kilichoulipa mchango huu.'**
+  String get myContributionsNoSettlementsMessage;
+
+  /// No description provided for @myContributionsSettlementPaymentLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo'**
+  String get myContributionsSettlementPaymentLabel;
+
+  /// No description provided for @myContributionsSettlementWalletLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Pochi'**
+  String get myContributionsSettlementWalletLabel;
+
+  /// No description provided for @myContributionsWalletSettlementHint.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imelipwa kutoka kwenye pochi ya mwanachama'**
+  String get myContributionsWalletSettlementHint;
+
+  /// No description provided for @myContributionsReversedLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imebatilishwa'**
+  String get myContributionsReversedLabel;
+
+  /// No description provided for @myContributionsReversedHint.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo haya yamebatilishwa na hayaulipi tena mchango huu.'**
+  String get myContributionsReversedHint;
+
+  /// No description provided for @myContributionsReceiptLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Risiti {number}'**
+  String myContributionsReceiptLabel(String number);
+
+  /// No description provided for @myContributionsEmptyTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna michango bado'**
+  String get myContributionsEmptyTitle;
+
+  /// No description provided for @myContributionsEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Madeni yako ya michango yataonekana hapa.'**
+  String get myContributionsEmptyMessage;
+
+  /// No description provided for @myContributionsEmptyFilteredTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna michango inayolingana na vichujio hivi'**
+  String get myContributionsEmptyFilteredTitle;
+
+  /// No description provided for @myContributionsLoadFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupakia michango yako.'**
+  String get myContributionsLoadFailedMessage;
+
+  /// No description provided for @myContributionsLoadMoreFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupakia michango zaidi. Tafadhali jaribu tena.'**
+  String get myContributionsLoadMoreFailedMessage;
+
+  /// No description provided for @myContributionsDetailLoadFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupakia mchango huu.'**
+  String get myContributionsDetailLoadFailedMessage;
+
+  /// No description provided for @myContributionsNotAuthorizedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Huruhusiwi kuona michango yako.'**
+  String get myContributionsNotAuthorizedMessage;
+
+  /// No description provided for @myContributionsNotFoundMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mchango huu haupatikani.'**
+  String get myContributionsNotFoundMessage;
+
+  /// No description provided for @myContributionsInvalidRequestMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tafadhali kagua vichujio vyako kisha ujaribu tena.'**
+  String get myContributionsInvalidRequestMessage;
+
+  /// No description provided for @myContributionsNetworkMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hitilafu ya mtandao. Angalia muunganisho wako ujaribu tena.'**
+  String get myContributionsNetworkMessage;
 }
 
 class _AppLocalizationsDelegate

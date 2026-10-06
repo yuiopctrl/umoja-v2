@@ -4436,4 +4436,172 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statementEventRecoveryPosted => 'Recovery Posted';
+
+  @override
+  String get myContributionsTitle => 'My Contributions';
+
+  @override
+  String get myContributionsShortcutSubtitle =>
+      'Your charges, status and balances';
+
+  @override
+  String get myContributionsTotalOutstandingLabel => 'Total Outstanding';
+
+  @override
+  String get myContributionsFiltersAction => 'Filters';
+
+  @override
+  String get myContributionsFilterSheetTitle => 'Filter Contributions';
+
+  @override
+  String get myContributionsStatusLabel => 'Status';
+
+  @override
+  String get myContributionsTypeLabel => 'Contribution Type';
+
+  @override
+  String get myContributionsAllTypes => 'All Types';
+
+  @override
+  String get myContributionsAllStatuses => 'All';
+
+  @override
+  String get myContributionsDateNotSet => 'Any date';
+
+  @override
+  String get myContributionsApplyAction => 'Apply';
+
+  @override
+  String get myContributionsClearFiltersAction => 'Clear Filters';
+
+  @override
+  String get myContributionsClearFilterTooltip => 'Remove filter';
+
+  @override
+  String get myContributionsStatusOpen => 'Open';
+
+  @override
+  String get myContributionsStatusPartiallySettled => 'Partially Settled';
+
+  @override
+  String get myContributionsStatusOverdue => 'Overdue';
+
+  @override
+  String get myContributionsStatusSettled => 'Settled';
+
+  @override
+  String get myContributionsFromLabel => 'From';
+
+  @override
+  String get myContributionsToLabel => 'To';
+
+  @override
+  String get myContributionsFromAfterToError =>
+      'The start date must not be after the end date.';
+
+  @override
+  String get myContributionsOpeningBalanceLabel => 'Opening Balance';
+
+  @override
+  String get myContributionsFallbackTypeName => 'Contribution';
+
+  @override
+  String get myContributionsAllocatedLabel => 'Allocated';
+
+  @override
+  String get myContributionsOutstandingLabel => 'Outstanding';
+
+  @override
+  String get myContributionsNetAssessedLabel => 'Net Assessed';
+
+  @override
+  String get myContributionsEffectiveDateLabel => 'Date';
+
+  @override
+  String get myContributionsDueDateLabel => 'Due date';
+
+  @override
+  String myContributionsPreviouslyRecordedAs(String names) {
+    return 'Previously recorded as: $names';
+  }
+
+  @override
+  String get myContributionsPeriodLabel => 'Period';
+
+  @override
+  String get myContributionsDetailTitle => 'Contribution Details';
+
+  @override
+  String get myContributionsPositionTitle => 'Financial Position';
+
+  @override
+  String get myContributionsComponentsTitle => 'Components';
+
+  @override
+  String get myContributionsSettlementHistoryTitle => 'Settlement History';
+
+  @override
+  String get myContributionsNoSettlementsMessage =>
+      'No payments or wallet amounts have settled this contribution yet.';
+
+  @override
+  String get myContributionsSettlementPaymentLabel => 'Payment';
+
+  @override
+  String get myContributionsSettlementWalletLabel => 'Wallet';
+
+  @override
+  String get myContributionsWalletSettlementHint =>
+      'Settled from the member wallet';
+
+  @override
+  String get myContributionsReversedLabel => 'Reversed';
+
+  @override
+  String get myContributionsReversedHint =>
+      'This payment was reversed and no longer settles this contribution.';
+
+  @override
+  String myContributionsReceiptLabel(String number) {
+    return 'Receipt $number';
+  }
+
+  @override
+  String get myContributionsEmptyTitle => 'No contributions yet';
+
+  @override
+  String get myContributionsEmptyMessage =>
+      'Your contribution charges will appear here.';
+
+  @override
+  String get myContributionsEmptyFilteredTitle =>
+      'No contributions match these filters';
+
+  @override
+  String get myContributionsLoadFailedMessage =>
+      'Could not load your contributions.';
+
+  @override
+  String get myContributionsLoadMoreFailedMessage =>
+      'Could not load more contributions. Please try again.';
+
+  @override
+  String get myContributionsDetailLoadFailedMessage =>
+      'Could not load this contribution.';
+
+  @override
+  String get myContributionsNotAuthorizedMessage =>
+      'You are not authorized to view your contributions.';
+
+  @override
+  String get myContributionsNotFoundMessage =>
+      'This contribution is not available.';
+
+  @override
+  String get myContributionsInvalidRequestMessage =>
+      'Please check your filters and try again.';
+
+  @override
+  String get myContributionsNetworkMessage =>
+      'Network error. Check your connection and try again.';
 }

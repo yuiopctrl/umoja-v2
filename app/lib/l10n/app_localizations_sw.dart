@@ -4449,4 +4449,170 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get statementEventRecoveryPosted => 'Urejeshaji Umerekodiwa';
+
+  @override
+  String get myContributionsTitle => 'Michango Yangu';
+
+  @override
+  String get myContributionsShortcutSubtitle => 'Madeni yako, hali na salio';
+
+  @override
+  String get myContributionsTotalOutstandingLabel => 'Jumla ya Deni Lililobaki';
+
+  @override
+  String get myContributionsFiltersAction => 'Vichujio';
+
+  @override
+  String get myContributionsFilterSheetTitle => 'Chuja Michango';
+
+  @override
+  String get myContributionsStatusLabel => 'Hali';
+
+  @override
+  String get myContributionsTypeLabel => 'Aina ya Mchango';
+
+  @override
+  String get myContributionsAllTypes => 'Aina Zote';
+
+  @override
+  String get myContributionsAllStatuses => 'Zote';
+
+  @override
+  String get myContributionsDateNotSet => 'Tarehe yoyote';
+
+  @override
+  String get myContributionsApplyAction => 'Tumia';
+
+  @override
+  String get myContributionsClearFiltersAction => 'Futa Vichujio';
+
+  @override
+  String get myContributionsClearFilterTooltip => 'Ondoa kichujio';
+
+  @override
+  String get myContributionsStatusOpen => 'Wazi';
+
+  @override
+  String get myContributionsStatusPartiallySettled => 'Imelipwa Kiasi';
+
+  @override
+  String get myContributionsStatusOverdue => 'Imechelewa';
+
+  @override
+  String get myContributionsStatusSettled => 'Imelipwa';
+
+  @override
+  String get myContributionsFromLabel => 'Kuanzia';
+
+  @override
+  String get myContributionsToLabel => 'Hadi';
+
+  @override
+  String get myContributionsFromAfterToError =>
+      'Tarehe ya kuanzia haipaswi kuwa baada ya tarehe ya mwisho.';
+
+  @override
+  String get myContributionsOpeningBalanceLabel => 'Salio la Mwanzo';
+
+  @override
+  String get myContributionsFallbackTypeName => 'Mchango';
+
+  @override
+  String get myContributionsAllocatedLabel => 'Iliyotumika';
+
+  @override
+  String get myContributionsOutstandingLabel => 'Deni Lililobaki';
+
+  @override
+  String get myContributionsNetAssessedLabel => 'Jumla ya Deni Lililowekwa';
+
+  @override
+  String get myContributionsEffectiveDateLabel => 'Tarehe';
+
+  @override
+  String get myContributionsDueDateLabel => 'Tarehe ya Mwisho';
+
+  @override
+  String myContributionsPreviouslyRecordedAs(String names) {
+    return 'Hapo awali ilirekodiwa kama: $names';
+  }
+
+  @override
+  String get myContributionsPeriodLabel => 'Kipindi';
+
+  @override
+  String get myContributionsDetailTitle => 'Maelezo ya Mchango';
+
+  @override
+  String get myContributionsPositionTitle => 'Hali ya Kifedha';
+
+  @override
+  String get myContributionsComponentsTitle => 'Vipengele';
+
+  @override
+  String get myContributionsSettlementHistoryTitle => 'Historia ya Malipo';
+
+  @override
+  String get myContributionsNoSettlementsMessage =>
+      'Bado hakuna malipo wala kiasi cha pochi kilichoulipa mchango huu.';
+
+  @override
+  String get myContributionsSettlementPaymentLabel => 'Malipo';
+
+  @override
+  String get myContributionsSettlementWalletLabel => 'Pochi';
+
+  @override
+  String get myContributionsWalletSettlementHint =>
+      'Imelipwa kutoka kwenye pochi ya mwanachama';
+
+  @override
+  String get myContributionsReversedLabel => 'Imebatilishwa';
+
+  @override
+  String get myContributionsReversedHint =>
+      'Malipo haya yamebatilishwa na hayaulipi tena mchango huu.';
+
+  @override
+  String myContributionsReceiptLabel(String number) {
+    return 'Risiti $number';
+  }
+
+  @override
+  String get myContributionsEmptyTitle => 'Hakuna michango bado';
+
+  @override
+  String get myContributionsEmptyMessage =>
+      'Madeni yako ya michango yataonekana hapa.';
+
+  @override
+  String get myContributionsEmptyFilteredTitle =>
+      'Hakuna michango inayolingana na vichujio hivi';
+
+  @override
+  String get myContributionsLoadFailedMessage =>
+      'Hatukuweza kupakia michango yako.';
+
+  @override
+  String get myContributionsLoadMoreFailedMessage =>
+      'Hatukuweza kupakia michango zaidi. Tafadhali jaribu tena.';
+
+  @override
+  String get myContributionsDetailLoadFailedMessage =>
+      'Hatukuweza kupakia mchango huu.';
+
+  @override
+  String get myContributionsNotAuthorizedMessage =>
+      'Huruhusiwi kuona michango yako.';
+
+  @override
+  String get myContributionsNotFoundMessage => 'Mchango huu haupatikani.';
+
+  @override
+  String get myContributionsInvalidRequestMessage =>
+      'Tafadhali kagua vichujio vyako kisha ujaribu tena.';
+
+  @override
+  String get myContributionsNetworkMessage =>
+      'Hitilafu ya mtandao. Angalia muunganisho wako ujaribu tena.';
 }

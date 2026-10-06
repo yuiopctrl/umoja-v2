@@ -110,6 +110,18 @@ class AppRoutes {
   /// sole source of which group's statement this resolves.
   static const myStatement = '/me/statement';
 
+  /// Prompt 09G-B4-C: the caller's OWN contribution charges for the
+  /// currently selected group. Like [myStatement], no membership/group
+  /// UUID is ever in the path; permission is contribution.self_view.
+  static const myContributions = '/me/contributions';
+
+  /// Member-safe detail for one of the caller's own charges. The path
+  /// carries the charge id only — the backend resolves ownership.
+  static const myContributionDetail = '/me/contributions/:chargeId';
+
+  static String myContributionDetailPath(String chargeId) =>
+      '$myContributions/$chargeId';
+
   static const membersList = '/members';
   static const memberNew = '/members/new';
 

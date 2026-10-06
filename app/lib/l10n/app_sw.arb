@@ -1588,5 +1588,69 @@
   "statementEventLoanRestructured": "Mkopo Umepangwa Upya",
   "statementEventWriteOff": "Umefutwa kama Deni Potevu",
   "statementEventWriteOffReversed": "Kufuta Deni Kumebatilishwa",
-  "statementEventRecoveryPosted": "Urejeshaji Umerekodiwa"
+  "statementEventRecoveryPosted": "Urejeshaji Umerekodiwa",
+  "myContributionsTitle": "Michango Yangu",
+  "myContributionsShortcutSubtitle": "Madeni yako, hali na salio",
+  "myContributionsTotalOutstandingLabel": "Jumla ya Deni Lililobaki",
+  "myContributionsFiltersAction": "Vichujio",
+  "myContributionsFilterSheetTitle": "Chuja Michango",
+  "myContributionsStatusLabel": "Hali",
+  "myContributionsTypeLabel": "Aina ya Mchango",
+  "myContributionsAllTypes": "Aina Zote",
+  "myContributionsAllStatuses": "Zote",
+  "myContributionsDateNotSet": "Tarehe yoyote",
+  "myContributionsApplyAction": "Tumia",
+  "myContributionsClearFiltersAction": "Futa Vichujio",
+  "myContributionsClearFilterTooltip": "Ondoa kichujio",
+  "myContributionsStatusOpen": "Wazi",
+  "myContributionsStatusPartiallySettled": "Imelipwa Kiasi",
+  "myContributionsStatusOverdue": "Imechelewa",
+  "myContributionsStatusSettled": "Imelipwa",
+  "myContributionsFromLabel": "Kuanzia",
+  "myContributionsToLabel": "Hadi",
+  "myContributionsFromAfterToError": "Tarehe ya kuanzia haipaswi kuwa baada ya tarehe ya mwisho.",
+  "myContributionsOpeningBalanceLabel": "Salio la Mwanzo",
+  "myContributionsFallbackTypeName": "Mchango",
+  "myContributionsAllocatedLabel": "Iliyotumika",
+  "myContributionsOutstandingLabel": "Deni Lililobaki",
+  "myContributionsNetAssessedLabel": "Jumla ya Deni Lililowekwa",
+  "myContributionsEffectiveDateLabel": "Tarehe",
+  "myContributionsDueDateLabel": "Tarehe ya Mwisho",
+  "myContributionsPreviouslyRecordedAs": "Hapo awali ilirekodiwa kama: {names}",
+  "@myContributionsPreviouslyRecordedAs": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "myContributionsPeriodLabel": "Kipindi",
+  "myContributionsDetailTitle": "Maelezo ya Mchango",
+  "myContributionsPositionTitle": "Hali ya Kifedha",
+  "myContributionsComponentsTitle": "Vipengele",
+  "myContributionsSettlementHistoryTitle": "Historia ya Malipo",
+  "myContributionsNoSettlementsMessage": "Bado hakuna malipo wala kiasi cha pochi kilichoulipa mchango huu.",
+  "myContributionsSettlementPaymentLabel": "Malipo",
+  "myContributionsSettlementWalletLabel": "Pochi",
+  "myContributionsWalletSettlementHint": "Imelipwa kutoka kwenye pochi ya mwanachama",
+  "myContributionsReversedLabel": "Imebatilishwa",
+  "myContributionsReversedHint": "Malipo haya yamebatilishwa na hayaulipi tena mchango huu.",
+  "myContributionsReceiptLabel": "Risiti {number}",
+  "@myContributionsReceiptLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "myContributionsEmptyTitle": "Hakuna michango bado",
+  "myContributionsEmptyMessage": "Madeni yako ya michango yataonekana hapa.",
+  "myContributionsEmptyFilteredTitle": "Hakuna michango inayolingana na vichujio hivi",
+  "myContributionsLoadFailedMessage": "Hatukuweza kupakia michango yako.",
+  "myContributionsLoadMoreFailedMessage": "Hatukuweza kupakia michango zaidi. Tafadhali jaribu tena.",
+  "myContributionsDetailLoadFailedMessage": "Hatukuweza kupakia mchango huu.",
+  "myContributionsNotAuthorizedMessage": "Huruhusiwi kuona michango yako.",
+  "myContributionsNotFoundMessage": "Mchango huu haupatikani.",
+  "myContributionsInvalidRequestMessage": "Tafadhali kagua vichujio vyako kisha ujaribu tena.",
+  "myContributionsNetworkMessage": "Hitilafu ya mtandao. Angalia muunganisho wako ujaribu tena."
 }

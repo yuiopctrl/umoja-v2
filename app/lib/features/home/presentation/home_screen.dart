@@ -271,6 +271,17 @@ class _HomeQuickActions extends StatelessWidget {
         label: l10n.homeMyProfileLinkTitle,
         onTap: () => context.push(AppRoutes.myProfile),
       ),
+      // Prompt 09G-B4-C §T: the member's own contributions — a member
+      // self-service entry, never placed under officer-only Manage Group.
+      // Gated on the effective contribution.self_view permission only.
+      if (membership.hasPermission('contribution.self_view'))
+        _ActionItem(
+          key: const Key('homeMyContributionsShortcut'),
+          icon: Icons.request_page_outlined,
+          label: l10n.myContributionsTitle,
+          subtitle: l10n.myContributionsShortcutSubtitle,
+          onTap: () => context.push(AppRoutes.myContributions),
+        ),
       // Prompt 09G-B1-D4 §F/§J: an ordinary linked member's own Quick
       // Access — only a real, already-implemented feature (their own
       // claim history, secondary/informational once linked).

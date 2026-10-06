@@ -1548,5 +1548,69 @@
   "statementEventLoanRestructured": "Loan Restructured",
   "statementEventWriteOff": "Write-Off",
   "statementEventWriteOffReversed": "Write-Off Reversed",
-  "statementEventRecoveryPosted": "Recovery Posted"
+  "statementEventRecoveryPosted": "Recovery Posted",
+  "myContributionsTitle": "My Contributions",
+  "myContributionsShortcutSubtitle": "Your charges, status and balances",
+  "myContributionsTotalOutstandingLabel": "Total Outstanding",
+  "myContributionsFiltersAction": "Filters",
+  "myContributionsFilterSheetTitle": "Filter Contributions",
+  "myContributionsStatusLabel": "Status",
+  "myContributionsTypeLabel": "Contribution Type",
+  "myContributionsAllTypes": "All Types",
+  "myContributionsAllStatuses": "All",
+  "myContributionsDateNotSet": "Any date",
+  "myContributionsApplyAction": "Apply",
+  "myContributionsClearFiltersAction": "Clear Filters",
+  "myContributionsClearFilterTooltip": "Remove filter",
+  "myContributionsStatusOpen": "Open",
+  "myContributionsStatusPartiallySettled": "Partially Settled",
+  "myContributionsStatusOverdue": "Overdue",
+  "myContributionsStatusSettled": "Settled",
+  "myContributionsFromLabel": "From",
+  "myContributionsToLabel": "To",
+  "myContributionsFromAfterToError": "The start date must not be after the end date.",
+  "myContributionsOpeningBalanceLabel": "Opening Balance",
+  "myContributionsFallbackTypeName": "Contribution",
+  "myContributionsAllocatedLabel": "Allocated",
+  "myContributionsOutstandingLabel": "Outstanding",
+  "myContributionsNetAssessedLabel": "Net Assessed",
+  "myContributionsEffectiveDateLabel": "Date",
+  "myContributionsDueDateLabel": "Due date",
+  "myContributionsPreviouslyRecordedAs": "Previously recorded as: {names}",
+  "@myContributionsPreviouslyRecordedAs": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "myContributionsPeriodLabel": "Period",
+  "myContributionsDetailTitle": "Contribution Details",
+  "myContributionsPositionTitle": "Financial Position",
+  "myContributionsComponentsTitle": "Components",
+  "myContributionsSettlementHistoryTitle": "Settlement History",
+  "myContributionsNoSettlementsMessage": "No payments or wallet amounts have settled this contribution yet.",
+  "myContributionsSettlementPaymentLabel": "Payment",
+  "myContributionsSettlementWalletLabel": "Wallet",
+  "myContributionsWalletSettlementHint": "Settled from the member wallet",
+  "myContributionsReversedLabel": "Reversed",
+  "myContributionsReversedHint": "This payment was reversed and no longer settles this contribution.",
+  "myContributionsReceiptLabel": "Receipt {number}",
+  "@myContributionsReceiptLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "myContributionsEmptyTitle": "No contributions yet",
+  "myContributionsEmptyMessage": "Your contribution charges will appear here.",
+  "myContributionsEmptyFilteredTitle": "No contributions match these filters",
+  "myContributionsLoadFailedMessage": "Could not load your contributions.",
+  "myContributionsLoadMoreFailedMessage": "Could not load more contributions. Please try again.",
+  "myContributionsDetailLoadFailedMessage": "Could not load this contribution.",
+  "myContributionsNotAuthorizedMessage": "You are not authorized to view your contributions.",
+  "myContributionsNotFoundMessage": "This contribution is not available.",
+  "myContributionsInvalidRequestMessage": "Please check your filters and try again.",
+  "myContributionsNetworkMessage": "Network error. Check your connection and try again."
 }

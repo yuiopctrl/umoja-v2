@@ -148,6 +148,23 @@ class MoreScreen extends ConsumerWidget {
             ),
             const SizedBox(height: UmojaSpacing.xxl),
           ],
+          // Prompt 09G-B4-C §U: the member's own contributions, gated on
+          // contribution.self_view — never contribution.view, which is the
+          // officer workspace and stays unchanged at /contributions.
+          if (membership != null &&
+              membership.hasPermission('contribution.self_view')) ...[
+            UmojaCard(
+              padding: EdgeInsets.zero,
+              child: ListTile(
+                key: const Key('moreMyContributionsAction'),
+                leading: const Icon(Icons.request_page_outlined),
+                title: Text(l10n.myContributionsTitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push(AppRoutes.myContributions),
+              ),
+            ),
+            const SizedBox(height: UmojaSpacing.xxl),
+          ],
           // Prompt 09G-B1-F-UAT-FIX-03 §E/§H, 09G-B2 §F2: the mobile
           // entry point for Members/Invite Member/Sent Invitations/
           // Membership Requests — group-scoped, so only offered once a
