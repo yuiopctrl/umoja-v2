@@ -38,12 +38,12 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
   ('10900000-0000-0000-0000-000000000107', '10900000-0000-0000-0000-000000000002', '10900000-0000-0000-0000-000000000012', 'Member Caller In B', 'ACTIVE', '2026-01-07', 'B4BGB-0001', null);
 
 insert into public.group_membership_roles (group_membership_id, role_id) select '10900000-0000-0000-0000-000000000101', id from public.roles where code = 'ADMIN';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10900000-0000-0000-0000-000000000102', id from public.roles where code = 'MEMBER';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10900000-0000-0000-0000-000000000103', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select '10900000-0000-0000-0000-000000000102', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
+insert into public.group_membership_roles (group_membership_id, role_id) select '10900000-0000-0000-0000-000000000103', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 insert into public.group_membership_roles (group_membership_id, role_id) select '10900000-0000-0000-0000-000000000104', id from public.roles where code = 'TREASURER';
 -- Membership 105 (No Roles Member) deliberately has ZERO roles.
-insert into public.group_membership_roles (group_membership_id, role_id) select '10900000-0000-0000-0000-000000000106', id from public.roles where code = 'MEMBER';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10900000-0000-0000-0000-000000000107', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select '10900000-0000-0000-0000-000000000106', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
+insert into public.group_membership_roles (group_membership_id, role_id) select '10900000-0000-0000-0000-000000000107', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 
 insert into public.financial_accounts (id, group_id, name, account_type) values
   ('10900000-0000-0000-0000-000000000201', '10900000-0000-0000-0000-000000000001', 'Cash Box', 'CASH');
@@ -242,22 +242,21 @@ select is(
 
 set local role authenticated;
 
--- 14: no-roles member (has no contribution.self_view) is rejected.
+-- 14: a linked member with no officer role holds the MEMBER baseline, so
+-- contribution.self_view resolves through MEMBER (09G-B5-B.1).
 set local request.jwt.claim.sub to '10900000-0000-0000-0000-000000000015';
-select throws_ok(
+select lives_ok(
   $$ select public.rpc_get_my_contributions('10900000-0000-0000-0000-000000000001'::uuid) $$,
-  '42501', 'Not authorized to view contributions',
-  '14: a member with zero roles (no contribution.self_view) is rejected'
+  '14: a linked member with no officer role reads own contributions via the MEMBER baseline (contribution.self_view)'
 );
 
--- 15: TREASURER (has contribution.view, officer-wide) but NOT
--- contribution.self_view is rejected on the self-service endpoint —
--- proves officer permission never broadens self-service scope.
+-- 15: TREASURER holds TREASURER + the MEMBER baseline (09G-B5-B.1). Their own
+-- contribution.self_view comes from MEMBER; officer contribution.view adds
+-- nothing to the self-service scope, which stays limited to their own charges.
 set local request.jwt.claim.sub to '10900000-0000-0000-0000-000000000014';
-select throws_ok(
+select lives_ok(
   $$ select public.rpc_get_my_contributions('10900000-0000-0000-0000-000000000001'::uuid) $$,
-  '42501', 'Not authorized to view contributions',
-  '15: TREASURER (contribution.view only, no self_view) is rejected — officer permission does not broaden self-service scope'
+  '15: TREASURER with MEMBER baseline reads own contributions via contribution.self_view (MEMBER)'
 );
 
 -- 16: suspended (inactive) membership is rejected — current_membership_id

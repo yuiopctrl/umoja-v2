@@ -43,7 +43,7 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
   ('10700000-0000-0000-0000-000000000104', '10700000-0000-0000-0000-000000000001', '10700000-0000-0000-0000-000000000014', 'No Roles Member', 'ACTIVE', '2025-01-03', 'STB3BA-0003', null);
 
 insert into public.group_membership_roles (group_membership_id, role_id) select '10700000-0000-0000-0000-000000000101', id from public.roles where code = 'ADMIN';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10700000-0000-0000-0000-000000000102', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select '10700000-0000-0000-0000-000000000102', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 insert into public.group_membership_roles (group_membership_id, role_id) select '10700000-0000-0000-0000-000000000103', id from public.roles where code = 'TREASURER';
 -- Membership 104 (No Roles Member) deliberately has ZERO roles assigned.
 
@@ -971,15 +971,13 @@ select is(
 -- Permission model (§Y) — role grants, and fails-closed with no roles.
 -- =====================================================================
 
--- As No Roles Member (u14) — zero roles assigned, so
--- has_group_permission can never match -> fails closed.
+-- As No Roles Member (u14): a linked membership always holds the MEMBER
+-- baseline (09G-B5-B.1), so financial_report.self_view resolves through MEMBER.
 reset request.jwt.claim.sub;
 set local request.jwt.claim.sub to '10700000-0000-0000-0000-000000000014';
-select throws_ok(
+select lives_ok(
   $$ select public.rpc_get_my_member_statement('10700000-0000-0000-0000-000000000001'::uuid) $$,
-  '42501',
-  'Not authorized to view a financial statement',
-  '8: a membership with zero roles assigned (so financial_report.self_view can never match) fails closed'
+  '8: a linked member with no officer role holds the MEMBER baseline and reads own statement (financial_report.self_view via MEMBER)'
 );
 
 -- As Admin (ADMIN role) — already proven callable above (lives_ok) —

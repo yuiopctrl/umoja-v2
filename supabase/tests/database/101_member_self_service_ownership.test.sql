@@ -32,11 +32,11 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
   ('10100000-0000-0000-0000-000000000108', '10100000-0000-0000-0000-000000000002', null, 'Roster Only (Group B, dup number)', 'ACTIVE', '2025-01-01', 'STB1A-0003', null);
 
 insert into public.group_membership_roles (group_membership_id, role_id) select '10100000-0000-0000-0000-000000000101', id from public.roles where code = 'ADMIN';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10100000-0000-0000-0000-000000000102', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select '10100000-0000-0000-0000-000000000102', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 insert into public.group_membership_roles (group_membership_id, role_id) select '10100000-0000-0000-0000-000000000103', id from public.roles where code = 'TREASURER';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10100000-0000-0000-0000-000000000104', id from public.roles where code = 'MEMBER';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10100000-0000-0000-0000-000000000106', id from public.roles where code = 'MEMBER';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10100000-0000-0000-0000-000000000107', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select '10100000-0000-0000-0000-000000000104', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
+insert into public.group_membership_roles (group_membership_id, role_id) select '10100000-0000-0000-0000-000000000106', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
+insert into public.group_membership_roles (group_membership_id, role_id) select '10100000-0000-0000-0000-000000000107', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 
 -- =====================================================================
 -- 5: unauthenticated caller cannot obtain ownership (no jwt sub set).

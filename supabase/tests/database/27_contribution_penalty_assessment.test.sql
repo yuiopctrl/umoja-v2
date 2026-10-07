@@ -40,7 +40,7 @@ insert into public.group_membership_roles (group_membership_id, role_id) select 
 insert into public.group_membership_roles (group_membership_id, role_id) select 'a1200000-0000-0000-0000-000000000002', id from public.roles where code = 'TREASURER';
 insert into public.group_membership_roles (group_membership_id, role_id) select 'a1200000-0000-0000-0000-000000000003', id from public.roles where code = 'CHAIRPERSON';
 insert into public.group_membership_roles (group_membership_id, role_id) select 'a1200000-0000-0000-0000-000000000004', id from public.roles where code = 'SECRETARY';
-insert into public.group_membership_roles (group_membership_id, role_id) select 'a1200000-0000-0000-0000-000000000005', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select 'a1200000-0000-0000-0000-000000000005', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 insert into public.group_membership_roles (group_membership_id, role_id) select 'a1200000-0000-0000-0000-000000000099', id from public.roles where code = 'TREASURER';
 
 insert into public.contribution_types (id, group_id, name, category, accounting_treatment, created_by) values

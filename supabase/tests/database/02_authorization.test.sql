@@ -20,7 +20,7 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
 insert into public.group_membership_roles (group_membership_id, role_id)
 select 'f1111111-1111-1111-1111-111111111111', id from public.roles where code = 'ADMIN';
 insert into public.group_membership_roles (group_membership_id, role_id)
-select 'f2222222-2222-2222-2222-222222222222', id from public.roles where code = 'MEMBER';
+select 'f2222222-2222-2222-2222-222222222222', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 
 -- Simulate a plain MEMBER (no member.create, no role.assign).
 set local role authenticated;

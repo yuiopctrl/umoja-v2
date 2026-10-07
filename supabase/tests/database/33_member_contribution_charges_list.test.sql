@@ -27,9 +27,9 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
   ('f7200000-0000-0000-0000-000000000099', 'f7100000-0000-0000-0000-000000000002', null, 'F7B Other Group Member', 'ACTIVE', '2025-01-01', 'F7BB-2026-0001');
 
 insert into public.group_membership_roles (group_membership_id, role_id) select 'f7200000-0000-0000-0000-000000000001', id from public.roles where code = 'TREASURER';
-insert into public.group_membership_roles (group_membership_id, role_id) select 'f7200000-0000-0000-0000-000000000002', id from public.roles where code = 'MEMBER';
-insert into public.group_membership_roles (group_membership_id, role_id) select 'f7200000-0000-0000-0000-000000000003', id from public.roles where code = 'MEMBER';
-insert into public.group_membership_roles (group_membership_id, role_id) select 'f7200000-0000-0000-0000-000000000004', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select 'f7200000-0000-0000-0000-000000000002', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
+insert into public.group_membership_roles (group_membership_id, role_id) select 'f7200000-0000-0000-0000-000000000003', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
+insert into public.group_membership_roles (group_membership_id, role_id) select 'f7200000-0000-0000-0000-000000000004', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 
 set local role authenticated;
 set local request.jwt.claim.sub to 'f7000000-0000-0000-0000-000000000001';

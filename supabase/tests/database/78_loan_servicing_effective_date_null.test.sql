@@ -184,7 +184,7 @@ insert into auth.users (id, email) values
   ('78000000-0000-0000-0000-000000000002', 'p09e-blocker1-member@example.com');
 insert into public.group_memberships (id, group_id, user_id, display_name, status, joined_at, member_number) values
   ('78200000-0000-0000-0000-000000000002', '78100000-0000-0000-0000-000000000001', '78000000-0000-0000-0000-000000000002', 'ED Member (no servicing perms)', 'ACTIVE', '2025-01-01', 'EDNL-2026-0002');
-insert into public.group_membership_roles (group_membership_id, role_id) select '78200000-0000-0000-0000-000000000002', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select '78200000-0000-0000-0000-000000000002', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 set local role authenticated;
 set local request.jwt.claim.sub to '78000000-0000-0000-0000-000000000002';
 

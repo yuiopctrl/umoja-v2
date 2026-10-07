@@ -43,8 +43,8 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
   ('10300000-0000-0000-0000-000000000310', '10300000-0000-0000-0000-000000000003', null, 'Suspended Group Roster', 'ACTIVE', '2025-01-01', 'CLMD1C-0001', null);
 
 insert into public.group_membership_roles (group_membership_id, role_id) select '10300000-0000-0000-0000-000000000101', id from public.roles where code = 'ADMIN';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10300000-0000-0000-0000-000000000102', id from public.roles where code = 'MEMBER';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10300000-0000-0000-0000-000000000103', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select '10300000-0000-0000-0000-000000000102', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
+insert into public.group_membership_roles (group_membership_id, role_id) select '10300000-0000-0000-0000-000000000103', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 
 set local role authenticated;
 

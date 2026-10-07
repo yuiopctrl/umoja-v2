@@ -327,18 +327,20 @@ reset request.jwt.claim.sub;
 set local request.jwt.claim.sub to 'd0000000-0000-0000-0000-000000000003';
 
 -- 4/5. caller without member.view is rejected.
+-- 4/5. caller without member.view is rejected. MEMBER is an identity /
+-- self-service baseline and does NOT carry member.view (Prompt 09G-B5-B.1).
 select throws_ok(
   $$ select public.rpc_list_group_members('d1000000-0000-0000-0000-000000000001') $$,
   '42501',
   null,
-  'a membership with no assigned role (no member.view) cannot list members'
+  'a linked membership with only the MEMBER baseline cannot list members (no member.view)'
 );
 
 select throws_ok(
   $$ select public.rpc_get_group_member('d1000000-0000-0000-0000-000000000001', 'd3000000-0000-0000-0000-000000000001') $$,
   '42501',
   null,
-  'a membership with no assigned role (no member.view) cannot get member detail'
+  'a linked membership with only the MEMBER baseline cannot get member detail (no member.view)'
 );
 
 -- ---------------------------------------------------------------------

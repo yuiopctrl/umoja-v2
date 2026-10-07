@@ -26,7 +26,7 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
   ('10800000-0000-0000-0000-000000000102', '10800000-0000-0000-0000-000000000001', '10800000-0000-0000-0000-000000000012', 'Allocation Caller', 'ACTIVE', '2026-01-02', 'ALLOCX-0002', null);
 
 insert into public.group_membership_roles (group_membership_id, role_id) select '10800000-0000-0000-0000-000000000101', id from public.roles where code = 'ADMIN';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10800000-0000-0000-0000-000000000102', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select '10800000-0000-0000-0000-000000000102', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 
 insert into public.financial_accounts (id, group_id, name, account_type) values
   ('10800000-0000-0000-0000-000000000201', '10800000-0000-0000-0000-000000000001', 'Cash Box', 'CASH');

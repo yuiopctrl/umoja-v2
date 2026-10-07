@@ -19,9 +19,9 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
   ('c2222222-2222-2222-2222-222222222222', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '22222222-2222-2222-2222-222222222222', 'User B', 'ACTIVE', 'TENB-2026-0001');
 
 insert into public.group_membership_roles (group_membership_id, role_id)
-select 'c1111111-1111-1111-1111-111111111111', id from public.roles where code = 'MEMBER';
+select 'c1111111-1111-1111-1111-111111111111', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 insert into public.group_membership_roles (group_membership_id, role_id)
-select 'c2222222-2222-2222-2222-222222222222', id from public.roles where code = 'MEMBER';
+select 'c2222222-2222-2222-2222-222222222222', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 
 insert into public.group_memberships (group_id, user_id, display_name, status, member_number)
 values ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', null, 'Member X', 'ACTIVE', 'M-001');

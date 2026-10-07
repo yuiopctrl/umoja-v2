@@ -28,7 +28,7 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
 insert into public.group_membership_roles (group_membership_id, role_id)
 select '41200000-0000-0000-0000-000000000001', id from public.roles where code = 'TREASURER';
 insert into public.group_membership_roles (group_membership_id, role_id)
-select '41200000-0000-0000-0000-000000000002', id from public.roles where code = 'MEMBER';
+select '41200000-0000-0000-0000-000000000002', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 
 insert into public.contribution_types (id, group_id, name, category, accounting_treatment, created_by) values
   ('41300000-0000-0000-0000-000000000001', '41100000-0000-0000-0000-000000000001', 'Monthly Dues', 'GENERAL', 'PASS_THROUGH', '41000000-0000-0000-0000-000000000001'),

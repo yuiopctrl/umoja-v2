@@ -40,7 +40,7 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
   ('a0200000-0000-0000-0000-000000000021', 'a0100000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000001', 'St Sec Admin (other group)', 'ACTIVE', '2025-01-01', 'STSEB-2026-0001');
 
 insert into public.group_membership_roles (group_membership_id, role_id) select 'a0200000-0000-0000-0000-000000000001', id from public.roles where code = 'ADMIN';
-insert into public.group_membership_roles (group_membership_id, role_id) select 'a0200000-0000-0000-0000-000000000002', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select 'a0200000-0000-0000-0000-000000000002', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 insert into public.group_membership_roles (group_membership_id, role_id) select 'a0200000-0000-0000-0000-000000000021', id from public.roles where code = 'ADMIN';
 
 set local role authenticated;

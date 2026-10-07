@@ -38,7 +38,8 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
 insert into public.group_membership_roles (group_membership_id, role_id)
 select id, (select id from public.roles where code = 'MEMBER')
 from public.group_memberships
-where user_id = 'b0000000-0000-0000-0000-000000000001';
+where user_id = 'b0000000-0000-0000-0000-000000000001'
+on conflict (group_membership_id, role_id) do nothing;
 
 set local role authenticated;
 set local request.jwt.claim.sub to 'b0000000-0000-0000-0000-000000000001';

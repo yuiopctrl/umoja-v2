@@ -39,7 +39,7 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
 insert into public.group_membership_roles (group_membership_id, role_id)
 select '31200000-0000-0000-0000-000000000001', id from public.roles where code = 'TREASURER';
 insert into public.group_membership_roles (group_membership_id, role_id)
-select '31200000-0000-0000-0000-000000000002', id from public.roles where code = 'MEMBER';
+select '31200000-0000-0000-0000-000000000002', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 
 -- M5's rejoin history: exited 2026-06-01, rejoined (effective) 2026-09-15,
 -- straddling the Sept period's eligibility_date of 2026-09-01.

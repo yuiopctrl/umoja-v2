@@ -80,7 +80,7 @@ insert into public.group_membership_roles (group_membership_id, role_id)
 insert into public.group_membership_roles (group_membership_id, role_id)
   select '10500000-0000-0000-0000-000000000102', id from public.roles where code = 'SECRETARY';
 insert into public.group_membership_roles (group_membership_id, role_id)
-  select '10500000-0000-0000-0000-000000000103', id from public.roles where code = 'MEMBER';
+  select '10500000-0000-0000-0000-000000000103', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 insert into public.group_membership_roles (group_membership_id, role_id)
   select '10500000-0000-0000-0000-000000000131', id from public.roles where code = 'ADMIN';
 insert into public.group_membership_roles (group_membership_id, role_id)
@@ -443,8 +443,8 @@ select is(
   (select array_agg(r.code order by r.code) from public.group_membership_roles gmr
    join public.roles r on r.id = gmr.role_id
    where gmr.group_membership_id = '10500000-0000-0000-0000-000000000104'::uuid),
-  array['SECRETARY', 'TREASURER'],
-  '26: exactly the recorded roles (TREASURER, SECRETARY) are assigned — no more, no fewer'
+  array['MEMBER', 'SECRETARY', 'TREASURER'],
+  '26: recorded roles (TREASURER, SECRETARY) are assigned, plus the MEMBER baseline for the linked membership (09G-B5-B.1) — no duplicate MEMBER'
 );
 
 -- 27: acceptance marks the invitation terminal (ACCEPTED).

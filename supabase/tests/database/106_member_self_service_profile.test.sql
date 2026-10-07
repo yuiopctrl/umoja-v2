@@ -68,8 +68,8 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
 
 insert into public.group_membership_roles (group_membership_id, role_id) select '10600000-0000-0000-0000-000000000101', id from public.roles where code = 'ADMIN';
 insert into public.group_membership_roles (group_membership_id, role_id) select '10600000-0000-0000-0000-000000000102', id from public.roles where code = 'CHAIRPERSON';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10600000-0000-0000-0000-000000000103', id from public.roles where code = 'MEMBER';
-insert into public.group_membership_roles (group_membership_id, role_id) select '10600000-0000-0000-0000-000000000104', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select '10600000-0000-0000-0000-000000000103', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
+insert into public.group_membership_roles (group_membership_id, role_id) select '10600000-0000-0000-0000-000000000104', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 insert into public.group_membership_roles (group_membership_id, role_id) select '10600000-0000-0000-0000-000000000105', id from public.roles where code = 'TREASURER';
 
 -- =====================================================================
@@ -259,8 +259,8 @@ select is(
 );
 select is(
   (public.rpc_get_my_member_profile('10600000-0000-0000-0000-000000000001'::uuid) -> 'roles'),
-  '["ADMIN"]'::jsonb,
-  '3b: ADMIN''s own profile shows ADMIN''s own role only'
+  '["ADMIN", "MEMBER"]'::jsonb,
+  '3b: ADMIN''s own profile shows ADMIN plus the MEMBER baseline (09G-B5-B.1), nothing else'
 );
 
 -- =====================================================================
@@ -314,8 +314,8 @@ select is(
 );
 select is(
   (public.rpc_get_my_member_profile('10600000-0000-0000-0000-000000000002'::uuid) -> 'roles'),
-  '["TREASURER"]'::jsonb,
-  '10d: dual-role user''s group B profile shows the TREASURER role held there, not group A''s MEMBER role'
+  '["MEMBER", "TREASURER"]'::jsonb,
+  '10d: dual-role user''s group B profile shows the TREASURER role held there plus the MEMBER baseline; group A''s roles do not leak'
 );
 select is(
   (public.rpc_get_my_member_profile('10600000-0000-0000-0000-000000000001'::uuid) -> 'account' ->> 'full_name'),

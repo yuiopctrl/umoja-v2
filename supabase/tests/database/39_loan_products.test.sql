@@ -20,7 +20,7 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
 
 insert into public.group_membership_roles (group_membership_id, role_id) select '1a200000-0000-0000-0000-000000000001', id from public.roles where code = 'ADMIN';
 insert into public.group_membership_roles (group_membership_id, role_id) select '1a200000-0000-0000-0000-000000000002', id from public.roles where code = 'CHAIRPERSON';
-insert into public.group_membership_roles (group_membership_id, role_id) select '1a200000-0000-0000-0000-000000000003', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select '1a200000-0000-0000-0000-000000000003', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 insert into public.group_membership_roles (group_membership_id, role_id) select '1a200000-0000-0000-0000-000000000098', id from public.roles where code = 'ADMIN';
 
 set local role authenticated;
@@ -184,21 +184,28 @@ select ok(
   (select count(*) from public.role_permissions rp
    join public.roles r on r.id = rp.role_id
    join public.permissions p on p.id = rp.permission_id
-   where r.code = 'ADMIN' and p.code like 'loan%') = 24,
-  '14: ADMIN holds all 24 loan-module permissions (7 from Prompt 09A, '
+   where r.code = 'ADMIN' and p.code like 'loan%') = 25,
+  '14: ADMIN holds all 25 loan-module permissions (7 from Prompt 09A, '
   || '5 lifecycle permissions added in Prompt 09B, '
   || 'loan_penalty.view/loan_penalty.assess added in Prompt 09D, '
   || 'loan_opening.create added in 09D-UAT-BLOCKER-01, '
   || 'loan.settle_early/loan.prepay_principal/loan.restructure added in Prompt 09E, '
-  || 'loan.waive/loan.correct/loan.correct_increase added in Prompt 09F-A, plus '
-  || 'loan.write_off/loan.write_off.reverse/loan.recovery.create added in Prompt 09F-B)'
+  || 'loan.waive/loan.correct/loan.correct_increase added in Prompt 09F-A, '
+  || 'loan.write_off/loan.write_off.reverse/loan.recovery.create added in Prompt 09F-B, plus '
+  || 'loan.self_view added in Prompt 09G-B5-B)'
 );
 select ok(
   (select count(*) from public.role_permissions rp
    join public.roles r on r.id = rp.role_id
    join public.permissions p on p.id = rp.permission_id
-   where r.code = 'MEMBER' and p.code like 'loan%') = 0,
-  '15: MEMBER holds none of the loan-module permissions'
+   where r.code = 'MEMBER' and p.code like 'loan%') = 1
+  and exists (
+    select 1 from public.role_permissions rp
+    join public.roles r on r.id = rp.role_id
+    join public.permissions p on p.id = rp.permission_id
+    where r.code = 'MEMBER' and p.code = 'loan.self_view'
+  ),
+  '15: MEMBER holds only loan.self_view among the loan-module permissions (Prompt 09G-B5-B)'
 );
 
 select * from finish();

@@ -31,7 +31,7 @@ insert into public.group_memberships (id, group_id, user_id, display_name, statu
   ('75200000-0000-0000-0000-000000000007', '75100000-0000-0000-0000-000000000001', null, 'PP Borrower Reduce Installment', 'ACTIVE', '2025-01-01', 'PREP-2026-0007');
 
 insert into public.group_membership_roles (group_membership_id, role_id) select '75200000-0000-0000-0000-000000000001', id from public.roles where code = 'ADMIN';
-insert into public.group_membership_roles (group_membership_id, role_id) select '75200000-0000-0000-0000-000000000002', id from public.roles where code = 'MEMBER';
+insert into public.group_membership_roles (group_membership_id, role_id) select '75200000-0000-0000-0000-000000000002', id from public.roles where code = 'MEMBER' on conflict (group_membership_id, role_id) do nothing;
 
 set local role authenticated;
 set local request.jwt.claim.sub to '75000000-0000-0000-0000-000000000001';
