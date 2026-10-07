@@ -4618,4 +4618,361 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get statementAmountUnavailableLabel => 'Haipatikani';
+
+  @override
+  String get myLoansTitle => 'Mikopo Yangu';
+
+  @override
+  String get myLoansNavAction => 'Mikopo Yangu';
+
+  @override
+  String get myLoansEmptyTitle => 'Bado huna mikopo.';
+
+  @override
+  String get myLoansLoadFailedMessage => 'Hatukuweza kupakia mikopo yako.';
+
+  @override
+  String get myLoansLoadMoreFailedMessage => 'Hatukuweza kupakia mikopo zaidi.';
+
+  @override
+  String get myLoansNotAuthorizedMessage =>
+      'Huna ruhusa ya kuona mikopo yako katika kikundi hiki.';
+
+  @override
+  String get myLoansNotFoundMessage => 'Mkopo huu haupatikani.';
+
+  @override
+  String get myLoansNetworkMessage =>
+      'Hitilafu ya mtandao. Angalia muunganisho wako ujaribu tena.';
+
+  @override
+  String get myLoansUnexpectedMessage =>
+      'Kuna hitilafu. Tafadhali jaribu tena.';
+
+  @override
+  String get myLoansLoanNumberLabel => 'Mkopo';
+
+  @override
+  String get myLoansOriginalPrincipalLabel => 'Mtaji wa awali';
+
+  @override
+  String get myLoansNextDueLabel => 'Malipo yanayofuata';
+
+  @override
+  String get myLoansOverdueLabel => 'Imechelewa';
+
+  @override
+  String get myLoansTotalOutstandingLabel => 'Jumla ya deni';
+
+  @override
+  String get myLoansNotAvailableLabel => 'Haipatikani';
+
+  @override
+  String get myLoansOpeningPositionLabel => 'Salio la Mwanzo';
+
+  @override
+  String get myLoansDetailTitle => 'Maelezo ya Mkopo';
+
+  @override
+  String get myLoansPositionTitle => 'Nafasi ya Sasa';
+
+  @override
+  String get myLoansPrincipalOutstandingLabel => 'Mtaji unaodaiwa';
+
+  @override
+  String get myLoansInterestOutstandingLabel => 'Riba inayodaiwa';
+
+  @override
+  String get myLoansPenaltyOutstandingLabel => 'Adhabu inayodaiwa';
+
+  @override
+  String get myLoansPositionNotice =>
+      'Riba ya awamu za baadaye haijajumuishwa.';
+
+  @override
+  String get myLoansPositionUnavailableNotice =>
+      'Salio la mkopo huu haliwezi kuonyeshwa sasa.';
+
+  @override
+  String get myLoansWrittenOffNote =>
+      'Mkopo huu umefutwa. Hakuna deni linalodaiwa sasa.';
+
+  @override
+  String get myLoansNeverDisbursedNote =>
+      'Mkopo huu haujatolewa, kwa hiyo hakuna deni.';
+
+  @override
+  String get myLoansOpeningPositionNotice =>
+      'Mkopo huu uliingia Umoja ukiwa na salio la mwanzo. Historia yake ya awali haionyeshwi hapa.';
+
+  @override
+  String get myLoansTermsTitle => 'Masharti ya mkopo';
+
+  @override
+  String get myLoansTermInterestRateLabel => 'Kiwango cha riba';
+
+  @override
+  String get myLoansTermTermLabel => 'Muda';
+
+  @override
+  String get myLoansTermRepaymentLabel => 'Mzunguko wa marejesho';
+
+  @override
+  String get myLoansTermFirstRepaymentLabel => 'Marejesho ya kwanza';
+
+  @override
+  String get myLoansApplicationDateLabel => 'Tarehe ya maombi';
+
+  @override
+  String get myLoansOriginalDisbursementLabel => 'Utoaji wa awali';
+
+  @override
+  String get myLoansOpeningAsOfLabel => 'Salio la mwanzo kufikia';
+
+  @override
+  String get myLoansFinalDueLabel => 'Tarehe ya mwisho ya malipo';
+
+  @override
+  String get myLoansScheduleTitle => 'Ratiba ya Marejesho';
+
+  @override
+  String get myLoansCurrentScheduleTitle => 'Ratiba ya Sasa';
+
+  @override
+  String get myLoansScheduleHistoryTitle => 'Historia ya Ratiba';
+
+  @override
+  String get myLoansScheduleHistoryNotice =>
+      'Awamu hizi zilibadilishwa au kufutwa. Hazilipwi sasa.';
+
+  @override
+  String get myLoansScheduleEmpty => 'Hakuna awamu zilizopangwa.';
+
+  @override
+  String get myLoansScheduleLoadFailedMessage =>
+      'Hatukuweza kupakia ratiba ya marejesho.';
+
+  @override
+  String myLoansInstallmentLabel(int number) {
+    return 'Awamu $number';
+  }
+
+  @override
+  String get myLoansDueDateLabel => 'Tarehe ya malipo';
+
+  @override
+  String get myLoansScheduledLabel => 'Ilivyopangwa';
+
+  @override
+  String get myLoansPaidLabel => 'Iliyolipwa';
+
+  @override
+  String get myLoansOutstandingLabel => 'Inadaiwa';
+
+  @override
+  String get myLoansEarnedInterestOutstandingLabel =>
+      'Riba iliyoiva inayodaiwa';
+
+  @override
+  String get myLoansFutureInterestLabel =>
+      'Riba ya baadaye iliyopangwa (bado haidaiwi)';
+
+  @override
+  String get myLoansScheduleStatusSettled => 'Imelipwa';
+
+  @override
+  String get myLoansScheduleStatusOverdue => 'Imechelewa';
+
+  @override
+  String get myLoansScheduleStatusPartiallySettled => 'Imelipwa kwa sehemu';
+
+  @override
+  String get myLoansScheduleStatusDue => 'Inadaiwa leo';
+
+  @override
+  String get myLoansScheduleStatusUpcoming => 'Inakuja';
+
+  @override
+  String get myLoansScheduleStatusWrittenOff => 'Imefutwa (deni)';
+
+  @override
+  String get myLoansScheduleStatusCancelled => 'Imefutwa';
+
+  @override
+  String get myLoansScheduleStatusReplaced => 'Imebadilishwa';
+
+  @override
+  String get myLoansScheduleStatusUnknown => 'Hali haipatikani';
+
+  @override
+  String get myLoansReplacedByRestructure =>
+      'Imebadilishwa kwa marekebisho ya mkopo';
+
+  @override
+  String get myLoansReplacedByPrepayment =>
+      'Imebadilishwa kwa malipo ya awali ya mtaji';
+
+  @override
+  String get myLoansStatusSubmitted => 'Imewasilishwa';
+
+  @override
+  String get myLoansStatusApproved => 'Imeidhinishwa';
+
+  @override
+  String get myLoansStatusRejected => 'Imekataliwa';
+
+  @override
+  String get myLoansStatusCancelled => 'Imefutwa';
+
+  @override
+  String get myLoansStatusActive => 'Inaendelea';
+
+  @override
+  String get myLoansStatusClosed => 'Imefungwa';
+
+  @override
+  String get myLoansStatusWrittenOff => 'Imefutwa (deni)';
+
+  @override
+  String get myLoansStatusUnknown => 'Hali haipatikani';
+
+  @override
+  String get myLoansActivityTitle => 'Shughuli';
+
+  @override
+  String get myLoansActivityEmpty => 'Hakuna shughuli bado.';
+
+  @override
+  String get myLoansActivityLoadFailedMessage => 'Hatukuweza kupakia shughuli.';
+
+  @override
+  String get myLoansLoadMoreActivityAction => 'Onyesha shughuli zaidi';
+
+  @override
+  String get myLoansEventLoanSubmitted => 'Mkopo umewasilishwa';
+
+  @override
+  String get myLoansEventLoanApproved => 'Mkopo umeidhinishwa';
+
+  @override
+  String get myLoansEventLoanRejected => 'Mkopo umekataliwa';
+
+  @override
+  String get myLoansEventLoanCancelled => 'Mkopo umefutwa';
+
+  @override
+  String get myLoansEventLoanDisbursed => 'Mkopo umetolewa';
+
+  @override
+  String get myLoansEventOpeningPosition => 'Salio la Mwanzo';
+
+  @override
+  String get myLoansEventPaymentPosted => 'Malipo yamepokelewa';
+
+  @override
+  String get myLoansEventRecoveryPosted => 'Malipo ya urejeshaji';
+
+  @override
+  String get myLoansEventWalletApplied => 'Salio la Wallet Limetumika';
+
+  @override
+  String get myLoansEventPenaltyAssessed => 'Adhabu imewekwa';
+
+  @override
+  String get myLoansEventObligationWaiver => 'Kiasi kilichosamehewa';
+
+  @override
+  String get myLoansEventObligationCorrection => 'Marekebisho';
+
+  @override
+  String get myLoansEventObligationAdjustmentReversed =>
+      'Marekebisho yamerudishwa';
+
+  @override
+  String get myLoansEventPrincipalPrepayment => 'Malipo ya awali ya mtaji';
+
+  @override
+  String get myLoansEventLoanRestructured => 'Mkopo umerekebishwa';
+
+  @override
+  String get myLoansEventLoanEarlySettled => 'Mkopo umelipwa mapema';
+
+  @override
+  String get myLoansEventLoanClosed => 'Mkopo umefungwa';
+
+  @override
+  String get myLoansEventLoanReopened => 'Mkopo umefunguliwa';
+
+  @override
+  String get myLoansEventWriteOff => 'Mkopo umefutwa (deni)';
+
+  @override
+  String get myLoansEventWriteOffReversed => 'Kufuta deni kumerudishwa';
+
+  @override
+  String get myLoansEventUnknown => 'Shughuli';
+
+  @override
+  String get myLoansTreatmentReduceTerm => 'Muda mfupi zaidi';
+
+  @override
+  String get myLoansTreatmentReduceInstallment => 'Awamu ndogo zaidi';
+
+  @override
+  String get myLoansReversedBadge => 'Imerudishwa';
+
+  @override
+  String get myLoansNonCashBadge => 'Si malipo ya fedha';
+
+  @override
+  String get myLoansCashInLabel => 'Fedha imeingia';
+
+  @override
+  String get myLoansCashOutLabel => 'Fedha imetoka';
+
+  @override
+  String get myLoansBreakdownTitle => 'Mgawanyo';
+
+  @override
+  String get myLoansBreakdownPrincipal => 'Mtaji';
+
+  @override
+  String get myLoansBreakdownInterest => 'Riba';
+
+  @override
+  String get myLoansBreakdownPenalty => 'Adhabu';
+
+  @override
+  String get myLoansPaymentShownOnce =>
+      'Malipo moja, yanaonyeshwa mara moja. Mgawanyo wake uko hapa chini.';
+
+  @override
+  String myLoansReceiptLabel(String number) {
+    return 'Risiti $number';
+  }
+
+  @override
+  String get myLoansUnknownEventNote =>
+      'Shughuli hii imerekodiwa kwenye mkopo.';
+
+  @override
+  String get myLoansPrincipalReductionLabel => 'Mtaji uliopunguzwa';
+
+  @override
+  String get myLoansDisbursedAmountNote => 'Fedha iliyotolewa kwa mwanachama';
+
+  @override
+  String myLoansTermMonths(int count) {
+    return 'miezi $count';
+  }
+
+  @override
+  String get myLoansFrequencyMonthly => 'Kila mwezi';
+
+  @override
+  String get myLoansOpeningSnapshotNote =>
+      'Hii ni kumbukumbu ya salio la mwanzo lililoingizwa. Si malipo wala utoaji mpya.';
+
+  @override
+  String get refreshAction => 'Onyesha Upya';
 }

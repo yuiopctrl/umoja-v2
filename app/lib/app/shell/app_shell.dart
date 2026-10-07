@@ -7,6 +7,7 @@ import '../../core/localization/app_localizations_x.dart';
 import '../../core/theme/umoja_breakpoints.dart';
 import '../../core/theme/umoja_spacing.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
+import '../routing/member_self_service_routes.dart';
 import '../../l10n/app_localizations.dart';
 import '../routing/app_routes.dart';
 import 'app_top_bar.dart';
@@ -49,6 +50,17 @@ class AppShell extends ConsumerWidget {
   final Widget child;
 
   int _selectedIndex(List<ShellDestination> destinations) {
+    // Prompt 09G-B5-C.2 §I: a member self-service child route (/me/...)
+    // is "within More", never Home — falling through to index 0 is the
+    // exact defect UAT found (Home shown selected on My Financial
+    // Statement). Checked before the ordinary prefix match so it wins
+    // regardless of destination order.
+    if (isMemberSelfServiceChildRoute(location)) {
+      final moreIndex = destinations.indexWhere(
+        (d) => d.path == AppRoutes.more,
+      );
+      if (moreIndex != -1) return moreIndex;
+    }
     final index = destinations.indexWhere((d) => d.isSelected(location));
     return index == -1 ? 0 : index;
   }
@@ -71,6 +83,11 @@ class AppShell extends ConsumerWidget {
     final membership = selectedGroup is SelectedGroupResolved
         ? selectedGroup.membership
         : null;
+    // Prompt 09G-B5-C.2 §D/§E: a member self-service child page supplies
+    // its OWN compact app bar (MemberChildScaffold) carrying the same
+    // group context — showing the shell's persistent AppTopBar above it
+    // too would stack two headers, the exact defect UAT found.
+    final isMemberChild = isMemberSelfServiceChildRoute(location);
     // Rebuilt from `context.l10n` (not a top-level const) so nav labels
     // switch immediately with the active language (prompt 05C §10).
     final destinations = shellDestinations(
@@ -88,7 +105,7 @@ class AppShell extends ConsumerWidget {
       final mobileDestinations = mobilePrimaryDestinations(destinations);
       final selectedIndex = _selectedIndex(mobileDestinations);
       return Scaffold(
-        appBar: const AppTopBar(),
+        appBar: isMemberChild ? null : const AppTopBar(),
         body: child,
         bottomNavigationBar: NavigationBar(
           selectedIndex: selectedIndex,
@@ -106,6 +123,14 @@ class AppShell extends ConsumerWidget {
                 showFinancialStatement:
                     membership?.hasPermission('financial_report.self_view') ??
                     false,
+                // Prompt 09G-B5-C.2 §1/§F: the exact permission My Loans'
+                // route and MoreScreen already use — never member.view,
+                // never a role name.
+                showMyContributions:
+                    membership?.hasPermission('contribution.self_view') ??
+                    false,
+                showMyLoans:
+                    membership?.hasPermission('loan.self_view') ?? false,
                 // Prompt 09G-B2 §F2: an ordinary member with none of
                 // member.view/member.invite/member.claim.approve must
                 // not see an empty Member Management entry here either.
@@ -137,7 +162,7 @@ class AppShell extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: const AppTopBar(),
+      appBar: isMemberChild ? null : const AppTopBar(),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -227,7 +252,12 @@ class _DesktopSidebar extends StatelessWidget {
             for (final destination in rest)
               _SidebarTile(
                 destination: destination,
-                selected: destination.isSelected(location),
+                // Prompt 09G-B5-C.2 §I: on desktop/tablet too, a member
+                // self-service child route highlights More, not nothing.
+                selected: destination.path == AppRoutes.more
+                    ? destination.isSelected(location) ||
+                          isMemberSelfServiceChildRoute(location)
+                    : destination.isSelected(location),
                 extended: extended,
                 onTap: () => onSelectDestination(destination.path),
               ),

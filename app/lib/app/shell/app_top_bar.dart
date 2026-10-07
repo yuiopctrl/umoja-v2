@@ -13,6 +13,7 @@ import '../../features/auth/providers/auth_controller_provider.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
 import '../../features/members/presentation/widgets/member_role_label.dart';
 import '../../features/members/presentation/widgets/member_status_badge.dart';
+import 'member_avatar_button.dart';
 
 /// The persistent shell-level top bar shown above the navigation
 /// chrome (bottom bar on mobile, [NavigationRail] on desktop/tablet)
@@ -40,46 +41,32 @@ class AppTopBar extends ConsumerWidget implements PreferredSizeWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       automaticallyImplyLeading: false,
       centerTitle: false,
-      title: Text(membership?.group.groupName ?? 'Umoja'),
-      actions: const [
-        Padding(
+      title: Text(
+        membership?.group.groupName ?? 'Umoja',
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.titleLarge
+            ?.copyWith(fontSize: 20, fontWeight: FontWeight.w600),
+      ),
+      actions: [
+        // Prompt 09G-B5-C.2 §A/§N.6: `appContextProvider` only
+        // refetches on a sign-in identity change or a fresh app launch
+        // (see its own doc comment) — a permission granted to an
+        // already-signed-in user (e.g. the B5-B MEMBER baseline
+        // backfill) would otherwise stay stale for the rest of that
+        // session. This gives every operational screen one explicit,
+        // discoverable way to pick up a newly effective permission
+        // without reinstalling or signing out.
+        IconButton(
+          key: const Key('refreshPermissionsButton'),
+          tooltip: context.l10n.refreshAction,
+          icon: const Icon(Icons.refresh),
+          onPressed: () => ref.invalidate(appContextProvider),
+        ),
+        const Padding(
           padding: EdgeInsets.only(right: UmojaSpacing.md),
-          child: _ProfileAvatarButton(),
+          child: MemberAvatarButton(),
         ),
       ],
-    );
-  }
-}
-
-/// First + last name initials (e.g. "Fred Mwangi" -> "FM"); a single
-/// name falls back to just its own first letter.
-String _initials(String name) {
-  final parts = name
-      .trim()
-      .split(RegExp(r'\s+'))
-      .where((part) => part.isNotEmpty)
-      .toList(growable: false);
-  if (parts.isEmpty) return '?';
-  if (parts.length == 1) return parts.first[0].toUpperCase();
-  return (parts.first[0] + parts.last[0]).toUpperCase();
-}
-
-class _ProfileAvatarButton extends ConsumerWidget {
-  const _ProfileAvatarButton();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final appContextAsync = ref.watch(appContextProvider);
-    final displayName = appContextAsync.value?.profile?.displayName;
-
-    return InkWell(
-      key: const Key('profileMenuButton'),
-      customBorder: const CircleBorder(),
-      onTap: () => showProfileSheet(context),
-      child: CircleAvatar(
-        radius: 16,
-        child: Text(_initials(displayName ?? 'Umoja')),
-      ),
     );
   }
 }

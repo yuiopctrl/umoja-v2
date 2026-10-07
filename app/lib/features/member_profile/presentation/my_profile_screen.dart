@@ -7,7 +7,7 @@ import '../../../core/widgets/umoja_card.dart';
 import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_initials_avatar.dart';
 import '../../../core/widgets/umoja_loading_state.dart';
-import '../../../core/widgets/umoja_page.dart';
+import '../../../app/shell/member_child_scaffold.dart';
 import '../../../core/widgets/umoja_section.dart';
 import '../../members/presentation/widgets/member_role_label.dart';
 import '../../members/presentation/widgets/member_status_badge.dart';
@@ -29,7 +29,7 @@ class MyProfileScreen extends ConsumerWidget {
     final l10n = context.l10n;
     final profileAsync = ref.watch(myMemberProfileProvider);
 
-    return UmojaPage(
+    return MemberChildScaffold(
       title: l10n.myProfileTitle,
       // UmojaLoadingState/UmojaErrorState both need a bounded height
       // (ListView/Center respectively) — the default scrollable body

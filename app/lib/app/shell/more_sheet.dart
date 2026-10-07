@@ -24,6 +24,8 @@ void showMoreSheet(
   required bool showMemberManagement,
   required bool showMyProfile,
   required bool showFinancialStatement,
+  required bool showMyContributions,
+  required bool showMyLoans,
 }) {
   showModalBottomSheet<void>(
     context: context,
@@ -33,6 +35,8 @@ void showMoreSheet(
       showMemberManagement: showMemberManagement,
       showMyProfile: showMyProfile,
       showFinancialStatement: showFinancialStatement,
+      showMyContributions: showMyContributions,
+      showMyLoans: showMyLoans,
     ),
   );
 }
@@ -43,12 +47,16 @@ class _MoreSheet extends StatelessWidget {
     required this.showMemberManagement,
     required this.showMyProfile,
     required this.showFinancialStatement,
+    required this.showMyContributions,
+    required this.showMyLoans,
   });
 
   final List<ShellDestination> overflowDestinations;
   final bool showMemberManagement;
   final bool showMyProfile;
   final bool showFinancialStatement;
+  final bool showMyContributions;
+  final bool showMyLoans;
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +101,29 @@ class _MoreSheet extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).pop();
                   context.push(AppRoutes.myStatement);
+                },
+              ),
+            // Prompt 09G-B5-C.2 §1/§F: the SAME permissions
+            // MoreScreen/RouteGuard already gate on — contribution.self_view
+            // and loan.self_view, never member.view, never a role name.
+            if (showMyContributions)
+              ListTile(
+                key: const Key('moreSheetMyContributions'),
+                leading: const Icon(Icons.request_page_outlined),
+                title: Text(l10n.myContributionsTitle),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  context.push(AppRoutes.myContributions);
+                },
+              ),
+            if (showMyLoans)
+              ListTile(
+                key: const Key('moreSheetMyLoans'),
+                leading: const Icon(Icons.account_balance_wallet_outlined),
+                title: Text(l10n.myLoansNavAction),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  context.push(AppRoutes.myLoans);
                 },
               ),
             if (showMemberManagement)

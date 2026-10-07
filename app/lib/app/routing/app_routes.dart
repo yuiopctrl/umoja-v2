@@ -122,6 +122,19 @@ class AppRoutes {
   static String myContributionDetailPath(String chargeId) =>
       '$myContributions/$chargeId';
 
+  /// Prompt 09G-B5-C: the caller's OWN loan accounts for the selected
+  /// group (rpc_get_my_loans), gated on the effective loan.self_view
+  /// permission. These are NOT aliases for the officer `/loans/*` routes.
+  static const myLoans = '/me/loans';
+
+  /// One of the caller's own loans. The path carries the loan account id
+  /// only. The backend resolves ownership and returns not-found for any
+  /// loan the caller does not own.
+  static const myLoanDetail = '/me/loans/:loanAccountId';
+
+  static String myLoanDetailPath(String loanAccountId) =>
+      '$myLoans/$loanAccountId';
+
   static const membersList = '/members';
   static const memberNew = '/members/new';
 

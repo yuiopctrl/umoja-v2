@@ -7,7 +7,7 @@ import '../../../core/widgets/umoja_card.dart';
 import '../../../core/widgets/umoja_empty_state.dart';
 import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_loading_state.dart';
-import '../../../core/widgets/umoja_page.dart';
+import '../../../app/shell/member_child_scaffold.dart';
 import '../domain/member_financial_statement.dart';
 import '../providers/member_statement_provider.dart';
 import '../providers/member_statement_query_provider.dart';
@@ -28,7 +28,7 @@ class MemberStatementScreen extends ConsumerWidget {
     final l10n = context.l10n;
     final statementAsync = ref.watch(myMemberStatementProvider);
 
-    return UmojaPage(
+    return MemberChildScaffold(
       title: l10n.financialStatementTitle,
       scrollable: false,
       body: statementAsync.when(

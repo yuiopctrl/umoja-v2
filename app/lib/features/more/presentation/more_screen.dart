@@ -165,6 +165,23 @@ class MoreScreen extends ConsumerWidget {
             ),
             const SizedBox(height: UmojaSpacing.xxl),
           ],
+          // Prompt 09G-B5-C §G: the member's own loans, gated on the
+          // effective loan.self_view permission. Never member.view (the
+          // Members directory) and never a role name.
+          if (membership != null &&
+              membership.hasPermission('loan.self_view')) ...[
+            UmojaCard(
+              padding: EdgeInsets.zero,
+              child: ListTile(
+                key: const Key('moreMyLoansAction'),
+                leading: const Icon(Icons.account_balance_wallet_outlined),
+                title: Text(l10n.myLoansNavAction),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push(AppRoutes.myLoans),
+              ),
+            ),
+            const SizedBox(height: UmojaSpacing.xxl),
+          ],
           // Prompt 09G-B1-F-UAT-FIX-03 §E/§H, 09G-B2 §F2: the mobile
           // entry point for Members/Invite Member/Sent Invitations/
           // Membership Requests — group-scoped, so only offered once a

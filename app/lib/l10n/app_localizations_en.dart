@@ -4607,4 +4607,360 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statementAmountUnavailableLabel => 'Not available';
+
+  @override
+  String get myLoansTitle => 'My Loans';
+
+  @override
+  String get myLoansNavAction => 'My Loans';
+
+  @override
+  String get myLoansEmptyTitle => 'You don\'t have any loans yet.';
+
+  @override
+  String get myLoansLoadFailedMessage => 'We couldn\'t load your loans.';
+
+  @override
+  String get myLoansLoadMoreFailedMessage => 'We couldn\'t load more loans.';
+
+  @override
+  String get myLoansNotAuthorizedMessage =>
+      'You don\'t have access to your loans in this group.';
+
+  @override
+  String get myLoansNotFoundMessage => 'This loan could not be found.';
+
+  @override
+  String get myLoansNetworkMessage =>
+      'Network error. Check your connection and try again.';
+
+  @override
+  String get myLoansUnexpectedMessage =>
+      'Something went wrong. Please try again.';
+
+  @override
+  String get myLoansLoanNumberLabel => 'Loan';
+
+  @override
+  String get myLoansOriginalPrincipalLabel => 'Original principal';
+
+  @override
+  String get myLoansNextDueLabel => 'Next due';
+
+  @override
+  String get myLoansOverdueLabel => 'Overdue';
+
+  @override
+  String get myLoansTotalOutstandingLabel => 'Total outstanding';
+
+  @override
+  String get myLoansNotAvailableLabel => 'Not available';
+
+  @override
+  String get myLoansOpeningPositionLabel => 'Opening Position';
+
+  @override
+  String get myLoansDetailTitle => 'Loan Details';
+
+  @override
+  String get myLoansPositionTitle => 'Current Position';
+
+  @override
+  String get myLoansPrincipalOutstandingLabel => 'Principal outstanding';
+
+  @override
+  String get myLoansInterestOutstandingLabel => 'Interest outstanding';
+
+  @override
+  String get myLoansPenaltyOutstandingLabel => 'Penalty outstanding';
+
+  @override
+  String get myLoansPositionNotice =>
+      'Future installment interest is not included.';
+
+  @override
+  String get myLoansPositionUnavailableNotice =>
+      'The position for this loan can\'t be shown right now.';
+
+  @override
+  String get myLoansWrittenOffNote =>
+      'This loan has been written off. No receivable is owed on it now.';
+
+  @override
+  String get myLoansNeverDisbursedNote =>
+      'This loan has not been disbursed, so nothing is owed on it.';
+
+  @override
+  String get myLoansOpeningPositionNotice =>
+      'This loan came into Umoja with an opening position. Its earlier history is not repeated here.';
+
+  @override
+  String get myLoansTermsTitle => 'Loan terms';
+
+  @override
+  String get myLoansTermInterestRateLabel => 'Interest rate';
+
+  @override
+  String get myLoansTermTermLabel => 'Term';
+
+  @override
+  String get myLoansTermRepaymentLabel => 'Repayment frequency';
+
+  @override
+  String get myLoansTermFirstRepaymentLabel => 'First repayment';
+
+  @override
+  String get myLoansApplicationDateLabel => 'Application date';
+
+  @override
+  String get myLoansOriginalDisbursementLabel => 'Original disbursement';
+
+  @override
+  String get myLoansOpeningAsOfLabel => 'Opening position as of';
+
+  @override
+  String get myLoansFinalDueLabel => 'Final due date';
+
+  @override
+  String get myLoansScheduleTitle => 'Repayment Schedule';
+
+  @override
+  String get myLoansCurrentScheduleTitle => 'Current Schedule';
+
+  @override
+  String get myLoansScheduleHistoryTitle => 'Schedule History';
+
+  @override
+  String get myLoansScheduleHistoryNotice =>
+      'These installments were replaced or cancelled. They are not payable now.';
+
+  @override
+  String get myLoansScheduleEmpty => 'No installments are scheduled.';
+
+  @override
+  String get myLoansScheduleLoadFailedMessage =>
+      'We couldn\'t load the repayment schedule.';
+
+  @override
+  String myLoansInstallmentLabel(int number) {
+    return 'Installment $number';
+  }
+
+  @override
+  String get myLoansDueDateLabel => 'Due date';
+
+  @override
+  String get myLoansScheduledLabel => 'Scheduled';
+
+  @override
+  String get myLoansPaidLabel => 'Paid';
+
+  @override
+  String get myLoansOutstandingLabel => 'Outstanding';
+
+  @override
+  String get myLoansEarnedInterestOutstandingLabel =>
+      'Earned interest outstanding';
+
+  @override
+  String get myLoansFutureInterestLabel =>
+      'Scheduled future interest (not owed yet)';
+
+  @override
+  String get myLoansScheduleStatusSettled => 'Settled';
+
+  @override
+  String get myLoansScheduleStatusOverdue => 'Overdue';
+
+  @override
+  String get myLoansScheduleStatusPartiallySettled => 'Partly settled';
+
+  @override
+  String get myLoansScheduleStatusDue => 'Due today';
+
+  @override
+  String get myLoansScheduleStatusUpcoming => 'Upcoming';
+
+  @override
+  String get myLoansScheduleStatusWrittenOff => 'Written off';
+
+  @override
+  String get myLoansScheduleStatusCancelled => 'Cancelled';
+
+  @override
+  String get myLoansScheduleStatusReplaced => 'Replaced';
+
+  @override
+  String get myLoansScheduleStatusUnknown => 'Status unavailable';
+
+  @override
+  String get myLoansReplacedByRestructure => 'Replaced by a loan restructure';
+
+  @override
+  String get myLoansReplacedByPrepayment =>
+      'Replaced by a principal prepayment';
+
+  @override
+  String get myLoansStatusSubmitted => 'Submitted';
+
+  @override
+  String get myLoansStatusApproved => 'Approved';
+
+  @override
+  String get myLoansStatusRejected => 'Rejected';
+
+  @override
+  String get myLoansStatusCancelled => 'Cancelled';
+
+  @override
+  String get myLoansStatusActive => 'Active';
+
+  @override
+  String get myLoansStatusClosed => 'Closed';
+
+  @override
+  String get myLoansStatusWrittenOff => 'Written off';
+
+  @override
+  String get myLoansStatusUnknown => 'Status unavailable';
+
+  @override
+  String get myLoansActivityTitle => 'Activity';
+
+  @override
+  String get myLoansActivityEmpty => 'No activity yet.';
+
+  @override
+  String get myLoansActivityLoadFailedMessage =>
+      'We couldn\'t load the activity.';
+
+  @override
+  String get myLoansLoadMoreActivityAction => 'Show more activity';
+
+  @override
+  String get myLoansEventLoanSubmitted => 'Loan submitted';
+
+  @override
+  String get myLoansEventLoanApproved => 'Loan approved';
+
+  @override
+  String get myLoansEventLoanRejected => 'Loan rejected';
+
+  @override
+  String get myLoansEventLoanCancelled => 'Loan cancelled';
+
+  @override
+  String get myLoansEventLoanDisbursed => 'Loan disbursed';
+
+  @override
+  String get myLoansEventOpeningPosition => 'Opening Position';
+
+  @override
+  String get myLoansEventPaymentPosted => 'Payment received';
+
+  @override
+  String get myLoansEventRecoveryPosted => 'Recovery payment';
+
+  @override
+  String get myLoansEventWalletApplied => 'Wallet Applied';
+
+  @override
+  String get myLoansEventPenaltyAssessed => 'Penalty charged';
+
+  @override
+  String get myLoansEventObligationWaiver => 'Amount waived';
+
+  @override
+  String get myLoansEventObligationCorrection => 'Correction';
+
+  @override
+  String get myLoansEventObligationAdjustmentReversed => 'Correction reversed';
+
+  @override
+  String get myLoansEventPrincipalPrepayment => 'Principal prepayment';
+
+  @override
+  String get myLoansEventLoanRestructured => 'Loan restructured';
+
+  @override
+  String get myLoansEventLoanEarlySettled => 'Loan settled early';
+
+  @override
+  String get myLoansEventLoanClosed => 'Loan closed';
+
+  @override
+  String get myLoansEventLoanReopened => 'Loan reopened';
+
+  @override
+  String get myLoansEventWriteOff => 'Loan written off';
+
+  @override
+  String get myLoansEventWriteOffReversed => 'Write-off reversed';
+
+  @override
+  String get myLoansEventUnknown => 'Activity';
+
+  @override
+  String get myLoansTreatmentReduceTerm => 'Shorter term';
+
+  @override
+  String get myLoansTreatmentReduceInstallment => 'Lower installments';
+
+  @override
+  String get myLoansReversedBadge => 'Reversed';
+
+  @override
+  String get myLoansNonCashBadge => 'Not a cash movement';
+
+  @override
+  String get myLoansCashInLabel => 'Money in';
+
+  @override
+  String get myLoansCashOutLabel => 'Money out';
+
+  @override
+  String get myLoansBreakdownTitle => 'Breakdown';
+
+  @override
+  String get myLoansBreakdownPrincipal => 'Principal';
+
+  @override
+  String get myLoansBreakdownInterest => 'Interest';
+
+  @override
+  String get myLoansBreakdownPenalty => 'Penalty';
+
+  @override
+  String get myLoansPaymentShownOnce =>
+      'One payment, shown once. Its split is below.';
+
+  @override
+  String myLoansReceiptLabel(String number) {
+    return 'Receipt $number';
+  }
+
+  @override
+  String get myLoansUnknownEventNote =>
+      'This activity is recorded on the loan.';
+
+  @override
+  String get myLoansPrincipalReductionLabel => 'Principal reduced';
+
+  @override
+  String get myLoansDisbursedAmountNote => 'Money paid out to the member';
+
+  @override
+  String myLoansTermMonths(int count) {
+    return '$count months';
+  }
+
+  @override
+  String get myLoansFrequencyMonthly => 'Monthly';
+
+  @override
+  String get myLoansOpeningSnapshotNote =>
+      'This is an imported opening snapshot. It is not a new payment or disbursement.';
+
+  @override
+  String get refreshAction => 'Refresh';
 }

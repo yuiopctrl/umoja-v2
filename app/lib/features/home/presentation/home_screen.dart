@@ -282,6 +282,17 @@ class _HomeQuickActions extends StatelessWidget {
           subtitle: l10n.myContributionsShortcutSubtitle,
           onTap: () => context.push(AppRoutes.myContributions),
         ),
+      // Prompt 09G-B5-C.2 §H: the member's own loans, gated on the
+      // effective loan.self_view permission — never member.view, never
+      // a role name. More remains the complete self-service hub; this
+      // is a complementary shortcut, not the only way to reach it.
+      if (membership.hasPermission('loan.self_view'))
+        _ActionItem(
+          key: const Key('homeMyLoansShortcut'),
+          icon: Icons.account_balance_wallet_outlined,
+          label: l10n.myLoansNavAction,
+          onTap: () => context.push(AppRoutes.myLoans),
+        ),
       // Prompt 09G-B1-D4 §F/§J: an ordinary linked member's own Quick
       // Access — only a real, already-implemented feature (their own
       // claim history, secondary/informational once linked).

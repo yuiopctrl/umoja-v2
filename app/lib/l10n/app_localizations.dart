@@ -8443,6 +8443,672 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Haipatikani'**
   String get statementAmountUnavailableLabel;
+
+  /// No description provided for @myLoansTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mikopo Yangu'**
+  String get myLoansTitle;
+
+  /// No description provided for @myLoansNavAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mikopo Yangu'**
+  String get myLoansNavAction;
+
+  /// No description provided for @myLoansEmptyTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Bado huna mikopo.'**
+  String get myLoansEmptyTitle;
+
+  /// No description provided for @myLoansLoadFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupakia mikopo yako.'**
+  String get myLoansLoadFailedMessage;
+
+  /// No description provided for @myLoansLoadMoreFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupakia mikopo zaidi.'**
+  String get myLoansLoadMoreFailedMessage;
+
+  /// No description provided for @myLoansNotAuthorizedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Huna ruhusa ya kuona mikopo yako katika kikundi hiki.'**
+  String get myLoansNotAuthorizedMessage;
+
+  /// No description provided for @myLoansNotFoundMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo huu haupatikani.'**
+  String get myLoansNotFoundMessage;
+
+  /// No description provided for @myLoansNetworkMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hitilafu ya mtandao. Angalia muunganisho wako ujaribu tena.'**
+  String get myLoansNetworkMessage;
+
+  /// No description provided for @myLoansUnexpectedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kuna hitilafu. Tafadhali jaribu tena.'**
+  String get myLoansUnexpectedMessage;
+
+  /// No description provided for @myLoansLoanNumberLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo'**
+  String get myLoansLoanNumberLabel;
+
+  /// No description provided for @myLoansOriginalPrincipalLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji wa awali'**
+  String get myLoansOriginalPrincipalLabel;
+
+  /// No description provided for @myLoansNextDueLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo yanayofuata'**
+  String get myLoansNextDueLabel;
+
+  /// No description provided for @myLoansOverdueLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imechelewa'**
+  String get myLoansOverdueLabel;
+
+  /// No description provided for @myLoansTotalOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Jumla ya deni'**
+  String get myLoansTotalOutstandingLabel;
+
+  /// No description provided for @myLoansNotAvailableLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haipatikani'**
+  String get myLoansNotAvailableLabel;
+
+  /// No description provided for @myLoansOpeningPositionLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio la Mwanzo'**
+  String get myLoansOpeningPositionLabel;
+
+  /// No description provided for @myLoansDetailTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo ya Mkopo'**
+  String get myLoansDetailTitle;
+
+  /// No description provided for @myLoansPositionTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nafasi ya Sasa'**
+  String get myLoansPositionTitle;
+
+  /// No description provided for @myLoansPrincipalOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji unaodaiwa'**
+  String get myLoansPrincipalOutstandingLabel;
+
+  /// No description provided for @myLoansInterestOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba inayodaiwa'**
+  String get myLoansInterestOutstandingLabel;
+
+  /// No description provided for @myLoansPenaltyOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu inayodaiwa'**
+  String get myLoansPenaltyOutstandingLabel;
+
+  /// No description provided for @myLoansPositionNotice.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba ya awamu za baadaye haijajumuishwa.'**
+  String get myLoansPositionNotice;
+
+  /// No description provided for @myLoansPositionUnavailableNotice.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio la mkopo huu haliwezi kuonyeshwa sasa.'**
+  String get myLoansPositionUnavailableNotice;
+
+  /// No description provided for @myLoansWrittenOffNote.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo huu umefutwa. Hakuna deni linalodaiwa sasa.'**
+  String get myLoansWrittenOffNote;
+
+  /// No description provided for @myLoansNeverDisbursedNote.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo huu haujatolewa, kwa hiyo hakuna deni.'**
+  String get myLoansNeverDisbursedNote;
+
+  /// No description provided for @myLoansOpeningPositionNotice.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo huu uliingia Umoja ukiwa na salio la mwanzo. Historia yake ya awali haionyeshwi hapa.'**
+  String get myLoansOpeningPositionNotice;
+
+  /// No description provided for @myLoansTermsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Masharti ya mkopo'**
+  String get myLoansTermsTitle;
+
+  /// No description provided for @myLoansTermInterestRateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiwango cha riba'**
+  String get myLoansTermInterestRateLabel;
+
+  /// No description provided for @myLoansTermTermLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Muda'**
+  String get myLoansTermTermLabel;
+
+  /// No description provided for @myLoansTermRepaymentLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mzunguko wa marejesho'**
+  String get myLoansTermRepaymentLabel;
+
+  /// No description provided for @myLoansTermFirstRepaymentLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marejesho ya kwanza'**
+  String get myLoansTermFirstRepaymentLabel;
+
+  /// No description provided for @myLoansApplicationDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya maombi'**
+  String get myLoansApplicationDateLabel;
+
+  /// No description provided for @myLoansOriginalDisbursementLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Utoaji wa awali'**
+  String get myLoansOriginalDisbursementLabel;
+
+  /// No description provided for @myLoansOpeningAsOfLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio la mwanzo kufikia'**
+  String get myLoansOpeningAsOfLabel;
+
+  /// No description provided for @myLoansFinalDueLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya mwisho ya malipo'**
+  String get myLoansFinalDueLabel;
+
+  /// No description provided for @myLoansScheduleTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ratiba ya Marejesho'**
+  String get myLoansScheduleTitle;
+
+  /// No description provided for @myLoansCurrentScheduleTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ratiba ya Sasa'**
+  String get myLoansCurrentScheduleTitle;
+
+  /// No description provided for @myLoansScheduleHistoryTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Historia ya Ratiba'**
+  String get myLoansScheduleHistoryTitle;
+
+  /// No description provided for @myLoansScheduleHistoryNotice.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu hizi zilibadilishwa au kufutwa. Hazilipwi sasa.'**
+  String get myLoansScheduleHistoryNotice;
+
+  /// No description provided for @myLoansScheduleEmpty.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna awamu zilizopangwa.'**
+  String get myLoansScheduleEmpty;
+
+  /// No description provided for @myLoansScheduleLoadFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupakia ratiba ya marejesho.'**
+  String get myLoansScheduleLoadFailedMessage;
+
+  /// No description provided for @myLoansInstallmentLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu {number}'**
+  String myLoansInstallmentLabel(int number);
+
+  /// No description provided for @myLoansDueDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya malipo'**
+  String get myLoansDueDateLabel;
+
+  /// No description provided for @myLoansScheduledLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ilivyopangwa'**
+  String get myLoansScheduledLabel;
+
+  /// No description provided for @myLoansPaidLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Iliyolipwa'**
+  String get myLoansPaidLabel;
+
+  /// No description provided for @myLoansOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Inadaiwa'**
+  String get myLoansOutstandingLabel;
+
+  /// No description provided for @myLoansEarnedInterestOutstandingLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba iliyoiva inayodaiwa'**
+  String get myLoansEarnedInterestOutstandingLabel;
+
+  /// No description provided for @myLoansFutureInterestLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba ya baadaye iliyopangwa (bado haidaiwi)'**
+  String get myLoansFutureInterestLabel;
+
+  /// No description provided for @myLoansScheduleStatusSettled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imelipwa'**
+  String get myLoansScheduleStatusSettled;
+
+  /// No description provided for @myLoansScheduleStatusOverdue.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imechelewa'**
+  String get myLoansScheduleStatusOverdue;
+
+  /// No description provided for @myLoansScheduleStatusPartiallySettled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imelipwa kwa sehemu'**
+  String get myLoansScheduleStatusPartiallySettled;
+
+  /// No description provided for @myLoansScheduleStatusDue.
+  ///
+  /// In sw, this message translates to:
+  /// **'Inadaiwa leo'**
+  String get myLoansScheduleStatusDue;
+
+  /// No description provided for @myLoansScheduleStatusUpcoming.
+  ///
+  /// In sw, this message translates to:
+  /// **'Inakuja'**
+  String get myLoansScheduleStatusUpcoming;
+
+  /// No description provided for @myLoansScheduleStatusWrittenOff.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imefutwa (deni)'**
+  String get myLoansScheduleStatusWrittenOff;
+
+  /// No description provided for @myLoansScheduleStatusCancelled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imefutwa'**
+  String get myLoansScheduleStatusCancelled;
+
+  /// No description provided for @myLoansScheduleStatusReplaced.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imebadilishwa'**
+  String get myLoansScheduleStatusReplaced;
+
+  /// No description provided for @myLoansScheduleStatusUnknown.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali haipatikani'**
+  String get myLoansScheduleStatusUnknown;
+
+  /// No description provided for @myLoansReplacedByRestructure.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imebadilishwa kwa marekebisho ya mkopo'**
+  String get myLoansReplacedByRestructure;
+
+  /// No description provided for @myLoansReplacedByPrepayment.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imebadilishwa kwa malipo ya awali ya mtaji'**
+  String get myLoansReplacedByPrepayment;
+
+  /// No description provided for @myLoansStatusSubmitted.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imewasilishwa'**
+  String get myLoansStatusSubmitted;
+
+  /// No description provided for @myLoansStatusApproved.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imeidhinishwa'**
+  String get myLoansStatusApproved;
+
+  /// No description provided for @myLoansStatusRejected.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imekataliwa'**
+  String get myLoansStatusRejected;
+
+  /// No description provided for @myLoansStatusCancelled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imefutwa'**
+  String get myLoansStatusCancelled;
+
+  /// No description provided for @myLoansStatusActive.
+  ///
+  /// In sw, this message translates to:
+  /// **'Inaendelea'**
+  String get myLoansStatusActive;
+
+  /// No description provided for @myLoansStatusClosed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imefungwa'**
+  String get myLoansStatusClosed;
+
+  /// No description provided for @myLoansStatusWrittenOff.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imefutwa (deni)'**
+  String get myLoansStatusWrittenOff;
+
+  /// No description provided for @myLoansStatusUnknown.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali haipatikani'**
+  String get myLoansStatusUnknown;
+
+  /// No description provided for @myLoansActivityTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Shughuli'**
+  String get myLoansActivityTitle;
+
+  /// No description provided for @myLoansActivityEmpty.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna shughuli bado.'**
+  String get myLoansActivityEmpty;
+
+  /// No description provided for @myLoansActivityLoadFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupakia shughuli.'**
+  String get myLoansActivityLoadFailedMessage;
+
+  /// No description provided for @myLoansLoadMoreActivityAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Onyesha shughuli zaidi'**
+  String get myLoansLoadMoreActivityAction;
+
+  /// No description provided for @myLoansEventLoanSubmitted.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umewasilishwa'**
+  String get myLoansEventLoanSubmitted;
+
+  /// No description provided for @myLoansEventLoanApproved.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umeidhinishwa'**
+  String get myLoansEventLoanApproved;
+
+  /// No description provided for @myLoansEventLoanRejected.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umekataliwa'**
+  String get myLoansEventLoanRejected;
+
+  /// No description provided for @myLoansEventLoanCancelled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umefutwa'**
+  String get myLoansEventLoanCancelled;
+
+  /// No description provided for @myLoansEventLoanDisbursed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umetolewa'**
+  String get myLoansEventLoanDisbursed;
+
+  /// No description provided for @myLoansEventOpeningPosition.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio la Mwanzo'**
+  String get myLoansEventOpeningPosition;
+
+  /// No description provided for @myLoansEventPaymentPosted.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo yamepokelewa'**
+  String get myLoansEventPaymentPosted;
+
+  /// No description provided for @myLoansEventRecoveryPosted.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo ya urejeshaji'**
+  String get myLoansEventRecoveryPosted;
+
+  /// No description provided for @myLoansEventWalletApplied.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio la Wallet Limetumika'**
+  String get myLoansEventWalletApplied;
+
+  /// No description provided for @myLoansEventPenaltyAssessed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu imewekwa'**
+  String get myLoansEventPenaltyAssessed;
+
+  /// No description provided for @myLoansEventObligationWaiver.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi kilichosamehewa'**
+  String get myLoansEventObligationWaiver;
+
+  /// No description provided for @myLoansEventObligationCorrection.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho'**
+  String get myLoansEventObligationCorrection;
+
+  /// No description provided for @myLoansEventObligationAdjustmentReversed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho yamerudishwa'**
+  String get myLoansEventObligationAdjustmentReversed;
+
+  /// No description provided for @myLoansEventPrincipalPrepayment.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo ya awali ya mtaji'**
+  String get myLoansEventPrincipalPrepayment;
+
+  /// No description provided for @myLoansEventLoanRestructured.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umerekebishwa'**
+  String get myLoansEventLoanRestructured;
+
+  /// No description provided for @myLoansEventLoanEarlySettled.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umelipwa mapema'**
+  String get myLoansEventLoanEarlySettled;
+
+  /// No description provided for @myLoansEventLoanClosed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umefungwa'**
+  String get myLoansEventLoanClosed;
+
+  /// No description provided for @myLoansEventLoanReopened.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umefunguliwa'**
+  String get myLoansEventLoanReopened;
+
+  /// No description provided for @myLoansEventWriteOff.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo umefutwa (deni)'**
+  String get myLoansEventWriteOff;
+
+  /// No description provided for @myLoansEventWriteOffReversed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kufuta deni kumerudishwa'**
+  String get myLoansEventWriteOffReversed;
+
+  /// No description provided for @myLoansEventUnknown.
+  ///
+  /// In sw, this message translates to:
+  /// **'Shughuli'**
+  String get myLoansEventUnknown;
+
+  /// No description provided for @myLoansTreatmentReduceTerm.
+  ///
+  /// In sw, this message translates to:
+  /// **'Muda mfupi zaidi'**
+  String get myLoansTreatmentReduceTerm;
+
+  /// No description provided for @myLoansTreatmentReduceInstallment.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu ndogo zaidi'**
+  String get myLoansTreatmentReduceInstallment;
+
+  /// No description provided for @myLoansReversedBadge.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imerudishwa'**
+  String get myLoansReversedBadge;
+
+  /// No description provided for @myLoansNonCashBadge.
+  ///
+  /// In sw, this message translates to:
+  /// **'Si malipo ya fedha'**
+  String get myLoansNonCashBadge;
+
+  /// No description provided for @myLoansCashInLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Fedha imeingia'**
+  String get myLoansCashInLabel;
+
+  /// No description provided for @myLoansCashOutLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Fedha imetoka'**
+  String get myLoansCashOutLabel;
+
+  /// No description provided for @myLoansBreakdownTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mgawanyo'**
+  String get myLoansBreakdownTitle;
+
+  /// No description provided for @myLoansBreakdownPrincipal.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji'**
+  String get myLoansBreakdownPrincipal;
+
+  /// No description provided for @myLoansBreakdownInterest.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba'**
+  String get myLoansBreakdownInterest;
+
+  /// No description provided for @myLoansBreakdownPenalty.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu'**
+  String get myLoansBreakdownPenalty;
+
+  /// No description provided for @myLoansPaymentShownOnce.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo moja, yanaonyeshwa mara moja. Mgawanyo wake uko hapa chini.'**
+  String get myLoansPaymentShownOnce;
+
+  /// No description provided for @myLoansReceiptLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Risiti {number}'**
+  String myLoansReceiptLabel(String number);
+
+  /// No description provided for @myLoansUnknownEventNote.
+  ///
+  /// In sw, this message translates to:
+  /// **'Shughuli hii imerekodiwa kwenye mkopo.'**
+  String get myLoansUnknownEventNote;
+
+  /// No description provided for @myLoansPrincipalReductionLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji uliopunguzwa'**
+  String get myLoansPrincipalReductionLabel;
+
+  /// No description provided for @myLoansDisbursedAmountNote.
+  ///
+  /// In sw, this message translates to:
+  /// **'Fedha iliyotolewa kwa mwanachama'**
+  String get myLoansDisbursedAmountNote;
+
+  /// No description provided for @myLoansTermMonths.
+  ///
+  /// In sw, this message translates to:
+  /// **'miezi {count}'**
+  String myLoansTermMonths(int count);
+
+  /// No description provided for @myLoansFrequencyMonthly.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kila mwezi'**
+  String get myLoansFrequencyMonthly;
+
+  /// No description provided for @myLoansOpeningSnapshotNote.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hii ni kumbukumbu ya salio la mwanzo lililoingizwa. Si malipo wala utoaji mpya.'**
+  String get myLoansOpeningSnapshotNote;
+
+  /// No description provided for @refreshAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Onyesha Upya'**
+  String get refreshAction;
 }
 
 class _AppLocalizationsDelegate

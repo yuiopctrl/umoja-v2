@@ -5,6 +5,7 @@ import '../../features/auth/models/membership_context.dart';
 import '../../features/auth/providers/auth_session_provider.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
 import 'app_routes.dart';
+import 'member_self_service_routes.dart';
 
 /// Classifies why a signed-in, profile-complete user has zero eligible
 /// (ACTIVE membership + ACTIVE group) operational context, so the
@@ -263,8 +264,17 @@ String? computeRedirect({
     // the effective contribution.self_view permission — never by a role
     // name, and never by contribution.view (officer-wide). The backend
     // RPCs enforce the same permission; this is navigation guidance.
-    if (_isMyContributionsRoute(currentLocation) &&
+    if (isMyContributionsRoute(currentLocation) &&
         !selectedGroup.membership.hasPermission('contribution.self_view')) {
+      return AppRoutes.home;
+    }
+
+    // Prompt 09G-B5-C §F: My Loans (list and detail) is gated by the
+    // effective loan.self_view permission. Never by a role name, and never
+    // by member.view, which is the Members directory. Backend RPCs enforce
+    // the same permission. This is navigation guidance only.
+    if (isMyLoansRoute(currentLocation) &&
+        !selectedGroup.membership.hasPermission('loan.self_view')) {
       return AppRoutes.home;
     }
 
@@ -307,13 +317,6 @@ bool _isMembersRoute(String location) =>
     location == AppRoutes.membersList ||
     location.startsWith('${AppRoutes.membersList}/');
 
-/// Whether [location] is `/me/contributions` or one of its detail
-/// routes — the self-service contribution screens, kept separate from
-/// the officer `/contributions` workspace.
-bool _isMyContributionsRoute(String location) =>
-    location == AppRoutes.myContributions ||
-    location.startsWith('${AppRoutes.myContributions}/');
-
 /// Routes reachable once a group is resolved — the operational
 /// (non-onboarding, non-auth) part of the app.
 bool _isOperationalRoute(String location) {
@@ -334,7 +337,8 @@ bool _isOperationalRoute(String location) {
       // real authorization boundary (financial_report.self_view) —
       // this is reachability only.
       location == AppRoutes.myStatement ||
-      _isMyContributionsRoute(location) ||
+      isMyContributionsRoute(location) ||
+      isMyLoansRoute(location) ||
       // Prompt 09G-B1-D4 §J: once linked, the claimant's own claim
       // history remains reachable as secondary information (e.g. from
       // Member Home's own quick-access card) — deliberately NOT

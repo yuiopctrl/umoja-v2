@@ -10,7 +10,7 @@ import '../../../core/widgets/umoja_card.dart';
 import '../../../core/widgets/umoja_empty_state.dart';
 import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_loading_state.dart';
-import '../../../core/widgets/umoja_page.dart';
+import '../../../app/shell/member_child_scaffold.dart';
 import '../data/my_contributions_failure.dart';
 import '../domain/my_contribution.dart';
 import '../providers/my_contributions_provider.dart';
@@ -32,7 +32,7 @@ class MyContributionsScreen extends ConsumerWidget {
     final l10n = context.l10n;
     final pageAsync = ref.watch(myContributionsProvider);
 
-    return UmojaPage(
+    return MemberChildScaffold(
       title: l10n.myContributionsTitle,
       scrollable: false,
       body: pageAsync.when(

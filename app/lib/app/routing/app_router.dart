@@ -80,6 +80,8 @@ import '../../features/membership_invitations/presentation/membership_invitation
 import '../../features/membership_invitations/presentation/open_invitation_link_screen.dart';
 import '../../features/membership_invitations/presentation/personal_invitations_screen.dart';
 import '../../features/member_profile/presentation/my_profile_screen.dart';
+import '../../features/member_loans/presentation/my_loan_detail_screen.dart';
+import '../../features/member_loans/presentation/my_loans_screen.dart';
 import '../../features/member_statement/presentation/member_statement_screen.dart';
 import '../../features/my_contributions/presentation/my_contribution_detail_screen.dart';
 import '../../features/my_contributions/presentation/my_contributions_screen.dart';
@@ -375,6 +377,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.myStatement,
             builder: (context, state) => const MemberStatementScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.myLoans,
+            builder: (context, state) => const MyLoansScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.myLoanDetail,
+            builder: (context, state) => MyLoanDetailScreen(
+              loanAccountId: state.pathParameters['loanAccountId']!,
+            ),
           ),
           GoRoute(
             path: AppRoutes.myContributions,

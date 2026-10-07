@@ -7,7 +7,7 @@ import '../../../core/utils/money_format.dart';
 import '../../../core/widgets/umoja_card.dart';
 import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_loading_state.dart';
-import '../../../core/widgets/umoja_page.dart';
+import '../../../app/shell/member_child_scaffold.dart';
 import '../../../core/widgets/umoja_status_badge.dart';
 import '../data/my_contributions_failure.dart';
 import '../domain/my_contribution.dart';
@@ -28,7 +28,7 @@ class MyContributionDetailScreen extends ConsumerWidget {
     final l10n = context.l10n;
     final detailAsync = ref.watch(myContributionDetailProvider(chargeId));
 
-    return UmojaPage(
+    return MemberChildScaffold(
       title: l10n.myContributionsDetailTitle,
       scrollable: false,
       body: detailAsync.when(
