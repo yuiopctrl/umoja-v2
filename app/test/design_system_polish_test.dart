@@ -152,7 +152,9 @@ void main() {
   });
 
   testWidgets(
-    'desktop member detail shows a "← Wanachama" breadcrumb back link',
+    'desktop member detail shows the same compact back arrow as mobile '
+    '(Prompt 09G-B6-C.3: the old desktop-only breadcrumb back link is '
+    'retired in favor of one universal AppBar back arrow)',
     (tester) async {
       _setViewport(tester, const Size(1400, 900));
       final fakeRepo = FakeMemberRepository()
@@ -169,12 +171,8 @@ void main() {
       await tester.tap(find.text('Amina Juma'));
       await tester.pumpAndSettle();
 
-      final backLink = find.byKey(const Key('umojaPageDesktopBackLink'));
-      expect(backLink, findsOneWidget);
-      expect(
-        find.descendant(of: backLink, matching: find.text('Wanachama')),
-        findsOneWidget,
-      );
+      expect(find.byKey(const Key('umojaPageDesktopBackLink')), findsNothing);
+      expect(find.byKey(const Key('umojaPageBackButton')), findsOneWidget);
     },
   );
 

@@ -9109,6 +9109,378 @@ abstract class AppLocalizations {
   /// In sw, this message translates to:
   /// **'Onyesha Upya'**
   String get refreshAction;
+
+  /// No description provided for @myPaymentsTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo Yangu'**
+  String get myPaymentsTitle;
+
+  /// No description provided for @myPaymentsShortcutSubtitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Historia ya malipo yako na risiti'**
+  String get myPaymentsShortcutSubtitle;
+
+  /// No description provided for @myPaymentsStatusPosted.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imepokelewa'**
+  String get myPaymentsStatusPosted;
+
+  /// No description provided for @myPaymentsStatusReversed.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imerejeshwa'**
+  String get myPaymentsStatusReversed;
+
+  /// No description provided for @myPaymentsStatusUnknown.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haijulikani'**
+  String get myPaymentsStatusUnknown;
+
+  /// No description provided for @myPaymentsMethodCash.
+  ///
+  /// In sw, this message translates to:
+  /// **'Taslimu'**
+  String get myPaymentsMethodCash;
+
+  /// No description provided for @myPaymentsMethodBankTransfer.
+  ///
+  /// In sw, this message translates to:
+  /// **'Benki'**
+  String get myPaymentsMethodBankTransfer;
+
+  /// No description provided for @myPaymentsMethodMobileMoney.
+  ///
+  /// In sw, this message translates to:
+  /// **'Simu'**
+  String get myPaymentsMethodMobileMoney;
+
+  /// No description provided for @myPaymentsMethodOther.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nyingine'**
+  String get myPaymentsMethodOther;
+
+  /// No description provided for @myPaymentsMethodUnknown.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haijulikani'**
+  String get myPaymentsMethodUnknown;
+
+  /// No description provided for @myPaymentsTargetContribution.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mchango'**
+  String get myPaymentsTargetContribution;
+
+  /// No description provided for @myPaymentsTargetLoanPrincipal.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji'**
+  String get myPaymentsTargetLoanPrincipal;
+
+  /// No description provided for @myPaymentsTargetLoanInterest.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba'**
+  String get myPaymentsTargetLoanInterest;
+
+  /// No description provided for @myPaymentsTargetLoanPenalty.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu'**
+  String get myPaymentsTargetLoanPenalty;
+
+  /// No description provided for @myPaymentsTargetPrincipalPrepayment.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo ya Mapema ya Mtaji'**
+  String get myPaymentsTargetPrincipalPrepayment;
+
+  /// No description provided for @myPaymentsTargetRecoveryPrincipal.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mtaji Uliorejeshwa'**
+  String get myPaymentsTargetRecoveryPrincipal;
+
+  /// No description provided for @myPaymentsTargetRecoveryInterest.
+  ///
+  /// In sw, this message translates to:
+  /// **'Riba Iliyorejeshwa'**
+  String get myPaymentsTargetRecoveryInterest;
+
+  /// No description provided for @myPaymentsTargetRecoveryPenalty.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu Iliyorejeshwa'**
+  String get myPaymentsTargetRecoveryPenalty;
+
+  /// No description provided for @myPaymentsTargetUnknown.
+  ///
+  /// In sw, this message translates to:
+  /// **'Nyingine'**
+  String get myPaymentsTargetUnknown;
+
+  /// No description provided for @myPaymentsComponentBase.
+  ///
+  /// In sw, this message translates to:
+  /// **'Msingi'**
+  String get myPaymentsComponentBase;
+
+  /// No description provided for @myPaymentsComponentPenalty.
+  ///
+  /// In sw, this message translates to:
+  /// **'Adhabu'**
+  String get myPaymentsComponentPenalty;
+
+  /// No description provided for @myPaymentsComponentAdjustment.
+  ///
+  /// In sw, this message translates to:
+  /// **'Marekebisho'**
+  String get myPaymentsComponentAdjustment;
+
+  /// No description provided for @myPaymentsComponentWaiver.
+  ///
+  /// In sw, this message translates to:
+  /// **'Msamaha'**
+  String get myPaymentsComponentWaiver;
+
+  /// No description provided for @myPaymentsComponentOpeningBalance.
+  ///
+  /// In sw, this message translates to:
+  /// **'Salio la Mwanzo'**
+  String get myPaymentsComponentOpeningBalance;
+
+  /// No description provided for @myPaymentsReceiptLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Risiti {number}'**
+  String myPaymentsReceiptLabel(String number);
+
+  /// No description provided for @myPaymentsFromAfterToError.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe ya kuanzia inapaswa kuwa kabla ya tarehe ya mwisho.'**
+  String get myPaymentsFromAfterToError;
+
+  /// No description provided for @myPaymentsDateNotSet.
+  ///
+  /// In sw, this message translates to:
+  /// **'Haijawekwa'**
+  String get myPaymentsDateNotSet;
+
+  /// No description provided for @myPaymentsFilterSheetTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Chuja Malipo'**
+  String get myPaymentsFilterSheetTitle;
+
+  /// No description provided for @myPaymentsStatusLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hali'**
+  String get myPaymentsStatusLabel;
+
+  /// No description provided for @myPaymentsAllStatuses.
+  ///
+  /// In sw, this message translates to:
+  /// **'Zote'**
+  String get myPaymentsAllStatuses;
+
+  /// No description provided for @myPaymentsFromLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kuanzia'**
+  String get myPaymentsFromLabel;
+
+  /// No description provided for @myPaymentsToLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hadi'**
+  String get myPaymentsToLabel;
+
+  /// No description provided for @myPaymentsClearFiltersAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Futa Vichujio'**
+  String get myPaymentsClearFiltersAction;
+
+  /// No description provided for @myPaymentsApplyAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tumia'**
+  String get myPaymentsApplyAction;
+
+  /// No description provided for @myPaymentsLoadFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupakia malipo yako. Tafadhali jaribu tena.'**
+  String get myPaymentsLoadFailedMessage;
+
+  /// No description provided for @myPaymentsNotAuthorizedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Huna ruhusa ya kuona malipo katika kikundi hiki.'**
+  String get myPaymentsNotAuthorizedMessage;
+
+  /// No description provided for @myPaymentsNotFoundMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo haya hayapatikani.'**
+  String get myPaymentsNotFoundMessage;
+
+  /// No description provided for @myPaymentsNetworkMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia muunganisho wako na ujaribu tena.'**
+  String get myPaymentsNetworkMessage;
+
+  /// No description provided for @myPaymentsDetailLoadFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupakia malipo haya. Tafadhali jaribu tena.'**
+  String get myPaymentsDetailLoadFailedMessage;
+
+  /// No description provided for @myPaymentsEmptyFilteredTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna malipo yanayolingana na vichujio hivi'**
+  String get myPaymentsEmptyFilteredTitle;
+
+  /// No description provided for @myPaymentsEmptyTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hakuna malipo bado'**
+  String get myPaymentsEmptyTitle;
+
+  /// No description provided for @myPaymentsEmptyMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Malipo yako yataonekana hapa yakishawekwa.'**
+  String get myPaymentsEmptyMessage;
+
+  /// No description provided for @myPaymentsLoadMoreFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imeshindikana kupakia malipo zaidi. Jaribu tena.'**
+  String get myPaymentsLoadMoreFailedMessage;
+
+  /// No description provided for @myPaymentsFiltersAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Vichujio'**
+  String get myPaymentsFiltersAction;
+
+  /// No description provided for @myPaymentsClearFilterTooltip.
+  ///
+  /// In sw, this message translates to:
+  /// **'Ondoa kichujio hiki'**
+  String get myPaymentsClearFilterTooltip;
+
+  /// No description provided for @myPaymentsDetailTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Maelezo ya Malipo'**
+  String get myPaymentsDetailTitle;
+
+  /// No description provided for @myPaymentsMethodLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Njia'**
+  String get myPaymentsMethodLabel;
+
+  /// No description provided for @myPaymentsReceiptNumberLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Namba ya Risiti'**
+  String get myPaymentsReceiptNumberLabel;
+
+  /// No description provided for @myPaymentsExternalReferenceLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kumbukumbu'**
+  String get myPaymentsExternalReferenceLabel;
+
+  /// No description provided for @myPaymentsReversedTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imerejeshwa'**
+  String get myPaymentsReversedTitle;
+
+  /// No description provided for @myPaymentsBreakdownTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mgawanyo'**
+  String get myPaymentsBreakdownTitle;
+
+  /// No description provided for @myPaymentsWalletCreditTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Imewekwa Kwenye Wallet'**
+  String get myPaymentsWalletCreditTitle;
+
+  /// No description provided for @myPaymentsViewReceiptAction.
+  ///
+  /// In sw, this message translates to:
+  /// **'Angalia Risiti'**
+  String get myPaymentsViewReceiptAction;
+
+  /// No description provided for @myPaymentsContributionsGroupLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Michango'**
+  String get myPaymentsContributionsGroupLabel;
+
+  /// No description provided for @myPaymentsLoansGroupLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mikopo'**
+  String get myPaymentsLoansGroupLabel;
+
+  /// No description provided for @myPaymentsLoanNumberLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Mkopo'**
+  String get myPaymentsLoanNumberLabel;
+
+  /// No description provided for @myPaymentsInstallmentLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Awamu ya {number}'**
+  String myPaymentsInstallmentLabel(int number);
+
+  /// No description provided for @myPaymentsReceiptTitle.
+  ///
+  /// In sw, this message translates to:
+  /// **'Risiti'**
+  String get myPaymentsReceiptTitle;
+
+  /// No description provided for @myPaymentsReceiptLoadFailedMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Hatukuweza kupakia risiti hii. Tafadhali jaribu tena.'**
+  String get myPaymentsReceiptLoadFailedMessage;
+
+  /// No description provided for @myPaymentsDateLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Tarehe'**
+  String get myPaymentsDateLabel;
+
+  /// No description provided for @myPaymentsAmountLabel.
+  ///
+  /// In sw, this message translates to:
+  /// **'Kiasi'**
+  String get myPaymentsAmountLabel;
+
+  /// No description provided for @pressBackAgainToExitMessage.
+  ///
+  /// In sw, this message translates to:
+  /// **'Bonyeza kurudi tena ili kufunga programu'**
+  String get pressBackAgainToExitMessage;
 }
 
 class _AppLocalizationsDelegate

@@ -4963,4 +4963,201 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get refreshAction => 'Refresh';
+
+  @override
+  String get myPaymentsTitle => 'My Payments';
+
+  @override
+  String get myPaymentsShortcutSubtitle => 'Your payment history and receipts';
+
+  @override
+  String get myPaymentsStatusPosted => 'Posted';
+
+  @override
+  String get myPaymentsStatusReversed => 'Reversed';
+
+  @override
+  String get myPaymentsStatusUnknown => 'Unknown';
+
+  @override
+  String get myPaymentsMethodCash => 'Cash';
+
+  @override
+  String get myPaymentsMethodBankTransfer => 'Bank Transfer';
+
+  @override
+  String get myPaymentsMethodMobileMoney => 'Mobile Money';
+
+  @override
+  String get myPaymentsMethodOther => 'Other';
+
+  @override
+  String get myPaymentsMethodUnknown => 'Unknown';
+
+  @override
+  String get myPaymentsTargetContribution => 'Contribution';
+
+  @override
+  String get myPaymentsTargetLoanPrincipal => 'Principal';
+
+  @override
+  String get myPaymentsTargetLoanInterest => 'Interest';
+
+  @override
+  String get myPaymentsTargetLoanPenalty => 'Penalty';
+
+  @override
+  String get myPaymentsTargetPrincipalPrepayment => 'Principal Prepayment';
+
+  @override
+  String get myPaymentsTargetRecoveryPrincipal => 'Recovered Principal';
+
+  @override
+  String get myPaymentsTargetRecoveryInterest => 'Recovered Interest';
+
+  @override
+  String get myPaymentsTargetRecoveryPenalty => 'Recovered Penalty';
+
+  @override
+  String get myPaymentsTargetUnknown => 'Other';
+
+  @override
+  String get myPaymentsComponentBase => 'Base';
+
+  @override
+  String get myPaymentsComponentPenalty => 'Penalty';
+
+  @override
+  String get myPaymentsComponentAdjustment => 'Adjustment';
+
+  @override
+  String get myPaymentsComponentWaiver => 'Waiver';
+
+  @override
+  String get myPaymentsComponentOpeningBalance => 'Opening Balance';
+
+  @override
+  String myPaymentsReceiptLabel(String number) {
+    return 'Receipt $number';
+  }
+
+  @override
+  String get myPaymentsFromAfterToError =>
+      'The from date must be before the to date.';
+
+  @override
+  String get myPaymentsDateNotSet => 'Not set';
+
+  @override
+  String get myPaymentsFilterSheetTitle => 'Filter Payments';
+
+  @override
+  String get myPaymentsStatusLabel => 'Status';
+
+  @override
+  String get myPaymentsAllStatuses => 'All';
+
+  @override
+  String get myPaymentsFromLabel => 'From';
+
+  @override
+  String get myPaymentsToLabel => 'To';
+
+  @override
+  String get myPaymentsClearFiltersAction => 'Clear Filters';
+
+  @override
+  String get myPaymentsApplyAction => 'Apply';
+
+  @override
+  String get myPaymentsLoadFailedMessage =>
+      'We couldn\'t load your payments. Please try again.';
+
+  @override
+  String get myPaymentsNotAuthorizedMessage =>
+      'You don\'t have access to payments in this group.';
+
+  @override
+  String get myPaymentsNotFoundMessage => 'This payment is not available.';
+
+  @override
+  String get myPaymentsNetworkMessage => 'Check your connection and try again.';
+
+  @override
+  String get myPaymentsDetailLoadFailedMessage =>
+      'We couldn\'t load this payment. Please try again.';
+
+  @override
+  String get myPaymentsEmptyFilteredTitle => 'No payments match these filters';
+
+  @override
+  String get myPaymentsEmptyTitle => 'No payments yet';
+
+  @override
+  String get myPaymentsEmptyMessage =>
+      'Your payments will appear here once recorded.';
+
+  @override
+  String get myPaymentsLoadMoreFailedMessage =>
+      'Couldn\'t load more payments. Try again.';
+
+  @override
+  String get myPaymentsFiltersAction => 'Filters';
+
+  @override
+  String get myPaymentsClearFilterTooltip => 'Remove this filter';
+
+  @override
+  String get myPaymentsDetailTitle => 'Payment Details';
+
+  @override
+  String get myPaymentsMethodLabel => 'Method';
+
+  @override
+  String get myPaymentsReceiptNumberLabel => 'Receipt Number';
+
+  @override
+  String get myPaymentsExternalReferenceLabel => 'Reference';
+
+  @override
+  String get myPaymentsReversedTitle => 'Reversed';
+
+  @override
+  String get myPaymentsBreakdownTitle => 'Breakdown';
+
+  @override
+  String get myPaymentsWalletCreditTitle => 'Credited to Wallet';
+
+  @override
+  String get myPaymentsViewReceiptAction => 'View Receipt';
+
+  @override
+  String get myPaymentsContributionsGroupLabel => 'Contributions';
+
+  @override
+  String get myPaymentsLoansGroupLabel => 'Loans';
+
+  @override
+  String get myPaymentsLoanNumberLabel => 'Loan';
+
+  @override
+  String myPaymentsInstallmentLabel(int number) {
+    return 'Installment $number';
+  }
+
+  @override
+  String get myPaymentsReceiptTitle => 'Receipt';
+
+  @override
+  String get myPaymentsReceiptLoadFailedMessage =>
+      'We couldn\'t load this receipt. Please try again.';
+
+  @override
+  String get myPaymentsDateLabel => 'Date';
+
+  @override
+  String get myPaymentsAmountLabel => 'Amount';
+
+  @override
+  String get pressBackAgainToExitMessage => 'Press back again to exit';
 }

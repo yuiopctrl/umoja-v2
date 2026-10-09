@@ -15,6 +15,7 @@ import '../controllers/personal_membership_invitation_controller.dart';
 import '../domain/my_membership_invitation.dart';
 import '../providers/my_membership_invitations_provider.dart';
 import 'widgets/membership_invitation_labels.dart';
+import '../../../app/routing/app_routes.dart';
 
 /// `/invitations` (Prompt 09G-B1-F2 §J): the authenticated caller's OWN
 /// GLOBAL invitation inbox — `rpc_list_my_membership_invitations`
@@ -33,6 +34,8 @@ class PersonalInvitationsScreen extends ConsumerWidget {
     final pageAsync = ref.watch(myMembershipInvitationsProvider);
 
     return UmojaPage(
+      backTo: AppRoutes.home,
+      backLabel: l10n.homeTitle,
       title: l10n.myInvitationsTitle,
       scrollable: false,
       body: pageAsync.when(

@@ -14,6 +14,7 @@ import '../../../core/widgets/umoja_page.dart';
 import '../../auth/providers/selected_group_provider.dart';
 import '../controllers/loan_servicing_controller.dart';
 import '../domain/loan_servicing.dart';
+import '../../../app/routing/app_routes.dart';
 
 /// `/loans/accounts/:loanAccountId/restructure`: Restructure/Reschedule
 /// Foundation (Prompt 09E section 6). Reason -> Effective Date ->
@@ -128,6 +129,8 @@ class _LoanRestructureScreenState extends ConsumerState<LoanRestructureScreen> {
     final preview = state.preview;
 
     return UmojaPage(
+      backTo: AppRoutes.loanAccountDetailPath(widget.loanAccountId),
+      backLabel: l10n.loanAccountDetailTitle,
       title: l10n.loanRestructureTitle,
       maxWidth: 640,
       body: Column(

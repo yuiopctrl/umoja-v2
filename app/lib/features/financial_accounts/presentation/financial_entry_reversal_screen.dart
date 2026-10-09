@@ -76,6 +76,8 @@ class _FinancialEntryReversalScreenState
     final reversalState = ref.watch(financialEntryReversalControllerProvider);
 
     return UmojaPage(
+      backTo: AppRoutes.financeHome,
+      backLabel: l10n.financeTitle,
       title: l10n.entryReversalTitle,
       maxWidth: 600,
       body: detailAsync.when(

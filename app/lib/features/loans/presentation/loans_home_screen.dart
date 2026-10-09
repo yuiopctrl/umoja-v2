@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/routing/app_routes.dart';
+import '../../../app/shell/umoja_feature_scaffold.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/widgets/umoja_card.dart';
 import '../../../core/widgets/umoja_list_tile.dart';
-import '../../../core/widgets/umoja_page.dart';
 import '../../auth/providers/selected_group_provider.dart';
 
 /// `/loans`: Mikopo — the Loans home (Prompt 09A, extended 09D). Kept
@@ -35,9 +35,11 @@ class LoansHomeScreen extends ConsumerWidget {
     final canAddExistingLoan =
         membership?.hasPermission('loan_opening.create') ?? false;
 
-    return UmojaPage(
+    return UmojaFeatureScaffold(
       title: l10n.loansTitle,
       maxWidth: 900,
+      showRefreshAction: true,
+      isFeatureRoot: true,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

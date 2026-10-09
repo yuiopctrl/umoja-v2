@@ -11,6 +11,7 @@ import '../../../core/widgets/umoja_page.dart';
 import '../domain/financial_position.dart';
 import '../providers/financial_position_provider.dart';
 import 'widgets/financial_account_labels.dart';
+import '../../../app/routing/app_routes.dart';
 
 /// `/finance/position`: Hali ya Fedha — the Financial Position read
 /// model (Prompt 08B, sections 23-25/35). Deliberately NOT titled or
@@ -65,6 +66,8 @@ class _FinancialPositionScreenState
     final positionAsync = ref.watch(financialPositionProvider(query));
 
     return UmojaPage(
+      backTo: AppRoutes.financeHome,
+      backLabel: l10n.financeTitle,
       title: l10n.financialPositionTitle,
       maxWidth: 900,
       scrollable: false,

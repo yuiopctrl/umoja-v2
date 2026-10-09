@@ -49,6 +49,8 @@ class _ContributionOpeningBalancesScreenState
         );
 
     return UmojaPage(
+      backTo: AppRoutes.contributionsHome,
+      backLabel: l10n.contributionsTitle,
       title: l10n.openingBalancesTitle,
       scrollable: false,
       maxWidth: 900,

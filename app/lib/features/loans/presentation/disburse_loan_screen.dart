@@ -18,6 +18,7 @@ import '../../financial_accounts/presentation/widgets/financial_account_labels.d
 import '../../financial_accounts/providers/financial_accounts_list_provider.dart';
 import '../controllers/loan_workflow_controller.dart';
 import '../providers/loan_account_detail_provider.dart';
+import '../../../app/routing/app_routes.dart';
 
 /// `/loans/accounts/:loanAccountId/disburse`: disburse an APPROVED
 /// loan (Prompt 09B, "Toa Mkopo"). The amount is always the loan's own
@@ -122,6 +123,8 @@ class _DisburseLoanScreenState extends ConsumerState<DisburseLoanScreen> {
     final workflowState = ref.watch(loanWorkflowControllerProvider);
 
     return UmojaPage(
+      backTo: AppRoutes.loanAccountDetailPath(widget.loanAccountId),
+      backLabel: l10n.loanAccountDetailTitle,
       title: l10n.loanDisburseTitle,
       maxWidth: 640,
       body: loanAsync.when(

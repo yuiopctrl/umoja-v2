@@ -15,6 +15,8 @@ class WalletMemberPickerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return UmojaPage(
+      backTo: AppRoutes.paymentsList,
+      backLabel: l10n.paymentsTitle,
       title: l10n.memberWalletTitle,
       maxWidth: 700,
       // UAT-FIX-02: `MemberSearchPicker` uses `Expanded` internally, which

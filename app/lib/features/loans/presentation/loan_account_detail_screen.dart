@@ -173,6 +173,8 @@ class LoanAccountDetailScreen extends ConsumerWidget {
 
     return UmojaPage(
       title: l10n.loanAccountDetailTitle,
+      backTo: AppRoutes.loanAccountsList,
+      backLabel: l10n.loanAccountsTitle,
       maxWidth: 700,
       body: loanAsync.when(
         loading: () => const Padding(

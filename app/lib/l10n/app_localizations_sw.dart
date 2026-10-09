@@ -4975,4 +4975,204 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get refreshAction => 'Onyesha Upya';
+
+  @override
+  String get myPaymentsTitle => 'Malipo Yangu';
+
+  @override
+  String get myPaymentsShortcutSubtitle => 'Historia ya malipo yako na risiti';
+
+  @override
+  String get myPaymentsStatusPosted => 'Imepokelewa';
+
+  @override
+  String get myPaymentsStatusReversed => 'Imerejeshwa';
+
+  @override
+  String get myPaymentsStatusUnknown => 'Haijulikani';
+
+  @override
+  String get myPaymentsMethodCash => 'Taslimu';
+
+  @override
+  String get myPaymentsMethodBankTransfer => 'Benki';
+
+  @override
+  String get myPaymentsMethodMobileMoney => 'Simu';
+
+  @override
+  String get myPaymentsMethodOther => 'Nyingine';
+
+  @override
+  String get myPaymentsMethodUnknown => 'Haijulikani';
+
+  @override
+  String get myPaymentsTargetContribution => 'Mchango';
+
+  @override
+  String get myPaymentsTargetLoanPrincipal => 'Mtaji';
+
+  @override
+  String get myPaymentsTargetLoanInterest => 'Riba';
+
+  @override
+  String get myPaymentsTargetLoanPenalty => 'Adhabu';
+
+  @override
+  String get myPaymentsTargetPrincipalPrepayment => 'Malipo ya Mapema ya Mtaji';
+
+  @override
+  String get myPaymentsTargetRecoveryPrincipal => 'Mtaji Uliorejeshwa';
+
+  @override
+  String get myPaymentsTargetRecoveryInterest => 'Riba Iliyorejeshwa';
+
+  @override
+  String get myPaymentsTargetRecoveryPenalty => 'Adhabu Iliyorejeshwa';
+
+  @override
+  String get myPaymentsTargetUnknown => 'Nyingine';
+
+  @override
+  String get myPaymentsComponentBase => 'Msingi';
+
+  @override
+  String get myPaymentsComponentPenalty => 'Adhabu';
+
+  @override
+  String get myPaymentsComponentAdjustment => 'Marekebisho';
+
+  @override
+  String get myPaymentsComponentWaiver => 'Msamaha';
+
+  @override
+  String get myPaymentsComponentOpeningBalance => 'Salio la Mwanzo';
+
+  @override
+  String myPaymentsReceiptLabel(String number) {
+    return 'Risiti $number';
+  }
+
+  @override
+  String get myPaymentsFromAfterToError =>
+      'Tarehe ya kuanzia inapaswa kuwa kabla ya tarehe ya mwisho.';
+
+  @override
+  String get myPaymentsDateNotSet => 'Haijawekwa';
+
+  @override
+  String get myPaymentsFilterSheetTitle => 'Chuja Malipo';
+
+  @override
+  String get myPaymentsStatusLabel => 'Hali';
+
+  @override
+  String get myPaymentsAllStatuses => 'Zote';
+
+  @override
+  String get myPaymentsFromLabel => 'Kuanzia';
+
+  @override
+  String get myPaymentsToLabel => 'Hadi';
+
+  @override
+  String get myPaymentsClearFiltersAction => 'Futa Vichujio';
+
+  @override
+  String get myPaymentsApplyAction => 'Tumia';
+
+  @override
+  String get myPaymentsLoadFailedMessage =>
+      'Hatukuweza kupakia malipo yako. Tafadhali jaribu tena.';
+
+  @override
+  String get myPaymentsNotAuthorizedMessage =>
+      'Huna ruhusa ya kuona malipo katika kikundi hiki.';
+
+  @override
+  String get myPaymentsNotFoundMessage => 'Malipo haya hayapatikani.';
+
+  @override
+  String get myPaymentsNetworkMessage =>
+      'Angalia muunganisho wako na ujaribu tena.';
+
+  @override
+  String get myPaymentsDetailLoadFailedMessage =>
+      'Hatukuweza kupakia malipo haya. Tafadhali jaribu tena.';
+
+  @override
+  String get myPaymentsEmptyFilteredTitle =>
+      'Hakuna malipo yanayolingana na vichujio hivi';
+
+  @override
+  String get myPaymentsEmptyTitle => 'Hakuna malipo bado';
+
+  @override
+  String get myPaymentsEmptyMessage =>
+      'Malipo yako yataonekana hapa yakishawekwa.';
+
+  @override
+  String get myPaymentsLoadMoreFailedMessage =>
+      'Imeshindikana kupakia malipo zaidi. Jaribu tena.';
+
+  @override
+  String get myPaymentsFiltersAction => 'Vichujio';
+
+  @override
+  String get myPaymentsClearFilterTooltip => 'Ondoa kichujio hiki';
+
+  @override
+  String get myPaymentsDetailTitle => 'Maelezo ya Malipo';
+
+  @override
+  String get myPaymentsMethodLabel => 'Njia';
+
+  @override
+  String get myPaymentsReceiptNumberLabel => 'Namba ya Risiti';
+
+  @override
+  String get myPaymentsExternalReferenceLabel => 'Kumbukumbu';
+
+  @override
+  String get myPaymentsReversedTitle => 'Imerejeshwa';
+
+  @override
+  String get myPaymentsBreakdownTitle => 'Mgawanyo';
+
+  @override
+  String get myPaymentsWalletCreditTitle => 'Imewekwa Kwenye Wallet';
+
+  @override
+  String get myPaymentsViewReceiptAction => 'Angalia Risiti';
+
+  @override
+  String get myPaymentsContributionsGroupLabel => 'Michango';
+
+  @override
+  String get myPaymentsLoansGroupLabel => 'Mikopo';
+
+  @override
+  String get myPaymentsLoanNumberLabel => 'Mkopo';
+
+  @override
+  String myPaymentsInstallmentLabel(int number) {
+    return 'Awamu ya $number';
+  }
+
+  @override
+  String get myPaymentsReceiptTitle => 'Risiti';
+
+  @override
+  String get myPaymentsReceiptLoadFailedMessage =>
+      'Hatukuweza kupakia risiti hii. Tafadhali jaribu tena.';
+
+  @override
+  String get myPaymentsDateLabel => 'Tarehe';
+
+  @override
+  String get myPaymentsAmountLabel => 'Kiasi';
+
+  @override
+  String get pressBackAgainToExitMessage =>
+      'Bonyeza kurudi tena ili kufunga programu';
 }

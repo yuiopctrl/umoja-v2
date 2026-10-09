@@ -63,12 +63,14 @@ Future<GoRouter> pumpPaymentsApp(
   FakeFinancialAccountRepository? fakeFinancialAccountRepo,
   MembershipContext? membership,
   AppLanguage? language,
+  List<dynamic> extraOverrides = const [],
 }) async {
   tester.view.physicalSize = const Size(390, 844);
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
 
   final container = ProviderContainer(
+    retry: (retryCount, error) => null,
     overrides: [
       ...pinBypassOverrides(),
       authSessionStatusProvider.overrideWithValue(AuthSessionStatus.signedIn),
@@ -97,6 +99,7 @@ Future<GoRouter> pumpPaymentsApp(
       ),
       if (language != null)
         languageProvider.overrideWith(() => _FixedLanguage(language)),
+      ...extraOverrides,
     ],
   );
   addTearDown(container.dispose);

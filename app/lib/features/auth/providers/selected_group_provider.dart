@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../member_statement/providers/member_statement_query_provider.dart';
+import '../../member_payments/providers/my_payments_query_provider.dart';
 import '../../my_contributions/providers/my_contributions_query_provider.dart';
 import '../../members/providers/members_query_provider.dart';
 import '../models/membership_context.dart';
@@ -85,6 +86,8 @@ class SelectedGroupNotifier extends Notifier<SelectedGroupState> {
         // old group must never query the new one; its list and detail
         // providers already rebuild from selectedGroupProvider.
         ref.invalidate(myContributionsQueryProvider);
+        // Prompt 09G-B6-C §AB: same rationale for My Payments.
+        ref.invalidate(myPaymentsQueryProvider);
         return;
       }
     }
@@ -97,6 +100,7 @@ class SelectedGroupNotifier extends Notifier<SelectedGroupState> {
     if (eligibleCandidates.length > 1) {
       state = SelectedGroupPending(eligibleCandidates);
       ref.invalidate(myContributionsQueryProvider);
+      ref.invalidate(myPaymentsQueryProvider);
     }
   }
 }

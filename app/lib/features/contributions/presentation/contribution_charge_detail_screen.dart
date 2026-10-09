@@ -37,6 +37,8 @@ class ContributionChargeDetailScreen extends ConsumerWidget {
         : null;
 
     return UmojaPage(
+      backTo: AppRoutes.contributionsHome,
+      backLabel: l10n.contributionsTitle,
       title: l10n.chargeDetailTitle,
       maxWidth: 700,
       body: detailAsync.when(

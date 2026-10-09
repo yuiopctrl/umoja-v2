@@ -19,6 +19,7 @@ import '../../financial_accounts/providers/financial_accounts_list_provider.dart
 import '../../payments/presentation/widgets/payment_labels.dart';
 import '../controllers/loan_servicing_controller.dart';
 import '../domain/loan_servicing.dart';
+import '../../../app/routing/app_routes.dart';
 
 const _paymentMethods = ['CASH', 'BANK_TRANSFER', 'MOBILE_MONEY', 'OTHER'];
 
@@ -118,6 +119,8 @@ class _LoanPrepaymentScreenState extends ConsumerState<LoanPrepaymentScreen> {
     final preview = state.preview;
 
     return UmojaPage(
+      backTo: AppRoutes.loanAccountDetailPath(widget.loanAccountId),
+      backLabel: l10n.loanAccountDetailTitle,
       title: l10n.loanPrepaymentTitle,
       maxWidth: 640,
       body: Column(

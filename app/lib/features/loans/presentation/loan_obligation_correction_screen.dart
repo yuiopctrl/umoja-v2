@@ -15,6 +15,7 @@ import '../../auth/providers/selected_group_provider.dart';
 import '../controllers/loan_obligation_adjustment_controller.dart';
 import '../domain/loan_obligation_adjustment.dart';
 import 'widgets/loan_obligation_target_context.dart';
+import '../../../app/routing/app_routes.dart';
 
 String correctionReasonLabel(BuildContext context, String code) {
   final l10n = context.l10n;
@@ -154,6 +155,8 @@ class _LoanObligationCorrectionScreenState
     final preview = state.preview;
 
     return UmojaPage(
+      backTo: AppRoutes.loanAccountDetailPath(widget.loanAccountId),
+      backLabel: l10n.loanAccountDetailTitle,
       title: l10n.loanObligationCorrectTitle,
       maxWidth: 640,
       body: Column(

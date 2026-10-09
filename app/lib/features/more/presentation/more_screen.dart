@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/routing/app_routes.dart';
+import '../../../app/routing/member_self_service_routes.dart';
 import '../../../app/shell/shell_destination.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/theme/umoja_breakpoints.dart';
@@ -77,6 +78,10 @@ class MoreScreen extends ConsumerWidget {
     );
 
     return UmojaPage(
+      // Prompt 09G-B6-C.3 §K: More is a primary navigation hub, not an
+      // ordinary feature root — its presentation stays correct as-is,
+      // relying on the shell's persistent AppTopBar, matching Home.
+      useAppTopBar: true,
       title: l10n.moreTitle,
       scrollable: true,
       body: Column(
@@ -114,70 +119,25 @@ class MoreScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: UmojaSpacing.xxl),
-          // Prompt 09G-B2: "My Profile" — self-service, reachable once
-          // a group is selected, never gated on any permission (it is
-          // inherently the caller's own data, matching route_guard's
-          // treatment of `/me/profile`).
-          if (membership != null) ...[
+          // Prompt 09G-B6-C §E: one canonical, already-filtered
+          // destination list (My Profile/My Financial Statement/My
+          // Contributions/My Loans/My Payments) — the SAME registry the
+          // mobile More sheet and Home's quick actions render from,
+          // gated only on each destination's own
+          // self_view/no-permission rule, never member.view, an officer
+          // permission, or a role name.
+          for (final destination in visibleMemberSelfServiceDestinations(
+            l10n,
+            membership: membership,
+          )) ...[
             UmojaCard(
               padding: EdgeInsets.zero,
               child: ListTile(
-                key: const Key('moreMyProfileAction'),
-                leading: const Icon(Icons.account_circle_outlined),
-                title: Text(l10n.myProfileAction),
+                key: Key(destination.moreKey),
+                leading: Icon(destination.icon),
+                title: Text(destination.label),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push(AppRoutes.myProfile),
-              ),
-            ),
-            const SizedBox(height: UmojaSpacing.xxl),
-          ],
-          // Prompt 09G-B3-C §F/§G: gated on financial_report.self_view
-          // — never loan.view/payment.view/contribution.view/an
-          // officer permission, never a role name.
-          if (membership != null &&
-              membership.hasPermission('financial_report.self_view')) ...[
-            UmojaCard(
-              padding: EdgeInsets.zero,
-              child: ListTile(
-                key: const Key('moreFinancialStatementAction'),
-                leading: const Icon(Icons.receipt_long_outlined),
-                title: Text(l10n.moreFinancialStatementAction),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push(AppRoutes.myStatement),
-              ),
-            ),
-            const SizedBox(height: UmojaSpacing.xxl),
-          ],
-          // Prompt 09G-B4-C §U: the member's own contributions, gated on
-          // contribution.self_view — never contribution.view, which is the
-          // officer workspace and stays unchanged at /contributions.
-          if (membership != null &&
-              membership.hasPermission('contribution.self_view')) ...[
-            UmojaCard(
-              padding: EdgeInsets.zero,
-              child: ListTile(
-                key: const Key('moreMyContributionsAction'),
-                leading: const Icon(Icons.request_page_outlined),
-                title: Text(l10n.myContributionsTitle),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push(AppRoutes.myContributions),
-              ),
-            ),
-            const SizedBox(height: UmojaSpacing.xxl),
-          ],
-          // Prompt 09G-B5-C §G: the member's own loans, gated on the
-          // effective loan.self_view permission. Never member.view (the
-          // Members directory) and never a role name.
-          if (membership != null &&
-              membership.hasPermission('loan.self_view')) ...[
-            UmojaCard(
-              padding: EdgeInsets.zero,
-              child: ListTile(
-                key: const Key('moreMyLoansAction'),
-                leading: const Icon(Icons.account_balance_wallet_outlined),
-                title: Text(l10n.myLoansNavAction),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push(AppRoutes.myLoans),
+                onTap: () => context.push(destination.path),
               ),
             ),
             const SizedBox(height: UmojaSpacing.xxl),

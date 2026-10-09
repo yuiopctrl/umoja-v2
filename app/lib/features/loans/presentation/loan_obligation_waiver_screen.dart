@@ -15,6 +15,7 @@ import '../../auth/providers/selected_group_provider.dart';
 import '../controllers/loan_obligation_adjustment_controller.dart';
 import '../domain/loan_obligation_adjustment.dart';
 import 'widgets/loan_obligation_target_context.dart';
+import '../../../app/routing/app_routes.dart';
 
 String waiverReasonLabel(BuildContext context, String code) {
   final l10n = context.l10n;
@@ -142,6 +143,8 @@ class _LoanObligationWaiverScreenState
     final preview = state.preview;
 
     return UmojaPage(
+      backTo: AppRoutes.loanAccountDetailPath(widget.loanAccountId),
+      backLabel: l10n.loanAccountDetailTitle,
       title: l10n.loanObligationWaiveTitle,
       maxWidth: 640,
       body: Column(

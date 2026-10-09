@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/routing/app_routes.dart';
+import '../../../app/shell/umoja_feature_scaffold.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/widgets/umoja_card.dart';
 import '../../../core/widgets/umoja_list_tile.dart';
-import '../../../core/widgets/umoja_page.dart';
 import '../../auth/providers/selected_group_provider.dart';
 
 /// `/finance`: Fedha — the Finance home (Prompt 08B, section 31). Kept
@@ -41,9 +41,11 @@ class FinanceHomeScreen extends ConsumerWidget {
     final canManageCategories =
         membership?.hasPermission('financial_account.manage') ?? false;
 
-    return UmojaPage(
+    return UmojaFeatureScaffold(
       title: l10n.financeTitle,
       maxWidth: 900,
+      showRefreshAction: true,
+      isFeatureRoot: true,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

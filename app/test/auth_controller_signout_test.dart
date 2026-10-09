@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:umoja/app/routing/last_route_provider.dart';
+import 'package:umoja/app/routing/navigation_history_provider.dart';
 import 'package:umoja/features/auth/providers/app_context_provider.dart';
 import 'package:umoja/features/auth/providers/auth_controller_provider.dart';
 import 'package:umoja/features/auth/providers/auth_repository_provider.dart';
@@ -21,6 +24,7 @@ void main() {
   late ProviderContainer container;
 
   setUp(() {
+    SharedPreferences.setMockInitialValues({});
     fakeAuth = FakeAuthRepository();
     fakeInvitationRepo = FakeMembershipInvitationRepository();
     container = ProviderContainer(
@@ -96,5 +100,22 @@ void main() {
           .acceptedToken,
       isNull,
     );
+  });
+
+  test('signOut (09G-B6-C.5 §K) clears in-session navigation history and the '
+      'persisted last-open route — a later, unrelated login must never '
+      'inherit either and risk landing on (or offering Back into) a route '
+      'it cannot access', () async {
+    container.read(navigationHistoryProvider.notifier).recordVisit('/finance');
+    await container.read(lastRouteProvider.notifier).record('/finance');
+    expect(container.read(navigationHistoryProvider), ['/finance']);
+    expect(container.read(lastRouteProvider), '/finance');
+
+    await container.read(authControllerProvider).signOut();
+
+    expect(container.read(navigationHistoryProvider), isEmpty);
+    expect(container.read(lastRouteProvider), isNull);
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getString('umoja.last_route'), isNull);
   });
 }

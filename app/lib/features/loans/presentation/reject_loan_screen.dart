@@ -12,6 +12,7 @@ import '../../../core/widgets/umoja_page.dart';
 import '../../auth/providers/selected_group_provider.dart';
 import '../controllers/loan_workflow_controller.dart';
 import '../providers/loan_account_detail_provider.dart';
+import '../../../app/routing/app_routes.dart';
 
 /// `/loans/accounts/:loanAccountId/reject`: reject a SUBMITTED loan
 /// (Prompt 09B). A rejection reason is mandatory — the loan stays
@@ -62,6 +63,8 @@ class _RejectLoanScreenState extends ConsumerState<RejectLoanScreen> {
     final workflowState = ref.watch(loanWorkflowControllerProvider);
 
     return UmojaPage(
+      backTo: AppRoutes.loanAccountDetailPath(widget.loanAccountId),
+      backLabel: l10n.loanAccountDetailTitle,
       title: l10n.loanRejectTitle,
       maxWidth: 600,
       body: loanAsync.when(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/routing/app_routes.dart';
+import '../../../app/routing/member_self_service_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/utils/title_case.dart';
@@ -101,6 +102,10 @@ class HomeScreen extends ConsumerWidget {
     final hasOperationalCapability = _hasOperationalCapability(membership);
 
     return UmojaPage(
+      // Prompt 09G-B6-C.3 §J: Home is a dashboard/hub screen, not a
+      // feature root — it keeps relying on the shell's persistent
+      // AppTopBar instead of the new shared feature header.
+      useAppTopBar: true,
       title: hasOperationalCapability ? l10n.homeTitle : l10n.memberHomeTitle,
       // Prompt 09G-B3-UX-01-FIX-01 §A: on mobile, Home's own greeting
       // ("Hi, Frederick") is the page's real opening content — the
@@ -265,34 +270,26 @@ class _HomeQuickActions extends StatelessWidget {
     final l10n = context.l10n;
 
     final quickActions = <_ActionItem>[
-      _ActionItem(
-        key: const Key('homeMyProfileShortcut'),
-        icon: Icons.account_circle_outlined,
-        label: l10n.homeMyProfileLinkTitle,
-        onTap: () => context.push(AppRoutes.myProfile),
-      ),
-      // Prompt 09G-B4-C §T: the member's own contributions — a member
-      // self-service entry, never placed under officer-only Manage Group.
-      // Gated on the effective contribution.self_view permission only.
-      if (membership.hasPermission('contribution.self_view'))
-        _ActionItem(
-          key: const Key('homeMyContributionsShortcut'),
-          icon: Icons.request_page_outlined,
-          label: l10n.myContributionsTitle,
-          subtitle: l10n.myContributionsShortcutSubtitle,
-          onTap: () => context.push(AppRoutes.myContributions),
-        ),
-      // Prompt 09G-B5-C.2 §H: the member's own loans, gated on the
-      // effective loan.self_view permission — never member.view, never
-      // a role name. More remains the complete self-service hub; this
-      // is a complementary shortcut, not the only way to reach it.
-      if (membership.hasPermission('loan.self_view'))
-        _ActionItem(
-          key: const Key('homeMyLoansShortcut'),
-          icon: Icons.account_balance_wallet_outlined,
-          label: l10n.myLoansNavAction,
-          onTap: () => context.push(AppRoutes.myLoans),
-        ),
+      // Prompt 09G-B6-C §E: one canonical, already-filtered destination
+      // list — the SAME registry the mobile More sheet and desktop
+      // MoreScreen render from, restricted here to the entries marked
+      // `showAsHomeQuickAction` (My Profile/My Contributions/My
+      // Loans/My Payments; My Financial Statement is not a Home quick
+      // action, matching its pre-existing behavior). Gated only on
+      // each destination's own self_view/no-permission rule, never
+      // member.view, an officer permission, or a role name.
+      for (final destination in visibleMemberSelfServiceDestinations(
+        l10n,
+        membership: membership,
+      ))
+        if (destination.showAsHomeQuickAction)
+          _ActionItem(
+            key: Key(destination.homeKey!),
+            icon: destination.icon,
+            label: destination.effectiveHomeLabel(),
+            subtitle: destination.homeQuickActionSubtitle,
+            onTap: () => context.push(destination.path),
+          ),
       // Prompt 09G-B1-D4 §F/§J: an ordinary linked member's own Quick
       // Access — only a real, already-implemented feature (their own
       // claim history, secondary/informational once linked).
@@ -341,7 +338,17 @@ class _HomeQuickActions extends StatelessWidget {
           icon: Icons.add_card_outlined,
           label: l10n.paymentsTitle,
           subtitle: l10n.homePaymentsShortcutSubtitle,
-          onTap: () => context.push(AppRoutes.paymentsList),
+          // Prompt 09G-B6-C.1 §G/§J: Payments is a primaryOnMobile shell
+          // tab (shell_destination.dart), reached from the bottom nav
+          // via context.go — never context.push. Pushing it left it
+          // poppable, which made UmojaPage's isShellRoot false and
+          // rendered a second AppBar (back arrow + "Payments" title)
+          // stacked under the shell's persistent AppTopBar whenever a
+          // user reached Payments from this Home shortcut instead of
+          // the bottom tab — the exact physical-UAT defect this fixes,
+          // and the same fix already applied to Members above
+          // (09G-B1-F-UAT-FIX-01).
+          onTap: () => context.go(AppRoutes.paymentsList),
         ),
       if (membership.hasPermission('financial_account.view'))
         _ActionItem(

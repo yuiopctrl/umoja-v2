@@ -87,6 +87,12 @@ class _FinancialAccountsListScreenState
 
     return UmojaPage(
       title: l10n.financialAccountsTitle,
+      // Prompt 09G-B6-C.3 §N: an explicit, deep-link-safe fallback —
+      // this screen previously had none, so a direct load/`.go()` (not
+      // pushed from Finance) rendered as a false "root" with no back
+      // arrow at all.
+      backTo: AppRoutes.financeHome,
+      backLabel: l10n.financeTitle,
       scrollable: false,
       maxWidth: 900,
       // "Transfer Funds" lives in the body below, not here — this

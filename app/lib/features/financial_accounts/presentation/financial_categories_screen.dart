@@ -10,6 +10,7 @@ import '../../auth/providers/selected_group_provider.dart';
 import '../domain/financial_category.dart';
 import '../providers/financial_account_repository_provider.dart';
 import '../providers/financial_categories_provider.dart';
+import '../../../app/routing/app_routes.dart';
 
 /// `/finance/categories`: manage the group's INCOME/EXPENSE financial
 /// categories (Prompt 08B, section 6) — never hardcoded in Flutter.
@@ -100,6 +101,8 @@ class _FinancialCategoriesScreenState
     );
 
     return UmojaPage(
+      backTo: AppRoutes.financeHome,
+      backLabel: l10n.financeTitle,
       title: l10n.financialCategoriesTitle,
       maxWidth: 700,
       scrollable: false,

@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/routing/last_route_provider.dart';
+import '../../../app/routing/navigation_history_provider.dart';
 import '../../members/providers/members_query_provider.dart';
 import '../../membership_invitations/controllers/membership_invitation_acceptance_controller.dart';
 import '../../security/providers/has_pin_credential_provider.dart';
@@ -49,6 +51,12 @@ class AuthController {
       ..invalidate(membersQueryProvider)
       ..invalidate(pendingInvitationTokenProvider)
       ..invalidate(membershipInvitationAcceptanceControllerProvider);
+    // Prompt 09G-B6-C.5 §K: a later, unrelated login must never inherit
+    // this session's in-session navigation history or its persisted
+    // last-open route — both are cleared explicitly, the same
+    // "no user-state leakage" treatment as every provider above.
+    _ref.read(navigationHistoryProvider.notifier).clear();
+    await _ref.read(lastRouteProvider.notifier).clear();
   }
 }
 

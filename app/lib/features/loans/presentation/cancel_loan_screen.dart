@@ -13,6 +13,7 @@ import '../../auth/providers/selected_group_provider.dart';
 import '../controllers/loan_workflow_controller.dart';
 import '../providers/loan_account_detail_provider.dart';
 import 'widgets/loan_labels.dart';
+import '../../../app/routing/app_routes.dart';
 
 /// `/loans/accounts/:loanAccountId/cancel`: cancel a SUBMITTED or
 /// APPROVED loan (Prompt 09B) — DRAFT cancel stays on the detail
@@ -66,6 +67,8 @@ class _CancelLoanScreenState extends ConsumerState<CancelLoanScreen> {
     final workflowState = ref.watch(loanWorkflowControllerProvider);
 
     return UmojaPage(
+      backTo: AppRoutes.loanAccountDetailPath(widget.loanAccountId),
+      backLabel: l10n.loanAccountDetailTitle,
       title: l10n.loanCancelTitle,
       maxWidth: 600,
       body: loanAsync.when(

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/routing/app_routes.dart';
+import '../../../app/shell/umoja_feature_scaffold.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/theme/umoja_breakpoints.dart';
 import '../../../core/theme/umoja_spacing.dart';
@@ -14,7 +15,6 @@ import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_initials_avatar.dart';
 import '../../../core/widgets/umoja_list_tile.dart';
 import '../../../core/widgets/umoja_loading_state.dart';
-import '../../../core/widgets/umoja_page.dart';
 import '../../../core/widgets/umoja_search_field.dart';
 import '../../auth/providers/selected_group_provider.dart';
 import '../domain/group_member.dart';
@@ -88,20 +88,30 @@ class _MembersListScreenState extends ConsumerState<MembersListScreen> {
       (l10n.filterExited, 'EXITED'),
     ];
 
-    return UmojaPage(
+    final isMobile = UmojaBreakpoints.isMobile(
+      MediaQuery.sizeOf(context).width,
+    );
+
+    return UmojaFeatureScaffold(
       title: l10n.membersTitle,
       scrollable: false,
       maxWidth: 900,
+      showRefreshAction: true,
+      isFeatureRoot: true,
       // Add Member (member.create) is a plain directory action,
       // unrelated to the Member Management group's scope (Invite
       // Member/Sent Invitations/Membership Requests) — it keeps its
-      // own header action here. UmojaPage only renders
-      // [floatingActionButton] on mobile, so desktop/tablet needs this
-      // as its own reachable path; on mobile it would just duplicate
-      // the FAB below, so it's shown on desktop/tablet only.
-      headerTrailing: canCreate
-          ? _AddMemberHeaderAction(label: l10n.addMemberAction)
-          : null,
+      // own header action here, desktop/tablet only (mobile has the
+      // FAB below instead; showing both would duplicate the entry
+      // point).
+      actions: canCreate && !isMobile
+          ? [
+              Padding(
+                padding: const EdgeInsets.only(right: UmojaSpacing.sm),
+                child: _AddMemberHeaderAction(label: l10n.addMemberAction),
+              ),
+            ]
+          : const [],
       floatingActionButton: canCreate
           ? FloatingActionButton.extended(
               onPressed: () => context.push(AppRoutes.memberNew),

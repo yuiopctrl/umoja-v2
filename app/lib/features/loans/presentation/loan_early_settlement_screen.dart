@@ -16,6 +16,7 @@ import '../../financial_accounts/domain/financial_account.dart';
 import '../../financial_accounts/providers/financial_accounts_list_provider.dart';
 import '../../payments/presentation/widgets/payment_labels.dart';
 import '../controllers/loan_servicing_controller.dart';
+import '../../../app/routing/app_routes.dart';
 
 const _paymentMethods = ['CASH', 'BANK_TRANSFER', 'MOBILE_MONEY', 'OTHER'];
 
@@ -109,6 +110,8 @@ class _LoanEarlySettlementScreenState
     final quote = state.quote;
 
     return UmojaPage(
+      backTo: AppRoutes.loanAccountDetailPath(widget.loanAccountId),
+      backLabel: l10n.loanAccountDetailTitle,
       title: l10n.loanEarlySettlementTitle,
       maxWidth: 640,
       body: Column(

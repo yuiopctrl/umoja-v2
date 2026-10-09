@@ -13,6 +13,7 @@ import '../../../core/widgets/umoja_page.dart';
 import '../../auth/providers/selected_group_provider.dart';
 import '../controllers/loan_write_off_recovery_controller.dart';
 import '../domain/loan_write_off_recovery.dart';
+import '../../../app/routing/app_routes.dart';
 
 String loanWriteOffReasonLabel(BuildContext context, String code) {
   final l10n = context.l10n;
@@ -104,6 +105,8 @@ class _LoanWriteOffScreenState extends ConsumerState<LoanWriteOffScreen> {
     final preview = state.preview;
 
     return UmojaPage(
+      backTo: AppRoutes.loanAccountDetailPath(widget.loanAccountId),
+      backLabel: l10n.loanAccountDetailTitle,
       title: l10n.loanWriteOffTitle,
       maxWidth: 640,
       body: Column(

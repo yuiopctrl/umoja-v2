@@ -135,6 +135,27 @@ class AppRoutes {
   static String myLoanDetailPath(String loanAccountId) =>
       '$myLoans/$loanAccountId';
 
+  /// Prompt 09G-B6-C: the caller's OWN external payments and receipts for
+  /// the currently selected group (rpc_get_my_payments), gated on the
+  /// effective payment.self_view permission. NOT an alias for the officer
+  /// `/payments` workspace (gated on payment.view) — the two coexist.
+  static const myPayments = '/me/payments';
+
+  /// One of the caller's own payments. The path carries the payment id
+  /// only — the backend resolves ownership and returns not-found for any
+  /// payment the caller does not own.
+  static const myPaymentDetail = '/me/payments/:paymentId';
+
+  static String myPaymentDetailPath(String paymentId) =>
+      '$myPayments/$paymentId';
+
+  /// Member-safe receipt view (view only — no PDF/print/share) for one of
+  /// the caller's own payments (rpc_get_my_receipt).
+  static const myPaymentReceipt = '/me/payments/:paymentId/receipt';
+
+  static String myPaymentReceiptPath(String paymentId) =>
+      '$myPayments/$paymentId/receipt';
+
   static const membersList = '/members';
   static const memberNew = '/members/new';
 

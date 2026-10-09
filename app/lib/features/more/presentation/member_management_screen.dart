@@ -8,6 +8,7 @@ import '../../../core/widgets/umoja_card.dart';
 import '../../../core/widgets/umoja_list_tile.dart';
 import '../../../core/widgets/umoja_page.dart';
 import '../../auth/providers/selected_group_provider.dart';
+import '../../../app/routing/app_routes.dart';
 
 /// `/member-management`: the mobile entry point for Members/Invite
 /// Member/Sent Invitations/Membership Requests (Prompt
@@ -34,6 +35,8 @@ class MemberManagementScreen extends ConsumerWidget {
     final children = memberManagementChildren(l10n, membership: membership);
 
     return UmojaPage(
+      backTo: AppRoutes.more,
+      backLabel: l10n.moreTitle,
       title: l10n.memberManagementTitle,
       body: UmojaCard(
         padding: EdgeInsets.zero,

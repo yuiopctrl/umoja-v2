@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/utils/kiswahili_date.dart';
@@ -32,6 +33,8 @@ class LoanStatementScreen extends ConsumerWidget {
 
     return UmojaPage(
       title: l10n.loanStatementTitle,
+      backTo: AppRoutes.loanAccountDetailPath(loanAccountId),
+      backLabel: l10n.loanAccountDetailTitle,
       maxWidth: 900,
       body: statementAsync.when(
         loading: () => const Padding(

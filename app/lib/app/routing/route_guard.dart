@@ -127,6 +127,21 @@ String? computeRedirect({
   /// their newly-linked destination, exactly like every other
   /// resolved-group transition.
   bool invitationJustAccepted = false,
+
+  /// Prompt 09G-B6-C.5 §I: the last successfully-settled authenticated
+  /// location from a previous app session (`lastRouteProvider`), or
+  /// `null` if none was persisted (or it has already been consumed/
+  /// cleared). Only ever consulted as the landing target in place of
+  /// [AppRoutes.home] when [currentLocation] is NOT already an
+  /// operational route (i.e. only right after a fresh launch, while
+  /// still on splash) — never overrides an in-progress session's own
+  /// navigation. `_isOperationalRoute` gates it to a known path shape
+  /// before use; the specific entity id a child route carries (if any)
+  /// is validated by that screen's own existing not-found handling
+  /// when it renders, exactly as any other deep link already is —
+  /// never bypassing `has_group_permission`/RLS, which remain the only
+  /// real authorization boundary (this function is UX only).
+  String? restoredLocation,
 }) {
   if (sessionStatus == AuthSessionStatus.configMissing) {
     // Rendered directly at '/' — nothing else is reachable without
@@ -278,12 +293,35 @@ String? computeRedirect({
       return AppRoutes.home;
     }
 
+    // Prompt 09G-B6-C §AD: My Payments & Receipts (list, detail, receipt)
+    // is gated by the effective payment.self_view permission only — never
+    // member.view, payment.view (the officer workspace), or a role name.
+    // A user manually typing the URL without payment.self_view must not
+    // gain the page merely because the menu item is hidden.
+    if (isMyPaymentsRoute(currentLocation) &&
+        !selectedGroup.membership.hasPermission('payment.self_view')) {
+      return AppRoutes.home;
+    }
+
     // Once resolved, the user is free to navigate within the
     // operational area (home, members, ...) — only redirect them here
     // from a pre-operational route (splash, auth, onboarding, access,
     // select-group), never pin them back to exactly /home on every
     // navigation.
-    return _isOperationalRoute(currentLocation) ? null : AppRoutes.home;
+    if (_isOperationalRoute(currentLocation)) return null;
+
+    // Prompt 09G-B6-C.5 §I: a fresh launch (currentLocation is still
+    // splash/pre-operational here) restores the last settled location
+    // instead of always defaulting to Home — but only when it is
+    // itself a recognized operational route; an unrecognized/stale
+    // value never becomes a redirect target. The restored location's
+    // own permission gates above, and its screen's own not-found
+    // handling for any entity id, apply identically on the very next
+    // evaluation/render — this never bypasses either.
+    if (restoredLocation != null && _isOperationalRoute(restoredLocation)) {
+      return restoredLocation;
+    }
+    return AppRoutes.home;
   }
 
   // Prompt 09G-B1-D2: while no eligible membership is resolved, the
@@ -339,6 +377,7 @@ bool _isOperationalRoute(String location) {
       location == AppRoutes.myStatement ||
       isMyContributionsRoute(location) ||
       isMyLoansRoute(location) ||
+      isMyPaymentsRoute(location) ||
       // Prompt 09G-B1-D4 §J: once linked, the claimant's own claim
       // history remains reachable as secondary information (e.g. from
       // Member Home's own quick-access card) — deliberately NOT

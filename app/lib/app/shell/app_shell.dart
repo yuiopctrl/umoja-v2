@@ -8,6 +8,9 @@ import '../../core/theme/umoja_breakpoints.dart';
 import '../../core/theme/umoja_spacing.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
 import '../routing/member_self_service_routes.dart';
+import '../routing/feature_scaffold_routes.dart';
+import '../routing/last_route_provider.dart';
+import '../routing/navigation_history_provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../routing/app_routes.dart';
 import 'app_top_bar.dart';
@@ -78,16 +81,31 @@ class AppShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Prompt 09G-B6-C.5 §C/§I: every settled route rendered inside the
+    // shell is a "meaningful" authenticated location — recorded into
+    // both the in-session history (for Back) and the cross-restart
+    // last-route persistence. Deferred to after this build completes
+    // (mutating provider state synchronously during build is unsafe).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+      ref.read(navigationHistoryProvider.notifier).recordVisit(location);
+      ref.read(lastRouteProvider.notifier).record(location);
+    });
+
     final width = MediaQuery.sizeOf(context).width;
     final selectedGroup = ref.watch(selectedGroupProvider);
     final membership = selectedGroup is SelectedGroupResolved
         ? selectedGroup.membership
         : null;
-    // Prompt 09G-B5-C.2 §D/§E: a member self-service child page supplies
-    // its OWN compact app bar (MemberChildScaffold) carrying the same
-    // group context — showing the shell's persistent AppTopBar above it
-    // too would stack two headers, the exact defect UAT found.
-    final isMemberChild = isMemberSelfServiceChildRoute(location);
+    // Prompt 09G-B5-C.2 §D/§E, generalized by 09G-B6-C.3 §M: every
+    // authenticated screen now supplies its OWN compact header via the
+    // shared UmojaFeatureScaffold (directly, or through
+    // UmojaPage/MemberChildScaffold, which both compose it) — showing
+    // the shell's persistent AppTopBar above it too would stack two
+    // headers, the exact defect UAT found (first on My Financial
+    // Statement, then again on officer Payments). Home and More are
+    // the only two exceptions (see `usesLegacyAppTopBar`'s doc).
+    final usesFeatureScaffold = !usesLegacyAppTopBar(location);
     // Rebuilt from `context.l10n` (not a top-level const) so nav labels
     // switch immediately with the active language (prompt 05C §10).
     final destinations = shellDestinations(
@@ -105,7 +123,7 @@ class AppShell extends ConsumerWidget {
       final mobileDestinations = mobilePrimaryDestinations(destinations);
       final selectedIndex = _selectedIndex(mobileDestinations);
       return Scaffold(
-        appBar: isMemberChild ? null : const AppTopBar(),
+        appBar: usesFeatureScaffold ? null : const AppTopBar(),
         body: child,
         bottomNavigationBar: NavigationBar(
           selectedIndex: selectedIndex,
@@ -119,18 +137,16 @@ class AppShell extends ConsumerWidget {
               showMoreSheet(
                 context,
                 overflowDestinations: mobileOverflowDestinations(destinations),
-                showMyProfile: membership != null,
-                showFinancialStatement:
-                    membership?.hasPermission('financial_report.self_view') ??
-                    false,
-                // Prompt 09G-B5-C.2 §1/§F: the exact permission My Loans'
-                // route and MoreScreen already use — never member.view,
-                // never a role name.
-                showMyContributions:
-                    membership?.hasPermission('contribution.self_view') ??
-                    false,
-                showMyLoans:
-                    membership?.hasPermission('loan.self_view') ?? false,
+                // Prompt 09G-B6-C §E: one canonical, already-filtered
+                // list — the same registry MoreScreen and Home's quick
+                // actions render from, instead of this call site (and
+                // more_sheet.dart) hand-maintaining a separate boolean
+                // per destination (the duplication that caused the B5
+                // My Loans visibility defect).
+                memberDestinations: visibleMemberSelfServiceDestinations(
+                  context.l10n,
+                  membership: membership,
+                ),
                 // Prompt 09G-B2 §F2: an ordinary member with none of
                 // member.view/member.invite/member.claim.approve must
                 // not see an empty Member Management entry here either.
@@ -162,7 +178,7 @@ class AppShell extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: isMemberChild ? null : const AppTopBar(),
+      appBar: usesFeatureScaffold ? null : const AppTopBar(),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

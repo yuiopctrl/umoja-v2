@@ -12,6 +12,7 @@ import '../../features/auth/providers/app_context_provider.dart';
 import '../../features/auth/providers/auth_session_provider.dart';
 import '../../features/auth/providers/pending_invitation_token_provider.dart';
 import '../../features/auth/providers/selected_group_provider.dart';
+import 'last_route_provider.dart';
 import '../../features/contributions/presentation/contribution_adjustment_form_screen.dart';
 import '../../features/contributions/presentation/contribution_charge_detail_screen.dart';
 import '../../features/contributions/presentation/contribution_opening_balance_import_screen.dart';
@@ -44,6 +45,9 @@ import '../../features/contributions/presentation/contribution_types_list_screen
 import '../../features/contributions/presentation/contributions_home_screen.dart';
 import '../../features/groups/presentation/select_group_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/member_payments/presentation/my_payment_detail_screen.dart';
+import '../../features/member_payments/presentation/my_payments_screen.dart';
+import '../../features/member_payments/presentation/my_receipt_screen.dart';
 import '../../features/loans/presentation/cancel_loan_screen.dart';
 import '../../features/loans/presentation/disburse_loan_screen.dart';
 import '../../features/loans/presentation/edit_loan_terms_screen.dart';
@@ -101,6 +105,7 @@ import '../../features/security/presentation/pin_recovery_verify_screen.dart';
 import '../../features/security/presentation/pin_setup_screen.dart';
 import '../../features/security/providers/has_pin_credential_provider.dart';
 import '../../features/splash/splash_screen.dart';
+import '../shell/app_exit_guard.dart';
 import '../shell/app_shell.dart';
 import 'app_routes.dart';
 import 'route_guard.dart';
@@ -151,6 +156,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         hasPinCredential: ref.read(hasPinCredentialProvider),
         pendingInvitationToken: pendingToken,
         invitationJustAccepted: invitationJustAccepted,
+        restoredLocation: ref.read(lastRouteProvider),
       );
 
       final hasCapturableToken =
@@ -300,8 +306,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ContextErrorScreen(),
       ),
       ShellRoute(
-        builder: (context, state, child) =>
-            AppShell(location: state.uri.path, child: child),
+        // Prompt 09G-B6-C.5 §L/§O: AppExitGuard wraps INSIDE the shell
+        // route's own page/ModalRoute (not above the whole Router in
+        // `app.dart`'s old placement) — a `PopScope` needs a `ModalRoute`
+        // ancestor to actually intercept the system Back
+        // button/gesture at all; one placed above the Router's
+        // Navigator entirely never sees it.
+        builder: (context, state, child) => AppExitGuard(
+          child: AppShell(location: state.uri.path, child: child),
+        ),
         routes: [
           GoRoute(
             path: AppRoutes.home,
@@ -386,6 +399,21 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: AppRoutes.myLoanDetail,
             builder: (context, state) => MyLoanDetailScreen(
               loanAccountId: state.pathParameters['loanAccountId']!,
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.myPayments,
+            builder: (context, state) => const MyPaymentsScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.myPaymentReceipt,
+            builder: (context, state) =>
+                MyReceiptScreen(paymentId: state.pathParameters['paymentId']!),
+          ),
+          GoRoute(
+            path: AppRoutes.myPaymentDetail,
+            builder: (context, state) => MyPaymentDetailScreen(
+              paymentId: state.pathParameters['paymentId']!,
             ),
           ),
           GoRoute(

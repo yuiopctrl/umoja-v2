@@ -19,6 +19,7 @@ import '../../payments/presentation/widgets/payment_labels.dart';
 import '../controllers/loan_write_off_recovery_controller.dart';
 import '../domain/loan_write_off_recovery.dart';
 import 'widgets/loan_labels.dart';
+import '../../../app/routing/app_routes.dart';
 
 const _recoveryPaymentMethods = [
   'CASH',
@@ -129,6 +130,8 @@ class _LoanRecoveryScreenState extends ConsumerState<LoanRecoveryScreen> {
     final accountsAsync = ref.watch(financialAccountsActiveForPickerProvider);
 
     return UmojaPage(
+      backTo: AppRoutes.loanAccountDetailPath(widget.loanAccountId),
+      backLabel: l10n.loanAccountDetailTitle,
       title: l10n.loanRecoveryTitle,
       maxWidth: 640,
       body: Column(

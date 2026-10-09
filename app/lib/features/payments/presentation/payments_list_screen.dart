@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/routing/app_routes.dart';
+import '../../../app/shell/umoja_feature_scaffold.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/theme/umoja_spacing.dart';
 import '../../../core/utils/kiswahili_date.dart';
@@ -14,9 +15,9 @@ import '../../../core/widgets/umoja_empty_state.dart';
 import '../../../core/widgets/umoja_error_state.dart';
 import '../../../core/widgets/umoja_list_tile.dart';
 import '../../../core/widgets/umoja_loading_state.dart';
-import '../../../core/widgets/umoja_page.dart';
 import '../../../core/widgets/umoja_search_field.dart';
 import '../../../core/widgets/umoja_status_badge.dart';
+import '../../../core/theme/umoja_breakpoints.dart';
 import '../../auth/providers/selected_group_provider.dart';
 import '../domain/payment.dart';
 import '../providers/payments_list_provider.dart';
@@ -84,17 +85,32 @@ class _PaymentsListScreenState extends ConsumerState<PaymentsListScreen> {
       limit: _limit,
     );
     final pageAsync = ref.watch(paymentsListProvider(query));
+    final isMobile = UmojaBreakpoints.isMobile(
+      MediaQuery.sizeOf(context).width,
+    );
 
-    return UmojaPage(
+    return UmojaFeatureScaffold(
       title: l10n.paymentHistoryTitle,
       scrollable: false,
       maxWidth: 900,
-      headerTrailing: canCreate
-          ? UmojaPrimaryButton(
-              label: l10n.recordPaymentAction,
-              onPressed: () => context.push(AppRoutes.paymentRecord),
-            )
-          : null,
+      showBackButton: true,
+      backFallbackRoute: AppRoutes.paymentsList,
+      // Prompt 09G-B6-C.2 §D: the wide-layout "Record Payment" action
+      // moves from UmojaPage's old desktop-only headerTrailing slot
+      // into the shared header's own actions — the mobile FAB below is
+      // unchanged, so neither breakpoint gains a second, redundant
+      // entry point.
+      actions: canCreate && !isMobile
+          ? [
+              Padding(
+                padding: const EdgeInsets.only(right: UmojaSpacing.sm),
+                child: UmojaPrimaryButton(
+                  label: l10n.recordPaymentAction,
+                  onPressed: () => context.push(AppRoutes.paymentRecord),
+                ),
+              ),
+            ]
+          : const [],
       floatingActionButton: canCreate
           ? FloatingActionButton(
               key: const Key('paymentRecordFab'),

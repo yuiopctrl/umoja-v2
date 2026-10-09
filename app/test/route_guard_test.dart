@@ -44,6 +44,7 @@ String? _redirect({
   AsyncValue<bool> hasPinCredential = const AsyncValue.data(true),
   String? pendingInvitationToken,
   bool invitationJustAccepted = false,
+  String? restoredLocation,
 }) {
   return computeRedirect(
     sessionStatus: sessionStatus,
@@ -53,6 +54,7 @@ String? _redirect({
     hasPinCredential: hasPinCredential,
     pendingInvitationToken: pendingInvitationToken,
     invitationJustAccepted: invitationJustAccepted,
+    restoredLocation: restoredLocation,
   );
 }
 
@@ -827,6 +829,144 @@ void main() {
           currentLocation: AppRoutes.myInvitations,
         ),
         AppRoutes.authPhone,
+      );
+    });
+  });
+
+  group('restored location (09G-B6-C.5 §I)', () {
+    final resolvedContext = AppContext(
+      userId: 'u1',
+      profile: _complete,
+      memberships: [_membership(id: 'm1')],
+    );
+
+    test('a fresh launch (still on splash) with a resolved group restores a '
+        'recognized operational location instead of defaulting to Home', () {
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(resolvedContext),
+          selectedGroup: SelectedGroupResolved(_membership(id: 'm1')),
+          currentLocation: AppRoutes.splash,
+          restoredLocation: AppRoutes.financeHome,
+        ),
+        AppRoutes.financeHome,
+      );
+    });
+
+    test('an unrecognized/stale restored value is never used as a redirect '
+        'target — falls back to Home exactly as if nothing were restored', () {
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(resolvedContext),
+          selectedGroup: SelectedGroupResolved(_membership(id: 'm1')),
+          currentLocation: AppRoutes.splash,
+          restoredLocation: '/this/route/does/not/exist',
+        ),
+        AppRoutes.home,
+      );
+    });
+
+    test('no restored value at all still defaults to Home, unchanged', () {
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(resolvedContext),
+          selectedGroup: SelectedGroupResolved(_membership(id: 'm1')),
+          currentLocation: AppRoutes.splash,
+          restoredLocation: null,
+        ),
+        AppRoutes.home,
+      );
+    });
+
+    test('restoredLocation is only ever consulted from a non-operational '
+        'currentLocation — an in-progress session already AT an operational '
+        'route is never redirected to some unrelated restored value', () {
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(resolvedContext),
+          selectedGroup: SelectedGroupResolved(_membership(id: 'm1')),
+          currentLocation: AppRoutes.financeHome,
+          restoredLocation: AppRoutes.loansHome,
+        ),
+        isNull,
+      );
+    });
+
+    test(
+      'permission-loss: a restored My Payments route is accepted as the '
+      'landing target by this pass (it is a recognized operational shape), '
+      'but the very next pass (now AT that location) re-evaluates the '
+      'payment.self_view gate and bounces to Home — restoration never '
+      'bypasses the permission check, it only ever supplies where to look',
+      () {
+        final membershipWithoutSelfView = _membership(id: 'm1');
+        // First pass: still on splash, restored value is a recognized
+        // operational shape, so it becomes the next landing location.
+        expect(
+          _redirect(
+            sessionStatus: AuthSessionStatus.signedIn,
+            appContext: AsyncValue.data(resolvedContext),
+            selectedGroup: SelectedGroupResolved(membershipWithoutSelfView),
+            currentLocation: AppRoutes.splash,
+            restoredLocation: AppRoutes.myPayments,
+          ),
+          AppRoutes.myPayments,
+        );
+        // Second pass: now actually AT /me/payments — the existing
+        // payment.self_view gate (unrelated to restoration) fires exactly
+        // as it would for any other way of reaching this location.
+        expect(
+          _redirect(
+            sessionStatus: AuthSessionStatus.signedIn,
+            appContext: AsyncValue.data(resolvedContext),
+            selectedGroup: SelectedGroupResolved(membershipWithoutSelfView),
+            currentLocation: AppRoutes.myPayments,
+            restoredLocation: AppRoutes.myPayments,
+          ),
+          AppRoutes.home,
+        );
+      },
+    );
+
+    test(
+      'group-loss: a restored operational route is still offered as the '
+      'landing target while a group remains resolved, but once the group '
+      'is no longer resolved (SelectedGroupNone/Pending) the ordinary '
+      'onboarding/select-group target takes over regardless of what was '
+      'restored — restoration never keeps a user in an inaccessible group',
+      () {
+        expect(
+          _redirect(
+            sessionStatus: AuthSessionStatus.signedIn,
+            appContext: AsyncValue.data(
+              AppContext(userId: 'u1', profile: _complete, memberships: []),
+            ),
+            selectedGroup: const SelectedGroupNone(),
+            currentLocation: AppRoutes.splash,
+            restoredLocation: AppRoutes.financeHome,
+          ),
+          AppRoutes.onboardingMembershipEntry,
+        );
+      },
+    );
+
+    test('an invalid/foreign child entity id in a restored location is not '
+        "this function's concern — it only recognizes the route SHAPE "
+        '(e.g. /loans/accounts/:id), and the screen itself resolves the id '
+        'safely (not-found), matching any other deep link to that shape', () {
+      expect(
+        _redirect(
+          sessionStatus: AuthSessionStatus.signedIn,
+          appContext: AsyncValue.data(resolvedContext),
+          selectedGroup: SelectedGroupResolved(_membership(id: 'm1')),
+          currentLocation: AppRoutes.splash,
+          restoredLocation: AppRoutes.loanAccountDetailPath('no-longer-exists'),
+        ),
+        AppRoutes.loanAccountDetailPath('no-longer-exists'),
       );
     });
   });

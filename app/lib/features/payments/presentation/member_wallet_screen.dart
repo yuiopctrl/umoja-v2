@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/routing/app_routes.dart';
 import '../../../core/localization/app_localizations_x.dart';
 import '../../../core/localization/failure_messages.dart';
 import '../../../core/theme/umoja_spacing.dart';
@@ -74,6 +75,12 @@ class _MemberWalletScreenState extends ConsumerState<MemberWalletScreen> {
 
     return UmojaPage(
       title: l10n.memberWalletTitle,
+      // Prompt 09G-B6-C.3 §N: an explicit, deep-link-safe fallback —
+      // this screen previously had none, so a direct load/`.go()` (not
+      // pushed from the wallet picker) rendered as a false "root" with
+      // no back arrow at all.
+      backTo: AppRoutes.walletMemberPicker,
+      backLabel: l10n.memberWalletEntryTitle,
       maxWidth: 700,
       body: pageAsync.when(
         loading: () => const Padding(

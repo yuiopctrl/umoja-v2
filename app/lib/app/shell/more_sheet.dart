@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/localization/app_localizations_x.dart';
 import '../../core/theme/umoja_spacing.dart';
 import '../routing/app_routes.dart';
+import '../routing/member_self_service_routes.dart';
 import 'app_top_bar.dart';
 import 'shell_destination.dart';
 
@@ -18,14 +19,18 @@ import 'shell_destination.dart';
 /// "More" no longer navigates to a dedicated page on mobile; the bar
 /// itself never moves off whatever screen was already showing
 /// underneath.
+///
+/// Prompt 09G-B6-C §E: [memberDestinations] is the ALREADY-FILTERED
+/// list from [visibleMemberSelfServiceDestinations] — one source every
+/// member self-service tile here (and in [MoreScreen]/Home) renders
+/// from, rather than this sheet hand-maintaining its own "show X"
+/// boolean per destination (the duplication that caused the B5 My
+/// Loans visibility defect: one surface updated, another forgotten).
 void showMoreSheet(
   BuildContext context, {
   required List<ShellDestination> overflowDestinations,
   required bool showMemberManagement,
-  required bool showMyProfile,
-  required bool showFinancialStatement,
-  required bool showMyContributions,
-  required bool showMyLoans,
+  required List<MemberSelfServiceDestination> memberDestinations,
 }) {
   showModalBottomSheet<void>(
     context: context,
@@ -33,10 +38,7 @@ void showMoreSheet(
     builder: (context) => _MoreSheet(
       overflowDestinations: overflowDestinations,
       showMemberManagement: showMemberManagement,
-      showMyProfile: showMyProfile,
-      showFinancialStatement: showFinancialStatement,
-      showMyContributions: showMyContributions,
-      showMyLoans: showMyLoans,
+      memberDestinations: memberDestinations,
     ),
   );
 }
@@ -45,18 +47,12 @@ class _MoreSheet extends StatelessWidget {
   const _MoreSheet({
     required this.overflowDestinations,
     required this.showMemberManagement,
-    required this.showMyProfile,
-    required this.showFinancialStatement,
-    required this.showMyContributions,
-    required this.showMyLoans,
+    required this.memberDestinations,
   });
 
   final List<ShellDestination> overflowDestinations;
   final bool showMemberManagement;
-  final bool showMyProfile;
-  final bool showFinancialStatement;
-  final bool showMyContributions;
-  final bool showMyLoans;
+  final List<MemberSelfServiceDestination> memberDestinations;
 
   @override
   Widget build(BuildContext context) {
@@ -83,47 +79,19 @@ class _MoreSheet extends StatelessWidget {
                 ),
               ),
             ),
-            if (showMyProfile)
+            // Prompt 09G-B6-C §E: one canonical destination list — the
+            // SAME permissions MoreScreen/RouteGuard already gate on
+            // (financial_report.self_view, contribution.self_view,
+            // loan.self_view, payment.self_view), never member.view,
+            // never a role name.
+            for (final destination in memberDestinations)
               ListTile(
-                key: const Key('moreSheetMyProfile'),
-                leading: const Icon(Icons.account_circle_outlined),
-                title: Text(l10n.myProfileAction),
+                key: Key(destination.sheetKey),
+                leading: Icon(destination.icon),
+                title: Text(destination.label),
                 onTap: () {
                   Navigator.of(context).pop();
-                  context.push(AppRoutes.myProfile);
-                },
-              ),
-            if (showFinancialStatement)
-              ListTile(
-                key: const Key('moreSheetFinancialStatement'),
-                leading: const Icon(Icons.receipt_long_outlined),
-                title: Text(l10n.moreFinancialStatementAction),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  context.push(AppRoutes.myStatement);
-                },
-              ),
-            // Prompt 09G-B5-C.2 §1/§F: the SAME permissions
-            // MoreScreen/RouteGuard already gate on — contribution.self_view
-            // and loan.self_view, never member.view, never a role name.
-            if (showMyContributions)
-              ListTile(
-                key: const Key('moreSheetMyContributions'),
-                leading: const Icon(Icons.request_page_outlined),
-                title: Text(l10n.myContributionsTitle),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  context.push(AppRoutes.myContributions);
-                },
-              ),
-            if (showMyLoans)
-              ListTile(
-                key: const Key('moreSheetMyLoans'),
-                leading: const Icon(Icons.account_balance_wallet_outlined),
-                title: Text(l10n.myLoansNavAction),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  context.push(AppRoutes.myLoans);
+                  context.push(destination.path);
                 },
               ),
             if (showMemberManagement)
